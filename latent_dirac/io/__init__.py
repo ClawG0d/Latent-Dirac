@@ -1,0 +1,1 @@
+"""Optional I/O adapters."""

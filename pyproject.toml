@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "latent-dirac"
+version = "0.1.0"
+description = "Open source-to-acceptance simulation skeleton for positron and antiproton studies."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [
+  { name = "Latent Dirac contributors" }
+]
+dependencies = [
+  "numpy>=1.26",
+  "pydantic>=2.7"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0"
+]
+viz = [
+  "matplotlib",
+  "plotly"
+]
+
+[tool.setuptools.packages.find]
+include = ["latent_dirac*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

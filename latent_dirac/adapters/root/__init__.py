@@ -1,0 +1,1 @@
+"""ROOT adapter placeholder."""
