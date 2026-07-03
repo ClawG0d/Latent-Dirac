@@ -23,5 +23,6 @@ def test_demo_webp_generator_creates_animated_webp_files(tmp_path):
 def test_readme_references_demo_webp_assets():
     readme = Path("README.md").read_text(encoding="utf-8")
 
+    assert "assets/demos/charge_sign_splitter.webp" in readme
     assert "assets/demos/positron_capture.webp" in readme
     assert "assets/demos/antiproton_transport.webp" in readme

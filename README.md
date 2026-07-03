@@ -74,13 +74,46 @@ packages are only loaded by `latent_dirac.viz` backend methods.
 
 ## Demos
 
-The demos exercise the first end-to-end workflow:
+The demos show two layers of the current simulator: charge-sign-aware
+relativistic transport, and end-to-end source-to-acceptance accounting.
 
 ```text
 source model -> field transport -> beamline acceptance -> loss accounting -> report
 ```
 
-### Demo 1: Positron Capture
+### Demo 1: Charge-Sign Splitter
+
+This signature demo starts matched positron and electron clouds from the same
+phase-space distribution. In the same transverse magnetic field, equal mass and
+opposite charge produce opposite Lorentz-force curvature, splitting the tracks
+without modeling any material interaction or energy-release process.
+
+![Animated charge-sign splitter demo](assets/demos/charge_sign_splitter.webp)
+
+```bash
+.venv/bin/python examples/charge_sign_splitter_demo.py
+```
+
+Example output:
+
+```text
+Charge-sign splitter demo
+
+Shared setup:
+- macro-particles per species: 96
+- transverse magnetic field By: 0.45 T
+- transport model: relativistic Boris solver
+
+Lorentz-force separation:
+- positron mean x: -0.0309958 m
+- electron mean x: 0.0308783 m
+- mean transverse separation: 0.0618741 m
+
+Scope note:
+- this is a charge-sign transport and acceptance diagnostic only
+```
+
+### Demo 2: Positron Capture
 
 This demo samples a parameterized positron pair source, transports the cloud
 through an idealized solenoid field, applies an aperture and momentum window,
@@ -108,7 +141,7 @@ Accepted cloud:
 - accepted yield: 0.02
 ```
 
-### Demo 2: Antiproton Transport
+### Demo 3: Antiproton Transport
 
 This demo samples a surrogate antiproton source, transports it through a
 uniform magnetic field, applies a momentum acceptance window, and summarizes
@@ -135,7 +168,7 @@ Accepted cloud:
 - accepted yield: 2e-05
 ```
 
-### Demo 3: Optional Report Figures
+### Demo 4: Optional Report Figures
 
 Install the visualization extra and save static report figures from any
 `PipelineResult`, such as the `result` object built in the API sketch below:

@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 import numpy as np
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from latent_dirac.beamline.aperture import Aperture
 from latent_dirac.beamline.momentum_window import MomentumWindow
@@ -16,8 +21,13 @@ from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
 from latent_dirac.sources.antiproton_surrogate import AntiprotonSurrogateSource
 from latent_dirac.sources.positron_pair import PositronPairSource
 from latent_dirac.state.particle_cloud import ParticleCloud
+from examples.charge_sign_splitter_demo import make_initial_pair
 
-DEMO_WEBP_FILES = ("positron_capture.webp", "antiproton_transport.webp")
+DEMO_WEBP_FILES = (
+    "charge_sign_splitter.webp",
+    "positron_capture.webp",
+    "antiproton_transport.webp",
+)
 
 CANVAS_SIZE = (920, 500)
 PLOT_BOX = (82, 112, 654, 292)
@@ -26,6 +36,7 @@ INK = (18, 22, 28)
 MUTED = (105, 116, 130)
 GRID = (223, 229, 237)
 POSITRON = (20, 118, 198)
+ELECTRON = (225, 118, 35)
 ANTIPROTON = (129, 80, 197)
 ACCEPTED = (20, 143, 87)
 LOST = (210, 76, 69)
@@ -170,6 +181,65 @@ def _draw_acceptance_guides(draw, aperture_radius: float, momentum_label: str, z
     draw.text((x0 + width - 56, y0 + height - 24), f"z max {z_limit:.2f} m", fill=MUTED, font=_font(11))
 
 
+def _draw_splitter_legend(draw):
+    legend_x = 770
+    draw.rounded_rectangle((744, 128, 872, 250), radius=10, fill=(248, 250, 253), outline=(222, 229, 238))
+    draw.ellipse((legend_x, 154, legend_x + 11, 165), fill=POSITRON)
+    draw.text((legend_x + 18, 151), "positron e+", fill=INK, font=_font(12))
+    draw.ellipse((legend_x, 184, legend_x + 11, 195), fill=ELECTRON)
+    draw.text((legend_x + 18, 181), "electron e-", fill=INK, font=_font(12))
+    draw.line((legend_x, 219, legend_x + 12, 219), fill=(87, 143, 204), width=3)
+    draw.text((legend_x + 18, 211), "same By field", fill=INK, font=_font(12))
+
+
+def _draw_cloud_tracks(
+    draw,
+    snapshots: list[ParticleCloud],
+    frame_index: int,
+    color: tuple[int, int, int],
+    z_limit: float,
+    transverse_limit: float,
+):
+    start = max(0, frame_index - 8)
+    trail_positions = [_map_positions(snapshot.position_m, z_limit, transverse_limit) for snapshot in snapshots[start : frame_index + 1]]
+    current_positions = trail_positions[-1]
+
+    pale = tuple(int(0.55 * channel + 0.45 * 255) for channel in color)
+    for particle_index in range(current_positions.shape[0]):
+        trail = [tuple(frame_positions[particle_index]) for frame_positions in trail_positions]
+        if len(trail) > 1:
+            draw.line(trail, fill=pale, width=1)
+
+    for x, y in current_positions:
+        draw.ellipse((x - 3, y - 3, x + 3, y + 3), fill=color)
+
+
+def _make_charge_sign_splitter_frames(frame_count: int, particle_count: int):
+    positron_cloud, electron_cloud = make_initial_pair(particle_count=particle_count, seed=2030)
+    field = UniformField(B_vector_t=np.array([0.0, 0.45, 0.0]))
+    positron_snapshots = _pipeline_snapshots(positron_cloud, field, dt_s=2.0e-12, frame_count=frame_count)
+    electron_snapshots = _pipeline_snapshots(electron_cloud, field, dt_s=2.0e-12, frame_count=frame_count)
+
+    frames = []
+    for index in range(frame_count):
+        image, draw = _make_base_frame(
+            "Charge-sign splitter demo",
+            "Matched e+ / e- clouds in the same transverse magnetic field",
+            POSITRON,
+        )
+        _draw_splitter_legend(draw)
+        x0, y0, width, height = PLOT_BOX
+        draw.line((x0 + 24, y0 + height / 2, x0 + width - 24, y0 + height / 2), fill=(190, 199, 211), width=2)
+        draw.text((744, 284), "same mass, opposite charge", fill=MUTED, font=_font(12))
+        draw.text((744, 306), "field: By = 0.45 T", fill=MUTED, font=_font(12))
+        draw.text((744, 344), "diagnostic: track separation", fill=INK, font=_font(13, bold=True))
+        _draw_cloud_tracks(draw, positron_snapshots, index, POSITRON, 0.045, 0.040)
+        _draw_cloud_tracks(draw, electron_snapshots, index, ELECTRON, 0.045, 0.040)
+        _draw_stage_bar(draw, index, frame_count, ("matched source", "shared field", "opposite bend", "separation", "diagnostic"))
+        frames.append(image)
+    return frames
+
+
 def _make_positron_frames(frame_count: int, particle_count: int):
     source = PositronPairSource(
         primary_count=10_000,
@@ -273,9 +343,11 @@ def generate_demo_webps(
     outputs = {
         DEMO_WEBP_FILES[0]: output_path / DEMO_WEBP_FILES[0],
         DEMO_WEBP_FILES[1]: output_path / DEMO_WEBP_FILES[1],
+        DEMO_WEBP_FILES[2]: output_path / DEMO_WEBP_FILES[2],
     }
-    _save_webp(_make_positron_frames(frame_count, particle_count), outputs[DEMO_WEBP_FILES[0]], duration_ms)
-    _save_webp(_make_antiproton_frames(frame_count, particle_count), outputs[DEMO_WEBP_FILES[1]], duration_ms)
+    _save_webp(_make_charge_sign_splitter_frames(frame_count, particle_count), outputs[DEMO_WEBP_FILES[0]], duration_ms)
+    _save_webp(_make_positron_frames(frame_count, particle_count), outputs[DEMO_WEBP_FILES[1]], duration_ms)
+    _save_webp(_make_antiproton_frames(frame_count, particle_count), outputs[DEMO_WEBP_FILES[2]], duration_ms)
     return outputs
 
 
