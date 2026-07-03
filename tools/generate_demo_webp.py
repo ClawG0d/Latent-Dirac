@@ -176,9 +176,17 @@ def _draw_acceptance_guides(draw, aperture_radius: float, momentum_label: str, z
     aperture_y2 = y0 + height / 2 + (height * 0.42) * (aperture_radius / transverse_limit)
     draw.line((x0 + 24, aperture_y, x0 + width - 24, aperture_y), fill=(129, 190, 151), width=2)
     draw.line((x0 + 24, aperture_y2, x0 + width - 24, aperture_y2), fill=(129, 190, 151), width=2)
-    draw.text((744, 284), f"aperture: +/- {aperture_radius:.3f} m", fill=MUTED, font=_font(12))
-    draw.text((744, 306), momentum_label, fill=MUTED, font=_font(12))
+    draw.text((744, 366), f"aperture: +/- {aperture_radius:.3f} m", fill=MUTED, font=_font(12))
+    draw.text((744, 388), momentum_label, fill=MUTED, font=_font(12))
     draw.text((x0 + width - 56, y0 + height - 24), f"z max {z_limit:.2f} m", fill=MUTED, font=_font(11))
+
+
+def _draw_field_status(draw, lines: tuple[str, ...]):
+    left, top, right, bottom = 744, 266, 888, 350
+    draw.rounded_rectangle((left, top, right, bottom), radius=10, fill=FIELD, outline=(199, 218, 240))
+    draw.text((left + 10, top + 9), "Magnetic field status", fill=INK, font=_font(11, bold=True))
+    for index, line in enumerate(lines):
+        draw.text((left + 10, top + 31 + index * 16), line, fill=MUTED, font=_font(10))
 
 
 def _draw_splitter_legend(draw):
@@ -230,9 +238,15 @@ def _make_charge_sign_splitter_frames(frame_count: int, particle_count: int):
         _draw_splitter_legend(draw)
         x0, y0, width, height = PLOT_BOX
         draw.line((x0 + 24, y0 + height / 2, x0 + width - 24, y0 + height / 2), fill=(190, 199, 211), width=2)
-        draw.text((744, 284), "same mass, opposite charge", fill=MUTED, font=_font(12))
-        draw.text((744, 306), "field: By = 0.45 T", fill=MUTED, font=_font(12))
-        draw.text((744, 344), "diagnostic: track separation", fill=INK, font=_font(13, bold=True))
+        _draw_field_status(
+            draw,
+            (
+                "model: transverse",
+                "B vector [T]: [0, 0.45, 0]",
+                "status: active",
+            ),
+        )
+        draw.text((744, 382), "diagnostic: track separation", fill=INK, font=_font(13, bold=True))
         _draw_cloud_tracks(draw, positron_snapshots, index, POSITRON, 0.045, 0.040)
         _draw_cloud_tracks(draw, electron_snapshots, index, ELECTRON, 0.045, 0.040)
         _draw_stage_bar(draw, index, frame_count, ("matched source", "shared field", "opposite bend", "separation", "diagnostic"))
@@ -267,11 +281,19 @@ def _make_positron_frames(frame_count: int, particle_count: int):
             "Parameterized e+ source -> solenoid transport -> acceptance cuts",
             POSITRON,
         )
-        _draw_acceptance_guides(draw, aperture_radius, "momentum: 0.001-0.016 GeV/c", 0.045, 0.020)
+        _draw_acceptance_guides(draw, aperture_radius, "p: 0.001-0.016 GeV/c", 0.045, 0.020)
+        _draw_field_status(
+            draw,
+            (
+                "model: solenoid",
+                "B vector [T]: [0, 0, 0.8]",
+                "status: in envelope",
+            ),
+        )
         _draw_particles(draw, snapshots, index, accepted, POSITRON, 0.045, 0.020)
         _draw_stage_bar(draw, index, frame_count, ("source", "transport", "aperture", "momentum", "yield"))
         accepted_count = int(np.count_nonzero(accepted))
-        draw.text((744, 344), f"accepted macro-particles: {accepted_count}/{particle_count}", fill=INK, font=_font(13, bold=True))
+        draw.text((744, 410), f"accepted: {accepted_count}/{particle_count}", fill=INK, font=_font(13, bold=True))
         frames.append(image)
     return frames
 
@@ -303,11 +325,19 @@ def _make_antiproton_frames(frame_count: int, particle_count: int):
             "Surrogate pbar source -> uniform B transport -> momentum window",
             ANTIPROTON,
         )
-        _draw_acceptance_guides(draw, aperture_radius, "momentum: 2.75-3.25 GeV/c", 0.62, 0.045)
+        _draw_acceptance_guides(draw, aperture_radius, "p: 2.75-3.25 GeV/c", 0.62, 0.045)
+        _draw_field_status(
+            draw,
+            (
+                "model: uniform",
+                "B vector [T]: [0, 0, 0.15]",
+                "status: active",
+            ),
+        )
         _draw_particles(draw, snapshots, index, accepted, ANTIPROTON, 0.62, 0.045)
         _draw_stage_bar(draw, index, frame_count, ("source", "transport", "momentum", "losses", "yield"))
         accepted_count = int(np.count_nonzero(accepted))
-        draw.text((744, 344), f"accepted macro-particles: {accepted_count}/{particle_count}", fill=INK, font=_font(13, bold=True))
+        draw.text((744, 410), f"accepted: {accepted_count}/{particle_count}", fill=INK, font=_font(13, bold=True))
         frames.append(image)
     return frames
 

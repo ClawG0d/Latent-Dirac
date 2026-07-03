@@ -44,7 +44,18 @@ def run_demo() -> str:
             ),
         ]
     ).run(initial_cloud)
-    return text_report(result.stage_results, result.final_cloud, primary_count=primary_count)
+    report = text_report(result.stage_results, result.final_cloud, primary_count=primary_count)
+    field_status = "\n".join(
+        [
+            "",
+            "",
+            "Magnetic field status:",
+            "- field model: idealized solenoid",
+            "- B vector [T]: [0, 0, 0.8] inside solenoid envelope",
+            "- status: active inside radius 0.05 m and length 0.5 m",
+        ]
+    )
+    return f"{report}{field_status}"
 
 
 if __name__ == "__main__":

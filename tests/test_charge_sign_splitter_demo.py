@@ -21,6 +21,10 @@ def test_charge_sign_splitter_report_names_scope_without_annihilation():
     report = run_report(particle_count=24)
 
     assert "Charge-sign splitter demo" in report
+    assert "Magnetic field status:" in report
+    assert "- field model: uniform transverse field" in report
+    assert "- B vector [T]: [0, 0.45, 0]" in report
+    assert "- status: active for both species" in report
     assert "Lorentz-force" in report
     assert "annihilation" not in report.lower()
     assert "energy release" not in report.lower()

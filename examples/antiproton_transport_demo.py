@@ -42,7 +42,18 @@ def run_demo() -> str:
             ),
         ]
     ).run(initial_cloud)
-    return text_report(result.stage_results, result.final_cloud, primary_count=primary_count)
+    report = text_report(result.stage_results, result.final_cloud, primary_count=primary_count)
+    field_status = "\n".join(
+        [
+            "",
+            "",
+            "Magnetic field status:",
+            "- field model: uniform magnetic field",
+            "- B vector [T]: [0, 0, 0.15]",
+            "- status: active over all sampled positions",
+        ]
+    )
+    return f"{report}{field_status}"
 
 
 if __name__ == "__main__":

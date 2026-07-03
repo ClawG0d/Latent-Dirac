@@ -76,6 +76,7 @@ packages are only loaded by `latent_dirac.viz` backend methods.
 
 The demos show two layers of the current simulator: charge-sign-aware
 relativistic transport, and end-to-end source-to-acceptance accounting.
+Each animation includes a magnetic field status panel.
 
 ```text
 source model -> field transport -> beamline acceptance -> loss accounting -> report
@@ -86,7 +87,7 @@ source model -> field transport -> beamline acceptance -> loss accounting -> rep
 This signature demo starts matched positron and electron clouds from the same
 phase-space distribution. In the same transverse magnetic field, equal mass and
 opposite charge produce opposite Lorentz-force curvature, splitting the tracks
-without modeling any material interaction or energy-release process.
+without modeling any material interaction.
 
 ![Animated charge-sign splitter demo](assets/demos/charge_sign_splitter.webp)
 
@@ -103,6 +104,11 @@ Shared setup:
 - macro-particles per species: 96
 - transverse magnetic field By: 0.45 T
 - transport model: relativistic Boris solver
+
+Magnetic field status:
+- field model: uniform transverse field
+- B vector [T]: [0, 0.45, 0]
+- status: active for both species
 
 Lorentz-force separation:
 - positron mean x: -0.0309958 m
@@ -139,6 +145,11 @@ Accepted cloud:
 - weighted count: 200
 - mean kinetic energy: 3.01583 MeV
 - accepted yield: 0.02
+
+Magnetic field status:
+- field model: idealized solenoid
+- B vector [T]: [0, 0, 0.8] inside solenoid envelope
+- status: active inside radius 0.05 m and length 0.5 m
 ```
 
 ### Demo 3: Antiproton Transport
@@ -166,6 +177,11 @@ Accepted cloud:
 - weighted count: 1
 - mean kinetic energy: 2209.39 MeV
 - accepted yield: 2e-05
+
+Magnetic field status:
+- field model: uniform magnetic field
+- B vector [T]: [0, 0, 0.15]
+- status: active over all sampled positions
 ```
 
 ### Demo 4: Optional Report Figures
