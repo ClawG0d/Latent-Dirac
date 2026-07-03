@@ -72,17 +72,88 @@ Install optional visualization dependencies:
 The simulation core does not import Matplotlib or Plotly. Visualization
 packages are only loaded by `latent_dirac.viz` backend methods.
 
-## Run The Demos
-
-```bash
-.venv/bin/python examples/positron_capture_demo.py
-.venv/bin/python examples/antiproton_transport_demo.py
-```
+## Demos
 
 The demos exercise the first end-to-end workflow:
 
 ```text
 source model -> field transport -> beamline acceptance -> loss accounting -> report
+```
+
+### Demo 1: Positron Capture
+
+This demo samples a parameterized positron pair source, transports the cloud
+through an idealized solenoid field, applies an aperture and momentum window,
+then reports accepted yield.
+
+```bash
+.venv/bin/python examples/positron_capture_demo.py
+```
+
+Example output:
+
+```text
+Latent Dirac simulation report
+
+Stage accounting:
+- solenoid transport: input=200, output=200, transmission=1, losses=0
+- aperture: input=200, output=200, transmission=1, losses=0
+- momentum window: input=200, output=200, transmission=1, losses=0
+
+Accepted cloud:
+- weighted count: 200
+- mean kinetic energy: 3.01583 MeV
+- accepted yield: 0.02
+```
+
+### Demo 2: Antiproton Transport
+
+This demo samples a surrogate antiproton source, transports it through a
+uniform magnetic field, applies a momentum acceptance window, and summarizes
+the accepted weighted yield.
+
+```bash
+.venv/bin/python examples/antiproton_transport_demo.py
+```
+
+Example output:
+
+```text
+Latent Dirac simulation report
+
+Stage accounting:
+- uniform-field transport: input=1, output=1, transmission=1, losses=0
+- momentum window: input=1, output=1, transmission=1, losses=0
+
+Accepted cloud:
+- weighted count: 1
+- mean kinetic energy: 2209.39 MeV
+- accepted yield: 2e-05
+```
+
+### Demo 3: Optional Report Figures
+
+Install the visualization extra and save static report figures from any
+`PipelineResult`, such as the `result` object built in the API sketch below:
+
+```bash
+.venv/bin/python -m pip install -e ".[dev,viz]"
+```
+
+```python
+from latent_dirac.viz.matplotlib_backend import MatplotlibBackend
+
+backend = MatplotlibBackend()
+backend.save_all_basic_report_figures(result, "reports/positron_capture")
+```
+
+Interactive Plotly figures are available through `PlotlyBackend`:
+
+```python
+from latent_dirac.viz.plotly_backend import PlotlyBackend
+
+fig = PlotlyBackend().plot_losses_interactive(result)
+fig.show()
 ```
 
 ## Minimal API Sketch
