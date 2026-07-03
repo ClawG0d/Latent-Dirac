@@ -86,6 +86,8 @@ This demo samples a parameterized positron pair source, transports the cloud
 through an idealized solenoid field, applies an aperture and momentum window,
 then reports accepted yield.
 
+![Animated positron capture demo](assets/demos/positron_capture.webp)
+
 ```bash
 .venv/bin/python examples/positron_capture_demo.py
 ```
@@ -111,6 +113,8 @@ Accepted cloud:
 This demo samples a surrogate antiproton source, transports it through a
 uniform magnetic field, applies a momentum acceptance window, and summarizes
 the accepted weighted yield.
+
+![Animated antiproton transport demo](assets/demos/antiproton_transport.webp)
 
 ```bash
 .venv/bin/python examples/antiproton_transport_demo.py
@@ -154,6 +158,12 @@ from latent_dirac.viz.plotly_backend import PlotlyBackend
 
 fig = PlotlyBackend().plot_losses_interactive(result)
 fig.show()
+```
+
+Regenerate the README WebP animations:
+
+```bash
+.venv/bin/python tools/generate_demo_webp.py
 ```
 
 ## Minimal API Sketch

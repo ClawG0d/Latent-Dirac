@@ -25,6 +25,19 @@ pip install "latent-dirac[viz]"
 - interactive phase-space scatter plot
 - interactive losses by stage
 
+## README Animations
+
+The animated README demos are generated as WebP assets under `assets/demos/`.
+They are built from deterministic source and transport runs, then rendered by
+the repository tool:
+
+```bash
+.venv/bin/python tools/generate_demo_webp.py
+```
+
+The tool imports Pillow only when it runs. Core physics modules do not depend
+on the animation generator.
+
 ## Future Backend
 
 PyVista is a future optional backend for scientific 3D beamline geometry and
