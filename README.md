@@ -74,8 +74,9 @@ packages are only loaded by `latent_dirac.viz` backend methods.
 
 ## Demos
 
-The demos show two layers of the current simulator: charge-sign-aware
-relativistic transport, and end-to-end source-to-acceptance accounting.
+The demos show three layers of the current simulator: charge-sign-aware
+relativistic transport, magnetic-field parameter sweeps, and end-to-end
+source-to-acceptance accounting.
 Each animation includes a magnetic field status panel.
 
 ```text
@@ -184,7 +185,53 @@ Magnetic field status:
 - status: active over all sampled positions
 ```
 
-### Demo 4: Optional Report Figures
+### Demo 4: Magnetic Control Sweep
+
+This demo scans a uniform transverse magnetic field over matched positron and
+electron clouds. It shows the charge-sign separation trend and reports fixed
+aperture acceptance and loss diagnostics.
+
+![Animated magnetic control sweep demo](assets/demos/magnetic_control_sweep.webp)
+
+```bash
+.venv/bin/python examples/magnetic_control_sweep_demo.py
+```
+
+Example output:
+
+```text
+Magnetic control sweep demo
+
+Shared setup:
+- macro-particles per species: 96
+- source state: matched positron/electron clouds
+- transport model: relativistic Boris solver
+- solver step: dt=2e-12 s, steps=80
+
+Magnetic field status:
+- field model: uniform transverse field
+- B vector [T]: [0, By, 0]
+- sweep range: 0 T to 0.6 T
+
+Aperture status:
+- transverse x acceptance: abs(x) <= 0.035 m
+- accepted and lost fractions are diagnostics for this fixed window
+
+Sweep table:
+By [T] | positron mean x [m] | electron mean x [m] | separation [m] | accepted fraction | loss fraction
+0.000 | -8.99664e-06 | -8.99664e-06 | 0 | 1.000 | 0.000
+0.100 | -0.00846756 | 0.00845077 | 0.0169183 | 1.000 | 0.000
+0.200 | -0.0163904 | 0.0163772 | 0.0327676 | 1.000 | 0.000
+0.300 | -0.0232884 | 0.0232806 | 0.046569 | 1.000 | 0.000
+0.400 | -0.028758 | 0.0287574 | 0.0575155 | 1.000 | 0.000
+0.500 | -0.0325148 | 0.0325224 | 0.0650372 | 0.979 | 0.021
+0.600 | -0.034414 | 0.0344305 | 0.0688445 | 0.661 | 0.339
+
+Scope note:
+- this is a magnetic transport and aperture diagnostic only
+```
+
+### Demo 5: Optional Report Figures
 
 Install the visualization extra and save static report figures from any
 `PipelineResult`, such as the `result` object built in the API sketch below:

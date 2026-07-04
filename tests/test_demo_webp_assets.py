@@ -26,3 +26,5 @@ def test_readme_references_demo_webp_assets():
     assert "assets/demos/charge_sign_splitter.webp" in readme
     assert "assets/demos/positron_capture.webp" in readme
     assert "assets/demos/antiproton_transport.webp" in readme
+    assert "assets/demos/magnetic_control_sweep.webp" in readme
+    assert "Magnetic Control Sweep" in readme
