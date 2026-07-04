@@ -28,9 +28,9 @@
 
 **Interfaces:**
 - Consumes: `examples.charge_sign_splitter_demo.make_initial_pair(particle_count: int, seed: int) -> tuple[ParticleCloud, ParticleCloud]`
-- Produces: `run_sweep(field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T, particle_count: int = 96, aperture_radius_m: float = 0.05, dt_s: float = 2.0e-12, steps: int = 80, seed: int = 2031) -> list[dict[str, float]]`
+- Produces: `run_sweep(field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T, particle_count: int = 96, aperture_radius_m: float = 0.035, dt_s: float = 2.0e-12, steps: int = 80, seed: int = 2031) -> list[dict[str, float]]`
 - Produces: `format_report(results: list[dict[str, float]], *, aperture_radius_m: float, particle_count: int, dt_s: float, steps: int) -> str`
-- Produces: `run_report(field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T, particle_count: int = 96, aperture_radius_m: float = 0.05, dt_s: float = 2.0e-12, steps: int = 80) -> str`
+- Produces: `run_report(field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T, particle_count: int = 96, aperture_radius_m: float = 0.035, dt_s: float = 2.0e-12, steps: int = 80) -> str`
 
 - [ ] **Step 1: Write the failing test**
 
@@ -99,7 +99,7 @@ Use these signatures:
 def run_sweep(
     field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T,
     particle_count: int = 96,
-    aperture_radius_m: float = 0.05,
+    aperture_radius_m: float = 0.035,
     dt_s: float = 2.0e-12,
     steps: int = 80,
     seed: int = 2031,
@@ -119,7 +119,7 @@ def format_report(
 def run_report(
     field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T,
     particle_count: int = 96,
-    aperture_radius_m: float = 0.05,
+    aperture_radius_m: float = 0.035,
     dt_s: float = 2.0e-12,
     steps: int = 80,
 ) -> str:
@@ -144,7 +144,7 @@ git commit -m "feat: add magnetic control sweep demo"
 - Modify: `tests/test_demo_webp_assets.py`
 
 **Interfaces:**
-- Consumes: `examples.magnetic_control_sweep_demo.run_report(field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T, particle_count: int = 96, aperture_radius_m: float = 0.05, dt_s: float = 2.0e-12, steps: int = 80) -> str`
+- Consumes: `examples.magnetic_control_sweep_demo.run_report(field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T, particle_count: int = 96, aperture_radius_m: float = 0.035, dt_s: float = 2.0e-12, steps: int = 80) -> str`
 - Produces: README reference to `assets/demos/magnetic_control_sweep.webp`
 
 - [ ] **Step 1: Write the failing test**
@@ -202,7 +202,7 @@ git commit -m "docs: add magnetic control sweep demo"
 
 **Interfaces:**
 - Consumes: `examples.magnetic_control_sweep_demo.DEFAULT_FIELD_VALUES_T`
-- Consumes: `examples.magnetic_control_sweep_demo.run_sweep(field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T, particle_count: int = 96, aperture_radius_m: float = 0.05, dt_s: float = 2.0e-12, steps: int = 80, seed: int = 2031) -> list[dict[str, float]]`
+- Consumes: `examples.magnetic_control_sweep_demo.run_sweep(field_values_t: Sequence[float] = DEFAULT_FIELD_VALUES_T, particle_count: int = 96, aperture_radius_m: float = 0.035, dt_s: float = 2.0e-12, steps: int = 80, seed: int = 2031) -> list[dict[str, float]]`
 - Produces: `DEMO_WEBP_FILES` containing four file names
 
 - [ ] **Step 1: Write the failing test**
