@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Do not integrate Genesis World.
+- Do not add world-simulation integrations.
 - Do not add UI or 3D world visualization.
 - Core simulation modules must not import visualization packages.
 - Use SI units internally.
