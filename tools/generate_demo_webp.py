@@ -22,11 +22,13 @@ from latent_dirac.sources.antiproton_surrogate import AntiprotonSurrogateSource
 from latent_dirac.sources.positron_pair import PositronPairSource
 from latent_dirac.state.particle_cloud import ParticleCloud
 from examples.charge_sign_splitter_demo import make_initial_pair
+from examples.magnetic_control_sweep_demo import DEFAULT_FIELD_VALUES_T, run_sweep
 
 DEMO_WEBP_FILES = (
     "charge_sign_splitter.webp",
     "positron_capture.webp",
     "antiproton_transport.webp",
+    "magnetic_control_sweep.webp",
 )
 
 CANVAS_SIZE = (920, 500)
@@ -116,6 +118,24 @@ def _pipeline_snapshots(cloud: ParticleCloud, field, dt_s: float, frame_count: i
     return snapshots
 
 
+def _sampled_transport_snapshots(
+    cloud: ParticleCloud,
+    field,
+    dt_s: float,
+    steps: int,
+    snapshot_count: int,
+) -> list[ParticleCloud]:
+    if snapshot_count < 2:
+        raise ValueError("snapshot_count must be at least 2")
+    solver = RelativisticBorisSolver(dt_s=dt_s, steps=max(1, steps // (snapshot_count - 1)))
+    snapshots = [cloud]
+    current = cloud
+    for _ in range(snapshot_count - 1):
+        current = solver.propagate(current, field)
+        snapshots.append(current)
+    return snapshots
+
+
 def _map_positions(
     positions: np.ndarray,
     z_limit: float,
@@ -181,6 +201,15 @@ def _draw_acceptance_guides(draw, aperture_radius: float, momentum_label: str, z
     draw.text((x0 + width - 56, y0 + height - 24), f"z max {z_limit:.2f} m", fill=MUTED, font=_font(11))
 
 
+def _draw_transverse_aperture(draw, aperture_radius: float, z_limit: float, transverse_limit: float):
+    x0, y0, width, height = PLOT_BOX
+    aperture_y = y0 + height / 2 - (height * 0.42) * (aperture_radius / transverse_limit)
+    aperture_y2 = y0 + height / 2 + (height * 0.42) * (aperture_radius / transverse_limit)
+    draw.line((x0 + 24, aperture_y, x0 + width - 24, aperture_y), fill=(129, 190, 151), width=2)
+    draw.line((x0 + 24, aperture_y2, x0 + width - 24, aperture_y2), fill=(129, 190, 151), width=2)
+    draw.text((x0 + width - 56, y0 + height - 24), f"z max {z_limit:.2f} m", fill=MUTED, font=_font(11))
+
+
 def _draw_field_status(draw, lines: tuple[str, ...]):
     left, top, right, bottom = 744, 266, 888, 350
     draw.rounded_rectangle((left, top, right, bottom), radius=10, fill=FIELD, outline=(199, 218, 240))
@@ -222,6 +251,26 @@ def _draw_cloud_tracks(
         draw.ellipse((x - 3, y - 3, x + 3, y + 3), fill=color)
 
 
+def _draw_sweep_cloud_tracks(
+    draw,
+    snapshots: list[ParticleCloud],
+    accepted_mask: np.ndarray,
+    color: tuple[int, int, int],
+    z_limit: float,
+    transverse_limit: float,
+):
+    mapped = [_map_positions(snapshot.position_m, z_limit, transverse_limit) for snapshot in snapshots]
+    pale = tuple(int(0.62 * channel + 0.38 * 255) for channel in color)
+    for particle_index in range(mapped[-1].shape[0]):
+        trail = [tuple(frame_positions[particle_index]) for frame_positions in mapped]
+        draw.line(trail, fill=pale, width=1)
+
+    for particle_index, (x, y) in enumerate(mapped[-1]):
+        fill = color if accepted_mask[particle_index] else LOST
+        radius = 3 if accepted_mask[particle_index] else 2
+        draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=fill)
+
+
 def _make_charge_sign_splitter_frames(frame_count: int, particle_count: int):
     positron_cloud, electron_cloud = make_initial_pair(particle_count=particle_count, seed=2030)
     field = UniformField(B_vector_t=np.array([0.0, 0.45, 0.0]))
@@ -250,6 +299,56 @@ def _make_charge_sign_splitter_frames(frame_count: int, particle_count: int):
         _draw_cloud_tracks(draw, positron_snapshots, index, POSITRON, 0.045, 0.040)
         _draw_cloud_tracks(draw, electron_snapshots, index, ELECTRON, 0.045, 0.040)
         _draw_stage_bar(draw, index, frame_count, ("matched source", "shared field", "opposite bend", "separation", "diagnostic"))
+        frames.append(image)
+    return frames
+
+
+def _make_magnetic_control_sweep_frames(frame_count: int, particle_count: int):
+    field_values = np.linspace(DEFAULT_FIELD_VALUES_T[0], DEFAULT_FIELD_VALUES_T[-1], frame_count)
+    aperture_radius = 0.035
+    dt_s = 2.0e-12
+    steps = 80
+    z_limit = 0.060
+    transverse_limit = 0.045
+    metrics = run_sweep(
+        field_values_t=field_values,
+        particle_count=particle_count,
+        aperture_radius_m=aperture_radius,
+        dt_s=dt_s,
+        steps=steps,
+        seed=2031,
+    )
+
+    frames = []
+    for index, (by_tesla, row) in enumerate(zip(field_values, metrics, strict=True)):
+        positron_cloud, electron_cloud = make_initial_pair(particle_count=particle_count, seed=2031)
+        field = UniformField(B_vector_t=np.array([0.0, by_tesla, 0.0]))
+        positron_snapshots = _sampled_transport_snapshots(positron_cloud, field, dt_s, steps, snapshot_count=18)
+        electron_snapshots = _sampled_transport_snapshots(electron_cloud, field, dt_s, steps, snapshot_count=18)
+        positron_accepted = np.abs(positron_snapshots[-1].position_m[:, 0]) <= aperture_radius
+        electron_accepted = np.abs(electron_snapshots[-1].position_m[:, 0]) <= aperture_radius
+
+        image, draw = _make_base_frame(
+            "Magnetic control sweep demo",
+            "Matched e+ / e- clouds under increasing transverse By",
+            POSITRON,
+        )
+        _draw_splitter_legend(draw)
+        _draw_transverse_aperture(draw, aperture_radius, z_limit, transverse_limit)
+        _draw_field_status(
+            draw,
+            (
+                "model: transverse sweep",
+                f"B vector [T]: [0, {by_tesla:.2f}, 0]",
+                "status: active",
+            ),
+        )
+        draw.text((744, 362), f"separation: {row['mean_separation_m']:.4f} m", fill=INK, font=_font(12, bold=True))
+        draw.text((744, 384), f"accepted: {row['accepted_fraction']:.3f}", fill=ACCEPTED, font=_font(12, bold=True))
+        draw.text((744, 406), f"loss: {row['loss_fraction']:.3f}", fill=LOST, font=_font(12, bold=True))
+        _draw_sweep_cloud_tracks(draw, positron_snapshots, positron_accepted, POSITRON, z_limit, transverse_limit)
+        _draw_sweep_cloud_tracks(draw, electron_snapshots, electron_accepted, ELECTRON, z_limit, transverse_limit)
+        _draw_stage_bar(draw, index, frame_count, ("matched source", "field sweep", "aperture", "losses", "report"))
         frames.append(image)
     return frames
 
@@ -374,10 +473,12 @@ def generate_demo_webps(
         DEMO_WEBP_FILES[0]: output_path / DEMO_WEBP_FILES[0],
         DEMO_WEBP_FILES[1]: output_path / DEMO_WEBP_FILES[1],
         DEMO_WEBP_FILES[2]: output_path / DEMO_WEBP_FILES[2],
+        DEMO_WEBP_FILES[3]: output_path / DEMO_WEBP_FILES[3],
     }
     _save_webp(_make_charge_sign_splitter_frames(frame_count, particle_count), outputs[DEMO_WEBP_FILES[0]], duration_ms)
     _save_webp(_make_positron_frames(frame_count, particle_count), outputs[DEMO_WEBP_FILES[1]], duration_ms)
     _save_webp(_make_antiproton_frames(frame_count, particle_count), outputs[DEMO_WEBP_FILES[2]], duration_ms)
+    _save_webp(_make_magnetic_control_sweep_frames(frame_count, particle_count), outputs[DEMO_WEBP_FILES[3]], duration_ms)
     return outputs
 
 

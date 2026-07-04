@@ -7,6 +7,8 @@ def test_demo_webp_generator_creates_animated_webp_files(tmp_path):
     image_module = pytest.importorskip("PIL.Image")
     from tools.generate_demo_webp import DEMO_WEBP_FILES, generate_demo_webps
 
+    assert "magnetic_control_sweep.webp" in DEMO_WEBP_FILES
+
     generated = generate_demo_webps(tmp_path, frame_count=4, particle_count=16)
 
     assert set(generated) == set(DEMO_WEBP_FILES)
