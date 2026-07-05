@@ -5,6 +5,9 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added `FieldMapField`: table-based fields on a regular grid with
+  trilinear interpolation, a COMSOL regular-grid CSV importer, and 3D
+  field-magnitude volume rendering.
 - Added the declarative scene schema (YAML/JSON, `schema_version: 1`) with
   fail-fast validation, label-anchored loss accounting, the new `drift`
   and `monitor` elements, and `run_scene` with optional trajectory

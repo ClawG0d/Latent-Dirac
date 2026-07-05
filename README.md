@@ -72,6 +72,8 @@ Implemented:
 - declarative YAML/JSON scene schema with drift and monitor elements
   ([docs/scene_schema.md](docs/scene_schema.md))
 - scene-driven 3D rendering with per-element fidelity labels (function API)
+- table-based field maps with trilinear interpolation and COMSOL
+  regular-grid CSV import
 - placeholder adapters for Geant4, Xsuite, and ROOT
 
 Not implemented yet:
@@ -79,7 +81,7 @@ Not implemented yet:
 - scene CLI and hello-beamline example
 - interactive 3D viewer application
 - JAX GPU backend and batched sweep API
-- field-map import from external field solvers
+- CST and SIMION field-map formats
 - Penning-Malmberg trap elements and buffer-gas collision physics
 - guiding-center long-timescale solver
 - full electromagnetic or hadronic shower physics

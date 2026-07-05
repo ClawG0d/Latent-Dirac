@@ -26,10 +26,12 @@ The classical electromagnetic field layer is SI-unit based and callable by
 position and time: every field model answers `E(x, t)` in V/m and `B(x, t)`
 in tesla. Field models are composable through `CompositeField`, which sums
 component contributions. Current models are idealized hard-edge beam optics
-models (uniform, solenoid, dipole, quadrupole), intentionally separate from
-quantum wavefunction evolution and from full Maxwell field solvers. RF
-fields and field-map loading are later field-library extensions (see the
-roadmap).
+models (uniform, solenoid, dipole, quadrupole), plus a table-based
+`FieldMapField` that trilinearly interpolates externally computed fields on
+a regular grid (COMSOL regular-grid CSV import). The field layer is
+intentionally separate from quantum wavefunction evolution and from full
+Maxwell field solvers. RF fields and further field-map formats (CST,
+SIMION) are later field-library extensions (see the roadmap).
 
 This phase does not model full electromagnetic showers, full hadronic
 showers, annihilation physics, material activation, shielding, target

@@ -30,6 +30,10 @@ pip install "latent-dirac[viz]"
 trajectories, accepted/lost final states, and per-element fidelity labels
 in the hover text.
 
+`latent_dirac.viz.field_3d.render_field_magnitude_3d` renders |B| of a
+table-based field map as a translucent volume, labeled with its fidelity
+tier.
+
 ## README Animations
 
 The animated README demos are generated as WebP assets under `assets/demos/`.
