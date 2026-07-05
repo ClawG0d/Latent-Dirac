@@ -5,6 +5,19 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added mean-field space charge (closed-loop v1 item 4, completing
+  closed-loop v1): `space_charge: uniform_sphere` on `uniform_field`
+  and `penning_trap` elements enables a parameterized uniform-sphere
+  self-field (`latent_dirac.fields.space_charge`), refit from the
+  alive cloud every transport step — electrostatic only (beta << 1),
+  single-sphere fit, no self-consistency; dead particles neither
+  source nor feel it; the JAX backend and the differentiable objective
+  reject it explicitly. Plus the `cold_uniform_sphere` prepared-cloud
+  source (placeholder tier) and the scene-report validity line.
+  Physics pinned by tests: interior-linear/exterior-Coulomb field,
+  sign-independent self-repulsion, leading-order surface kick,
+  no net self-push, trap-suppressed expansion.
+
 - **README restructured Genesis-style.** One-line tagline, numbered
   table of contents, a "What is Latent Dirac?" section led by the new
   four-layer architecture diagram (`assets/architecture.svg`: scene

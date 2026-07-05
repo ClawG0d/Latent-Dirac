@@ -50,6 +50,15 @@ class DifferentiableObjective:
         if sharpness <= 0.0:
             raise ValueError("sharpness must be positive")
 
+        for element in scene.elements:
+            if getattr(element, "space_charge", None) is not None:
+                # checked before parse_variables so this message wins over
+                # the generic JAX-backend rejection raised further down
+                raise ValueError(
+                    f"element {element.label!r} enables space_charge, which the "
+                    "differentiable objective does not support; use the NumPy pipeline"
+                )
+
         jax, jnp = _import_jax()
         self._variables, _ = parse_variables(scene, variables)
         self._order = list(self._variables)

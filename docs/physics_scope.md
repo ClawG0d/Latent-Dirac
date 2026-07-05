@@ -13,11 +13,16 @@ parameterized, surrogate, table-based, or externally calibrated.
 Space-charge and collective effects follow the standard solver ladder used
 across the industry, and each rung must be declared explicitly:
 
-1. **single-particle tracking** (current tier): no self-consistent fields,
+1. **single-particle tracking** (default): no self-consistent fields,
    valid for low-intensity clouds
-2. **iteratively self-consistent** (future): gun-iteration style coupling
+2. **mean-field self-field** (shipped, opt-in): a parameterized
+   uniform-sphere model refit from the alive cloud every step
+   (`space_charge: uniform_sphere`); electrostatic only (beta << 1),
+   single-sphere fit, no iteration — trap-regime studies; NumPy
+   pipeline only
+3. **iteratively self-consistent** (future): gun-iteration style coupling
    for moderate densities
-3. **fully self-consistent PIC** (future, via adapters): required for
+4. **fully self-consistent PIC** (future, via adapters): required for
    non-neutral plasmas in traps
 
 ## Field layer

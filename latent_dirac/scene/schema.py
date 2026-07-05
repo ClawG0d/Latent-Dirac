@@ -23,7 +23,13 @@ class SceneModel(BaseModel):
 
 
 class SourceSpec(SceneModel):
-    type: Literal["positron_pair", "beta_plus", "antiproton_surrogate", "antiproton_yield_table"]
+    type: Literal[
+        "positron_pair",
+        "beta_plus",
+        "antiproton_surrogate",
+        "antiproton_yield_table",
+        "cold_uniform_sphere",
+    ]
     label: str
     params: dict[str, Any] = Field(default_factory=dict)
 
@@ -69,6 +75,7 @@ class UniformFieldElement(ElementBase):
     t_on_s: float | None = None
     t_off_s: float | None = None
     steps: int | None = Field(default=None, ge=1)
+    space_charge: Literal["uniform_sphere"] | None = None
 
     _gate_window = model_validator(mode="after")(_validate_gate_window)
 
@@ -109,6 +116,7 @@ class PenningTrapElement(ElementBase):
     t_on_s: float | None = None
     t_off_s: float | None = None
     steps: int | None = Field(default=None, ge=1)
+    space_charge: Literal["uniform_sphere"] | None = None
 
     _gate_window = model_validator(mode="after")(_validate_gate_window)
 

@@ -69,7 +69,7 @@ and fidelity note. Design record:
 | Transport  | vacuum EM transport                   | stepper     | first-party Boris kernel (NumPy + JAX)      | shipped |
 | Lattice    | decelerator rings, transfer lines     | stepper     | Xsuite adapter                              | adapter shipped (conversion + line tracking) |
 | Matter     | targets, degraders, annihilation      | transformer | vendored vanilla Geant4 v11.4.2             | builds via recipe; offline yield tables only, no runtime coupling |
-| Collective | in-trap space charge                  | stepper     | first-party mean-field v1, later WarpX      | planned (mean-field v1 in closed-loop v1) |
+| Collective | in-trap space charge                  | stepper     | first-party mean-field v1, later WarpX      | mean-field v1 shipped (parameterized, beta<<1) |
 | Detector   | detector response                     | transformer | parameterized model first, Garfield++ later | planned |
 | Analysis   | persistent output, ecosystem exchange | sink        | openPMD + ROOT via uproot                   | shipped (openPMD write; ROOT round-trip) |
 
@@ -724,6 +724,12 @@ Implemented:
   `[xsuite]` extra): `ParticleState` ↔ `xtrack.Particles` with an
   explicit reference frame, and `xsuite_tracking_stage` running an
   `xtrack.Line` with losses stamped into the per-particle ledger
+- mean-field space charge (`space_charge: uniform_sphere` on
+  `uniform_field` / `penning_trap` elements): a parameterized
+  uniform-sphere self-field refit from the alive cloud every step —
+  electrostatic only (beta << 1), no self-consistency; NumPy pipeline
+  only (the JAX backend rejects it); plus the `cold_uniform_sphere`
+  prepared-cloud source (placeholder tier)
 - placeholder adapters for Geant4 and ROOT
 
 Not implemented yet:
@@ -732,10 +738,9 @@ Not implemented yet:
   `engine/README.md` recipe and feeds the pipeline through offline yield
   tables, but there is no runtime coupling — the Geant4 adapter remains
   a placeholder; see the roadmap)
-- mean-field space charge (the last closed-loop v1 item — see the
-  Solvers table above); scene-schema lattice elements for the Xsuite
-  adapter are a later extension
-- buffer-gas collisions, rotating wall, and space charge in the trap
+- scene-schema lattice elements for the Xsuite adapter
+- buffer-gas collisions and rotating wall in the trap; self-consistent
+  space charge (PIC via WarpX) beyond the shipped mean-field tier
 - interactive 3D viewer application
 - GPU benchmark suite
 - field maps, batched monitor snapshots, and streaming trajectory

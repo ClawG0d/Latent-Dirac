@@ -15,7 +15,7 @@ Component → next milestone:
 - Lattice → adapter shipped (conversion + tracking Stage);
   scene-schema lattice elements later
 - Matter → first build recipe shipped (M1'-lite); real adapter next (M2)
-- Collective → native mean-field space charge v1 (closed-loop v1),
+- Collective → mean-field v1 shipped (uniform-sphere, parameterized);
   WarpX adapter later
 - Detector → parameterized model first, Garfield++ later
 - Analysis → shipped: openPMD write (2e, `[openpmd]` extra) and ROOT
@@ -30,10 +30,12 @@ round-trip) → Xsuite adapter — **done**
 (`latent_dirac.adapters.xsuite.adapter`: `ParticleState` ↔
 `xtrack.Particles` with an explicit reference frame, tracking Stage
 with ledger stamping; the placeholder gate flipped into the
-adapter-status test) → native mean-field space charge (fidelity-tiered,
-explicit validity envelope). Engine-track M1' proceeds in parallel; the
-GPU lane (float32 backend validation, then the honest benchmark suite)
-follows closed-loop v1.
+adapter-status test) → native mean-field space charge — **done**
+(`space_charge: uniform_sphere` on uniform-field and Penning-trap
+elements; parameterized tier, beta << 1, per-step refit, NumPy pipeline
+only). Closed-loop v1 is complete. Engine-track M1' proceeds in
+parallel; the GPU lane (float32 backend validation, then the honest
+benchmark suite) is next, then the interactive viewer.
 
 ## Phase 1 (done)
 

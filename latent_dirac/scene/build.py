@@ -10,10 +10,12 @@ from latent_dirac.beamline.aperture import Aperture
 from latent_dirac.beamline.momentum_window import MomentumWindow
 from latent_dirac.core.units import momentum_gev_c_to_si
 from latent_dirac.fields.base import Field
+from latent_dirac.fields.composite import CompositeField
 from latent_dirac.fields.dipole import DipoleField
 from latent_dirac.fields.penning_trap import PenningTrapField
 from latent_dirac.fields.quadrupole import QuadrupoleField
 from latent_dirac.fields.solenoid import SolenoidField
+from latent_dirac.fields.space_charge import fit_uniform_sphere
 from latent_dirac.fields.time_gated import TimeGatedField
 from latent_dirac.fields.uniform import UniformField
 from latent_dirac.pipeline.runner import PipelineResult, PipelineRunner
@@ -23,6 +25,7 @@ from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
 from latent_dirac.sources.antiproton_surrogate import AntiprotonSurrogateSource
 from latent_dirac.sources.antiproton_table import AntiprotonYieldTableSource
 from latent_dirac.sources.base import SourceTerm
+from latent_dirac.sources.cold_sphere import ColdUniformSphereSource
 from latent_dirac.sources.positron_beta import BetaPlusPositronSource
 from latent_dirac.sources.positron_pair import PositronPairSource
 from latent_dirac.state.particle_state import ParticleState
@@ -32,6 +35,7 @@ _SOURCE_CLASSES = {
     "beta_plus": BetaPlusPositronSource,
     "antiproton_surrogate": AntiprotonSurrogateSource,
     "antiproton_yield_table": AntiprotonYieldTableSource,
+    "cold_uniform_sphere": ColdUniformSphereSource,
 }
 
 
@@ -90,7 +94,12 @@ def _build_stages(
         if element.type in FIELD_ELEMENT_TYPES or element.type == "drift":
             steps = element.steps if element.steps is not None else scene.solver.steps
             action = _transport_action(
-                _field_for(element), scene.solver.dt_s, steps, element.label, trajectories
+                _field_for(element),
+                scene.solver.dt_s,
+                steps,
+                element.label,
+                trajectories,
+                space_charge=getattr(element, "space_charge", None),
             )
         elif element.type == "aperture":
             action = Aperture(radius_m=element.radius_m, z_m=element.z_m).apply
@@ -156,18 +165,27 @@ def _base_field_for(element) -> Field:
     raise ValueError(f"element type {element.type!r} has no field model")
 
 
-def _transport_action(field, dt_s, steps, label, trajectories):
+def _transport_action(field, dt_s, steps, label, trajectories, space_charge=None):
     def transport(cloud: ParticleState) -> ParticleState:
-        if trajectories is None:
+        if trajectories is None and space_charge is None:
             return RelativisticBorisSolver(dt_s=dt_s, steps=steps).propagate(cloud, field)
 
         stepper = RelativisticBorisSolver(dt_s=dt_s, steps=1)
         current = cloud
-        history = [current.position_m.copy()]
+        history = [current.position_m.copy()] if trajectories is not None else None
         for _ in range(steps):
-            current = stepper.propagate(current, field)
-            history.append(current.position_m.copy())
-        trajectories[label] = np.stack(history)
+            step_field = field
+            if space_charge is not None:
+                # mean field frozen within the step, refitted every step
+                # from the alive cloud (parameterized uniform-sphere tier)
+                self_field = fit_uniform_sphere(current)
+                if self_field is not None:
+                    step_field = CompositeField(fields=[field, self_field])
+            current = stepper.propagate(current, step_field)
+            if history is not None:
+                history.append(current.position_m.copy())
+        if history is not None:
+            trajectories[label] = np.stack(history)
         return current
 
     return transport

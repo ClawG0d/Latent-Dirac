@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from latent_dirac.diagnostics.loss_ledger import loss_ledger
+from latent_dirac.fields.space_charge import (
+    VALIDITY_NOTE as SPACE_CHARGE_VALIDITY_NOTE,
+)
 from latent_dirac.scene.build import SceneRunResult
 from latent_dirac.scene.schema import Scene
 
@@ -26,6 +29,8 @@ def _append_gate_line(lines: list[str], element) -> None:
 def field_status_lines(scene: Scene) -> list[str]:
     lines = ["Magnetic field status:"]
     for element in scene.elements:
+        if getattr(element, "space_charge", None) is not None:
+            lines.append(f"- space charge ({element.label}): {SPACE_CHARGE_VALIDITY_NOTE}")
         if element.type == "solenoid":
             lines.append(f"- field model: {_FIELD_DESCRIPTIONS[element.type]}")
             lines.append(f"- B vector [T]: [0, 0, {element.b_tesla:g}] inside solenoid envelope")

@@ -69,6 +69,12 @@ class BatchedSceneResult:
 def _base_params(scene: Scene) -> list[dict[str, np.ndarray]]:
     params = []
     for element in scene.elements:
+        if getattr(element, "space_charge", None) is not None:
+            raise ValueError(
+                f"element {element.label!r} enables space_charge, which the JAX "
+                "backend does not support: the state-dependent mean field breaks "
+                "the static-program assumption; use the NumPy pipeline"
+            )
         if element.type not in _SWEEPABLE_PARAMS:
             raise ValueError(
                 f"element type {element.type!r} (label {element.label!r}) is not supported "
