@@ -30,6 +30,10 @@ only Claude-Code-specific operational notes.
    do not skip
 5. Conventional commit (`feat:` / `chore:` / `refactor!:` / `docs:`) with
    the Co-Authored-By trailer, then push
+6. After pushing, confirm the run's final CI status
+   (`gh run list --repo ClawG0d/Latent-Dirac --limit 1`) — the local venv
+   is Python 3.14, but the matrix tests 3.10–3.14 (a `tomllib` import
+   once broke only the 3.10 jobs and went unnoticed for five pushes)
 
 ## Traps (learned the hard way)
 
