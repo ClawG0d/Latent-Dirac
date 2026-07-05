@@ -58,6 +58,30 @@ with time-gated dynamic capture (`TimeGatedField`), and the annihilation
 endpoint (at-rest two-photon kinematics, no energetics). RF deceleration
 and real target physics remain below.
 
+## Geant4 engine track
+
+Positioning and rules in
+[the engine positioning spec](superpowers/specs/2026-07-05-geant4-engine-positioning-design.md):
+vanilla Geant4 v11.4.2 vendored in-repo as a read-only baseline, a
+companion acceleration library via the fast-simulation hooks, and a
+controlled patch protocol (frozen until its infrastructure exists).
+
+- **M0 — vendored baseline and positioning** — done (this spec: vendor
+  commit, tooling/licensing compliance, agent-doc rules, safety-scope
+  rewrite with the canonical exclusion list pinned by tests)
+- **M1' — engine build recipes**: `recipes/` minimal-physics build (no
+  visualization/UI/analysis libraries; datasets per physics list), built
+  outside the Python CI matrix
+- **M2 — adapter made real**: scene → GDML export, subprocess/macro
+  driving, particle-cloud exchange;
+  `test_only_placeholder_adapters_are_present` flips in the same change
+- **M3 — yield-table pipeline**: offline FTFP_BERT runs produce
+  antiproton/positron yield tables feeding `table_based` sources; the
+  surrogate source graduates toward `externally calibrated`
+- **M4 — companion acceleration library**: first-party C++ in `engine/`
+  attached through `G4VFastSimulationModel`; EM domain first;
+  performance claims only against open vanilla-Geant4 benchmarks
+
 ## Phase 4 — digital twin and physics fill-in
 
 - differentiable capture chain via autodiff with soft-aperture relaxation
@@ -69,8 +93,8 @@ and real target physics remain below.
   collisions with cross-section data curated as an open,
   provenance-tracked dataset — pending
 - guiding-center/secular solver for long-timescale trap storage
-- Geant4 adapter made real (implantation/moderation yield tables) plus
-  semi-empirical moderation parameterizations
+- moderation physics: implantation/moderation yield tables via the
+  engine track (M3) plus semi-empirical moderation parameterizations
 - offline digital twin: replay of measured data and historical calibration
   only; domain randomization for uncertainty quantification
 

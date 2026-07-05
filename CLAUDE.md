@@ -50,10 +50,12 @@ only Claude-Code-specific operational notes.
 
 ## Traps (learned the hard way)
 
-- The safety-scope exclusion bullets must stay **verbatim-identical**
-  across `docs/safety_scope.md`, `AGENTS.md`, and the README —
-  `tests/test_project_positioning.py` parses the bullets and asserts the
-  README contains each one. Change one file, change all three.
+- The safety-scope exclusion bullets are pinned in **four** places:
+  `EXPECTED_EXCLUSIONS` in `tests/test_project_positioning.py` (exact
+  tuple equality) plus verbatim-identical copies in
+  `docs/safety_scope.md`, `AGENTS.md`, and the README (substring
+  asserts). Change one, change all four — and scope changes require a
+  positioning spec first.
 - Before editing README wording, read `tests/test_project_positioning.py`
   (comparative performance phrases without a benchmark reference fail CI).
 - `latent_dirac/backends/differentiable.py` mirrors the element loop in

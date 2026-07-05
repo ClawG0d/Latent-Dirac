@@ -5,6 +5,20 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- **Positioning: Geant4 engine track.** The complete vanilla Geant4
+  v11.4.2 source tree is vendored in-repo at `geant4-v11.4.2/` as a
+  read-only engine baseline (Geant4 Software License; attribution in
+  `NOTICE`; excluded from lint, tests, and the Python distribution).
+  The safety scope was rewritten for the engine era: shower physics and
+  energy deposition are delegated to the vendored vanilla engine as
+  diagnostics, while weaponization, energetic-release applications,
+  facility control, high-yield recipes, activation, and shielding design
+  stay excluded; the canonical exclusion list is now pinned verbatim by
+  `tests/test_project_positioning.py` across `docs/safety_scope.md`,
+  `AGENTS.md`, and the README. Design record:
+  `docs/superpowers/specs/2026-07-05-geant4-engine-positioning-design.md`.
+  No build or runtime coupling ships yet; adapters remain placeholders.
+
 - Added the Antimatter Factory Chain demos (decay emission with
   beta-spectrum coloring, surrogate target production with drawn-only
   annotations, electrostatic deceleration with time-gated dynamic trap

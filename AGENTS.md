@@ -58,7 +58,10 @@ Latent Dirac currently focuses on:
 - beamline acceptance
 - loss accounting
 - accepted yield diagnostics
-- future calibration against external scientific tools such as Geant4 and Xsuite
+- particle-matter interaction (showers, stopping, energy-deposition
+  diagnostics) via the vendored vanilla Geant4 engine, once the adapter
+  becomes real per the roadmap
+- future calibration against external scientific tools such as Xsuite
 
 Trap physics: the ideal Penning trap field model landed early (Spec 4a,
 validated eigenfrequencies). Buffer-gas collisions, rotating wall, space
@@ -69,13 +72,12 @@ roadmap directions.
 
 Do not implement:
 - weaponization scenarios
-- energetic-release applications
+- energetic-release applications (antimatter as an energy source or destructive payload in any form)
 - real facility control systems
-- detailed accelerator target engineering
+- detailed accelerator target engineering (thermal, mechanical, and materials design of production targets)
 - high-yield operational recipes
-- full electromagnetic shower physics
-- full hadronic shower physics
-- annihilation energetics (energy release or deposition calculations; annihilation is modeled only as a loss endpoint with kinematic two-photon emission for visualization)
+- in-house shower physics (electromagnetic and hadronic showers are delegated to the vendored vanilla Geant4 engine; the Python core does not implement them)
+- annihilation energetics as a figure of merit (energy deposition is in scope only as an engine-computed diagnostic; the Python core models annihilation only as a loss endpoint with kinematic two-photon emission for visualization)
 - material activation
 - radiation shielding design
 - any real-time control loop or interface that writes back to a facility

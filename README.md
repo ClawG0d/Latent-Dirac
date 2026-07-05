@@ -34,7 +34,9 @@ Latent Dirac is architected for. The current release is a lightweight
 NumPy-based Python core for source-to-acceptance modeling: fast scenario
 modeling, parameter sweeps, transport studies, and acceptance accounting,
 with placeholder adapters for future calibration against external scientific
-tools such as Geant4 and Xsuite. GPU execution and interactive 3D viewers
+tools such as Xsuite, and the vanilla Geant4 v11.4.2 source tree vendored
+in-repo as the engine-track baseline (no build or runtime coupling ships
+yet). GPU execution and interactive 3D viewers
 are roadmap items, not shipped features.
 See [docs/roadmap.md](docs/roadmap.md) for the phased plan.
 
@@ -44,9 +46,10 @@ Every physics model in Latent Dirac declares one of five fidelity tiers:
 **placeholder**, **parameterized**, **surrogate**, **table-based**, or
 **externally calibrated**. Performance or physics claims in this repository
 must reference reproducible settings, and comparative performance statements
-require an open benchmark. Latent Dirac does not try to replace
-high-fidelity particle-matter simulation tools; it orchestrates them through
-adapters and stays honest about its own approximation level. Every demo
+require an open benchmark. Latent Dirac does not reimplement high-fidelity
+particle-matter physics in its Python core; that role belongs to the
+vendored vanilla Geant4 engine track and to external tools behind
+adapters, and the core stays honest about its own approximation level. Every demo
 animation below carries its field model and fidelity note in the title.
 
 ## Focus
@@ -115,11 +118,6 @@ Not implemented yet:
 - field maps, batched monitor snapshots, and streaming trajectory
   recording for extreme scales in the JAX backend
 - CST and SIMION field-map formats
-- full electromagnetic or hadronic shower physics
-- detailed target engineering
-- real facility control systems
-- high-yield operational recipes
-- material activation or shielding design
 
 ## Installation
 
@@ -656,15 +654,18 @@ name identifies the vendored software only; no endorsement is implied.
 ## Safety Scope
 
 Latent Dirac is scoped to open simulation architecture and diagnostics for
-antimatter facility design studies. The following remain out of scope:
+antimatter facility design studies. Particle-matter interaction physics
+(showers, stopping, energy deposition) is delegated to the vendored
+vanilla Geant4 engine track and is in scope only as diagnostics; the red
+lines below sit at the application layer. The following remain out of scope:
 
 - weaponization scenarios
-- energetic-release applications
+- energetic-release applications (antimatter as an energy source or destructive payload in any form)
 - real facility control systems
-- detailed accelerator target engineering
+- detailed accelerator target engineering (thermal, mechanical, and materials design of production targets)
 - high-yield operational recipes
-- full shower physics
-- annihilation energetics (energy release or deposition calculations; annihilation is modeled only as a loss endpoint with kinematic two-photon emission for visualization)
+- in-house shower physics (electromagnetic and hadronic showers are delegated to the vendored vanilla Geant4 engine; the Python core does not implement them)
+- annihilation energetics as a figure of merit (energy deposition is in scope only as an engine-computed diagnostic; the Python core models annihilation only as a loss endpoint with kinematic two-photon emission for visualization)
 - material activation
 - radiation shielding design
 

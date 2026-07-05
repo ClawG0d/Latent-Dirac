@@ -17,8 +17,32 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 README_PATH = PROJECT_ROOT / "README.md"
+AGENTS_PATH = PROJECT_ROOT / "AGENTS.md"
 SAFETY_SCOPE_PATH = PROJECT_ROOT / "docs" / "safety_scope.md"
 ALLOWED_ADAPTERS = {"geant4", "root", "xsuite"}
+
+# Canonical safety-scope exclusions for the Geant4-engine era, adopted in
+# docs/superpowers/specs/2026-07-05-geant4-engine-positioning-design.md.
+# Red lines sit at the application layer: shower physics and energy
+# deposition are delegated to the vendored vanilla Geant4 engine as
+# diagnostics, while weaponization, energetic-release applications, and
+# facility write-back stay excluded. These strings must appear verbatim in
+# docs/safety_scope.md, AGENTS.md, and the README.
+EXPECTED_EXCLUSIONS = (
+    "weaponization scenarios",
+    "energetic-release applications (antimatter as an energy source or destructive payload in any form)",
+    "real facility control systems",
+    "detailed accelerator target engineering (thermal, mechanical, and materials design of production "
+    "targets)",
+    "high-yield operational recipes",
+    "in-house shower physics (electromagnetic and hadronic showers are delegated to the vendored vanilla "
+    "Geant4 engine; the Python core does not implement them)",
+    "annihilation energetics as a figure of merit (energy deposition is in scope only as an "
+    "engine-computed diagnostic; the Python core models annihilation only as a loss endpoint with "
+    "kinematic two-photon emission for visualization)",
+    "material activation",
+    "radiation shielding design",
+)
 
 FIDELITY_TIERS = (
     "placeholder",
@@ -61,6 +85,14 @@ def test_readme_declares_fidelity_tiers():
         assert tier in readme, f"README must declare the fidelity tier: {tier}"
 
 
+def test_safety_scope_is_the_canonical_exclusion_list():
+    assert tuple(safety_scope_exclusions()) == EXPECTED_EXCLUSIONS, (
+        "docs/safety_scope.md exclusions drifted from the canonical list; "
+        "safety-scope changes require a positioning spec and a coordinated "
+        "update of docs/safety_scope.md, AGENTS.md, the README, and this test"
+    )
+
+
 def test_safety_scope_exclusions_survive_in_readme():
     exclusions = safety_scope_exclusions()
     assert len(exclusions) >= 9, "safety scope exclusions must not be trimmed"
@@ -69,6 +101,13 @@ def test_safety_scope_exclusions_survive_in_readme():
     missing = [item for item in exclusions if item.lower() not in readme]
 
     assert missing == [], f"README safety scope is missing exclusions: {missing}"
+
+
+def test_safety_scope_exclusions_survive_in_agents_md():
+    agents = AGENTS_PATH.read_text(encoding="utf-8").lower()
+    missing = [item for item in safety_scope_exclusions() if item.lower() not in agents]
+
+    assert missing == [], f"AGENTS.md safety scope is missing exclusions: {missing}"
 
 
 def test_no_unsubstantiated_performance_claims():

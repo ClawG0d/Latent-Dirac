@@ -33,9 +33,15 @@ intentionally separate from quantum wavefunction evolution and from full
 Maxwell field solvers. RF fields and further field-map formats (CST,
 SIMION) are later field-library extensions (see the roadmap).
 
-This phase does not model full electromagnetic showers, full hadronic
-showers, annihilation physics, material activation, shielding, target
-engineering, real facility controls, or operational recipes.
+The Python core does not implement shower physics in-house:
+electromagnetic and hadronic showers are delegated to the vendored
+vanilla Geant4 engine track and enter scope only as engine-computed
+diagnostics (no build or runtime coupling ships yet). Annihilation is
+modeled only as a ledgered loss endpoint with kinematic two-photon
+emission for visualization. Annihilation energetics as a figure of
+merit, material activation, shielding design, target engineering, real
+facility controls, and operational recipes stay out of scope — see
+[safety_scope.md](safety_scope.md) for the canonical exclusion list.
 
 Antiparticles use normal positive mass. Positrons use electron mass and
 opposite electron charge. Antiprotons use proton mass and opposite proton
