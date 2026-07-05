@@ -62,10 +62,10 @@ def test_unsupported_suffix_exits_nonzero(tmp_path, capsys):
 
 
 def test_console_entry_point_is_declared():
-    import tomllib
-
-    pyproject = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
-    assert pyproject["project"]["scripts"]["latent-dirac"] == "latent_dirac.cli:main"
+    # plain-text check: tomllib is stdlib only from Python 3.11, and the
+    # matrix still tests 3.10
+    pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
+    assert 'latent-dirac = "latent_dirac.cli:main"' in pyproject
 
 
 def test_examples_import_report_from_package():
