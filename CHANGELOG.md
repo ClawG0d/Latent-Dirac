@@ -5,6 +5,8 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the composable field model library: `CompositeField`,
+  hard-edge `DipoleField`, and hard-edge `QuadrupoleField`.
 - Repositioned the project as an open interactive simulation platform for
   antimatter factories, with an enforced documentation honesty discipline.
 - Added the 3D charge-sign splitter README animation rendered from a

@@ -28,7 +28,8 @@ Split into independently deliverable specs:
   as a pure function on the NumPy backend; unified SolverBase with a Coupler
   slot; dimensionless unit boundaries.
 - **2d FieldMap import**: regular-grid field container with trilinear
-  interpolation, COMSOL regular-grid CSV first.
+  interpolation, COMSOL regular-grid CSV first. RF fields are a further
+  field-library extension after field maps.
 - **2e openPMD output**: deferred until Phase 3 wrap-up.
 
 ## Phase 3 — GPU batch and the interactive platform

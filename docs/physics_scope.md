@@ -20,6 +20,17 @@ across the industry, and each rung must be declared explicitly:
 3. **fully self-consistent PIC** (future, via adapters): required for
    non-neutral plasmas in traps
 
+## Field layer
+
+The classical electromagnetic field layer is SI-unit based and callable by
+position and time: every field model answers `E(x, t)` in V/m and `B(x, t)`
+in tesla. Field models are composable through `CompositeField`, which sums
+component contributions. Current models are idealized hard-edge beam optics
+models (uniform, solenoid, dipole, quadrupole), intentionally separate from
+quantum wavefunction evolution and from full Maxwell field solvers. RF
+fields and field-map loading are later field-library extensions (see the
+roadmap).
+
 This phase does not model full electromagnetic showers, full hadronic
 showers, annihilation physics, material activation, shielding, target
 engineering, real facility controls, or operational recipes.
