@@ -76,6 +76,19 @@ def scene_report(scene: Scene, result: SceneRunResult, scope_note: str) -> str:
     lines.append(f"- weighted count: {final.weighted_count():g}")
     lines.append(f"- mean kinetic energy: {final.mean_kinetic_energy_joule() / 1.602176634e-13:.6g} MeV")
 
+    # Engine-derived results must carry the provenance four-tuple
+    # (docs/safety_scope.md); sources put it in the cloud metadata.
+    provenance = final.metadata.get("provenance") if isinstance(final.metadata, dict) else None
+    if provenance:
+        lines.append("")
+        lines.append("Source provenance (engine four-tuple):")
+        lines.append(f"- model type: {final.metadata.get('model_type', 'unknown')}")
+        lines.append(f"- geant4 version: {provenance.get('geant4_version', 'unknown')}")
+        lines.append(f"- physics list: {provenance.get('physics_list', 'unknown')}")
+        lines.append(f"- datasets: {provenance.get('datasets', 'unknown')}")
+        lines.append(f"- patches: {provenance.get('patches', 'unknown')}")
+        lines.append(f"- table primaries: {provenance.get('n_primaries', 'unknown')}")
+
     for label, events in result.annihilations.items():
         lines.append("")
         lines.append(f"Annihilation endpoint {label!r}:")

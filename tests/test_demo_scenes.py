@@ -13,6 +13,7 @@ SCENE_FILES = (
     "annihilation_endpoint.yaml",
     "decel_capture.yaml",
     "target_production.yaml",
+    "target_production_engine.yaml",
     "decay_emission.yaml",
     "scene_tour.yaml",
     "positron_capture.yaml",

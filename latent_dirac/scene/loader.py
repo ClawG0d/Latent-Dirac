@@ -18,6 +18,23 @@ def scene_from_mapping(data: Mapping) -> Scene:
     return Scene.model_validate(data)
 
 
+def _resolve_scene_relative_paths(data, base_dir: Path) -> None:
+    """Resolve file-referencing source params against the scene file's directory.
+
+    A relative `table_path` in a scene file means "relative to the scene
+    file", so scenes keep working regardless of the process cwd.
+    Mapping-based scenes (`scene_from_mapping`) have no file anchor and
+    keep plain-path semantics.
+    """
+
+    source = data.get("source") if isinstance(data, Mapping) else None
+    params = source.get("params") if isinstance(source, Mapping) else None
+    if isinstance(params, dict):
+        table_path = params.get("table_path")
+        if isinstance(table_path, str) and not Path(table_path).is_absolute():
+            params["table_path"] = str((base_dir / table_path).resolve())
+
+
 def load_scene(path: str | Path) -> Scene:
     """Load a scene file; the format is detected from the file suffix."""
 
@@ -34,4 +51,5 @@ def load_scene(path: str | Path) -> Scene:
             f"unsupported scene file suffix {suffix!r}; expected one of "
             f"{sorted(_YAML_SUFFIXES | _JSON_SUFFIXES)}"
         )
+    _resolve_scene_relative_paths(data, file_path.resolve().parent)
     return scene_from_mapping(data)

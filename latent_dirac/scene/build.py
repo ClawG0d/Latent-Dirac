@@ -21,6 +21,7 @@ from latent_dirac.pipeline.stage import Stage
 from latent_dirac.scene.schema import FIELD_ELEMENT_TYPES, Scene
 from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
 from latent_dirac.sources.antiproton_surrogate import AntiprotonSurrogateSource
+from latent_dirac.sources.antiproton_table import AntiprotonYieldTableSource
 from latent_dirac.sources.base import SourceTerm
 from latent_dirac.sources.positron_beta import BetaPlusPositronSource
 from latent_dirac.sources.positron_pair import PositronPairSource
@@ -30,6 +31,7 @@ _SOURCE_CLASSES = {
     "positron_pair": PositronPairSource,
     "beta_plus": BetaPlusPositronSource,
     "antiproton_surrogate": AntiprotonSurrogateSource,
+    "antiproton_yield_table": AntiprotonYieldTableSource,
 }
 
 

@@ -5,6 +5,20 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- **Engine track first deliverables (M1'-lite + M3-lite).** The vendored
+  vanilla Geant4 v11.4.2 tree now builds via the documented WSL/Linux
+  recipe (`engine/README.md`: minimal-physics configuration, no
+  visualization/UI, datasets fetched at build time), and the first
+  first-party engine application ships: `engine/yieldgen` (proton on an
+  iridium stand-in target, FTFP_BERT reference physics list, MT) records
+  the phase space of antiprotons exiting the target into a versioned CSV
+  yield table carrying the provenance four-tuple. A new table-based
+  source (`AntiprotonYieldTableSource`, scene type
+  `antiproton_yield_table`) replays such tables through the existing
+  pipeline; the engine-backed target-production demo scene consumes a
+  committed table. Exchange stays offline (no runtime coupling);
+  `latent_dirac/adapters/` remains placeholder-only.
+
 - **Positioning: Geant4 engine track.** The complete vanilla Geant4
   v11.4.2 source tree is vendored in-repo at `geant4-v11.4.2/` as a
   read-only engine baseline (Geant4 Software License; attribution in

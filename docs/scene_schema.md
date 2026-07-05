@@ -10,7 +10,7 @@ schema_version: 1
 name: capture-line
 seed: 2026
 source:
-  type: positron_pair        # positron_pair | beta_plus | antiproton_surrogate
+  type: positron_pair        # positron_pair | beta_plus | antiproton_surrogate | antiproton_yield_table
   label: pair-source
   params: { primary_count: 10000, yield_eplus_per_primary: 0.02, mean_energy_MeV: 3.0,
             energy_spread_MeV: 0.4, angular_rms_rad: 0.03, source_sigma_m: 0.001,

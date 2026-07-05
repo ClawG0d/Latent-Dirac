@@ -69,15 +69,19 @@ controlled patch protocol (frozen until its infrastructure exists).
 - **M0 — vendored baseline and positioning** — done (this spec: vendor
   commit, tooling/licensing compliance, agent-doc rules, safety-scope
   rewrite with the canonical exclusion list pinned by tests)
-- **M1' — engine build recipes**: `recipes/` minimal-physics build (no
-  visualization/UI/analysis libraries; datasets per physics list), built
-  outside the Python CI matrix
+- **M1' — engine build recipes** — first recipe done (`engine/README.md`:
+  WSL/Linux minimal-physics build, no visualization/UI, datasets fetched
+  at build time); containerized CI outside the Python matrix still
+  pending
 - **M2 — adapter made real**: scene → GDML export, subprocess/macro
   driving, particle-cloud exchange;
   `test_only_placeholder_adapters_are_present` flips in the same change
-- **M3 — yield-table pipeline**: offline FTFP_BERT runs produce
-  antiproton/positron yield tables feeding `table_based` sources; the
-  surrogate source graduates toward `externally calibrated`
+- **M3 — yield-table pipeline** — first deliverable done
+  (`engine/yieldgen`: proton-on-iridium FTFP_BERT production, CSV
+  contract with the provenance four-tuple, consumed by the
+  `antiproton_yield_table` table-based source and the engine-backed
+  target demo); positron/moderation tables and the surrogate source's
+  graduation toward `externally calibrated` still pending
 - **M4 — companion acceleration library**: first-party C++ in `engine/`
   attached through `G4VFastSimulationModel`; EM domain first;
   performance claims only against open vanilla-Geant4 benchmarks

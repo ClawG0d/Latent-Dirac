@@ -23,7 +23,7 @@ class SceneModel(BaseModel):
 
 
 class SourceSpec(SceneModel):
-    type: Literal["positron_pair", "beta_plus", "antiproton_surrogate"]
+    type: Literal["positron_pair", "beta_plus", "antiproton_surrogate", "antiproton_yield_table"]
     label: str
     params: dict[str, Any] = Field(default_factory=dict)
 

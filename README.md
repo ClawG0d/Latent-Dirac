@@ -105,13 +105,18 @@ Implemented:
   through every transport step via JAX autodiff; the relaxation is an
   optimization device — the hard pipeline stays the source of truth)
 - optional Matplotlib and Plotly visualization backends
+- the engine yield-table route: a WSL/Linux build recipe for the vendored
+  Geant4 tree (`engine/README.md`), the `engine/yieldgen` antiproton
+  production app (FTFP_BERT, provenance header), and the table-based
+  `antiproton_yield_table` scene source that replays its output
 - placeholder adapters for Geant4, Xsuite, and ROOT
 
 Not implemented yet:
 
-- Geant4 engine build and adapter integration (the vanilla Geant4 v11.4.2
-  source tree is vendored in-repo as the engine baseline; no build or
-  runtime coupling ships yet — see the roadmap)
+- Geant4 engine adapter integration (the vanilla tree builds via the
+  `engine/README.md` recipe and feeds the pipeline through offline yield
+  tables, but there is no runtime coupling — adapters remain
+  placeholders; see the roadmap)
 - buffer-gas collisions, rotating wall, and space charge in the trap
 - interactive 3D viewer application
 - GPU benchmark suite
@@ -489,16 +494,78 @@ solenoid captures a fraction; the collimator accounts for the rest.
 ### Chain 2: Antiproton Production at a Target (Surrogate)
 
 High-energy protons striking a target produce antiprotons — but target
-physics is hadronic shower physics, which Latent Dirac deliberately does
-not simulate (that is the Geant4 adapter's job, on the roadmap). The
-target block and proton beam here are **drawn annotations only**; the
-antiproton cloud comes from the surrogate accepted-source model.
+physics is hadronic shower physics, which the Python core deliberately
+does not implement (it is delegated to the vendored Geant4 engine: the
+offline yield-table route ships as Chain 2b below, the runtime adapter
+remains on the roadmap). The target block and proton beam here are
+**drawn annotations only**; the antiproton cloud comes from the
+surrogate accepted-source model.
 
 ![Animated 3D target production demo](assets/demos/target_production_3d.webp)
 
 ```bash
 .venv/bin/latent-dirac run examples/scenes/target_production.yaml
 ```
+
+### Chain 2b: Engine-Backed Target Production (Table-Based)
+
+The same stage, now fed by the vendored engine: `engine/yieldgen`
+(vanilla Geant4 v11.4.2, FTFP_BERT) fires 2,000,000 protons at 26 GeV/c
+into an iridium stand-in target offline and records every antiproton
+exiting the target surface — 2,547 of them, a yield of 1.3e-3 per
+proton, forward-peaked with a median momentum of 3.2 GeV/c (inside the
+AD-like collection band used below). The committed table
+([examples/data/pbar_yield_ftfp_bert_26gevc_ir.csv](examples/data/pbar_yield_ftfp_bert_26gevc_ir.csv),
+provenance four-tuple in its header) is replayed by the `table_based`
+`antiproton_yield_table` source through a collection solenoid, aperture,
+and an AD-like 3.0–4.2 GeV/c momentum window. The interactive rendering
+lives at `assets/demos/target_production_engine_3d.html`.
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/target_production_engine.yaml
+```
+
+<details>
+<summary>Text report</summary>
+
+```text
+Latent Dirac scene report: target-production-engine
+
+Stage accounting:
+- collection-solenoid: input=1.91025e+10, output=1.91025e+10, transmission=1, losses=0
+- collection-aperture: input=1.91025e+10, output=4.17e+09, transmission=0.218, losses=1.49325e+10
+- ad-momentum-cut: input=4.17e+09, output=7.95e+08, transmission=0.191, losses=3.375e+09
+- end-station: input=7.95e+08, output=7.95e+08, transmission=1, losses=0
+
+Loss ledger (weighted, by killing element):
+- collection-solenoid: 0
+- collection-aperture: 1.49325e+10
+- ad-momentum-cut: 3.375e+09
+- end-station: 0
+- surviving: 7.95e+08
+
+Accepted state:
+- weighted count: 7.95e+08
+- mean kinetic energy: 2829.73 MeV
+
+Source provenance (engine four-tuple):
+- model type: table_based
+- geant4 version: $Name: geant4-11-04-patch-02 [MT]$
+- physics list: FTFP_BERT
+- datasets: G4NDL4.7.1,G4EMLOW8.8,PhotonEvaporation6.1.2,RadioactiveDecay6.1.2,G4PARTICLEXS4.2,G4PII1.3,RealSurface2.2,G4SAIDDATA2.0,G4ABLA3.3,G4INCL1.3,G4ENSDFSTATE3.0,G4CHANNELING2.0
+- patches: none
+- table primaries: 2000000
+
+Magnetic field status:
+- field model: idealized solenoid (hard-edge)
+- B vector [T]: [0, 0, 2] inside solenoid envelope
+- status: active inside radius 0.08 m and length 0.4 m
+
+Scope note:
+- transport and acceptance diagnostic only
+```
+
+</details>
 
 ### Chain 3: Electrostatic Deceleration and Dynamic Capture
 
@@ -643,9 +710,12 @@ The complete, unmodified source tree of vanilla Geant4 v11.4.2 is vendored
 at [geant4-v11.4.2/](geant4-v11.4.2/) as the in-repo baseline for the
 Geant4 engine track on the roadmap. The tree is read-only, is not part of
 the `latent-dirac` Python package, and carries its own license
-(Geant4 Software License, inside the vendored tree). No build or runtime
-integration ships yet; `latent_dirac/adapters/` remains placeholder-only
-until that work lands.
+(Geant4 Software License, inside the vendored tree). It builds via the
+recipe in [engine/README.md](engine/README.md), and the first engine
+application (`engine/yieldgen`) exchanges data with the Python core
+through offline yield tables only — there is no runtime coupling, and
+`latent_dirac/adapters/` remains placeholder-only until the adapter
+milestone lands.
 
 This product includes software developed by Members of the Geant4
 Collaboration (http://cern.ch/geant4). See [NOTICE](NOTICE). The Geant4
