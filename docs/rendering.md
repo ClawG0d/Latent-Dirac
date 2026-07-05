@@ -25,6 +25,11 @@ pip install "latent-dirac[viz]"
 - interactive phase-space scatter plot
 - interactive losses by stage
 
+`latent_dirac.viz.scene_3d.render_scene_3d` renders a declarative scene
+(see [scene_schema.md](scene_schema.md)) with element wireframes, recorded
+trajectories, accepted/lost final states, and per-element fidelity labels
+in the hover text.
+
 ## README Animations
 
 The animated README demos are generated as WebP assets under `assets/demos/`.

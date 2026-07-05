@@ -12,9 +12,14 @@ from latent_dirac.state.particle_cloud import ParticleCloud
 
 
 class SourceTerm(BaseModel, ABC):
-    """A source term that samples a macro-particle cloud."""
+    """A source term that samples a macro-particle cloud.
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    Unknown constructor parameters are rejected so that typos in
+    hand-written scene `params` fail fast instead of silently producing a
+    default-behaving source.
+    """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
 
     @abstractmethod
     def sample(self, rng: np.random.Generator | None = None) -> ParticleCloud:

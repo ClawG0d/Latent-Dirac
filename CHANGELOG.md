@@ -5,6 +5,12 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the declarative scene schema (YAML/JSON, `schema_version: 1`) with
+  fail-fast validation, label-anchored loss accounting, the new `drift`
+  and `monitor` elements, and `run_scene` with optional trajectory
+  recording. pyyaml is now a core dependency.
+- Added scene-driven 3D rendering (`latent_dirac.viz.scene_3d`) with
+  per-element fidelity labels in hover text.
 - Added the composable field model library: `CompositeField`,
   hard-edge `DipoleField`, and hard-edge `QuadrupoleField`.
 - Repositioned the project as an open interactive simulation platform for

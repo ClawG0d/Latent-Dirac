@@ -15,6 +15,7 @@ The current skeleton is intentionally lightweight:
 - `solvers`: relativistic Boris transport
 - `beamline`: aperture and momentum-window acceptance
 - `pipeline`: staged execution and loss accounting
+- `scene`: declarative YAML/JSON scene schema, loader, and pipeline builder
 - `diagnostics`: accepted-yield and text-report utilities
 - `adapters`: placeholders for future optional Geant4, Xsuite, and ROOT integrations
 

@@ -69,11 +69,15 @@ Implemented:
 - staged pipeline loss accounting
 - accepted-yield and spectrum diagnostics
 - optional Matplotlib and Plotly visualization backends
+- declarative YAML/JSON scene schema with drift and monitor elements
+  ([docs/scene_schema.md](docs/scene_schema.md))
+- scene-driven 3D rendering with per-element fidelity labels (function API)
 - placeholder adapters for Geant4, Xsuite, and ROOT
 
 Not implemented yet:
 
-- declarative scene schema and scene-driven 3D viewers
+- scene CLI and hello-beamline example
+- interactive 3D viewer application
 - JAX GPU backend and batched sweep API
 - field-map import from external field solvers
 - Penning-Malmberg trap elements and buffer-gas collision physics
@@ -377,6 +381,7 @@ discipline, and optional visualization behavior.
 ## Documentation
 
 - [Architecture](docs/architecture.md)
+- [Scene schema](docs/scene_schema.md)
 - [Physics scope](docs/physics_scope.md)
 - [Source models](docs/source_models.md)
 - [Solver backends](docs/solver_backends.md)
