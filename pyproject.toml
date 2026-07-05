@@ -51,6 +51,8 @@ addopts = "-ra"
 [tool.ruff]
 line-length = 110
 target-version = "py310"
+# The vendored Geant4 tree is read-only upstream code and is never linted.
+extend-exclude = ["geant4-v11.4.2"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B"]

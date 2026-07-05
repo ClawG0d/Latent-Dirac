@@ -1,0 +1,21 @@
+Latent Dirac
+Copyright Latent Dirac contributors
+
+First-party code in this repository is licensed under the Apache License,
+Version 2.0 (see LICENSE).
+
+Vendored third-party software
+-----------------------------
+
+This repository redistributes the complete, unmodified source tree of
+Geant4 version 11.4.2 under `geant4-v11.4.2/`. Geant4 is distributed
+under the Geant4 Software License; the license text ships inside the
+vendored tree at `geant4-v11.4.2/LICENSE`.
+
+This product includes software developed by Members of the Geant4
+Collaboration (http://cern.ch/geant4).
+
+The Geant4 name is used solely to identify the vendored software and its
+origin; no endorsement by the Geant4 Collaboration is implied. The
+vendored tree is kept byte-identical to the upstream release; see
+AGENTS.md for the read-only rules that protect it.

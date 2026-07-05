@@ -19,6 +19,19 @@ only Claude-Code-specific operational notes.
   never produce performance numbers here (honesty discipline requires
   hardware-labeled numbers from Linux CUDA)
 
+## Vendored Geant4 tree
+
+- `geant4-v11.4.2/` is read-only vendored upstream code (vanilla
+  v11.4.2). Never edit, lint, format, or run tests over it.
+- Exclude it from Grep/Glob searches by default — it holds 17k+ files;
+  a plain `du`/`find` across it has hit the 2-minute command timeout.
+- ruff (`extend-exclude`), pytest (`testpaths`), and packaging
+  (`MANIFEST.in prune`) are already configured around it; keep all three
+  exclusions in place.
+- Commits that touch the vendored tree use the `vendor:` prefix and must
+  keep it byte-identical to the upstream release (`.gitattributes
+  -text` prevents EOL rewriting).
+
 ## Workflow (every feature)
 
 1. Design spec to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`

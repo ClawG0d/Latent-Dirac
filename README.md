@@ -106,6 +106,9 @@ Implemented:
 
 Not implemented yet:
 
+- Geant4 engine build and adapter integration (the vanilla Geant4 v11.4.2
+  source tree is vendored in-repo as the engine baseline; no build or
+  runtime coupling ships yet — see the roadmap)
 - buffer-gas collisions, rotating wall, and space charge in the trap
 - interactive 3D viewer application
 - GPU benchmark suite
@@ -635,6 +638,20 @@ visualization behavior.
 - [Safety scope](docs/safety_scope.md)
 - [License strategy](docs/license_strategy.md)
 - [Roadmap](docs/roadmap.md)
+
+## Vendored Geant4 Engine Source
+
+The complete, unmodified source tree of vanilla Geant4 v11.4.2 is vendored
+at [geant4-v11.4.2/](geant4-v11.4.2/) as the in-repo baseline for the
+Geant4 engine track on the roadmap. The tree is read-only, is not part of
+the `latent-dirac` Python package, and carries its own license
+(Geant4 Software License, inside the vendored tree). No build or runtime
+integration ships yet; `latent_dirac/adapters/` remains placeholder-only
+until that work lands.
+
+This product includes software developed by Members of the Geant4
+Collaboration (http://cern.ch/geant4). See [NOTICE](NOTICE). The Geant4
+name identifies the vendored software only; no endorsement is implied.
 
 ## Safety Scope
 

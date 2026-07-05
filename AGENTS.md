@@ -27,7 +27,26 @@ Phase 2: architecture foundation with visuals first. Spec status:
 Next: Phase 3 (JAX batched backend, sweep API, interactive viewer) per
 docs/roadmap.md.
 
-Do not integrate Geant4, Xsuite, ROOT, FLUKA, MAD-X, or RF-Track yet.
+Geant4 engine track: the complete vanilla Geant4 v11.4.2 source tree is
+vendored at `geant4-v11.4.2/` as the in-repo engine baseline. Build
+recipes, the real adapter (GDML + subprocess), yield tables, and the
+companion acceleration library are phased in via docs/roadmap.md;
+`latent_dirac/adapters/` stays placeholder-only until that work lands.
+
+Vendored Geant4 tree rules:
+
+- `geant4-v11.4.2/` is a read-only vanilla baseline. Never edit files
+  inside it, for any reason. Future modifications go exclusively through
+  the patch protocol defined in the engine positioning spec (small,
+  documented patches, each with regression validation against the vanilla
+  baseline); until that protocol is established, the tree is frozen.
+- Never run lint, formatters, pytest, or bulk searches over the vendored
+  tree. The ruff `extend-exclude`, pytest `testpaths`, and packaging
+  `MANIFEST.in prune` exclusions must be preserved.
+- Commits touching the vendored tree use the `vendor:` prefix and must
+  keep it byte-identical to an upstream release (`.gitattributes -text`).
+
+Do not integrate Xsuite, ROOT, FLUKA, MAD-X, or RF-Track yet.
 Keep adapter interfaces and placeholders only for Geant4, Xsuite, and ROOT.
 
 ## Core physics scope
@@ -85,12 +104,21 @@ Do not implement:
   hot state paths.
 - Write physics kernels as pure functions so the same kernel can run on the
   NumPy reference backend and future JAX backends.
-- Keep the core package lightweight; optional capabilities go behind extras.
+- Keep the pip package lightweight; optional capabilities go behind
+  extras. The vendored Geant4 tree lives in the repository but is not
+  part of the Python distribution (wheel/sdist exclusions must be
+  preserved).
 - Prefer clear, testable modules over clever abstractions.
 - Every physical assumption must be explicit.
 - Every new physics feature must include tests and a fidelity tier.
 - Honesty discipline: no comparative performance wording without an open,
   reproducible benchmark; performance numbers carry integrator, timestep,
   particle count, batch size, approximation tier, and hardware.
-- Use Apache-2.0 license.
+- Use Apache-2.0 license for first-party code; the vendored Geant4 tree
+  keeps its own Geant4 Software License, and the NOTICE attribution to
+  the Geant4 Collaboration must stay intact.
+- Geant4 naming: describe the engine as vanilla Geant4 v11.4.2 (plus a
+  published patch list, once the patch protocol exists); never use the
+  Geant4 name for endorsement or promotion — that requires written
+  permission from the Geant4 Collaboration.
 - Keep optional external integrations behind adapters.

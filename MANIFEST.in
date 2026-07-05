@@ -1,0 +1,3 @@
+# The vendored Geant4 source tree is part of the repository, not of the
+# Python distribution.
+prune geant4-v11.4.2
