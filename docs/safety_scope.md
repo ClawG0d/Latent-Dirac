@@ -16,3 +16,7 @@ Out of scope:
 
 Source models must state whether they are placeholder, parameterized,
 surrogate, table-based, or externally calibrated.
+
+The digital-twin direction is limited to offline forward simulation, replay
+of measured data, and historical parameter calibration. Latent Dirac provides
+no real-time control loops and no interfaces that write back to a facility.

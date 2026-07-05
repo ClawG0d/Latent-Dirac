@@ -4,12 +4,39 @@
 
 # Latent Dirac
 
-Latent Dirac is an open modular simulation platform for positron and
-antiproton source-to-acceptance modeling.
+Latent Dirac is an open interactive simulation platform for antimatter
+factories: declarative scenes of positron and antiproton facilities
+(source → transport → capture), batch-parallel simulation and sweeps, and
+interactive 3D visualization. The goal is to turn antimatter facility design
+iteration from a wall-clock problem into a compute problem.
 
-It provides a lightweight Python core for fast scenario modeling, parameter
-sweeps, transport studies, acceptance accounting, and future calibration
-against external scientific tools such as Geant4 and Xsuite.
+The platform is built on three pillars:
+
+1. **Platform, not just a tracker** — declarative scene descriptions,
+   pluggable solvers, and optional viewers on a shared data model.
+2. **Throughput** — batched parameter sweeps designed for a JAX GPU backend
+   (n_configs × n_particles in one launch).
+3. **Ledger** — loss accounting as a full life-cycle ledger for every
+   antiparticle, because antiparticles are extraordinarily expensive.
+
+**Design intent vs current status.** The platform description above is what
+Latent Dirac is architected for. The current release is a lightweight
+NumPy-based Python core for source-to-acceptance modeling: fast scenario
+modeling, parameter sweeps, transport studies, and acceptance accounting,
+with placeholder adapters for future calibration against external scientific
+tools such as Geant4 and Xsuite. GPU execution, the declarative scene
+schema, and interactive 3D viewers are roadmap items, not shipped features.
+See [docs/roadmap.md](docs/roadmap.md) for the phased plan.
+
+## Fidelity Tiers
+
+Every physics model in Latent Dirac declares one of five fidelity tiers:
+**placeholder**, **parameterized**, **surrogate**, **table-based**, or
+**externally calibrated**. Performance or physics claims in this repository
+must reference reproducible settings, and comparative performance statements
+require an open benchmark. Latent Dirac does not try to replace
+high-fidelity particle-matter simulation tools; it orchestrates them through
+adapters and stays honest about its own approximation level.
 
 ## Focus
 
@@ -21,13 +48,9 @@ against external scientific tools such as Geant4 and Xsuite.
 - accepted-yield diagnostics
 - optional visualization backends separated from the physics core
 
-Latent Dirac does not try to replace high-fidelity particle-matter simulation
-tools. The current package is a source-to-acceptance modeling skeleton with
-explicit assumptions and placeholder adapters for future calibration workflows.
-
 ## Current Status
 
-This repository contains the first architecture skeleton and minimal working
+This repository contains the architecture skeleton and minimal working
 simulation demos.
 
 Implemented:
@@ -47,12 +70,16 @@ Implemented:
 
 Not implemented yet:
 
+- declarative scene schema and scene-driven 3D viewers
+- JAX GPU backend and batched sweep API
+- field-map import from external field solvers
+- Penning-Malmberg trap elements and buffer-gas collision physics
+- guiding-center long-timescale solver
 - full electromagnetic or hadronic shower physics
 - detailed target engineering
 - real facility control systems
 - high-yield operational recipes
 - material activation or shielding design
-- PyVista scientific 3D backend
 
 ## Installation
 
@@ -83,12 +110,15 @@ Each animation includes a magnetic field status panel.
 source model -> field transport -> beamline acceptance -> loss accounting -> report
 ```
 
-### Demo 1: Charge-Sign Splitter
+### Demo 1: Charge-Sign Splitter in 3D
 
 This signature demo starts matched positron and electron clouds from the same
 phase-space distribution. In the same transverse magnetic field, equal mass and
 opposite charge produce opposite Lorentz-force curvature, splitting the tracks
-without modeling any material interaction.
+without modeling any material interaction. The 3D view below is rendered from
+the recorded `Trajectory` of a real Boris-solver run.
+
+![Animated 3D charge-sign splitter demo](assets/demos/charge_sign_splitter_3d.webp)
 
 ![Animated charge-sign splitter demo](assets/demos/charge_sign_splitter.webp)
 
@@ -260,6 +290,7 @@ Regenerate the README WebP animations:
 
 ```bash
 .venv/bin/python tools/generate_demo_webp.py
+.venv/bin/python tools/generate_hero_3d_webp.py
 ```
 
 ## Minimal API Sketch
@@ -337,8 +368,8 @@ See [docs/rendering.md](docs/rendering.md) for the rendering strategy.
 
 The test suite covers species assumptions, unit conversions, particle-cloud
 state handling, source models, relativistic motion in uniform fields, Larmor
-radius validation, pipeline losses, accepted yield, project positioning, and
-optional visualization behavior.
+radius validation, pipeline losses, accepted yield, the documentation honesty
+discipline, and optional visualization behavior.
 
 ## Documentation
 
@@ -354,11 +385,22 @@ optional visualization behavior.
 
 ## Safety Scope
 
-Latent Dirac is scoped to open, lightweight source-to-acceptance simulation
-architecture and diagnostics. It excludes weaponization scenarios,
-energetic-release applications, real facility controls, detailed accelerator
-target engineering, high-yield operational recipes, full shower physics,
-annihilation physics, material activation, and radiation shielding design.
+Latent Dirac is scoped to open simulation architecture and diagnostics for
+antimatter facility design studies. The following remain out of scope:
+
+- weaponization scenarios
+- energetic-release applications
+- real facility control systems
+- detailed accelerator target engineering
+- high-yield operational recipes
+- full shower physics
+- annihilation physics
+- material activation
+- radiation shielding design
+
+The digital-twin direction is limited to offline forward simulation, replay
+of measured data, and historical parameter calibration. Latent Dirac provides
+no real-time control loops and no interfaces that write back to a facility.
 
 ## License
 

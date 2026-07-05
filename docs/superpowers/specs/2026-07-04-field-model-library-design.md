@@ -145,6 +145,11 @@ This phase does not implement:
 
 Those may be separate future specs.
 
+Amendment (2026-07-05): field-map interpolation is now planned as its own
+Phase 2d spec (see
+`2026-07-05-platform-positioning-and-roadmap-design.md`). It remains a
+non-goal of this field-model-library phase.
+
 ## Acceptance Criteria
 
 The phase is complete when:

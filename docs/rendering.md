@@ -35,8 +35,15 @@ the repository tool:
 .venv/bin/python tools/generate_demo_webp.py
 ```
 
-The tool imports Pillow only when it runs. Core physics modules do not depend
-on the animation generator.
+The 3D hero animation is rendered from a recorded `Trajectory` of a real
+Boris-solver run:
+
+```bash
+.venv/bin/python tools/generate_hero_3d_webp.py
+```
+
+The tools import Pillow and Matplotlib only when they run. Core physics
+modules do not depend on the animation generators.
 
 ## Future Backend
 

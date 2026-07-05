@@ -22,9 +22,28 @@ def test_demo_webp_generator_creates_animated_webp_files(tmp_path):
             assert image.n_frames == 4
 
 
+def test_hero_3d_generator_creates_animated_webp_from_trajectory(tmp_path):
+    image_module = pytest.importorskip("PIL.Image")
+    pytest.importorskip("matplotlib")
+    from tools.generate_hero_3d_webp import HERO_WEBP_FILE, generate_hero_3d_webp
+
+    generated = generate_hero_3d_webp(
+        tmp_path, frame_count=3, particle_count=6, write_html=False
+    )
+
+    path = generated[HERO_WEBP_FILE]
+    assert path == tmp_path / HERO_WEBP_FILE
+    assert path.stat().st_size > 0
+    with image_module.open(path) as image:
+        assert image.format == "WEBP"
+        assert getattr(image, "is_animated", False)
+        assert image.n_frames == 3
+
+
 def test_readme_references_demo_webp_assets():
     readme = Path("README.md").read_text(encoding="utf-8")
 
+    assert "assets/demos/charge_sign_splitter_3d.webp" in readme
     assert "assets/demos/charge_sign_splitter.webp" in readme
     assert "assets/demos/positron_capture.webp" in readme
     assert "assets/demos/antiproton_transport.webp" in readme
