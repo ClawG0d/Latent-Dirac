@@ -126,6 +126,8 @@ _FIELD_FNS = {
 
 
 def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float):
+    # NOTE: backends/differentiable.py mirrors this element loop with soft
+    # acceptance; when adding an element type here, extend the mirror too
     lax = jax.lax
     dt_s = scene.solver.dt_s
     c = SPEED_OF_LIGHT_M_PER_S

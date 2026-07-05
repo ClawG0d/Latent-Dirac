@@ -52,6 +52,8 @@ Split into independently deliverable specs:
 ## Phase 4 — digital twin and physics fill-in
 
 - differentiable capture chain via autodiff with soft-aperture relaxation
+  — **done early** (Spec 3d: `make_differentiable_objective`, gradients
+  validated against finite differences; field-map objectives still pending)
 - Penning-Malmberg trap element and Surko buffer-gas Monte Carlo collisions,
   with cross-section data curated as an open, provenance-tracked dataset
 - guiding-center/secular solver for long-timescale trap storage

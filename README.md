@@ -92,6 +92,10 @@ Implemented:
   xopt itself is not a dependency)
 - the `latent-dirac` CLI: `run` prints the scene report, `render` writes
   the interactive 3D HTML
+- differentiable capture objective (`make_differentiable_objective`:
+  sigmoid-relaxed acceptance, gradients of the soft accepted fraction
+  through every transport step via JAX autodiff; the relaxation is an
+  optimization device — the hard pipeline stays the source of truth)
 - optional Matplotlib and Plotly visualization backends
 - placeholder adapters for Geant4, Xsuite, and ROOT
 

@@ -19,6 +19,54 @@ from latent_dirac.scene.schema import Scene
 _VARIABLE_PATTERN = re.compile(r"^(?P<key>[^\[\]]+?)(?:\[(?P<component>\d+)\])?$")
 
 
+def parse_variables(
+    scene: Scene, variables: list[str]
+) -> tuple[dict[str, tuple[str, int | None]], list[str]]:
+    """Validate variable names against the scene's sweepable parameters.
+
+    Returns `(variable -> (override key, component index or None),
+    override keys in first-use order)`. Shared by the evaluator and the
+    differentiable objective so both speak the same variable vocabulary.
+    """
+
+    if not variables:
+        raise ValueError("at least one variable is required")
+
+    base = base_parameters(scene)
+    parsed: dict[str, tuple[str, int | None]] = {}
+    override_keys: list[str] = []
+    for variable in variables:
+        match = _VARIABLE_PATTERN.match(variable)
+        if match is None:
+            raise ValueError(f"variable {variable!r} is not of the form label.param[/index]")
+        key = match["key"]
+        component = match["component"]
+        if key not in base:
+            label, _, param = key.partition(".")
+            raise ValueError(
+                f"variable {variable!r}: no sweepable parameter {param!r} on any element "
+                f"labeled {label!r} (available: {sorted(base)})"
+            )
+        base_shape = base[key].shape
+        if component is None:
+            if base_shape != ():
+                raise ValueError(
+                    f"variable {variable!r} refers to a non-scalar parameter of shape "
+                    f"{base_shape}; pick a single component like {key}[0]"
+                )
+            parsed[variable] = (key, None)
+        else:
+            index = int(component)
+            if len(base_shape) != 1 or index >= base_shape[0]:
+                raise ValueError(
+                    f"variable {variable!r}: component index {index} is out of range for shape {base_shape}"
+                )
+            parsed[variable] = (key, index)
+        if key not in override_keys:
+            override_keys.append(key)
+    return parsed, override_keys
+
+
 class SceneEvaluator:
     """Evaluate scene objectives as a function of named scalar variables.
 
@@ -28,43 +76,8 @@ class SceneEvaluator:
     """
 
     def __init__(self, scene: Scene, variables: list[str]):
-        if not variables:
-            raise ValueError("at least one variable is required")
-
+        self._variables, override_keys = parse_variables(scene, variables)
         base = base_parameters(scene)
-        self._variables: dict[str, tuple[str, int | None]] = {}
-        override_keys: list[str] = []
-        for variable in variables:
-            match = _VARIABLE_PATTERN.match(variable)
-            if match is None:
-                raise ValueError(f"variable {variable!r} is not of the form label.param[/index]")
-            key = match["key"]
-            component = match["component"]
-            if key not in base:
-                label, _, param = key.partition(".")
-                raise ValueError(
-                    f"variable {variable!r}: no sweepable parameter {param!r} on any element "
-                    f"labeled {label!r} (available: {sorted(base)})"
-                )
-            base_shape = base[key].shape
-            if component is None:
-                if base_shape != ():
-                    raise ValueError(
-                        f"variable {variable!r} refers to a non-scalar parameter of shape "
-                        f"{base_shape}; pick a single component like {key}[0]"
-                    )
-                self._variables[variable] = (key, None)
-            else:
-                index = int(component)
-                if len(base_shape) != 1 or index >= base_shape[0]:
-                    raise ValueError(
-                        f"variable {variable!r}: component index {index} is out of range "
-                        f"for shape {base_shape}"
-                    )
-                self._variables[variable] = (key, index)
-            if key not in override_keys:
-                override_keys.append(key)
-
         self._base = {key: np.asarray(base[key], dtype=float) for key in override_keys}
         self._program = BatchedSceneProgram(scene, override_keys=tuple(override_keys))
 

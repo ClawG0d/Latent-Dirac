@@ -5,6 +5,12 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the differentiable capture objective
+  (`latent_dirac.backends.differentiable.make_differentiable_objective`):
+  sigmoid-relaxed acceptance stages with gradients of the soft accepted
+  fraction w.r.t. named scene variables, validated against finite
+  differences and converging to the hard `accepted_fraction` as
+  sharpness grows.
 - Added the `latent-dirac` CLI (`run` prints the scene report, `render`
   writes the interactive 3D HTML) and the hello-beamline scene;
   `scene_report` moved from `examples/` into
