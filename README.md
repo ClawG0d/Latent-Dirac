@@ -90,12 +90,13 @@ Implemented:
 - Xopt-compatible scene evaluator (`make_scene_evaluator`: plain-callable
   convention, `evaluate.batch` runs a candidate generation in one launch;
   xopt itself is not a dependency)
+- the `latent-dirac` CLI: `run` prints the scene report, `render` writes
+  the interactive 3D HTML
 - optional Matplotlib and Plotly visualization backends
 - placeholder adapters for Geant4, Xsuite, and ROOT
 
 Not implemented yet:
 
-- scene CLI and hello-beamline example
 - interactive 3D viewer application
 - GPU benchmark suite
 - field maps and batched monitor snapshots in the JAX backend
@@ -123,6 +124,19 @@ Install optional visualization dependencies:
 
 The simulation core does not import Matplotlib or Plotly. Visualization
 packages are only loaded by `latent_dirac.viz` backend methods.
+
+## Hello Beamline (60 seconds)
+
+One YAML scene, one report, one interactive 3D rendering:
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/hello_beamline.yaml
+.venv/bin/latent-dirac render examples/scenes/hello_beamline.yaml -o hello.html
+```
+
+Open `hello.html` in a browser to orbit the beamline: solenoid, aperture,
+trajectories, accepted/lost split, and per-element fidelity labels in the
+hover text.
 
 ## Demos
 

@@ -1,4 +1,4 @@
-"""Shared text reporting for scene-driven demos."""
+"""Human-readable text reporting for declarative scenes."""
 
 from __future__ import annotations
 

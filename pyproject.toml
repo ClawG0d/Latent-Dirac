@@ -18,6 +18,9 @@ dependencies = [
   "pyyaml>=6.0"
 ]
 
+[project.scripts]
+latent-dirac = "latent_dirac.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/ClawG0d/Latent-Dirac"
 Documentation = "https://github.com/ClawG0d/Latent-Dirac/tree/master/docs"

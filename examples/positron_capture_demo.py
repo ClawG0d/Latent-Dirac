@@ -14,7 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from examples.scene_report import scene_report
+from latent_dirac.diagnostics.scene_report import scene_report
 from latent_dirac.scene.build import run_scene
 from latent_dirac.scene.loader import load_scene
 

@@ -5,6 +5,10 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the `latent-dirac` CLI (`run` prints the scene report, `render`
+  writes the interactive 3D HTML) and the hello-beamline scene;
+  `scene_report` moved from `examples/` into
+  `latent_dirac.diagnostics.scene_report`.
 - Added the Xopt-compatible scene evaluator
   (`latent_dirac.backends.evaluator.make_scene_evaluator`): scalar and
   vector-component variables (`"label.param"`, `"label.vec[i]"`),

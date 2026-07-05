@@ -38,6 +38,8 @@ Split into independently deliverable specs:
   float64 reference comparisons in CI — **done** (Spec 3a:
   `latent_dirac.backends.jax_scene.run_scene_batched`, optional `[jax]`
   extra; field maps and batched monitor snapshots still pending)
+- `latent-dirac` CLI and hello-beamline — **done** (Spec 3c: `run` and
+  `render` subcommands, console script, hello scene)
 - Xopt-compatible sweep evaluator — **done** (Spec 3b:
   `latent_dirac.backends.evaluator.make_scene_evaluator`; plain-callable
   convention, no xopt dependency; `evaluate.batch` runs a generation of

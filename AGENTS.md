@@ -18,7 +18,7 @@ Phase 2: architecture foundation with visuals first. Spec status:
   publish workflow; PyPI release pending owner-side trusted publishing)
 - 2a field model library: done
 - 2b declarative scene schema plus minimal 3D rendering: done
-  (CLI and hello-beamline example deferred to a follow-up spec)
+  (the deferred CLI and hello-beamline landed as Spec 3c)
 - 2c State/Model/Control refactor: done (`ParticleState` pytree dataclass,
   pure Boris kernel in dimensionless momentum, per-particle loss ledger)
 - 2d FieldMap import (COMSOL regular-grid CSV): done
