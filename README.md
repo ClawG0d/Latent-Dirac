@@ -48,20 +48,6 @@ provenance. The **compute** layer underneath pairs a NumPy float64
 reference pipeline with a JAX backend (jit, vmap, autodiff) and the
 vendored vanilla Geant4 engine for particle-matter physics.
 
-The platform stands on three pillars:
-
-1. **Platform, not just a tracker** — declarative scenes routed across
-   first-party and engine-backed solvers, with optional viewers, on one
-   shared data model.
-2. **Throughput** — batched parameter sweeps designed for a JAX GPU backend
-   (n_configs × n_particles in one launch).
-3. **Ledger** — loss accounting as a full life-cycle ledger for every
-   antiparticle, because antiparticles are extraordinarily expensive.
-
-The core focuses on positron and antiproton source terms, relativistic
-charged-particle transport in electromagnetic fields, beamline
-acceptance, loss accounting, and accepted-yield diagnostics, with
-visualization backends kept separate from the physics core.
 
 ### Solvers
 
