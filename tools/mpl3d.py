@@ -243,6 +243,60 @@ def draw_plane(axes, half_width: float, z: float, color=ELEMENT, alpha=0.15):
     )
 
 
+def draw_block(axes, z0: float, z1: float, half_width: float, color=(0.35, 0.37, 0.4), alpha=0.55):
+    """Solid-looking block annotation (e.g. a target) - drawn, not simulated."""
+
+    span = np.array([-half_width, half_width])
+    face_y, face_z = np.meshgrid(span, span)
+    for z_face in (z0, z1):
+        axes.plot_surface(
+            np.full_like(face_y, z_face),
+            face_y,
+            face_z,
+            color=color,
+            alpha=alpha,
+            linewidth=0,
+            shade=False,
+        )
+    z_span = np.array([z0, z1])
+    for fixed in span:
+        wall_z, wall_w = np.meshgrid(z_span, span)
+        axes.plot_surface(
+            wall_z,
+            np.full_like(wall_z, fixed),
+            wall_w,
+            color=color,
+            alpha=alpha * 0.8,
+            linewidth=0,
+            shade=False,
+        )
+        axes.plot_surface(
+            wall_z,
+            wall_w,
+            np.full_like(wall_z, fixed),
+            color=color,
+            alpha=alpha * 0.8,
+            linewidth=0,
+            shade=False,
+        )
+
+
+def draw_beam_arrow(axes, z_start: float, z_end: float, color=(0.85, 0.3, 0.25), linewidth=3.0):
+    """Incoming-beam sketch along the axis - drawn, not simulated."""
+
+    axes.plot([z_start, z_end], [0.0, 0.0], [0.0, 0.0], color=color, linewidth=linewidth, alpha=0.9)
+    head = 0.12 * abs(z_end - z_start)
+    for dy, dz in ((0.4, 0.0), (-0.4, 0.0), (0.0, 0.4), (0.0, -0.4)):
+        axes.plot(
+            [z_end - head, z_end],
+            [dy * head, 0.0],
+            [dz * head, 0.0],
+            color=color,
+            linewidth=linewidth * 0.7,
+            alpha=0.9,
+        )
+
+
 def draw_scene_elements(axes, scene, run_result, plane_half_width=0.01):
     """Draw geometry for every scene element that has a spatial footprint."""
 

@@ -1,0 +1,13 @@
+schema_version: 1
+name: decay-emission
+seed: 2026
+source:
+  type: beta_plus
+  label: na22-pellet
+  params: { half_life_s: 8.21e7, beta_plus_branching_ratio: 0.9, initial_activity_bq: 3.7e8,
+            endpoint_energy_MeV: 0.546, source_radius_m: 0.0008, macro_particles: 96 }
+solver: { type: relativistic_boris, dt_s: 4.0e-12, steps: 90 }
+elements:
+  - { type: solenoid, label: guide-solenoid, b_tesla: 0.6, radius_m: 0.025, length_m: 0.18, center_z_m: 0.09 }
+  - { type: aperture, label: collimator, radius_m: 0.01, z_m: 0.09 }
+  - { type: monitor, label: beam-monitor }

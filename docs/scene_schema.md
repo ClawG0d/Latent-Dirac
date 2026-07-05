@@ -39,8 +39,13 @@ elements:
 - Element vocabulary: `uniform_field`, `solenoid`, `dipole`, `quadrupole`,
   `penning_trap` (transport through the corresponding field model,
   optional per-element `steps` override), `drift` (zero-field transport),
-  `aperture`, `momentum_window` (momenta in GeV/c), `monitor` (cloud
-  snapshot, no physics).
+  `aperture`, `momentum_window` (momenta in GeV/c),
+  `annihilation_plate` (ledgered loss endpoint recording at-rest
+  two-photon kinematics; NumPy pipeline only), `monitor` (cloud snapshot,
+  no physics).
+- Time gating: `uniform_field` and `penning_trap` accept optional
+  `t_on_s`/`t_off_s` (set together); the whole element field is active
+  only inside the half-open window — idealized instantaneous switching.
 - Batch convention: every numeric parameter must remain liftable into a
   batch-dimension array. This keeps the schema compatible with the Phase 3
   batched (vmap) execution plan.

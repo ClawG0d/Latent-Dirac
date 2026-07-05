@@ -41,8 +41,7 @@ def _load_pillow():
         from PIL import Image
     except ModuleNotFoundError as exc:
         raise ImportError(
-            'Pillow is required to generate the hero WebP. Install it with '
-            '`pip install "latent-dirac[viz]"`.'
+            'Pillow is required to generate the hero WebP. Install it with `pip install "latent-dirac[viz]"`.'
         ) from exc
     return Image
 
@@ -52,7 +51,7 @@ def _load_matplotlib():
         import matplotlib
     except ModuleNotFoundError as exc:
         raise ImportError(
-            'Matplotlib is required to generate the hero WebP. Install it with '
+            "Matplotlib is required to generate the hero WebP. Install it with "
             '`pip install "latent-dirac[viz]"`.'
         ) from exc
     matplotlib.use("Agg")
@@ -196,6 +195,7 @@ def _save_interactive_html(
 ) -> Path | None:
     try:
         from latent_dirac.viz.plotly_backend import PlotlyBackend
+
         combined = Trajectory(
             time_s=positron_trajectory.time_s,
             position_m=np.concatenate(

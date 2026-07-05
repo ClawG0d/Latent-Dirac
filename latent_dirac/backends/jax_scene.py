@@ -74,23 +74,34 @@ def _base_params(scene: Scene) -> list[dict[str, np.ndarray]]:
                 f"element type {element.type!r} (label {element.label!r}) is not supported "
                 "by the JAX backend yet; use the NumPy pipeline for this scene"
             )
-        params.append(
-            {
-                name: np.asarray(getattr(element, name), dtype=float)
-                for name in _SWEEPABLE_PARAMS[element.type]
-            }
-        )
+        entry = {
+            name: np.asarray(getattr(element, name), dtype=float) for name in _SWEEPABLE_PARAMS[element.type]
+        }
+        if getattr(element, "t_on_s", None) is not None:
+            entry["t_on_s"] = np.asarray(element.t_on_s, dtype=float)
+            entry["t_off_s"] = np.asarray(element.t_off_s, dtype=float)
+        params.append(entry)
     return params
 
 
-def _uniform_field(jnp, positions, params):
+def _apply_gate(jnp, time_s, params, e_field, b_field):
+    if "t_on_s" not in params:
+        return e_field, b_field
+    gate = (time_s >= params["t_on_s"]) & (time_s < params["t_off_s"])
+    return (
+        jnp.where(gate[:, None], e_field, 0.0),
+        jnp.where(gate[:, None], b_field, 0.0),
+    )
+
+
+def _uniform_field(jnp, positions, time_s, params):
     count = positions.shape[0]
     e_field = jnp.broadcast_to(params["E_vector_v_m"], (count, 3))
     b_field = jnp.broadcast_to(params["B_vector_t"], (count, 3))
-    return e_field, b_field
+    return _apply_gate(jnp, time_s, params, e_field, b_field)
 
 
-def _solenoid_field(jnp, positions, params):
+def _solenoid_field(jnp, positions, time_s, params):
     radial = jnp.sqrt(positions[:, 0] ** 2 + positions[:, 1] ** 2)
     inside = (radial <= params["radius_m"]) & (
         jnp.abs(positions[:, 2] - params["center_z_m"]) <= 0.5 * params["length_m"]
@@ -100,20 +111,20 @@ def _solenoid_field(jnp, positions, params):
     return jnp.zeros_like(positions), jnp.stack([zeros, zeros, b_z], axis=1)
 
 
-def _dipole_field(jnp, positions, params):
+def _dipole_field(jnp, positions, time_s, params):
     inside = jnp.abs(positions[:, 2] - params["center_z_m"]) <= 0.5 * params["length_m"]
     b_field = inside[:, None] * jnp.broadcast_to(params["B_vector_t"], positions.shape)
     return jnp.zeros_like(positions), b_field
 
 
-def _quadrupole_field(jnp, positions, params):
+def _quadrupole_field(jnp, positions, time_s, params):
     inside = jnp.abs(positions[:, 2] - params["center_z_m"]) <= 0.5 * params["length_m"]
     b_x = jnp.where(inside, params["gradient_t_m"] * positions[:, 1], 0.0)
     b_y = jnp.where(inside, params["gradient_t_m"] * positions[:, 0], 0.0)
     return jnp.zeros_like(positions), jnp.stack([b_x, b_y, jnp.zeros_like(b_x)], axis=1)
 
 
-def _penning_trap_field(jnp, positions, params):
+def _penning_trap_field(jnp, positions, time_s, params):
     scale = params["v0_volt"] / params["d_m"] ** 2
     e_field = jnp.stack(
         [
@@ -125,10 +136,10 @@ def _penning_trap_field(jnp, positions, params):
     )
     b_z = jnp.broadcast_to(params["b_tesla"], positions.shape[:1])
     zeros = jnp.zeros_like(b_z)
-    return e_field, jnp.stack([zeros, zeros, b_z], axis=1)
+    return _apply_gate(jnp, time_s, params, e_field, jnp.stack([zeros, zeros, b_z], axis=1))
 
 
-def _drift_field(jnp, positions, params):
+def _drift_field(jnp, positions, time_s, params):
     zeros = jnp.zeros_like(positions)
     return zeros, zeros
 
@@ -160,7 +171,7 @@ def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float, rec
 
                 def step_fn(carry, _, field_fn=field_fn, element_params=element_params, alive=alive):
                     pos, u_now, t_now = carry
-                    e_field, b_field = field_fn(jnp, pos, element_params)
+                    e_field, b_field = field_fn(jnp, pos, t_now, element_params)
                     new_carry = boris_step(
                         pos,
                         u_now,

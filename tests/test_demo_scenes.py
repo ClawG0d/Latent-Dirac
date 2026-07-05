@@ -10,6 +10,10 @@ from latent_dirac.scene.loader import load_scene
 
 SCENES_DIR = Path("examples/scenes")
 SCENE_FILES = (
+    "annihilation_endpoint.yaml",
+    "decel_capture.yaml",
+    "target_production.yaml",
+    "decay_emission.yaml",
     "scene_tour.yaml",
     "positron_capture.yaml",
     "dipole_quad_line.yaml",
@@ -24,6 +28,19 @@ def test_demo_scene_loads_and_runs(name):
     result = run_scene(scene)
 
     assert result.pipeline_result.final_cloud.weighted_count() > 0.0
+
+
+def test_energy_coloring_maps_initial_kinetic_energy():
+    from tools.generate_scene_demo_webps import _particle_colors_energy
+
+    scene = load_scene(SCENES_DIR / "decay_emission.yaml")
+    colors = _particle_colors_energy(scene)
+
+    assert len(colors) == 96
+    assert all(len(color) == 3 for color in colors)
+    # a continuous beta spectrum must span the colormap, not collapse to one hue
+    unique = {tuple(np.round(color, 3)) for color in colors}
+    assert len(unique) > 20
 
 
 def test_wien_filter_selects_matched_velocity():

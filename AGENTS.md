@@ -56,7 +56,7 @@ Do not implement:
 - high-yield operational recipes
 - full electromagnetic shower physics
 - full hadronic shower physics
-- annihilation physics
+- annihilation energetics (energy release or deposition calculations; annihilation is modeled only as a loss endpoint with kinematic two-photon emission for visualization)
 - material activation
 - radiation shielding design
 - any real-time control loop or interface that writes back to a facility

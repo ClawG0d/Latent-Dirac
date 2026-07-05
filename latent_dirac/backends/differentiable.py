@@ -99,7 +99,7 @@ class DifferentiableObjective:
 
                     def step_fn(carry, _, field_fn=field_fn, element_params=element_params):
                         pos, u_now, t_now = carry
-                        e_field, b_field = field_fn(jnp, pos, element_params)
+                        e_field, b_field = field_fn(jnp, pos, t_now, element_params)
                         return boris_step(
                             pos,
                             u_now,

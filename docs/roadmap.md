@@ -51,6 +51,13 @@ Split into independently deliverable specs:
 - honest benchmark suite: analytic cases in CI; external comparisons only
   after license and data-availability checks
 
+## Factory-chain demos — done
+
+Decay emission, surrogate target production, electrostatic deceleration
+with time-gated dynamic capture (`TimeGatedField`), and the annihilation
+endpoint (at-rest two-photon kinematics, no energetics). RF deceleration
+and real target physics remain below.
+
 ## Phase 4 — digital twin and physics fill-in
 
 - differentiable capture chain via autodiff with soft-aperture relaxation

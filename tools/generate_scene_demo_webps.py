@@ -23,7 +23,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from examples.charge_sign_splitter_demo import make_initial_pair
 from examples.magnetic_mirror_demo import FIELD_MODEL_LABEL, MIRROR_HALF_LENGTH_M, run_trajectories
 from latent_dirac.fields.uniform import UniformField
-from latent_dirac.scene.build import run_scene
+from latent_dirac.scene.build import build_source, run_scene
 from latent_dirac.scene.loader import load_scene
 from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
 from latent_dirac.viz.scene_3d import _combined_trajectories
@@ -32,6 +32,13 @@ from tools import mpl3d
 SCENES_DIR = PROJECT_ROOT / "examples" / "scenes"
 
 SCENE_DEMOS = {
+    "decay_emission_3d.webp": {
+        "scene": "decay_emission.yaml",
+        "title": "Beta-plus decay emission - isotropic e+ from a Na-22-like pellet\n"
+        "parameterized Beta(3,3) spectrum approximation | no nuclear detail | "
+        "trail color = initial kinetic energy",
+        "coloring": "energy",
+    },
     "scene_tour_3d.webp": {
         "scene": "scene_tour.yaml",
         "title": "YAML scene tour - beta+ source, guide solenoid, collimator\n"
@@ -56,6 +63,30 @@ SCENE_DEMOS = {
         "uniform fields | relativistic Boris solver | velocity-selection diagnostic only",
         "coloring": "fate",
     },
+    "target_production_3d.webp": {
+        "scene": "target_production.yaml",
+        "title": "Antiproton production - SURROGATE accepted-source model\n"
+        "target physics NOT simulated (drawn only; Geant4 adapter: roadmap) | "
+        "uniform capture field | relativistic Boris solver",
+        "coloring": "fate",
+        "annotate": "target",
+    },
+    "decel_capture_3d.webp": {
+        "scene": "decel_capture.yaml",
+        "title": "Electrostatic deceleration and dynamic trap capture\n"
+        "magnets do no work - the E field decelerates | trap gated on after entry | "
+        "relativistic Boris solver",
+        "coloring": "fate",
+        "render": {"box_aspect": (3.0, 1.0, 1.0), "azim_start": -78, "azim_sweep": 36, "elev": 14},
+    },
+    "annihilation_endpoint_3d.webp": {
+        "scene": "annihilation_endpoint.yaml",
+        "title": "Annihilation endpoint - every positron's fate is ledgered\n"
+        "at-rest two-photon kinematics (511 keV label only; NO energetics) | "
+        "relativistic Boris solver",
+        "coloring": "ledger",
+        "annotate": "annihilation",
+    },
     "antiproton_ledger_3d.webp": {
         "scene": "antiproton_ledger.yaml",
         "title": "Antiproton loss ledger - trajectory color = killing element\n"
@@ -66,6 +97,18 @@ SCENE_DEMOS = {
 
 DIRECT_DEMOS = ("magnetic_mirror_3d.webp", "magnetic_control_sweep_3d.webp", "batched_sweep_3d.webp")
 DEMO_WEBP_FILES = tuple(SCENE_DEMOS) + DIRECT_DEMOS
+
+
+def _particle_colors_energy(scene):
+    """Trail colors from initial kinetic energy (plasma ramp, slow to fast)."""
+
+    initial = build_source(scene).sample(np.random.default_rng(scene.seed))
+    energies = initial.kinetic_energy_joule()
+    low, high = float(energies.min()), float(energies.max())
+    normalized = (energies - low) / max(high - low, 1e-300)
+    plt, _ = mpl3d.load_matplotlib()
+    colormap = plt.get_cmap("plasma")
+    return [colormap(float(value))[:3] for value in normalized]
 
 
 def _particle_colors(final_state, coloring: str):
@@ -80,22 +123,54 @@ def _particle_colors(final_state, coloring: str):
     return [mpl3d.ACCEPTED if alive else mpl3d.LOST for alive in final_state.alive]
 
 
-def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: int):
+def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: int, config=None):
     scene = load_scene(SCENES_DIR / scene_name)
     run_result = run_scene(scene, record_trajectories=True)
     combined = _combined_trajectories(scene, run_result)
     final_state = run_result.pipeline_result.final_cloud
-    colors = _particle_colors(final_state, coloring)
+    if coloring == "energy":
+        colors = _particle_colors_energy(scene)
+    else:
+        colors = _particle_colors(final_state, coloring)
     limits = mpl3d.axis_limits(combined)
     total = combined.shape[0]
 
+    annotate = config.get("annotate") if config else None
+    beam_extent = float(np.nanmax(np.abs(combined[..., :2])))
+    z_span = float(combined[..., 2].max()) - float(combined[..., 2].min())
+    photon_rays = None
+    if annotate == "annihilation" and run_result.annihilations:
+        events = next(iter(run_result.annihilations.values()))
+        ray_length = 0.25 * z_span
+        starts = events["positions"]
+        photon_rays = [
+            (starts, starts + ray_length * events["photon_directions"][:, 0, :]),
+            (starts, starts + ray_length * events["photon_directions"][:, 1, :]),
+        ]
+
     def draw(axes, index, count):
         reveal = 2 + int(round((total - 2) * index / max(count - 1, 1)))
+        if annotate == "target":
+            mpl3d.draw_block(axes, -0.12 * z_span, 0.0, 1.1 * beam_extent)
+            mpl3d.draw_beam_arrow(axes, -0.45 * z_span, -0.13 * z_span)
         mpl3d.draw_scene_elements(axes, scene, run_result)
         mpl3d.draw_trajectories(axes, combined, reveal, colors)
         mpl3d.draw_points(axes, combined[reveal - 1], colors)
+        if photon_rays is not None and index > count * 0.55:
+            gold = (0.85, 0.65, 0.13)
+            for starts_arr, ends_arr in photon_rays:
+                for start, end in zip(starts_arr, ends_arr, strict=True):
+                    axes.plot(
+                        [start[2], end[2]],
+                        [start[0], end[0]],
+                        [start[1], end[1]],
+                        color=gold,
+                        linewidth=0.6,
+                        alpha=0.6,
+                    )
 
-    return mpl3d.render_frames(draw, frame_count, title, limits)
+    render_kwargs = (config or {}).get("render", {})
+    return mpl3d.render_frames(draw, frame_count, title, limits, **render_kwargs)
 
 
 def _write_scene_html(scene_name: str, output_path: Path) -> Path | None:
@@ -265,7 +340,9 @@ def generate_scene_demo_webps(
     outputs: dict[str, Path] = {}
 
     for file_name, config in SCENE_DEMOS.items():
-        frames = _scene_demo_frames(config["scene"], config["title"], config["coloring"], frame_count)
+        frames = _scene_demo_frames(
+            config["scene"], config["title"], config["coloring"], frame_count, config=config
+        )
         target = output_path / file_name
         mpl3d.save_webp(frames, target, duration_ms)
         outputs[file_name] = target

@@ -10,7 +10,7 @@ Out of scope:
 - detailed accelerator target engineering
 - high-yield operational recipes
 - full shower physics
-- annihilation physics
+- annihilation energetics (energy release or deposition calculations; annihilation is modeled only as a loss endpoint with kinematic two-photon emission for visualization)
 - material activation
 - radiation shielding design
 

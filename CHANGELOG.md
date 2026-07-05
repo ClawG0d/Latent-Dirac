@@ -5,6 +5,17 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the Antimatter Factory Chain demos (decay emission with
+  beta-spectrum coloring, surrogate target production with drawn-only
+  annotations, electrostatic deceleration with time-gated dynamic trap
+  capture, and the annihilation endpoint), plus the capabilities behind
+  them: `TimeGatedField` and gate parameters on `uniform_field` /
+  `penning_trap` scene elements (both backends, parity-tested), and the
+  `annihilation_plate` element recording at-rest two-photon kinematics.
+  The safety scope was amended minimally: annihilation *energetics*
+  remain excluded; annihilation is modeled only as a ledgered loss
+  endpoint with kinematic two-photon emission for visualization.
+
 - Added strided trajectory recording to the batched JAX program
   (`record_stride` on `BatchedSceneProgram`/`run_scene_batched`,
   parity-tested against the NumPy pipeline) and the "one launch, 24

@@ -52,11 +52,25 @@ class ElementBase(SceneModel):
     label: str
 
 
+def _validate_gate_window(element):
+    has_on = element.t_on_s is not None
+    has_off = element.t_off_s is not None
+    if has_on != has_off:
+        raise ValueError("t_on_s and t_off_s must be set together")
+    if has_on and element.t_off_s <= element.t_on_s:
+        raise ValueError("t_off_s must be greater than t_on_s")
+    return element
+
+
 class UniformFieldElement(ElementBase):
     type: Literal["uniform_field"]
     B_vector_t: tuple[float, float, float] = (0.0, 0.0, 0.0)
     E_vector_v_m: tuple[float, float, float] = (0.0, 0.0, 0.0)
+    t_on_s: float | None = None
+    t_off_s: float | None = None
     steps: int | None = Field(default=None, ge=1)
+
+    _gate_window = model_validator(mode="after")(_validate_gate_window)
 
 
 class SolenoidElement(ElementBase):
@@ -92,7 +106,11 @@ class PenningTrapElement(ElementBase):
     d_m: float = Field(gt=0)
     b_tesla: float
     center_z_m: float = 0.0
+    t_on_s: float | None = None
+    t_off_s: float | None = None
     steps: int | None = Field(default=None, ge=1)
+
+    _gate_window = model_validator(mode="after")(_validate_gate_window)
 
 
 class DriftElement(ElementBase):
@@ -121,6 +139,18 @@ class MomentumWindowElement(ElementBase):
     p_max_gev_c: float
 
 
+class AnnihilationPlateElement(ElementBase):
+    """Annihilation endpoint: kills crossing e+ and records 2-photon kinematics.
+
+    At-rest approximation, no energetics (see the safety scope); fidelity
+    tier: parameterized.
+    """
+
+    type: Literal["annihilation_plate"]
+    z_m: float
+    radius_m: float = Field(gt=0)
+
+
 class MonitorElement(ElementBase):
     """Diagnostic snapshot of the cloud at this pipeline position (no physics)."""
 
@@ -136,6 +166,7 @@ ElementSpec = Annotated[
     | DriftElement
     | ApertureElement
     | MomentumWindowElement
+    | AnnihilationPlateElement
     | MonitorElement,
     Field(discriminator="type"),
 ]

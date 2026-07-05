@@ -15,6 +15,14 @@ _FIELD_DESCRIPTIONS = {
 }
 
 
+def _append_gate_line(lines: list[str], element) -> None:
+    if getattr(element, "t_on_s", None) is not None:
+        lines.append(
+            f"- gate: active for t in [{element.t_on_s:g} s, {element.t_off_s:g} s) "
+            "(ideal instantaneous switching)"
+        )
+
+
 def field_status_lines(scene: Scene) -> list[str]:
     lines = ["Magnetic field status:"]
     for element in scene.elements:
@@ -32,6 +40,7 @@ def field_status_lines(scene: Scene) -> list[str]:
             if any(component != 0.0 for component in e):
                 lines.append(f"- E vector [V/m]: [{e[0]:g}, {e[1]:g}, {e[2]:g}]")
             lines.append("- status: active over all sampled positions")
+            _append_gate_line(lines, element)
         elif element.type == "penning_trap":
             lines.append(f"- field model: {_FIELD_DESCRIPTIONS[element.type]}")
             lines.append(
@@ -39,6 +48,7 @@ def field_status_lines(scene: Scene) -> list[str]:
                 f"axial B: {element.b_tesla:g} T"
             )
             lines.append("- status: ideal global field (no hard edge)")
+            _append_gate_line(lines, element)
         elif element.type in ("dipole", "quadrupole"):
             lines.append(f"- field model: {_FIELD_DESCRIPTIONS[element.type]}")
             lines.append(f"- status: active over length {element.length_m:g} m")
@@ -65,6 +75,12 @@ def scene_report(scene: Scene, result: SceneRunResult, scope_note: str) -> str:
     lines.append("Accepted state:")
     lines.append(f"- weighted count: {final.weighted_count():g}")
     lines.append(f"- mean kinetic energy: {final.mean_kinetic_energy_joule() / 1.602176634e-13:.6g} MeV")
+
+    for label, events in result.annihilations.items():
+        lines.append("")
+        lines.append(f"Annihilation endpoint {label!r}:")
+        lines.append(f"- events: {events['positions'].shape[0]}")
+        lines.append("- at-rest two-photon kinematics (511 keV label only; no energetics)")
 
     lines.append("")
     lines.extend(field_status_lines(scene))

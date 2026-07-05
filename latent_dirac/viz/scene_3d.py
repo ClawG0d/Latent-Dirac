@@ -22,6 +22,7 @@ FIDELITY_LABELS = {
     "drift": "fidelity: exact zero-field transport",
     "aperture": "fidelity: diagnostic acceptance cut",
     "momentum_window": "fidelity: diagnostic acceptance cut",
+    "annihilation_plate": "fidelity: parameterized (at-rest two-photon kinematics; no energetics)",
     "monitor": "fidelity: diagnostic snapshot",
 }
 

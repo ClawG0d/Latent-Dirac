@@ -1,0 +1,15 @@
+schema_version: 1
+name: target-production
+seed: 2027
+source:
+  type: antiproton_surrogate
+  label: pbar-surrogate
+  params: { primary_proton_count: 50000, yield_pbar_per_primary_in_acceptance: 2.0e-5,
+            central_momentum_GeV_c: 3.0, momentum_spread_fraction: 0.1,
+            angular_rms_rad: 0.015, source_sigma_m: 0.002, bunch_length_s: 2.0e-12,
+            macro_particles: 96 }
+solver: { type: relativistic_boris, dt_s: 4.0e-11, steps: 110 }
+elements:
+  - { type: uniform_field, label: capture-field, B_vector_t: [0.0, 0.0, 1.8], steps: 110 }
+  - { type: momentum_window, label: momentum-cut, p_min_gev_c: 2.8, p_max_gev_c: 3.2 }
+  - { type: monitor, label: collection-monitor }

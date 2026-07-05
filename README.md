@@ -93,6 +93,10 @@ Implemented:
   xopt itself is not a dependency)
 - the `latent-dirac` CLI: `run` prints the scene report, `render` writes
   the interactive 3D HTML
+- time-gated fields (`TimeGatedField`; `t_on_s`/`t_off_s` on
+  `uniform_field` and `penning_trap` scene elements, both backends)
+- the `annihilation_plate` element: a ledgered loss endpoint recording
+  at-rest two-photon kinematics (no energetics; NumPy pipeline only)
 - differentiable capture objective (`make_differentiable_objective`:
   sigmoid-relaxed acceptance, gradients of the soft accepted fraction
   through every transport step via JAX autodiff; the relaxation is an
@@ -147,7 +151,7 @@ hover text.
 
 ## Demos
 
-Eight 3D demos, each rendered from real simulation output. Most are defined
+Twelve 3D demos, each rendered from real simulation output. Most are defined
 by a declarative YAML scene under [examples/scenes/](examples/scenes/) —
 the scene file *is* the demo. Interactive Plotly versions
 (`assets/demos/*_3d.html`) sit next to each scene-driven animation.
@@ -461,6 +465,69 @@ result.accepted_fraction  # (24,)
 result.trajectories       # (24, S, N, 3)
 ```
 
+## The Antimatter Factory Chain
+
+Four demos telling the company narrative end to end — source, production,
+deceleration and capture, and the ledgered endpoint. Each stage is a
+declarative scene; the ledger accounts for every antiparticle across the
+chain.
+
+### Chain 1: Beta-Plus Decay Emission
+
+Positrons are born in radioactive decay: an isotropic burst from a
+Na-22-like pellet, trail color mapping the continuous beta spectrum
+(parameterized Beta(3,3) approximation — no nuclear detail). The guide
+solenoid captures a fraction; the collimator accounts for the rest.
+
+![Animated 3D decay emission demo](assets/demos/decay_emission_3d.webp)
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/decay_emission.yaml
+```
+
+### Chain 2: Antiproton Production at a Target (Surrogate)
+
+High-energy protons striking a target produce antiprotons — but target
+physics is hadronic shower physics, which Latent Dirac deliberately does
+not simulate (that is the Geant4 adapter's job, on the roadmap). The
+target block and proton beam here are **drawn annotations only**; the
+antiproton cloud comes from the surrogate accepted-source model.
+
+![Animated 3D target production demo](assets/demos/target_production_3d.webp)
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/target_production.yaml
+```
+
+### Chain 3: Electrostatic Deceleration and Dynamic Capture
+
+Magnetic fields do no work — they bend and confine, but the deceleration
+is done by the electric field. A keV positron bunch climbs a retarding E
+field (watch the helix pitch shrink), coasts field-free into the trap
+region, and then the **entire trap field (well and axial B) switches on
+around the bunch** — an idealized time-gated capture in the spirit of the
+real accumulator sequence — leaving the positrons bouncing in the well.
+
+![Animated 3D deceleration capture demo](assets/demos/decel_capture_3d.webp)
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/decel_capture.yaml
+```
+
+### Chain 4: The Annihilation Endpoint
+
+Every antiparticle's story ends somewhere, and the ledger records it.
+Positrons reaching the plate are stamped in `lost_at_element` and each
+event emits a back-to-back photon pair (at-rest two-photon kinematics;
+511 keV appears as a label only — energy release and deposition stay
+outside the project scope).
+
+![Animated 3D annihilation endpoint demo](assets/demos/annihilation_endpoint_3d.webp)
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/annihilation_endpoint.yaml
+```
+
 Regenerate all animations from source:
 
 ```bash
@@ -580,7 +647,7 @@ antimatter facility design studies. The following remain out of scope:
 - detailed accelerator target engineering
 - high-yield operational recipes
 - full shower physics
-- annihilation physics
+- annihilation energetics (energy release or deposition calculations; annihilation is modeled only as a loss endpoint with kinematic two-photon emission for visualization)
 - material activation
 - radiation shielding design
 
