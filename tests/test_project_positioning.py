@@ -78,8 +78,7 @@ def test_no_unsubstantiated_performance_claims():
         match = PERFORMANCE_CLAIM_PATTERN.search(text)
         if match and "benchmark" not in text.lower():
             offenders.append(
-                f"{path.relative_to(PROJECT_ROOT)} claims {match.group(0)!r} "
-                "without referencing a benchmark"
+                f"{path.relative_to(PROJECT_ROOT)} claims {match.group(0)!r} without referencing a benchmark"
             )
 
     assert offenders == []

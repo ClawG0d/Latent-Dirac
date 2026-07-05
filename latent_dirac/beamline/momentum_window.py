@@ -39,8 +39,7 @@ class MomentumWindow(BaseModel, BeamlineElement):
         result = cloud.copy()
         momentum = np.linalg.norm(result.momentum_kg_m_s, axis=1)
         result.apply_alive_mask(
-            (momentum >= self.min_momentum_kg_m_s)
-            & (momentum <= self.max_momentum_kg_m_s)
+            (momentum >= self.min_momentum_kg_m_s) & (momentum <= self.max_momentum_kg_m_s)
         )
         result.metadata.setdefault("momentum_windows", []).append(
             {

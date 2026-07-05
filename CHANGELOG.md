@@ -5,6 +5,12 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the ideal Penning trap: `PenningTrapField` (quadrupole
+  electrostatic well + axial B, analytic `eigenfrequencies` with the
+  invariance relations validated in tests) and the `penning_trap` scene
+  element, supported by the NumPy pipeline, the JAX backend, and the
+  differentiable objective.
+
 - Added the differentiable capture objective
   (`latent_dirac.backends.differentiable.make_differentiable_objective`):
   sigmoid-relaxed acceptance stages with gradients of the soft accepted

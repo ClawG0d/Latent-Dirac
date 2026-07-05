@@ -44,9 +44,7 @@ class Stage(BaseModel):
             data["action"] = action
         super().__init__(**data)
 
-    def run(
-        self, state: ParticleState, stage_index: int | None = None
-    ) -> tuple[ParticleState, StageResult]:
+    def run(self, state: ParticleState, stage_index: int | None = None) -> tuple[ParticleState, StageResult]:
         input_count = state.weighted_count()
         alive_before = state.alive.copy()
 

@@ -41,9 +41,10 @@ Latent Dirac currently focuses on:
 - accepted yield diagnostics
 - future calibration against external scientific tools such as Geant4 and Xsuite
 
-Trap physics (Penning-Malmberg elements, buffer-gas collisions,
-guiding-center long-timescale transport) is a Phase 4 roadmap direction, not
-part of the current phase.
+Trap physics: the ideal Penning trap field model landed early (Spec 4a,
+validated eigenfrequencies). Buffer-gas collisions, rotating wall, space
+charge, and guiding-center long-timescale transport remain Phase 4
+roadmap directions.
 
 ## Out of scope
 

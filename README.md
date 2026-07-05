@@ -72,7 +72,8 @@ Implemented:
 - parameterized positron pair source model
 - simplified beta-plus positron source model
 - surrogate antiproton source model
-- uniform, solenoid, dipole, quadrupole, and composite field models
+- uniform, solenoid, dipole, quadrupole, composite, and ideal Penning
+  trap field models (analytic eigenfrequencies exposed and validated)
 - table-based field maps with trilinear interpolation and COMSOL
   regular-grid CSV import
 - relativistic Boris transport as a pure-function kernel (dimensionless
@@ -101,6 +102,7 @@ Implemented:
 
 Not implemented yet:
 
+- buffer-gas collisions, rotating wall, and space charge in the trap
 - interactive 3D viewer application
 - GPU benchmark suite
 - field maps and batched monitor snapshots in the JAX backend

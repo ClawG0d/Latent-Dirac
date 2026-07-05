@@ -18,6 +18,7 @@ FIDELITY_LABELS = {
     "solenoid": "fidelity: parameterized (hard-edge optics model)",
     "dipole": "fidelity: parameterized (hard-edge optics model)",
     "quadrupole": "fidelity: parameterized (hard-edge optics model)",
+    "penning_trap": "fidelity: parameterized (ideal quadrupole well, no electrode geometry)",
     "drift": "fidelity: exact zero-field transport",
     "aperture": "fidelity: diagnostic acceptance cut",
     "momentum_window": "fidelity: diagnostic acceptance cut",

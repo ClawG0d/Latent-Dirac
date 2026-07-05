@@ -36,11 +36,11 @@ elements:
   to the scene description.
 - Validation is fail-fast: unknown element types, unknown keys, missing or
   duplicate labels, and version mismatches are rejected at load time.
-- Element vocabulary: `uniform_field`, `solenoid`, `dipole`, `quadrupole`
-  (transport through the corresponding field model, optional per-element
-  `steps` override), `drift` (zero-field transport), `aperture`,
-  `momentum_window` (momenta in GeV/c), `monitor` (cloud snapshot, no
-  physics).
+- Element vocabulary: `uniform_field`, `solenoid`, `dipole`, `quadrupole`,
+  `penning_trap` (transport through the corresponding field model,
+  optional per-element `steps` override), `drift` (zero-field transport),
+  `aperture`, `momentum_window` (momenta in GeV/c), `monitor` (cloud
+  snapshot, no physics).
 - Batch convention: every numeric parameter must remain liftable into a
   batch-dimension array. This keeps the schema compatible with the Phase 3
   batched (vmap) execution plan.

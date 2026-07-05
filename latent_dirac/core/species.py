@@ -56,7 +56,4 @@ antiproton = ParticleSpecies(
     is_antimatter=True,
 )
 
-BUILTIN_SPECIES = {
-    species.name: species
-    for species in (electron, positron, proton, antiproton)
-}
+BUILTIN_SPECIES = {species.name: species for species in (electron, positron, proton, antiproton)}

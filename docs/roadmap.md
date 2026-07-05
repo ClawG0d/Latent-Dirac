@@ -54,8 +54,11 @@ Split into independently deliverable specs:
 - differentiable capture chain via autodiff with soft-aperture relaxation
   — **done early** (Spec 3d: `make_differentiable_objective`, gradients
   validated against finite differences; field-map objectives still pending)
-- Penning-Malmberg trap element and Surko buffer-gas Monte Carlo collisions,
-  with cross-section data curated as an open, provenance-tracked dataset
+- Penning-Malmberg trap element — **field model done** (Spec 4a: ideal
+  quadrupole well + axial B with validated eigenfrequencies; electrode
+  geometries stay on the field-map route); Surko buffer-gas Monte Carlo
+  collisions with cross-section data curated as an open,
+  provenance-tracked dataset — pending
 - guiding-center/secular solver for long-timescale trap storage
 - Geant4 adapter made real (implantation/moderation yield tables) plus
   semi-empirical moderation parameterizations

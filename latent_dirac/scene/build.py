@@ -11,6 +11,7 @@ from latent_dirac.beamline.momentum_window import MomentumWindow
 from latent_dirac.core.units import momentum_gev_c_to_si
 from latent_dirac.fields.base import Field
 from latent_dirac.fields.dipole import DipoleField
+from latent_dirac.fields.penning_trap import PenningTrapField
 from latent_dirac.fields.quadrupole import QuadrupoleField
 from latent_dirac.fields.solenoid import SolenoidField
 from latent_dirac.fields.uniform import UniformField
@@ -121,6 +122,13 @@ def _field_for(element) -> Field:
         return QuadrupoleField(
             gradient_t_m=element.gradient_t_m,
             length_m=element.length_m,
+            center_z_m=element.center_z_m,
+        )
+    if element.type == "penning_trap":
+        return PenningTrapField(
+            v0_volt=element.v0_volt,
+            d_m=element.d_m,
+            b_tesla=element.b_tesla,
             center_z_m=element.center_z_m,
         )
     if element.type == "drift":

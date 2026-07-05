@@ -30,6 +30,7 @@ _SWEEPABLE_PARAMS = {
     "solenoid": ("b_tesla", "radius_m", "length_m", "center_z_m"),
     "dipole": ("B_vector_t", "length_m", "center_z_m"),
     "quadrupole": ("gradient_t_m", "length_m", "center_z_m"),
+    "penning_trap": ("v0_volt", "d_m", "b_tesla", "center_z_m"),
     "drift": (),
     "aperture": ("radius_m",),
     "momentum_window": ("p_min_gev_c", "p_max_gev_c"),
@@ -111,6 +112,21 @@ def _quadrupole_field(jnp, positions, params):
     return jnp.zeros_like(positions), jnp.stack([b_x, b_y, jnp.zeros_like(b_x)], axis=1)
 
 
+def _penning_trap_field(jnp, positions, params):
+    scale = params["v0_volt"] / params["d_m"] ** 2
+    e_field = jnp.stack(
+        [
+            0.5 * scale * positions[:, 0],
+            0.5 * scale * positions[:, 1],
+            -scale * (positions[:, 2] - params["center_z_m"]),
+        ],
+        axis=1,
+    )
+    b_z = jnp.broadcast_to(params["b_tesla"], positions.shape[:1])
+    zeros = jnp.zeros_like(b_z)
+    return e_field, jnp.stack([zeros, zeros, b_z], axis=1)
+
+
 def _drift_field(jnp, positions, params):
     zeros = jnp.zeros_like(positions)
     return zeros, zeros
@@ -121,6 +137,7 @@ _FIELD_FNS = {
     "solenoid": _solenoid_field,
     "dipole": _dipole_field,
     "quadrupole": _quadrupole_field,
+    "penning_trap": _penning_trap_field,
     "drift": _drift_field,
 }
 

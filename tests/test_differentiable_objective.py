@@ -158,6 +158,48 @@ def test_inverted_regimes_collapse_toward_zero_survival():
     assert window_objective.value(inverted) < 1e-3
 
 
+def test_penning_trap_parameters_are_differentiable():
+    from latent_dirac.scene.loader import scene_from_mapping
+
+    scene = scene_from_mapping(
+        {
+            "schema_version": 1,
+            "name": "trap-grad",
+            "seed": 2026,
+            "source": {
+                "type": "positron_pair",
+                "label": "pair-source",
+                "params": {
+                    "primary_count": 1000,
+                    "yield_eplus_per_primary": 0.02,
+                    "mean_energy_MeV": 0.001,
+                    "energy_spread_MeV": 0.0002,
+                    "angular_rms_rad": 0.3,
+                    "source_sigma_m": 0.0005,
+                    "bunch_length_s": 1.0e-12,
+                    "macro_particles": 24,
+                },
+            },
+            "solver": {"type": "relativistic_boris", "dt_s": 5.0e-12, "steps": 150},
+            "elements": [
+                {"type": "penning_trap", "label": "trap", "v0_volt": 10.0, "d_m": 0.005, "b_tesla": 1.0},
+                {"type": "aperture", "label": "iris", "radius_m": 0.0006, "z_m": 0.0},
+            ],
+        }
+    )
+    objective = make_differentiable_objective(scene, variables=["trap.v0_volt"], sharpness=50.0)
+    inputs = {"trap.v0_volt": 10.0}
+
+    value, grads = objective.value_and_grad(inputs)
+    step = 1e-4
+    numeric = (
+        objective.value({"trap.v0_volt": 10.0 + step}) - objective.value({"trap.v0_volt": 10.0 - step})
+    ) / (2.0 * step)
+
+    assert 0.0 < value < 1.0
+    assert grads["trap.v0_volt"] == pytest.approx(numeric, rel=1e-3, abs=1e-8)
+
+
 def test_variable_validation_is_shared_with_evaluator():
     scene = load_scene(HELLO_SCENE)
     with pytest.raises(ValueError, match="warp_factor"):

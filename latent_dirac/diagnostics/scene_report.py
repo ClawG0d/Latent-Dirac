@@ -11,6 +11,7 @@ _FIELD_DESCRIPTIONS = {
     "solenoid": "idealized solenoid (hard-edge)",
     "dipole": "idealized dipole (hard-edge)",
     "quadrupole": "idealized quadrupole (hard-edge)",
+    "penning_trap": "ideal Penning trap (quadrupole well + axial B)",
 }
 
 
@@ -31,6 +32,13 @@ def field_status_lines(scene: Scene) -> list[str]:
             if any(component != 0.0 for component in e):
                 lines.append(f"- E vector [V/m]: [{e[0]:g}, {e[1]:g}, {e[2]:g}]")
             lines.append("- status: active over all sampled positions")
+        elif element.type == "penning_trap":
+            lines.append(f"- field model: {_FIELD_DESCRIPTIONS[element.type]}")
+            lines.append(
+                f"- well parameter V0: {element.v0_volt:g} V, d: {element.d_m:g} m, "
+                f"axial B: {element.b_tesla:g} T"
+            )
+            lines.append("- status: ideal global field (no hard edge)")
         elif element.type in ("dipole", "quadrupole"):
             lines.append(f"- field model: {_FIELD_DESCRIPTIONS[element.type]}")
             lines.append(f"- status: active over length {element.length_m:g} m")

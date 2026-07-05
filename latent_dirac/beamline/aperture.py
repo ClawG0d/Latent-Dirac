@@ -26,7 +26,5 @@ class Aperture(BaseModel, BeamlineElement):
         result = cloud.copy()
         radial = np.linalg.norm(result.position_m[:, :2], axis=1)
         result.apply_alive_mask(radial <= self.radius_m)
-        result.metadata.setdefault("apertures", []).append(
-            {"radius_m": self.radius_m, "z_m": self.z_m}
-        )
+        result.metadata.setdefault("apertures", []).append({"radius_m": self.radius_m, "z_m": self.z_m})
         return result

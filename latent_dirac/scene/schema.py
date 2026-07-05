@@ -84,6 +84,17 @@ class QuadrupoleElement(ElementBase):
     steps: int | None = Field(default=None, ge=1)
 
 
+class PenningTrapElement(ElementBase):
+    """Ideal Penning trap (parameterized; no electrode geometry)."""
+
+    type: Literal["penning_trap"]
+    v0_volt: float
+    d_m: float = Field(gt=0)
+    b_tesla: float
+    center_z_m: float = 0.0
+    steps: int | None = Field(default=None, ge=1)
+
+
 class DriftElement(ElementBase):
     """Zero-field transport segment (exact within the solver contract)."""
 
@@ -121,6 +132,7 @@ ElementSpec = Annotated[
     | SolenoidElement
     | DipoleElement
     | QuadrupoleElement
+    | PenningTrapElement
     | DriftElement
     | ApertureElement
     | MomentumWindowElement
@@ -128,7 +140,7 @@ ElementSpec = Annotated[
     Field(discriminator="type"),
 ]
 
-FIELD_ELEMENT_TYPES = ("uniform_field", "solenoid", "dipole", "quadrupole")
+FIELD_ELEMENT_TYPES = ("uniform_field", "solenoid", "dipole", "quadrupole", "penning_trap")
 
 
 class Scene(SceneModel):
