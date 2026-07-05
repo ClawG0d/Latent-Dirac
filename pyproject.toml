@@ -43,6 +43,9 @@ jax = [
 openpmd = [
   "openpmd-api>=0.15"
 ]
+root = [
+  "uproot>=5"
+]
 
 [tool.setuptools.packages.find]
 include = ["latent_dirac*"]

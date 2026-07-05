@@ -12,6 +12,14 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
   test-enforced link to `docs/safety_scope.md`. Geant4 attribution
   remains in `NOTICE`.
 
+- Added ROOT I/O via uproot (`latent_dirac.io.root_io`, new optional
+  `[root]` extra; pure Python, no ROOT installation): labeled
+  `ParticleState` snapshots as flat SI-unit TTrees plus a JSON
+  species/metadata sidecar per label, `write_scene_result` for
+  monitors + final cloud, and `read_particle_state` for a full
+  write→read round-trip (custom species survive; engine provenance
+  travels in the sidecar). Closed-loop v1 item 2.
+
 - Added openPMD particle output (`latent_dirac.io.openpmd_io`, new
   optional `[openpmd]` extra): `write_particle_states` writes labeled
   `ParticleState` snapshots as openPMD iterations (SI unit metadata,

@@ -29,10 +29,10 @@ Phase 2: architecture foundation with visuals first. Spec status:
 - 2d FieldMap import (COMSOL regular-grid CSV): done
 - 2e openPMD output: done (write-only, `[openpmd]` extra)
 
-Next: the remaining closed-loop v1 items (ROOT I/O via uproot, the
-Xsuite adapter, native mean-field space charge) with engine-track M1'
-build recipes in parallel; then the GPU lane and the interactive
-viewer. See docs/roadmap.md.
+Next: the remaining closed-loop v1 items (the Xsuite adapter, native
+mean-field space charge) with engine-track M1' build recipes in
+parallel; then the GPU lane and the interactive viewer. See
+docs/roadmap.md.
 
 Geant4 engine track: the complete vanilla Geant4 v11.4.2 source tree is
 vendored at `geant4-v11.4.2/` as the in-repo engine baseline. The first

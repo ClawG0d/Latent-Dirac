@@ -82,7 +82,7 @@ adapters and anchor fidelity. Design record:
 | Matter     | targets, degraders, annihilation      | transformer | vendored vanilla Geant4 v11.4.2             | builds via recipe; offline yield tables only, no runtime coupling |
 | Collective | in-trap space charge                  | stepper     | first-party mean-field v1, later WarpX      | planned (mean-field v1 in closed-loop v1) |
 | Detector   | detector response                     | transformer | parameterized model first, Garfield++ later | planned |
-| Analysis   | persistent output, ecosystem exchange | sink        | openPMD + ROOT via uproot                   | openPMD write shipped; uproot planned (closed-loop v1) |
+| Analysis   | persistent output, ecosystem exchange | sink        | openPMD + ROOT via uproot                   | shipped (openPMD write; ROOT round-trip) |
 
 Forms: a *sampler* produces the initial particle cloud; a *stepper*
 advances `ParticleState` and can be batched and differentiated on the
@@ -144,6 +144,10 @@ Implemented:
   `[openpmd]` extra): monitor snapshots and the final cloud as openPMD
   iterations with SI unit metadata, the loss-ledger channel, and the
   engine provenance four-tuple lifted to species attributes
+- ROOT I/O via uproot (`latent_dirac.io.root_io`, optional `[root]`
+  extra, no ROOT installation): SI-unit TTrees per snapshot with a JSON
+  species/metadata sidecar, and full write→read round-trip back into
+  `ParticleState`
 - placeholder adapters for Geant4, Xsuite, and ROOT
 
 Not implemented yet:
@@ -152,8 +156,8 @@ Not implemented yet:
   `engine/README.md` recipe and feeds the pipeline through offline yield
   tables, but there is no runtime coupling — adapters remain
   placeholders; see the roadmap)
-- ROOT I/O via uproot, the real Xsuite adapter, and mean-field space
-  charge (the remaining closed-loop v1 items — see the solver zoo above)
+- the real Xsuite adapter and mean-field space charge (the remaining
+  closed-loop v1 items — see the solver zoo above)
 - buffer-gas collisions, rotating wall, and space charge in the trap
 - interactive 3D viewer application
 - GPU benchmark suite

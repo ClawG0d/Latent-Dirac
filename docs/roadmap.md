@@ -17,13 +17,15 @@ Component → next milestone:
 - Collective → native mean-field space charge v1 (closed-loop v1),
   WarpX adapter later
 - Detector → parameterized model first, Garfield++ later
-- Analysis → openPMD write shipped (2e, `[openpmd]` extra); ROOT I/O
-  via uproot next (closed-loop v1)
+- Analysis → shipped: openPMD write (2e, `[openpmd]` extra) and ROOT
+  round-trip via uproot (`[root]` extra)
 
 ### Closed-loop v1 (in order)
 
 openPMD output — **done** (write-only particle output,
-`latent_dirac.io.openpmd_io`) → ROOT I/O via uproot → Xsuite adapter
+`latent_dirac.io.openpmd_io`) → ROOT I/O via uproot — **done**
+(`latent_dirac.io.root_io`: SI-unit TTrees + JSON sidecar, write→read
+round-trip) → Xsuite adapter
 (`ParticleState` ↔ `xtrack.Particles` round-trip; the
 `test_only_placeholder_adapters_are_present` gate flips in the same
 change) → native mean-field space charge (fidelity-tiered, explicit
