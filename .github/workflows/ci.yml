@@ -29,4 +29,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install -e ".[dev,viz,jax]"
+      # non-fatal: cells without an openpmd-api wheel just skip its tests
+      - run: python -m pip install -e ".[openpmd]" || echo "openpmd extra unavailable; tests will skip"
       - run: python -m pytest -q

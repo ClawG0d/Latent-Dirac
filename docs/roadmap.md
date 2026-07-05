@@ -17,11 +17,13 @@ Component → next milestone:
 - Collective → native mean-field space charge v1 (closed-loop v1),
   WarpX adapter later
 - Detector → parameterized model first, Garfield++ later
-- Analysis → openPMD output (2e) and ROOT I/O via uproot (closed-loop v1)
+- Analysis → openPMD write shipped (2e, `[openpmd]` extra); ROOT I/O
+  via uproot next (closed-loop v1)
 
-### Closed-loop v1 (next up, in order)
+### Closed-loop v1 (in order)
 
-openPMD output → ROOT I/O via uproot → Xsuite adapter
+openPMD output — **done** (write-only particle output,
+`latent_dirac.io.openpmd_io`) → ROOT I/O via uproot → Xsuite adapter
 (`ParticleState` ↔ `xtrack.Particles` round-trip; the
 `test_only_placeholder_adapters_are_present` gate flips in the same
 change) → native mean-field space charge (fidelity-tiered, explicit
@@ -56,8 +58,8 @@ Split into independently deliverable specs:
 - **2d FieldMap import**: regular-grid field container with trilinear
   interpolation, COMSOL regular-grid CSV first. RF fields are a further
   field-library extension after field maps.
-- **2e openPMD output**: scheduled as the first closed-loop v1 item
-  (see the solver-zoo view above).
+- **2e openPMD output**: done (write-only particle output behind the
+  `[openpmd]` extra; see the solver-zoo view above).
 
 ## Phase 3 — GPU batch and the interactive platform
 

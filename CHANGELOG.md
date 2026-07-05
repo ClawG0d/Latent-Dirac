@@ -5,6 +5,15 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added openPMD particle output (`latent_dirac.io.openpmd_io`, new
+  optional `[openpmd]` extra): `write_particle_states` writes labeled
+  `ParticleState` snapshots as openPMD iterations (SI unit metadata,
+  loss-ledger channel, alive mask, per-particle time as records;
+  charge/mass as constants), `write_scene_result` writes every monitor
+  plus the final cloud. Engine provenance four-tuples in state metadata
+  are lifted to flat species attributes. Write-only; closed-loop v1
+  item 1 per the solver-zoo spec.
+
 - **Positioning: solver-zoo composition.** The platform narrative is
   organized as a solver zoo behind one scene/state spine: first-party
   steppers on the NumPy/JAX substrate, engine-backed transformers

@@ -40,6 +40,9 @@ viz = [
 jax = [
   "jax>=0.4.30"
 ]
+openpmd = [
+  "openpmd-api>=0.15"
+]
 
 [tool.setuptools.packages.find]
 include = ["latent_dirac*"]
