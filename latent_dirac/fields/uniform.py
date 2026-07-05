@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import numpy as np
-from pydantic import BaseModel, ConfigDict, Field as PydanticField, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import Field as PydanticField
 
 from latent_dirac.fields.base import Field, broadcast_vector
 

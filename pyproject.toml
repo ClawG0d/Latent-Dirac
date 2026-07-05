@@ -17,9 +17,16 @@ dependencies = [
   "pydantic>=2.7"
 ]
 
+[project.urls]
+Homepage = "https://github.com/ClawG0d/Latent-Dirac"
+Documentation = "https://github.com/ClawG0d/Latent-Dirac/tree/master/docs"
+Issues = "https://github.com/ClawG0d/Latent-Dirac/issues"
+Changelog = "https://github.com/ClawG0d/Latent-Dirac/blob/master/CHANGELOG.md"
+
 [project.optional-dependencies]
 dev = [
-  "pytest>=8.0"
+  "pytest>=8.0",
+  "ruff>=0.4"
 ]
 viz = [
   "matplotlib",
@@ -33,3 +40,17 @@ include = ["latent_dirac*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E741"]
+
+[tool.ruff.lint.per-file-ignores]
+# tools and examples insert the project root into sys.path before importing
+# the package, and report/drawing literals are kept verbatim on long lines
+"tools/*" = ["E402", "E501"]
+"examples/*" = ["E402", "E501"]

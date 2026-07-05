@@ -19,11 +19,11 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from examples.charge_sign_splitter_demo import make_initial_pair
 from latent_dirac.fields.uniform import UniformField
 from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
 from latent_dirac.state.particle_cloud import ParticleCloud
 from latent_dirac.state.trajectory import Trajectory
-from examples.charge_sign_splitter_demo import make_initial_pair
 
 HERO_WEBP_FILE = "charge_sign_splitter_3d.webp"
 HERO_HTML_FILE = "charge_sign_splitter_3d.html"

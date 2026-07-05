@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 import sys
+from collections.abc import Sequence
 from pathlib import Path
 
 import numpy as np

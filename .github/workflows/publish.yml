@@ -1,0 +1,30 @@
+# Publishes to PyPI via trusted publishing when a GitHub release is published.
+#
+# One-time setup (repository owner):
+# 1. On pypi.org, create/claim the project name "latent-dirac" under
+#    Publishing -> Add a new pending publisher with:
+#    owner: ClawG0d, repository: Latent-Dirac, workflow: publish.yml,
+#    environment: pypi
+# 2. In the GitHub repository settings, create an environment named "pypi".
+# No API tokens are stored; authentication uses the OIDC id-token below.
+
+name: publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install build
+      - run: python -m build
+      - uses: pypa/gh-action-pypi-publish@release/v1

@@ -9,7 +9,6 @@ import numpy as np
 from latent_dirac.core.units import joule_to_ev
 from latent_dirac.viz.base import import_optional, particle_cloud_from_result_or_cloud
 
-
 POSITION_AXES = {"x": 0, "y": 1, "z": 2}
 MOMENTUM_AXES = {"px": 0, "py": 1, "pz": 2}
 

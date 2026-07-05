@@ -12,7 +12,6 @@ from latent_dirac.pipeline.stage import StageResult
 from latent_dirac.state.particle_cloud import ParticleCloud
 from latent_dirac.state.trajectory import Trajectory
 
-
 CORE_MODULES = (
     "latent_dirac.core.constants",
     "latent_dirac.core.units",

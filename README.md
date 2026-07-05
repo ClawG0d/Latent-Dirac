@@ -4,6 +4,9 @@
 
 # Latent Dirac
 
+[![ci](https://github.com/ClawG0d/Latent-Dirac/actions/workflows/ci.yml/badge.svg)](https://github.com/ClawG0d/Latent-Dirac/actions/workflows/ci.yml)
+[![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+
 Latent Dirac is an open interactive simulation platform for antimatter
 factories: declarative scenes of positron and antiproton facilities
 (source → transport → capture), batch-parallel simulation and sweeps, and

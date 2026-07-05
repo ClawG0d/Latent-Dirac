@@ -90,7 +90,7 @@ class ParticleCloud(BaseModel):
         live_energy = self.kinetic_energy_joule()[self.alive]
         return float(np.average(live_energy, weights=live_weights))
 
-    def copy(self) -> "ParticleCloud":
+    def copy(self) -> ParticleCloud:
         return ParticleCloud(
             species=self.species,
             position_m=self.position_m.copy(),
@@ -103,7 +103,7 @@ class ParticleCloud(BaseModel):
             metadata=deepcopy(self.metadata),
         )
 
-    def apply_alive_mask(self, mask) -> "ParticleCloud":
+    def apply_alive_mask(self, mask) -> ParticleCloud:
         mask_array = np.asarray(mask, dtype=bool)
         if mask_array.shape != self.alive.shape:
             raise ValueError("alive mask must have shape (N,)")
