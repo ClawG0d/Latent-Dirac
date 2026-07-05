@@ -83,6 +83,9 @@ Implemented:
 - declarative YAML/JSON scene schema with drift and monitor elements
   ([docs/scene_schema.md](docs/scene_schema.md))
 - scene-driven 3D rendering with per-element fidelity labels (function API)
+- JAX batched scene execution (`run_scene_batched`: vmap over
+  configurations, optional `[jax]` extra; validated element-wise against
+  the NumPy float64 pipeline on CPU — GPU throughput is not yet measured)
 - optional Matplotlib and Plotly visualization backends
 - placeholder adapters for Geant4, Xsuite, and ROOT
 
@@ -90,7 +93,8 @@ Not implemented yet:
 
 - scene CLI and hello-beamline example
 - interactive 3D viewer application
-- JAX GPU backend and batched sweep API
+- Xopt-compatible sweep evaluator and GPU benchmark suite
+- field maps and batched monitor snapshots in the JAX backend
 - CST and SIMION field-map formats
 - full electromagnetic or hadronic shower physics
 - detailed target engineering

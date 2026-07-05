@@ -22,6 +22,8 @@ The current package is intentionally lightweight:
 - `pipeline`: staged execution, loss accounting, and ledger stamping
   (stages stamp `lost_at_element` with their index)
 - `scene`: declarative YAML/JSON scene schema, loader, and pipeline builder
+- `backends`: optional JAX batched execution (`run_scene_batched`: one
+  compiled program, `vmap` over configurations)
 - `diagnostics`: accepted-yield, loss-ledger, and text-report utilities
 - `adapters`: placeholders for future optional Geant4, Xsuite, and ROOT integrations
 

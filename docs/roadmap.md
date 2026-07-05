@@ -34,9 +34,11 @@ Split into independently deliverable specs:
 
 ## Phase 3 — GPU batch and the interactive platform
 
-- JAX backend (vmap over particles and configurations, `lax.scan` in time)
-  with NumPy float64 reference comparisons in CI
-- batched sweep API and an Xopt-compatible evaluator as an optional extra
+- JAX backend (vmap over configurations, `lax.scan` in time) with NumPy
+  float64 reference comparisons in CI — **done** (Spec 3a:
+  `latent_dirac.backends.jax_scene.run_scene_batched`, optional `[jax]`
+  extra; field maps and batched monitor snapshots still pending)
+- Xopt-compatible sweep evaluator as an optional extra
 - interactive 3D viewer (plotly first, then web); USD export kept open
 - flagship batched-sweep 3D demo with trajectory downsampling/streaming
 - honest benchmark suite: analytic cases in CI; external comparisons only

@@ -5,6 +5,14 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the JAX batched backend (`latent_dirac.backends.jax_scene`,
+  optional `[jax]` extra): a declarative scene compiles into one JAX
+  program (`lax.scan` transports, mask-and-ledger acceptance) and `vmap`
+  maps it over overridden element parameters
+  (`run_scene_batched(scene, overrides={"label.param": values})`).
+  The shared Boris kernel is now array-namespace generic (`xp=numpy` or
+  `jax.numpy`), and parity with the NumPy float64 pipeline is enforced
+  in CI.
 - Rebuilt every README demo as a 3D animation rendered from real
   simulation runs through a shared matplotlib pipeline (`tools/mpl3d.py`,
   `tools/generate_scene_demo_webps.py`). Most demos are now defined by
