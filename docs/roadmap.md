@@ -3,6 +3,32 @@
 The positioning behind this roadmap is recorded in
 [the platform positioning spec](superpowers/specs/2026-07-05-platform-positioning-and-roadmap-design.md).
 
+## Solver-zoo view (adopted 2026-07-05)
+
+The platform composes solver components behind one scene/state spine;
+see [the solver-zoo spec](superpowers/specs/2026-07-05-solver-zoo-composition-design.md).
+Component → next milestone:
+
+- Source → first engine yield table shipped (`engine/yieldgen`);
+  positron/moderation tables per M3
+- Transport → shipped (NumPy float64 reference + JAX batch)
+- Lattice → Xsuite adapter (closed-loop v1)
+- Matter → first build recipe shipped (M1'-lite); real adapter next (M2)
+- Collective → native mean-field space charge v1 (closed-loop v1),
+  WarpX adapter later
+- Detector → parameterized model first, Garfield++ later
+- Analysis → openPMD output (2e) and ROOT I/O via uproot (closed-loop v1)
+
+### Closed-loop v1 (next up, in order)
+
+openPMD output → ROOT I/O via uproot → Xsuite adapter
+(`ParticleState` ↔ `xtrack.Particles` round-trip; the
+`test_only_placeholder_adapters_are_present` gate flips in the same
+change) → native mean-field space charge (fidelity-tiered, explicit
+validity envelope). Engine-track M1' proceeds in parallel; the GPU lane
+(float32 backend validation, then the honest benchmark suite) follows
+closed-loop v1.
+
 ## Phase 1 (done)
 
 Architecture skeleton and minimal working demos: core constants and species,
@@ -30,7 +56,8 @@ Split into independently deliverable specs:
 - **2d FieldMap import**: regular-grid field container with trilinear
   interpolation, COMSOL regular-grid CSV first. RF fields are a further
   field-library extension after field maps.
-- **2e openPMD output**: deferred until Phase 3 wrap-up.
+- **2e openPMD output**: scheduled as the first closed-loop v1 item
+  (see the solver-zoo view above).
 
 ## Phase 3 — GPU batch and the interactive platform
 
@@ -74,8 +101,9 @@ controlled patch protocol (frozen until its infrastructure exists).
   at build time); containerized CI outside the Python matrix still
   pending
 - **M2 — adapter made real**: scene → GDML export, subprocess/macro
-  driving, particle-cloud exchange;
-  `test_only_placeholder_adapters_are_present` flips in the same change
+  driving, particle-cloud exchange; the placeholder-only gate will
+  already have flipped with the Xsuite adapter (closed-loop v1) — M2
+  extends the adapter-status assertions instead
 - **M3 — yield-table pipeline** — first deliverable done
   (`engine/yieldgen`: proton-on-iridium FTFP_BERT production, CSV
   contract with the provenance four-tuple, consumed by the

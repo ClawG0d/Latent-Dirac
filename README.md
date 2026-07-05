@@ -22,8 +22,9 @@ real solver run.*
 
 The platform is built on three pillars:
 
-1. **Platform, not just a tracker** — declarative scene descriptions,
-   pluggable solvers, and optional viewers on a shared data model.
+1. **Platform, not just a tracker** — declarative scenes routed across a
+   zoo of first-party and engine-backed solvers, with optional viewers,
+   on one shared data model.
 2. **Throughput** — batched parameter sweeps designed for a JAX GPU backend
    (n_configs × n_particles in one launch).
 3. **Ledger** — loss accounting as a full life-cycle ledger for every
@@ -35,8 +36,9 @@ NumPy-based Python core for source-to-acceptance modeling: fast scenario
 modeling, parameter sweeps, transport studies, and acceptance accounting,
 with placeholder adapters for future calibration against external scientific
 tools such as Xsuite, and the vanilla Geant4 v11.4.2 source tree vendored
-in-repo as the engine-track baseline (no build or runtime coupling ships
-yet). GPU execution and interactive 3D viewers
+in-repo as the engine-track baseline (it builds via the `engine/README.md`
+recipe and feeds the pipeline through offline yield tables; no runtime
+coupling ships yet). GPU execution and interactive 3D viewers
 are roadmap items, not shipped features.
 See [docs/roadmap.md](docs/roadmap.md) for the phased plan.
 
@@ -61,6 +63,35 @@ animation below carries its field model and fidelity note in the title.
 - loss accounting
 - accepted-yield diagnostics
 - optional visualization backends separated from the physics core
+
+## The Solver Zoo
+
+Latent Dirac composes independent solver components — each authoritative
+over one physics domain — behind one scene schema, one exchange currency
+(`ParticleState`), and one per-particle loss ledger that spans component
+boundaries. First-party solvers live on the NumPy/JAX substrate and are
+batchable and differentiable; engine-backed solvers enter behind
+adapters and anchor fidelity. Design record:
+[the solver-zoo spec](docs/superpowers/specs/2026-07-05-solver-zoo-composition-design.md).
+
+| Component  | Authority domain                      | Form        | Backing                                     | Status |
+| ---------- | ------------------------------------- | ----------- | ------------------------------------------- | ------ |
+| Source     | positron / antiproton source terms    | sampler     | first-party (pair, beta-plus, surrogate) + engine yield-table replay | shipped (first engine table committed); more tables per M3 |
+| Transport  | vacuum EM transport                   | stepper     | first-party Boris kernel (NumPy + JAX)      | shipped |
+| Lattice    | decelerator rings, transfer lines     | stepper     | Xsuite adapter                              | planned (closed-loop v1) |
+| Matter     | targets, degraders, annihilation      | transformer | vendored vanilla Geant4 v11.4.2             | builds via recipe; offline yield tables only, no runtime coupling |
+| Collective | in-trap space charge                  | stepper     | first-party mean-field v1, later WarpX      | planned (mean-field v1 in closed-loop v1) |
+| Detector   | detector response                     | transformer | parameterized model first, Garfield++ later | planned |
+| Analysis   | persistent output, ecosystem exchange | sink        | openPMD + ROOT via uproot                   | planned (closed-loop v1) |
+
+Forms: a *sampler* produces the initial particle cloud; a *stepper*
+advances `ParticleState` and can be batched and differentiated on the
+JAX substrate; a *transformer* is an engine boundary (cloud in, cloud
+plus events out — gradients stop here and re-enter via distilled yield
+tables and surrogates); a *sink* writes outputs. Engine-backed results
+always carry their provenance (engine version, physics list, dataset
+versions, patch list): the engine is invisible in the API, never in the
+report.
 
 ## Current Status
 
@@ -117,6 +148,9 @@ Not implemented yet:
   `engine/README.md` recipe and feeds the pipeline through offline yield
   tables, but there is no runtime coupling — adapters remain
   placeholders; see the roadmap)
+- openPMD output, ROOT I/O via uproot, the real Xsuite adapter, and
+  mean-field space charge (scheduled as closed-loop v1 — see the
+  solver zoo above)
 - buffer-gas collisions, rotating wall, and space charge in the trap
 - interactive 3D viewer application
 - GPU benchmark suite

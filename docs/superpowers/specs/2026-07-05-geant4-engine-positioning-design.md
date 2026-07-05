@@ -153,3 +153,16 @@ to the engine) and annihilation energetics as a figure of merit
   source.
 - **M4:** companion acceleration library R&D (EM first), benchmarked
   against vanilla.
+
+## Addendum (2026-07-05): verified vendoring fidelity, one known deviation
+
+A full byte-level comparison against the upstream v11.4.2 tag (GitHub
+mirror archive) confirmed all 17,643 regular files identical, with no
+missing or extra files. One known deviation: upstream `CHANGELOG` is a
+symlink to `ReleaseNotes`; the vendored tree stores it as a regular
+file containing the target path (zip-archive semantics — the tree was
+imported from a zip archive, which cannot represent symlinks). Kept
+deliberately: a Windows-native checkout of this repository is
+maintained, where git symlinks degrade silently without developer-mode
+configuration. The deviation is content-preserving; `NOTICE` carries
+the same clarification. Do not "fix" it back to a symlink.

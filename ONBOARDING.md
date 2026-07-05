@@ -20,7 +20,7 @@ Latent Dirac 是反物质工厂（正电子/反质子设施）的开放仿真平
 
 **新方向（本次交接的核心）**：项目定位已升级为"内置 Geant4 引擎"。
 完整的香草 Geant4 v11.4.2 源码树已 vendored 在 `geant4-v11.4.2/`
-（17,645 个文件，只读基线）。战略是三轨并行：
+（git 记录 17,644 个文件，只读基线）。战略是三轨并行：
 
 - **轨道 A**：香草引擎基线 + 最小物理构建配方（不改 Geant4 一行）
 - **轨道 B**：伴生加速库（经 `G4VFastSimulationModel` 快速仿真挂点
@@ -28,34 +28,37 @@ Latent Dirac 是反物质工厂（正电子/反质子设施）的开放仿真平
 - **轨道 C**：JAX 校准环（Geant4 离线产出产额表/训练数据 →
   table_based / externally calibrated 源）
 
-## 二、当前仓库状态（交接时刻的精确快照）
+## 二、当前仓库状态（2026-07-05 推送后更新）
 
-本地分支 master，**全部未推送到远端**：
+master 已全部推送到远端，CI 绿。引擎轨道 M0 的四个提交
+（早先 Windows 快照里的哈希已被最终推送版本取代）：
 
-| 提交 | 内容 | 状态 |
-|---|---|---|
-| `0178fe85` `vendor:` | Geant4 v11.4.2 整树进仓（零修改，`.gitattributes -text` 保证字节级等同上游） | 已提交，未推送 |
-| `64a11bc4` `chore:` | 工具链排除（ruff/MANIFEST）、NOTICE 归属、README vendored 小节、AGENTS/CLAUDE 规则 | 已提交，未推送 |
-| （待提交） | M0 定位改写：安全范围四处同步重写 + 守门测试 + 引擎 spec + roadmap + 审查修复 | **工作区未提交** |
+| 提交 | 内容 |
+|---|---|
+| `3e84c0cf` `vendor:` | Geant4 v11.4.2 整树进仓（`.gitattributes -text` 保证字节级等同上游） |
+| `84edaf2b` `chore:` | 工具链排除（ruff/MANIFEST）、NOTICE 归属、README vendored 小节、AGENTS/CLAUDE 规则 |
+| `0fe84fab` `docs!:` | M0 定位改写：安全范围四处同步重写 + 守门测试 + 引擎 spec + roadmap |
+| `203d2c6b` `docs:` | 本交接文档 |
+| `bb01614b` `feat:` | 引擎轨道首批交付（M1'-lite + M3-lite）：`engine/yieldgen` 产额表生成器 + `antiproton_yield_table` 源 + Chain 2b demo |
 
-未提交部分的验证状态：**188 个测试全绿 + ruff 干净 + sdist 已确认不含
-vendored 树**，并且过了一轮多 agent 代码审查（3 视角 + 12 个对抗验证，
-7 项发现全部确认并已修复——主要是"定位改写只改了一半"的文档不一致）。
-建议的提交信息：`docs!: reposition around the vendored Geant4 engine
-track`（BREAKING：安全范围重写）。**是否提交/推送由项目所有者决定，
-接手后第一件事请先 `git status` + `git log --oneline -5` 核对现状。**
-
-另：本机（Windows）新建了 `.venv`，用 `.venv/Scripts/python.exe`
-（CLAUDE.md 里写的 `.venv/bin/python` 是 Linux 路径习惯）。
+推送后在 macOS 侧完成的独立复核：188 个测试全绿 + ruff 干净 + sdist
+实测不含 vendored 树（85 KB / 133 个文件）+ 与上游 v11.4.2 tag 全量
+字节比对一致。唯一已知偏差：上游 `CHANGELOG` 是指向 `ReleaseNotes`
+的 symlink，仓库里为内容是链接目标路径（`ReleaseNotes`）的普通文件
+（zip 归档语义）——因保留
+Windows 原生 checkout 而**有意维持，勿"修复"**（详见引擎 spec 附录）。
+接手后第一件事仍是 `git status` + `git log --oneline -5` 核对现状。
 
 ## 三、必读文件（按优先级）
 
 1. `AGENTS.md` — 物理规则、工程规则、范围、当前阶段的**唯一真源**
 2. `docs/superpowers/specs/2026-07-05-geant4-engine-positioning-design.md`
    — 引擎战略完整决策记录（含被否决方案与理由）
-3. `docs/roadmap.md` — 阶段计划 + 引擎轨道里程碑 M0–M4
-4. `docs/safety_scope.md` — 规范安全范围条目（被测试逐字锁定）
-5. `CLAUDE.md` — Claude Code 操作纪律（如果你也用 Claude 开发）
+3. `docs/superpowers/specs/2026-07-05-solver-zoo-composition-design.md`
+   — solver 动物园组合架构（组件切割、接口契约、实施顺序）
+4. `docs/roadmap.md` — 阶段计划 + 引擎轨道里程碑 M0–M4 + 闭环 v1 顺序
+5. `docs/safety_scope.md` — 规范安全范围条目（被测试逐字锁定）
+6. `CLAUDE.md` — Claude Code 操作纪律（如果你也用 Claude 开发）
 
 ## 四、核心架构速览
 
@@ -108,7 +111,7 @@ Load-bearing 的设计决策（改代码前必须懂）：
   Bertini 级联；`G4FTFAnnihilation` 处理 p̄ 湮灭）。
 - Python 绑定 11.1 起移出 Geant4 主仓库 → 适配器走 GDML + 子进程/宏。
 
-## 六、四大陷阱（学费已交，别再交一遍）
+## 六、五大陷阱（学费已交，别再交一遍）
 
 1. **安全范围四处同步**：`tests/test_project_positioning.py` 的
    `EXPECTED_EXCLUSIONS`（元组精确相等）+ `docs/safety_scope.md` +
@@ -123,44 +126,59 @@ Load-bearing 的设计决策（改代码前必须懂）：
 4. **vendored 树只读**：任何情况下不得编辑 `geant4-v11.4.2/` 内文件；
    不得对它跑 lint/format/pytest/批量搜索（17k 文件，`du` 都会超时）；
    涉及它的提交用 `vendor:` 前缀。
+5. **WSL 文件系统**：在 WSL 里开发时 repo 必须放 ext4（`~/` 下），
+   不要放 `/mnt/c`——vendored 树 17k 文件跨 9P 慢一个数量级；
+   WSL 与 Windows 原生各自独立 clone，不要共用一个工作树。
 
 ## 七、下一步工作（按 roadmap 顺序）
 
-- **M1' 引擎构建配方**：根目录建 `recipes/`——最小物理构建
-  （CMake：不链 visualization/interfaces/analysis 类别库；数据集按
-  所选物理列表裁剪，不用 HP 中子物理就不装 G4NDL）。CI 放 Python
-  矩阵之外（容器化）。第一个可交付物：能在 Linux 容器里构建出
-  FTFP_BERT 可用的引擎二进制。
+- **闭环 v1（Python 侧，最优先）**：openPMD 输出（搁置的 2e）→
+  uproot ROOT I/O → Xsuite adapter（第一个变真的 adapter：
+  `ParticleState` ↔ `xtrack.Particles` 往返 + 减速环式验证案例，
+  **同一变更内**翻转 `test_only_placeholder_adapters_are_present`）→
+  自研 mean-field 空间电荷（新物理：保真层级 + 适用范围显式声明）。
+  骨架见 solver 动物园 spec。
+- **M1' 引擎构建配方**（与闭环 v1 并行）：首个配方已交付
+  （`engine/README.md`：WSL/Linux 最小物理构建，不链
+  visualization/UI，数据集构建期获取）。剩余：容器化 CI
+  （放 Python 矩阵之外）与按物理列表裁剪数据集的配方变体。
 - **M2 适配器真实化**：场景 → GDML 导出 + 子进程/宏驱动 + 粒子云
-  交换。**同一变更内**翻转 `test_only_placeholder_adapters_are_present`
-  守门测试。
-- **M3 产额表管线**：离线 FTFP_BERT 跑靶产额 → `table_based` 反质子
-  源 → Chain 2 demo 的"画出来的靶"变成诚实的引擎背书源。
+  交换。届时 `test_only_placeholder_adapters_are_present` 守门测试
+  已随闭环 v1 的 Xsuite adapter 翻转，M2 改为扩展 adapter 状态断言。
+- **M3 产额表管线**：首个交付已落地（`engine/yieldgen` 离线
+  FTFP_BERT 产额 → `antiproton_yield_table` table_based 源 →
+  引擎背书的 Chain 2b demo）。剩余：正电子/慢化产额表、surrogate
+  源向 `externally calibrated` 毕业。
 - **M4 伴生加速库**：根目录 `engine/`（一等公民 C++），经
   fast-sim 挂点接入，EM 域先行；性能数字必须带 vs 香草 Geant4 的
   开放基准。
-- 与引擎轨道并行的 Python 侧方向：Phase 3 收尾（JAX 后端场图支持、
-  交互式查看器）、平滑有限长螺线管场模型（demo 硬边场的改进，
+- 其余 Python 侧方向（排在闭环 v1 与 GPU 车道之后）：交互式查看器、
+  JAX 后端场图支持、平滑有限长螺线管场模型（demo 硬边场的改进，
   设计讨论已有，未立项）。
 
 ## 八、开发环境与命令
 
+三个环境分工：macOS 机做规划与文档；测试与运行在 Windows 机的
+WSL2 里（repo 放 ext4，见陷阱 5）；同机另保留 Windows 原生
+checkout（独立 clone）。
+
 ```bash
-# 环境（Windows 本机已建好 .venv；新机器照此）
+# macOS / WSL2（Linux 路径习惯）
 python -m venv .venv
-.venv/Scripts/python.exe -m pip install -e ".[dev,viz,jax]"
+.venv/bin/python -m pip install -e ".[dev,viz,jax]"
+.venv/bin/python -m pytest -q
+.venv/bin/python -m ruff check .
+.venv/bin/latent-dirac run examples/scenes/hello_beamline.yaml
 
-# 测试与 lint（每次提交前必须全绿）
+# Windows 原生 checkout（路径差异仅此而已）
 .venv/Scripts/python.exe -m pytest -q
-.venv/Scripts/python.exe -m ruff check .
-
-# CLI
-.venv/Scripts/latent-dirac run examples/scenes/hello_beamline.yaml
-.venv/Scripts/latent-dirac render examples/scenes/hello_beamline.yaml -o hello.html
 ```
 
-注意：本机 CPU-only——**不得产出任何性能数字**（诚实纪律要求硬件
-标注的 Linux CUDA 数字）。
+GPU：WSL2 直通 RTX 5070 Ti（Blackwell）。消费卡 FP64 吞吐被砍——
+float32 无量纲 kernel 车道正好对口；float64 真值锚留在 CPU NumPy
+参考后端。**性能数字只能出自这台机器**，且标签打全：GPU 型号 +
+WSL2 + CUDA/驱动版本 + 积分器/步长/粒子数/batch/保真层级
+（macOS 规划机 CPU-only，不得产出任何性能数字）。
 
 ## 九、工作流（每个特性）
 

@@ -5,6 +5,18 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- **Positioning: solver-zoo composition.** The platform narrative is
+  organized as a solver zoo behind one scene/state spine: first-party
+  steppers on the NumPy/JAX substrate, engine-backed transformers
+  behind adapters (vendored Geant4 now; Xsuite, WarpX, and Garfield++
+  as roadmap items), `ParticleState` as the exchange currency, and the
+  per-particle ledger spanning solver boundaries. The README gains the
+  component matrix; the roadmap gains the zoo view and the closed-loop
+  v1 order (openPMD → uproot → Xsuite adapter → mean-field space
+  charge). Design record:
+  `docs/superpowers/specs/2026-07-05-solver-zoo-composition-design.md`.
+  Docs only; no code changes.
+
 - **Engine track first deliverables (M1'-lite + M3-lite).** The vendored
   vanilla Geant4 v11.4.2 tree now builds via the documented WSL/Linux
   recipe (`engine/README.md`: minimal-physics configuration, no

@@ -17,5 +17,8 @@ Collaboration (http://cern.ch/geant4).
 
 The Geant4 name is used solely to identify the vendored software and its
 origin; no endorsement by the Geant4 Collaboration is implied. The
-vendored tree is kept byte-identical to the upstream release; see
-AGENTS.md for the read-only rules that protect it.
+vendored tree is kept byte-identical to the upstream release, with one
+documented exception: the upstream `CHANGELOG` symlink is stored as a
+regular file carrying its target path (zip-archive semantics, kept for
+Windows-checkout compatibility). See AGENTS.md for the read-only rules
+that protect the tree.

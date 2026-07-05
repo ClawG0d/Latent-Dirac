@@ -19,6 +19,24 @@ only Claude-Code-specific operational notes.
   never produce performance numbers here (honesty discipline requires
   hardware-labeled numbers from Linux CUDA)
 
+## Environments
+
+- This Mac is the planning/dev box. The test/run box is the owner's
+  Windows machine inside WSL2 (same `.venv/bin/...` paths); a
+  Windows-native checkout is also kept (`.venv/Scripts/...`). The two
+  checkouts are independent clones — never share one working tree via
+  `/mnt/c`.
+- In WSL the repo must live on ext4 (under `~`), never `/mnt/c`: the
+  vendored 17k-file tree crawls over 9P.
+- GPU: RTX 5070 Ti on the WSL2 box (consumer Blackwell — the float32
+  dimensionless-kernel lane is the fit; float64 truth stays on the CPU
+  NumPy reference). Official performance numbers come only from that
+  box and carry full labels: GPU model + WSL2 + CUDA/driver versions +
+  integrator, timestep, particle count, batch size, fidelity tier.
+- Because the Windows-native checkout exists, the vendored `CHANGELOG`
+  stays a regular file (zip semantics; upstream has it as a symlink) —
+  do not "fix" it. See the engine positioning spec addendum.
+
 ## Vendored Geant4 tree
 
 - `geant4-v11.4.2/` is read-only vendored upstream code (vanilla
@@ -30,7 +48,8 @@ only Claude-Code-specific operational notes.
   exclusions in place.
 - Commits that touch the vendored tree use the `vendor:` prefix and must
   keep it byte-identical to the upstream release (`.gitattributes
-  -text` prevents EOL rewriting).
+  -text` prevents EOL rewriting; known exception: the vendored
+  `CHANGELOG` stays a regular file — see Environments above).
 
 ## Workflow (every feature)
 
