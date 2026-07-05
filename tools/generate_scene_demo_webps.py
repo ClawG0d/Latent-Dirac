@@ -71,6 +71,20 @@ SCENE_DEMOS = {
         "coloring": "fate",
         "annotate": "target",
     },
+    "target_production_engine_3d.webp": {
+        "scene": "target_production_engine.yaml",
+        "title": "Antiproton production - ENGINE-BACKED table-based source\n"
+        "vanilla Geant4 v11.4.2 FTFP_BERT yield table (2M protons on Ir) | "
+        "relativistic Boris solver | acceptance diagnostic only",
+        "coloring": "fate",
+        "annotate": "target_engine",
+        # the yield table holds the full exit phase space; wide-angle
+        # spirals would blow up the auto limits, so clamp the view to the
+        # collection line and draw a readable subset of the 2547 trails
+        "limits": [(-0.12, 0.12), (-0.12, 0.12), (-0.08, 0.62)],
+        "max_trails": 480,
+        "render": {"box_aspect": (2.4, 1.1, 1.1), "azim_start": -70, "azim_sweep": 50},
+    },
     "decel_capture_3d.webp": {
         "scene": "decel_capture.yaml",
         "title": "Electrostatic deceleration and dynamic trap capture\n"
@@ -132,7 +146,14 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
         colors = _particle_colors_energy(scene)
     else:
         colors = _particle_colors(final_state, coloring)
-    limits = mpl3d.axis_limits(combined)
+
+    max_trails = (config or {}).get("max_trails")
+    if max_trails is not None and combined.shape[1] > max_trails:
+        picked = np.random.default_rng(scene.seed).choice(combined.shape[1], max_trails, replace=False)
+        combined = combined[:, picked]
+        colors = [colors[int(index)] for index in picked]
+
+    limits = (config or {}).get("limits") or mpl3d.axis_limits(combined)
     total = combined.shape[0]
 
     annotate = config.get("annotate") if config else None
@@ -153,6 +174,12 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
         if annotate == "target":
             mpl3d.draw_block(axes, -0.12 * z_span, 0.0, 1.1 * beam_extent)
             mpl3d.draw_beam_arrow(axes, -0.45 * z_span, -0.13 * z_span)
+        if annotate == "target_engine":
+            # the real yieldgen target (r=1.5 mm, half-length 27.5 mm) is
+            # invisible at beamline scale; draw a modest, clearly labeled
+            # stand-in at its true z extent instead of a scaled block
+            mpl3d.draw_block(axes, -0.0275, 0.0275, 0.014)
+            mpl3d.draw_beam_arrow(axes, -0.07, -0.032)
         mpl3d.draw_scene_elements(axes, scene, run_result)
         mpl3d.draw_trajectories(axes, combined, reveal, colors)
         mpl3d.draw_points(axes, combined[reveal - 1], colors)

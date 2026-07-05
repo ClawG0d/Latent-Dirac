@@ -191,7 +191,7 @@ hover text.
 
 ## Demos
 
-Twelve 3D demos, each rendered from real simulation output. Most are defined
+Thirteen 3D demos, each rendered from real simulation output. Most are defined
 by a declarative YAML scene under [examples/scenes/](examples/scenes/) —
 the scene file *is* the demo. Interactive Plotly versions
 (`assets/demos/*_3d.html`) sit next to each scene-driven animation.
@@ -525,25 +525,11 @@ solenoid captures a fraction; the collimator accounts for the rest.
 .venv/bin/latent-dirac run examples/scenes/decay_emission.yaml
 ```
 
-### Chain 2: Antiproton Production at a Target (Surrogate)
+### Chain 2: Antiproton Production at a Target (Engine-Backed)
 
-High-energy protons striking a target produce antiprotons — but target
-physics is hadronic shower physics, which the Python core deliberately
-does not implement (it is delegated to the vendored Geant4 engine: the
-offline yield-table route ships as Chain 2b below, the runtime adapter
-remains on the roadmap). The target block and proton beam here are
-**drawn annotations only**; the antiproton cloud comes from the
-surrogate accepted-source model.
-
-![Animated 3D target production demo](assets/demos/target_production_3d.webp)
-
-```bash
-.venv/bin/latent-dirac run examples/scenes/target_production.yaml
-```
-
-### Chain 2b: Engine-Backed Target Production (Table-Based)
-
-The same stage, now fed by the vendored engine: `engine/yieldgen`
+High-energy protons striking a target produce antiprotons — hadronic
+shower physics that the Python core deliberately does not implement.
+Here it is delegated to the vendored engine: `engine/yieldgen`
 (vanilla Geant4 v11.4.2, FTFP_BERT) fires 2,000,000 protons at 26 GeV/c
 into an iridium stand-in target offline and records every antiproton
 exiting the target surface — 2,547 of them, a yield of 1.3e-3 per
@@ -552,8 +538,11 @@ AD-like collection band used below). The committed table
 ([examples/data/pbar_yield_ftfp_bert_26gevc_ir.csv](examples/data/pbar_yield_ftfp_bert_26gevc_ir.csv),
 provenance four-tuple in its header) is replayed by the `table_based`
 `antiproton_yield_table` source through a collection solenoid, aperture,
-and an AD-like 3.0–4.2 GeV/c momentum window. The interactive rendering
-lives at `assets/demos/target_production_engine_3d.html`.
+and an AD-like 3.0–4.2 GeV/c momentum window; the scene report prints
+the engine four-tuple. The interactive rendering lives at
+`assets/demos/target_production_engine_3d.html`.
+
+![Animated 3D engine-backed target production demo](assets/demos/target_production_engine_3d.webp)
 
 ```bash
 .venv/bin/latent-dirac run examples/scenes/target_production_engine.yaml
@@ -597,6 +586,22 @@ Magnetic field status:
 
 Scope note:
 - transport and acceptance diagnostic only
+```
+
+</details>
+
+<details>
+<summary>Surrogate variant (pre-engine)</summary>
+
+The original stage kept the target as **drawn annotations only** and
+sampled the antiproton cloud from the surrogate accepted-source model —
+the honest placeholder this engine-backed version replaces. The runtime
+adapter remains on the roadmap.
+
+![Animated 3D target production demo](assets/demos/target_production_3d.webp)
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/target_production.yaml
 ```
 
 </details>
