@@ -17,11 +17,12 @@ Declarative scenes describe the beamline. Batched solvers sweep whole
 configuration families in one launch. A per-particle ledger accounts for
 every antiparticle, because antiparticles are extraordinarily expensive.
 
-![Animated 3D charge-sign splitter hero demo](assets/demos/charge_sign_splitter_3d.webp)
+![Animated 3D positron spiral capture hero demo](assets/demos/positron_capture_3d.webp)
 
-*Matched positron/electron clouds split by the same transverse field —
-rendered, like every animation below, from the recorded trajectories of a
-real solver run.*
+*A positron cloud spiraling through a capture solenoid: the aperture and
+momentum window select the accepted core (green), the ledger accounts for
+the rest (red) — rendered, like every animation below, from the recorded
+trajectories of a real solver run.*
 
 ## Table of Contents
 
@@ -91,6 +92,11 @@ the scene file *is* the demo. Interactive Plotly versions
 ```text
 source model -> field transport -> beamline acceptance -> loss ledger -> report
 ```
+
+![Animated 3D charge-sign splitter demo](assets/demos/charge_sign_splitter_3d.webp)
+
+*The opening act: matched positron/electron clouds split by the same
+transverse field — equal mass, opposite charge, one Lorentz force.*
 
 ### Demo 1: A YAML Scene Is the Whole Beamline
 
