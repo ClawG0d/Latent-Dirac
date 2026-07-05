@@ -22,7 +22,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from examples.charge_sign_splitter_demo import make_initial_pair
 from latent_dirac.fields.uniform import UniformField
 from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 from latent_dirac.state.trajectory import Trajectory
 
 HERO_WEBP_FILE = "charge_sign_splitter_3d.webp"
@@ -63,7 +63,7 @@ def _load_matplotlib():
 
 
 def record_trajectory(
-    cloud: ParticleCloud,
+    cloud: ParticleState,
     field,
     dt_s: float,
     steps: int,

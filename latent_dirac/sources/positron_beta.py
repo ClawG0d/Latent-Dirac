@@ -20,7 +20,7 @@ from latent_dirac.sources.base import (
     validate_nonnegative,
     validate_positive,
 )
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 class BetaPlusPositronSource(SourceTerm):
@@ -48,7 +48,7 @@ class BetaPlusPositronSource(SourceTerm):
             raise ValueError("beta_plus_branching_ratio must be in [0, 1]")
         return value
 
-    def sample(self, rng: np.random.Generator | None = None) -> ParticleCloud:
+    def sample(self, rng: np.random.Generator | None = None) -> ParticleState:
         rng = get_rng(rng)
         count = int(self.macro_particles)
         total_yield_per_second = self.initial_activity_bq * self.beta_plus_branching_ratio
@@ -60,7 +60,7 @@ class BetaPlusPositronSource(SourceTerm):
         radii = self.source_radius_m * rng.random(count) ** (1.0 / 3.0)
         position_m = radii[:, np.newaxis] * isotropic_directions(rng, count)
 
-        return ParticleCloud(
+        return ParticleState(
             species=positron,
             position_m=position_m,
             momentum_kg_m_s=momentum[:, np.newaxis] * directions,

@@ -6,7 +6,7 @@ import numpy as np
 from pydantic import BaseModel, field_validator
 
 from latent_dirac.beamline.element import BeamlineElement
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 class Aperture(BaseModel, BeamlineElement):
@@ -22,7 +22,7 @@ class Aperture(BaseModel, BeamlineElement):
             raise ValueError("radius_m must be positive")
         return value
 
-    def apply(self, cloud: ParticleCloud) -> ParticleCloud:
+    def apply(self, cloud: ParticleState) -> ParticleState:
         result = cloud.copy()
         radial = np.linalg.norm(result.position_m[:, :2], axis=1)
         result.apply_alive_mask(radial <= self.radius_m)

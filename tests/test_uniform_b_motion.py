@@ -5,7 +5,7 @@ from latent_dirac.core.species import positron
 from latent_dirac.core.units import gamma_from_momentum, momentum_gev_c_to_si
 from latent_dirac.fields.uniform import UniformField
 from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 def test_relativistic_boris_preserves_energy_in_uniform_magnetic_field():
@@ -15,7 +15,7 @@ def test_relativistic_boris_preserves_energy_in_uniform_magnetic_field():
     period_s = 2.0 * np.pi * gamma * positron.mass_kg / (e * b_tesla)
     steps = 800
 
-    cloud = ParticleCloud(
+    cloud = ParticleState(
         species=positron,
         position_m=np.zeros((1, 3)),
         momentum_kg_m_s=np.array([[p_mag, 0.0, 0.0]]),

@@ -2,17 +2,29 @@
 
 from __future__ import annotations
 
-import numpy as np
+from copy import deepcopy
+from dataclasses import replace
+
 from pydantic import field_validator
 
-from latent_dirac.core.units import gamma_from_momentum
 from latent_dirac.fields.base import Field
 from latent_dirac.solvers.base import Solver
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.solvers.kernels import (
+    boris_step,
+    dimensionless_to_momentum,
+    momentum_to_dimensionless,
+)
+from latent_dirac.state.particle_state import ParticleState
 
 
 class RelativisticBorisSolver(Solver):
-    """Advance momentum and position using the relativistic Boris method."""
+    """Advance momentum and position using the relativistic Boris method.
+
+    The solver converts SI momentum to dimensionless u = p/(m c) once at
+    the State boundary, runs exactly `steps` pure-kernel iterations (dead
+    particles are frozen inside the kernel, never skipped by control
+    flow), and converts back to SI afterwards.
+    """
 
     dt_s: float
     steps: int
@@ -31,39 +43,39 @@ class RelativisticBorisSolver(Solver):
             raise ValueError("steps must be positive")
         return value
 
-    def propagate(self, cloud: ParticleCloud, field: Field) -> ParticleCloud:
-        result = cloud.copy()
-        q = result.species.charge_c
-        m = result.species.mass_kg
-        dt = self.dt_s
+    def propagate(self, state: ParticleState, field: Field) -> ParticleState:
+        mass_kg = state.species.mass_kg
+        charge_c = state.species.charge_c
+
+        position = state.position_m
+        u = momentum_to_dimensionless(state.momentum_kg_m_s, mass_kg)
+        time_s = state.time_s
+        alive = state.alive
 
         for _ in range(self.steps):
-            live = result.alive
-            if not np.any(live):
-                break
+            e_field = field.E(position, time_s)
+            b_field = field.B(position, time_s)
+            position, u, time_s = boris_step(
+                position,
+                u,
+                time_s,
+                alive,
+                dt_s=self.dt_s,
+                charge_c=charge_c,
+                mass_kg=mass_kg,
+                e_field=e_field,
+                b_field=b_field,
+            )
 
-            x = result.position_m[live]
-            p = result.momentum_kg_m_s[live]
-            t_now = result.time_s[live]
-
-            electric = field.E(x, t_now)
-            magnetic = field.B(x, t_now)
-
-            p_minus = p + q * electric * (0.5 * dt)
-            gamma_minus = gamma_from_momentum(p_minus, m)
-            t_vec = q * magnetic * (0.5 * dt) / (m * gamma_minus[:, np.newaxis])
-            t_mag2 = np.sum(t_vec * t_vec, axis=1)
-            s_vec = 2.0 * t_vec / (1.0 + t_mag2)[:, np.newaxis]
-
-            p_prime = p_minus + np.cross(p_minus, t_vec)
-            p_plus = p_minus + np.cross(p_prime, s_vec)
-            p_new = p_plus + q * electric * (0.5 * dt)
-
-            gamma_new = gamma_from_momentum(p_new, m)
-            velocity = p_new / (gamma_new[:, np.newaxis] * m)
-
-            result.momentum_kg_m_s[live] = p_new
-            result.position_m[live] = x + velocity * dt
-            result.time_s[live] = t_now + dt
-
-        return result
+        return replace(
+            state,
+            position_m=position,
+            momentum_kg_m_s=dimensionless_to_momentum(u, mass_kg),
+            time_s=time_s,
+            alive=alive.copy(),
+            weight=state.weight.copy(),
+            particle_id=state.particle_id.copy(),
+            parent_id=state.parent_id.copy(),
+            lost_at_element=state.lost_at_element.copy(),
+            metadata=deepcopy(state.metadata),
+        )

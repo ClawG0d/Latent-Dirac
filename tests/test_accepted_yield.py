@@ -3,7 +3,7 @@ import pytest
 
 from latent_dirac.core.species import positron
 from latent_dirac.diagnostics.accepted_yield import accepted_yield, accepted_yield_from_cloud
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 def test_accepted_yield_divides_accepted_weight_by_primary_count():
@@ -16,7 +16,7 @@ def test_accepted_yield_rejects_non_positive_primary_count():
 
 
 def test_accepted_yield_from_cloud_uses_alive_weighted_count():
-    cloud = ParticleCloud(
+    cloud = ParticleState(
         species=positron,
         position_m=np.zeros((3, 3)),
         momentum_kg_m_s=np.zeros((3, 3)),

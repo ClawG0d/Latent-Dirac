@@ -5,11 +5,11 @@ from latent_dirac.beamline.momentum_window import MomentumWindow
 from latent_dirac.core.species import positron
 from latent_dirac.pipeline.runner import PipelineRunner
 from latent_dirac.pipeline.stage import Stage
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 def test_pipeline_reports_per_stage_transmission_and_losses():
-    cloud = ParticleCloud(
+    cloud = ParticleState(
         species=positron,
         position_m=np.array(
             [

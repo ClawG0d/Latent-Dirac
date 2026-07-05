@@ -6,7 +6,7 @@ import numpy as np
 from pydantic import BaseModel, model_validator
 
 from latent_dirac.beamline.element import BeamlineElement
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 class MomentumWindow(BaseModel, BeamlineElement):
@@ -35,7 +35,7 @@ class MomentumWindow(BaseModel, BeamlineElement):
             raise ValueError("max_momentum_kg_m_s must be >= min_momentum_kg_m_s")
         return self
 
-    def apply(self, cloud: ParticleCloud) -> ParticleCloud:
+    def apply(self, cloud: ParticleState) -> ParticleState:
         result = cloud.copy()
         momentum = np.linalg.norm(result.momentum_kg_m_s, axis=1)
         result.apply_alive_mask(

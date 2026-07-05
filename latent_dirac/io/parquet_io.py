@@ -8,12 +8,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
-def write_particle_cloud_parquet(cloud: ParticleCloud, path: str | Path) -> None:
+def write_particle_cloud_parquet(cloud: ParticleState, path: str | Path) -> None:
     raise NotImplementedError("Parquet I/O is a placeholder for a future optional adapter.")
 
 
-def read_particle_cloud_parquet(path: str | Path) -> ParticleCloud:
+def read_particle_cloud_parquet(path: str | Path) -> ParticleState:
     raise NotImplementedError("Parquet I/O is a placeholder for a future optional adapter.")

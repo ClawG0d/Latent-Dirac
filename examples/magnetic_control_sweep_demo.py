@@ -15,7 +15,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from examples.charge_sign_splitter_demo import make_initial_pair
 from latent_dirac.fields.uniform import UniformField
 from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 DEFAULT_FIELD_VALUES_T = tuple(float(value) for value in np.linspace(0.0, 0.6, 7))
 
@@ -41,14 +41,14 @@ def _validate_inputs(
     return field_values
 
 
-def _accepted_x_mask(cloud: ParticleCloud, aperture_radius_m: float) -> np.ndarray:
+def _accepted_x_mask(cloud: ParticleState, aperture_radius_m: float) -> np.ndarray:
     return np.abs(cloud.position_m[:, 0]) <= aperture_radius_m
 
 
 def _field_result(
     by_tesla: float,
-    positron_cloud: ParticleCloud,
-    electron_cloud: ParticleCloud,
+    positron_cloud: ParticleState,
+    electron_cloud: ParticleState,
     aperture_radius_m: float,
     solver: RelativisticBorisSolver,
 ) -> dict[str, float]:

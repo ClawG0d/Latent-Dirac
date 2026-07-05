@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict
 
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 class SimulationResult(BaseModel):
@@ -12,5 +12,5 @@ class SimulationResult(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    final_cloud: ParticleCloud
+    final_cloud: ParticleState
     metadata: dict

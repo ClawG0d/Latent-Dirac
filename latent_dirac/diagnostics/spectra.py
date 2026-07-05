@@ -5,10 +5,10 @@ from __future__ import annotations
 import numpy as np
 
 from latent_dirac.core.units import joule_to_ev
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
-def energy_spectrum_summary(cloud: ParticleCloud) -> dict[str, float]:
+def energy_spectrum_summary(cloud: ParticleState) -> dict[str, float]:
     live = cloud.alive
     if not np.any(live):
         return {

@@ -29,6 +29,6 @@ def import_optional(module_name: str, package_name: str):
 
 
 def particle_cloud_from_result_or_cloud(result_or_cloud):
-    """Accept either a ParticleCloud or an object with `final_cloud`."""
+    """Accept either a ParticleState or an object with `final_cloud`."""
 
     return getattr(result_or_cloud, "final_cloud", result_or_cloud)

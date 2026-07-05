@@ -12,15 +12,20 @@ docs/superpowers/specs/2026-07-05-platform-positioning-and-roadmap-design.md.
 
 ## Current phase
 
-Phase 2: architecture foundation with visuals first. Work is split into
-independently deliverable specs:
+Phase 2: architecture foundation with visuals first. Spec status:
 
-- 2-0 open-source hygiene: CI, ruff, CONTRIBUTING, PyPI release, CHANGELOG
-- 2a field model library (spec exists: 2026-07-04-field-model-library-design.md)
-- 2b declarative scene schema plus minimal 3D rendering (visual flagship)
-- 2c State/Model/Control refactor (pure refactor, no new physics)
-- 2d FieldMap import (COMSOL regular-grid CSV first)
-- 2e openPMD output (deferred until the JOSS submission window)
+- 2-0 open-source hygiene: done (CI, ruff, CONTRIBUTING, CHANGELOG,
+  publish workflow; PyPI release pending owner-side trusted publishing)
+- 2a field model library: done
+- 2b declarative scene schema plus minimal 3D rendering: done
+  (CLI and hello-beamline example deferred to a follow-up spec)
+- 2c State/Model/Control refactor: done (`ParticleState` pytree dataclass,
+  pure Boris kernel in dimensionless momentum, per-particle loss ledger)
+- 2d FieldMap import (COMSOL regular-grid CSV): done
+- 2e openPMD output: deferred until the JOSS submission window
+
+Next: Phase 3 (JAX batched backend, sweep API, interactive viewer) per
+docs/roadmap.md.
 
 Do not integrate Geant4, Xsuite, ROOT, FLUKA, MAD-X, or RF-Track yet.
 Keep adapter interfaces and placeholders only for Geant4, Xsuite, and ROOT.

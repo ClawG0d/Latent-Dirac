@@ -19,7 +19,7 @@ from latent_dirac.sources.base import (
     validate_nonnegative,
     validate_positive,
 )
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 class PositronPairSource(SourceTerm):
@@ -42,7 +42,7 @@ class PositronPairSource(SourceTerm):
     def _nonnegative(cls, value, info):
         return validate_nonnegative(info.field_name, value)
 
-    def sample(self, rng: np.random.Generator | None = None) -> ParticleCloud:
+    def sample(self, rng: np.random.Generator | None = None) -> ParticleState:
         rng = get_rng(rng)
         count = int(self.macro_particles)
         total_yield = self.primary_count * self.yield_eplus_per_primary
@@ -51,7 +51,7 @@ class PositronPairSource(SourceTerm):
         momentum = kinetic_energy_to_momentum_magnitude(mev_to_joule(energy_mev), positron.mass_kg)
         directions = forward_directions(rng, count, self.angular_rms_rad)
 
-        return ParticleCloud(
+        return ParticleState(
             species=positron,
             position_m=rng.normal(0.0, self.source_sigma_m, size=(count, 3)),
             momentum_kg_m_s=momentum[:, np.newaxis] * directions,

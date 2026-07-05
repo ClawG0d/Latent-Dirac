@@ -9,14 +9,14 @@ from latent_dirac.core.species import positron
 from latent_dirac.core.units import kinetic_energy_to_momentum_magnitude, mev_to_joule
 from latent_dirac.pipeline.runner import PipelineResult
 from latent_dirac.pipeline.stage import StageResult
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 from latent_dirac.state.trajectory import Trajectory
 
 CORE_MODULES = (
     "latent_dirac.core.constants",
     "latent_dirac.core.units",
     "latent_dirac.core.species",
-    "latent_dirac.state.particle_cloud",
+    "latent_dirac.state.particle_state",
     "latent_dirac.sources.positron_pair",
     "latent_dirac.fields.uniform",
     "latent_dirac.solvers.relativistic_boris",
@@ -34,9 +34,9 @@ def clear_optional_viz_modules():
             del sys.modules[module_name]
 
 
-def make_cloud() -> ParticleCloud:
+def make_cloud() -> ParticleState:
     momentum = kinetic_energy_to_momentum_magnitude(mev_to_joule(np.array([1.0, 2.0, 3.0])), positron.mass_kg)
-    return ParticleCloud(
+    return ParticleState(
         species=positron,
         position_m=np.array([[0.0, 0.0, 0.0], [0.01, 0.02, 0.03], [0.02, 0.01, 0.04]]),
         momentum_kg_m_s=np.column_stack([momentum, momentum * 0.1, momentum * 0.0]),

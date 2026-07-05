@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 from pydantic import BaseModel, ConfigDict
 
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 class SourceTerm(BaseModel, ABC):
@@ -22,7 +22,7 @@ class SourceTerm(BaseModel, ABC):
     model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
 
     @abstractmethod
-    def sample(self, rng: np.random.Generator | None = None) -> ParticleCloud:
+    def sample(self, rng: np.random.Generator | None = None) -> ParticleState:
         raise NotImplementedError
 
 
@@ -66,4 +66,5 @@ def particle_arrays(count: int) -> dict[str, Any]:
         "alive": np.ones(count, dtype=bool),
         "particle_id": np.arange(count, dtype=int),
         "parent_id": np.full(count, -1, dtype=int),
+        "lost_at_element": np.full(count, -1, dtype=np.int32),
     }

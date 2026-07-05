@@ -59,12 +59,14 @@ simulation demos.
 Implemented:
 
 - SI-unit constants, unit conversions, and particle species
-- `ParticleCloud` as the universal intermediate state
+- `ParticleState` as the universal intermediate state: a pytree-compatible
+  dataclass with a per-particle loss ledger (`lost_at_element`)
 - parameterized positron pair source model
 - simplified beta-plus positron source model
 - surrogate antiproton source model
 - uniform and idealized solenoid fields
-- relativistic Boris transport
+- relativistic Boris transport as a pure-function kernel (dimensionless
+  momentum internally, SI at State boundaries)
 - aperture and momentum-window acceptance
 - staged pipeline loss accounting
 - accepted-yield and spectrum diagnostics

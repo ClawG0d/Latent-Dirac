@@ -22,7 +22,7 @@ from latent_dirac.sources.antiproton_surrogate import AntiprotonSurrogateSource
 from latent_dirac.sources.base import SourceTerm
 from latent_dirac.sources.positron_beta import BetaPlusPositronSource
 from latent_dirac.sources.positron_pair import PositronPairSource
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 _SOURCE_CLASSES = {
     "positron_pair": PositronPairSource,
@@ -37,7 +37,7 @@ class SceneRunResult(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     pipeline_result: PipelineResult
-    monitors: dict[str, ParticleCloud] = PydanticField(default_factory=dict)
+    monitors: dict[str, ParticleState] = PydanticField(default_factory=dict)
     trajectories: dict[str, np.ndarray] = PydanticField(default_factory=dict)
 
 
@@ -59,7 +59,7 @@ def run_scene(
     rng = np.random.default_rng(scene.seed) if rng is None else rng
     cloud = build_source(scene).sample(rng)
 
-    monitors: dict[str, ParticleCloud] = {}
+    monitors: dict[str, ParticleState] = {}
     trajectories: dict[str, np.ndarray] | None = {} if record_trajectories else None
     runner = PipelineRunner(stages=_build_stages(scene, monitors, trajectories))
     pipeline_result = runner.run(cloud)
@@ -73,7 +73,7 @@ def run_scene(
 
 def _build_stages(
     scene: Scene,
-    monitors: dict[str, ParticleCloud],
+    monitors: dict[str, ParticleState],
     trajectories: dict[str, np.ndarray] | None,
 ) -> list[Stage]:
     stages: list[Stage] = []
@@ -129,7 +129,7 @@ def _field_for(element) -> Field:
 
 
 def _transport_action(field, dt_s, steps, label, trajectories):
-    def transport(cloud: ParticleCloud) -> ParticleCloud:
+    def transport(cloud: ParticleState) -> ParticleState:
         if trajectories is None:
             return RelativisticBorisSolver(dt_s=dt_s, steps=steps).propagate(cloud, field)
 
@@ -146,7 +146,7 @@ def _transport_action(field, dt_s, steps, label, trajectories):
 
 
 def _monitor_action(label, monitors):
-    def monitor(cloud: ParticleCloud) -> ParticleCloud:
+    def monitor(cloud: ParticleState) -> ParticleState:
         monitors[label] = cloud.copy()
         return cloud
 

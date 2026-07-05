@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 def accepted_yield(accepted_weighted_count: float, primary_count: float) -> float:
@@ -11,5 +11,5 @@ def accepted_yield(accepted_weighted_count: float, primary_count: float) -> floa
     return float(accepted_weighted_count / primary_count)
 
 
-def accepted_yield_from_cloud(cloud: ParticleCloud, primary_count: float) -> float:
+def accepted_yield_from_cloud(cloud: ParticleState, primary_count: float) -> float:
     return accepted_yield(cloud.weighted_count(), primary_count)

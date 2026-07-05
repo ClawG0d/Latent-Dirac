@@ -5,12 +5,12 @@ from __future__ import annotations
 from latent_dirac.diagnostics.accepted_yield import accepted_yield_from_cloud
 from latent_dirac.diagnostics.spectra import energy_spectrum_summary
 from latent_dirac.pipeline.stage import StageResult
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
 def text_report(
     stage_results: list[StageResult],
-    final_cloud: ParticleCloud,
+    final_cloud: ParticleState,
     primary_count: float | None = None,
 ) -> str:
     lines = ["Latent Dirac simulation report", ""]

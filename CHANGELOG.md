@@ -5,6 +5,14 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- **Breaking**: replaced the pydantic `ParticleCloud` with `ParticleState`,
+  a pytree-compatible dataclass with the same attribute/method surface plus
+  a per-particle loss ledger channel `lost_at_element` (int32, -1 = alive).
+  Pipeline stages now stamp the ledger with their stage index;
+  `latent_dirac.diagnostics.loss_ledger` reconstructs weighted losses per
+  stage name. The Boris pusher is now a pure-function kernel
+  (`latent_dirac.solvers.kernels.boris_step`) in dimensionless momentum
+  u = p/(m c); SI exists only at State boundaries.
 - Added `FieldMapField`: table-based fields on a regular grid with
   trilinear interpolation, a COMSOL regular-grid CSV importer, and 3D
   field-magnitude volume rendering.

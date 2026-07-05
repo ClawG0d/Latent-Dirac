@@ -22,7 +22,7 @@ from latent_dirac.fields.uniform import UniformField
 from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
 from latent_dirac.sources.antiproton_surrogate import AntiprotonSurrogateSource
 from latent_dirac.sources.positron_pair import PositronPairSource
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 DEMO_WEBP_FILES = (
     "charge_sign_splitter.webp",
@@ -108,7 +108,7 @@ def _make_base_frame(title: str, subtitle: str, particle_color: tuple[int, int, 
     return image, draw
 
 
-def _pipeline_snapshots(cloud: ParticleCloud, field, dt_s: float, frame_count: int) -> list[ParticleCloud]:
+def _pipeline_snapshots(cloud: ParticleState, field, dt_s: float, frame_count: int) -> list[ParticleState]:
     solver = RelativisticBorisSolver(dt_s=dt_s, steps=1)
     snapshots = []
     current = cloud
@@ -119,12 +119,12 @@ def _pipeline_snapshots(cloud: ParticleCloud, field, dt_s: float, frame_count: i
 
 
 def _sampled_transport_snapshots(
-    cloud: ParticleCloud,
+    cloud: ParticleState,
     field,
     dt_s: float,
     steps: int,
     snapshot_count: int,
-) -> list[ParticleCloud]:
+) -> list[ParticleState]:
     if snapshot_count < 2:
         raise ValueError("snapshot_count must be at least 2")
     solver = RelativisticBorisSolver(dt_s=dt_s, steps=max(1, steps // (snapshot_count - 1)))
@@ -166,7 +166,7 @@ def _draw_stage_bar(draw, frame_index: int, frame_count: int, stages: tuple[str,
 
 def _draw_particles(
     draw,
-    snapshots: list[ParticleCloud],
+    snapshots: list[ParticleState],
     frame_index: int,
     accepted_mask: np.ndarray,
     particle_color: tuple[int, int, int],
@@ -231,7 +231,7 @@ def _draw_splitter_legend(draw):
 
 def _draw_cloud_tracks(
     draw,
-    snapshots: list[ParticleCloud],
+    snapshots: list[ParticleState],
     frame_index: int,
     color: tuple[int, int, int],
     z_limit: float,
@@ -253,7 +253,7 @@ def _draw_cloud_tracks(
 
 def _draw_sweep_cloud_tracks(
     draw,
-    snapshots: list[ParticleCloud],
+    snapshots: list[ParticleState],
     accepted_mask: np.ndarray,
     color: tuple[int, int, int],
     z_limit: float,

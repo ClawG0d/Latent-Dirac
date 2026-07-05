@@ -15,12 +15,12 @@ from latent_dirac.core.species import electron, positron
 from latent_dirac.core.units import momentum_gev_c_to_si
 from latent_dirac.fields.uniform import UniformField
 from latent_dirac.solvers.relativistic_boris import RelativisticBorisSolver
-from latent_dirac.state.particle_cloud import ParticleCloud
+from latent_dirac.state.particle_state import ParticleState
 
 
-def _make_cloud(species, position_m: np.ndarray, momentum_kg_m_s: np.ndarray) -> ParticleCloud:
+def _make_cloud(species, position_m: np.ndarray, momentum_kg_m_s: np.ndarray) -> ParticleState:
     count = position_m.shape[0]
-    return ParticleCloud(
+    return ParticleState(
         species=species,
         position_m=position_m,
         momentum_kg_m_s=momentum_kg_m_s,
@@ -37,7 +37,7 @@ def _make_cloud(species, position_m: np.ndarray, momentum_kg_m_s: np.ndarray) ->
     )
 
 
-def make_initial_pair(particle_count: int = 96, seed: int = 2030) -> tuple[ParticleCloud, ParticleCloud]:
+def make_initial_pair(particle_count: int = 96, seed: int = 2030) -> tuple[ParticleState, ParticleState]:
     """Create matched positron/electron clouds with identical initial states."""
 
     if particle_count <= 0:
