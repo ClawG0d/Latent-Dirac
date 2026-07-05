@@ -6,6 +6,7 @@ import pytest
 def test_scene_demo_generator_creates_animated_webp_files(tmp_path):
     image_module = pytest.importorskip("PIL.Image")
     pytest.importorskip("matplotlib")
+    pytest.importorskip("jax")  # the batched sweep demo runs on the JAX backend
     from tools.generate_scene_demo_webps import DEMO_WEBP_FILES, generate_scene_demo_webps
 
     assert "antiproton_ledger_3d.webp" in DEMO_WEBP_FILES

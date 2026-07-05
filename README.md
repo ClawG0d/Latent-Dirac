@@ -105,7 +105,8 @@ Not implemented yet:
 - buffer-gas collisions, rotating wall, and space charge in the trap
 - interactive 3D viewer application
 - GPU benchmark suite
-- field maps and batched monitor snapshots in the JAX backend
+- field maps, batched monitor snapshots, and streaming trajectory
+  recording for extreme scales in the JAX backend
 - CST and SIMION field-map formats
 - full electromagnetic or hadronic shower physics
 - detailed target engineering
@@ -146,7 +147,7 @@ hover text.
 
 ## Demos
 
-Seven 3D demos, each rendered from real simulation output. Most are defined
+Eight 3D demos, each rendered from real simulation output. Most are defined
 by a declarative YAML scene under [examples/scenes/](examples/scenes/) —
 the scene file *is* the demo. Interactive Plotly versions
 (`assets/demos/*_3d.html`) sit next to each scene-driven animation.
@@ -435,6 +436,30 @@ Scope note:
 ```
 
 </details>
+
+### Demo 8: One Launch, 24 Beamlines
+
+The batched JAX backend runs a whole configuration family as a single
+jit-compiled vmap program: 24 values of the transverse field, one launch,
+trails colored by configuration. This is the shape of the parameter scans
+and optimizer generations the backend exists for (CPU-validated; GPU
+throughput is not yet measured).
+
+![Animated 3D batched sweep demo](assets/demos/batched_sweep_3d.webp)
+
+```python
+from latent_dirac.backends.jax_scene import BatchedSceneProgram
+from latent_dirac.scene import load_scene
+
+program = BatchedSceneProgram(
+    load_scene("examples/scenes/batched_sweep.yaml"),
+    override_keys=("sweep-field.B_vector_t",),
+    record_stride=4,
+)
+result = program.run({"sweep-field.B_vector_t": b_vectors})  # (24, 3)
+result.accepted_fraction  # (24,)
+result.trajectories       # (24, S, N, 3)
+```
 
 Regenerate all animations from source:
 

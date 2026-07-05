@@ -45,7 +45,9 @@ Split into independently deliverable specs:
   convention, no xopt dependency; `evaluate.batch` runs a generation of
   candidates in one launch via the precompiled `BatchedSceneProgram`)
 - interactive 3D viewer (plotly first, then web); USD export kept open
-- flagship batched-sweep 3D demo with trajectory downsampling/streaming
+- flagship batched-sweep 3D demo — **done** (Spec 3e: `record_stride`
+  strided trajectory recording in the batched program; streaming for
+  extreme scales remains a later design)
 - honest benchmark suite: analytic cases in CI; external comparisons only
   after license and data-availability checks
 

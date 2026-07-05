@@ -64,7 +64,7 @@ SCENE_DEMOS = {
     },
 }
 
-DIRECT_DEMOS = ("magnetic_mirror_3d.webp", "magnetic_control_sweep_3d.webp")
+DIRECT_DEMOS = ("magnetic_mirror_3d.webp", "magnetic_control_sweep_3d.webp", "batched_sweep_3d.webp")
 DEMO_WEBP_FILES = tuple(SCENE_DEMOS) + DIRECT_DEMOS
 
 
@@ -210,6 +210,46 @@ def _sweep_frames(frame_count: int, particle_count: int = 64):
     return mpl3d.render_frames(draw, frame_count, title, limits, azim_sweep=50)
 
 
+def _batched_sweep_frames(frame_count: int, config_count: int = 24):
+    """One jit-compiled vmap launch runs every configuration; JAX required."""
+
+    try:
+        import jax
+    except ModuleNotFoundError as exc:
+        raise ImportError('the batched sweep demo requires jax: pip install "latent-dirac[jax]"') from exc
+    jax.config.update("jax_enable_x64", True)
+    from latent_dirac.backends.jax_scene import BatchedSceneProgram
+
+    scene = load_scene(SCENES_DIR / "batched_sweep.yaml")
+    program = BatchedSceneProgram(scene, override_keys=("sweep-field.B_vector_t",), record_stride=4)
+    by_values = np.linspace(0.0, 0.6, config_count)
+    b_vectors = np.stack([np.zeros_like(by_values), by_values, np.zeros_like(by_values)], axis=1)
+    result = program.run({"sweep-field.B_vector_t": b_vectors})
+    trajectories = result.trajectories  # (B, S, N, 3)
+
+    plt, _ = mpl3d.load_matplotlib()
+    colormap = plt.get_cmap("viridis")
+    colors = [colormap(index / max(config_count - 1, 1))[:3] for index in range(config_count)]
+    limits = mpl3d.axis_limits(trajectories)
+    total = trajectories.shape[1]
+
+    title = (
+        f"Batched sweep - one launch, {config_count} configurations (By 0 to 0.6 T)\n"
+        "uniform transverse field | relativistic Boris solver | vmap over configurations | "
+        "transport diagnostic only"
+    )
+
+    def draw(axes, index, count):
+        reveal = 2 + int(round((total - 2) * index / max(count - 1, 1)))
+        for config in range(config_count):
+            mpl3d.draw_trajectories(
+                axes, trajectories[config], reveal, colors[config], linewidth=0.5, alpha=0.45
+            )
+            mpl3d.draw_points(axes, trajectories[config, reveal - 1], colors[config], size=5)
+
+    return mpl3d.render_frames(draw, frame_count, title, limits, azim_sweep=60)
+
+
 def generate_scene_demo_webps(
     output_dir: str | Path = "assets/demos",
     frame_count: int = 44,
@@ -242,6 +282,10 @@ def generate_scene_demo_webps(
     sweep_target = output_path / "magnetic_control_sweep_3d.webp"
     mpl3d.save_webp(_sweep_frames(frame_count), sweep_target, duration_ms)
     outputs["magnetic_control_sweep_3d.webp"] = sweep_target
+
+    batched_target = output_path / "batched_sweep_3d.webp"
+    mpl3d.save_webp(_batched_sweep_frames(frame_count), batched_target, duration_ms)
+    outputs["batched_sweep_3d.webp"] = batched_target
 
     return outputs
 

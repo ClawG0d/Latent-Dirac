@@ -5,6 +5,11 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added strided trajectory recording to the batched JAX program
+  (`record_stride` on `BatchedSceneProgram`/`run_scene_batched`,
+  parity-tested against the NumPy pipeline) and the "one launch, 24
+  beamlines" batched-sweep README demo.
+
 - Added the ideal Penning trap: `PenningTrapField` (quadrupole
   electrostatic well + axial B, analytic `eigenfrequencies` with the
   invariance relations validated in tests) and the `penning_trap` scene

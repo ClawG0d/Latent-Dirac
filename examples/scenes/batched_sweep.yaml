@@ -1,0 +1,15 @@
+schema_version: 1
+name: batched-sweep
+seed: 2031
+source:
+  type: positron_pair
+  label: pair-source
+  params: { primary_count: 10000, yield_eplus_per_primary: 0.02, mean_energy_MeV: 3.0,
+            energy_spread_MeV: 0.4, angular_rms_rad: 0.03, source_sigma_m: 0.001,
+            bunch_length_s: 1.0e-12, macro_particles: 48 }
+solver: { type: relativistic_boris, dt_s: 2.0e-12, steps: 60 }
+elements:
+  - { type: uniform_field, label: sweep-field, B_vector_t: [0.0, 0.3, 0.0], steps: 60 }
+  - { type: aperture, label: window, radius_m: 0.02, z_m: 0.03 }
+  - { type: momentum_window, label: momentum-cut, p_min_gev_c: 0.003, p_max_gev_c: 0.0045 }
+  - { type: monitor, label: end-station }

@@ -63,6 +63,7 @@ class BatchedSceneResult:
     weight: np.ndarray  # (N,), shared across configurations
     accepted_weighted: np.ndarray  # (B,)
     accepted_fraction: np.ndarray  # (B,)
+    trajectories: np.ndarray | None = None  # (B, S, N, 3) strided snapshots
 
 
 def _base_params(scene: Scene) -> list[dict[str, np.ndarray]]:
@@ -142,7 +143,7 @@ _FIELD_FNS = {
 }
 
 
-def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float):
+def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float, record: bool = False):
     # NOTE: backends/differentiable.py mirrors this element loop with soft
     # acceptance; when adding an element type here, extend the mirror too
     lax = jax.lax
@@ -150,6 +151,7 @@ def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float):
     c = SPEED_OF_LIGHT_M_PER_S
 
     def simulate(params, position, u, time_s, alive, ledger):
+        history = [position[jnp.newaxis]] if record else None
         for index, element in enumerate(scene.elements):
             element_params = params[index]
             if element.type in _TRANSPORT_TYPES:
@@ -159,7 +161,7 @@ def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float):
                 def step_fn(carry, _, field_fn=field_fn, element_params=element_params, alive=alive):
                     pos, u_now, t_now = carry
                     e_field, b_field = field_fn(jnp, pos, element_params)
-                    return boris_step(
+                    new_carry = boris_step(
                         pos,
                         u_now,
                         t_now,
@@ -170,9 +172,12 @@ def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float):
                         e_field=e_field,
                         b_field=b_field,
                         xp=jnp,
-                    ), None
+                    )
+                    return new_carry, (new_carry[0] if record else None)
 
-                (position, u, time_s), _ = lax.scan(step_fn, (position, u, time_s), None, length=steps)
+                (position, u, time_s), emitted = lax.scan(step_fn, (position, u, time_s), None, length=steps)
+                if record:
+                    history.append(emitted)
             elif element.type == "aperture":
                 radial = jnp.sqrt(position[:, 0] ** 2 + position[:, 1] ** 2)
                 keep = radial <= element_params["radius_m"]
@@ -193,6 +198,8 @@ def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float):
                 continue  # holds its ledger index; batched snapshots are a later extension
             else:  # pragma: no cover - schema union prevents this
                 raise ValueError(f"unsupported element type for the JAX backend: {element.type!r}")
+        if record:
+            return position, u, time_s, alive, ledger, jnp.concatenate(history, axis=0)
         return position, u, time_s, alive, ledger
 
     return simulate
@@ -231,7 +238,11 @@ class BatchedSceneProgram:
         scene: Scene,
         override_keys: tuple[str, ...] | list[str] = (),
         rng: np.random.Generator | None = None,
+        record_stride: int | None = None,
     ):
+        if record_stride is not None and record_stride < 1:
+            raise ValueError("record_stride must be at least 1")
+        self._record_stride = record_stride
         jax, jnp = _import_jax()
         self._jnp = jnp
         self._scene = scene
@@ -266,7 +277,14 @@ class BatchedSceneProgram:
             jnp.asarray(initial.lost_at_element),
         )
 
-        simulate = _make_simulator(scene, jax, jnp, self._mass_kg, initial.species.charge_c)
+        simulate = _make_simulator(
+            scene,
+            jax,
+            jnp,
+            self._mass_kg,
+            initial.species.charge_c,
+            record=record_stride is not None,
+        )
         if self._slots:
             self._fn = jax.jit(jax.vmap(simulate, in_axes=(in_axes, None, None, None, None, None)))
         else:
@@ -309,6 +327,13 @@ class BatchedSceneProgram:
         return self._package(outputs)
 
     def _package(self, outputs) -> BatchedSceneResult:
+        trajectories = None
+        if self._record_stride is not None:
+            *outputs, history = outputs
+            # full per-step emission strided host-side; memory at emission is
+            # B x T x N x 3 doubles - fine for demo scales, streaming for
+            # extreme scales is a later design
+            trajectories = history[:, :: self._record_stride]
         position_out, u_out, time_out, alive_out, ledger_out = outputs
         accepted_weighted = np.sum(self._weight[np.newaxis, :] * alive_out, axis=1)
         total_weight = float(np.sum(self._weight))
@@ -321,6 +346,7 @@ class BatchedSceneProgram:
             weight=self._weight,
             accepted_weighted=accepted_weighted,
             accepted_fraction=accepted_weighted / total_weight if total_weight > 0.0 else accepted_weighted,
+            trajectories=trajectories,
         )
 
 
@@ -328,6 +354,7 @@ def run_scene_batched(
     scene: Scene,
     overrides: dict[str, np.ndarray] | None = None,
     rng: np.random.Generator | None = None,
+    record_stride: int | None = None,
 ) -> BatchedSceneResult:
     """Run the scene once per configuration in a single JAX program.
 
@@ -341,5 +368,5 @@ def run_scene_batched(
     """
 
     overrides = dict(overrides) if overrides is not None else {}
-    program = BatchedSceneProgram(scene, override_keys=tuple(overrides), rng=rng)
+    program = BatchedSceneProgram(scene, override_keys=tuple(overrides), rng=rng, record_stride=record_stride)
     return program.run(overrides)
