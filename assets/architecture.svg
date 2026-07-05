@@ -1,0 +1,41 @@
+<svg width="680" height="565" viewBox="0 0 680 565" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Latent Dirac architecture</title>
+  <desc>Four layers: scene interface, solvers, ParticleState, compute.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#888780" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .band { fill: none; stroke: #c6c4bb; stroke-dasharray: 4 4; stroke-width: 0.75; }
+      .bx { fill: #ffffff; stroke: #b6b4ab; stroke-width: 0.75; }
+      .lbl { font: 12px Helvetica, Arial, sans-serif; fill: #5f5e5a; }
+      .t1 { font: 500 14px Helvetica, Arial, sans-serif; fill: #2c2c2a; text-anchor: middle; }
+      .t2 { font: 12px Helvetica, Arial, sans-serif; fill: #5f5e5a; text-anchor: middle; }
+      .con { stroke: #888780; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="680" height="565" rx="10" fill="#fafaf8"/>
+  <rect x="40" y="44" width="600" height="96" rx="6" class="band"/>
+  <text x="52" y="62" class="lbl">Scene interface</text>
+  <rect x="52" y="76" width="180" height="52" rx="4" class="bx"/><text x="142" y="98" class="t1">Declarative scenes</text><text x="142" y="116" class="t2">YAML &#183; JSON schema v1</text>
+  <rect x="248" y="76" width="180" height="52" rx="4" class="bx"/><text x="338" y="98" class="t1">CLI (latent-dirac)</text><text x="338" y="116" class="t2">run &#183; render</text>
+  <rect x="444" y="76" width="180" height="52" rx="4" class="bx"/><text x="534" y="98" class="t1">3D visualization</text><text x="534" y="116" class="t2">Plotly HTML &#183; WebP</text>
+  <line x1="340" y1="140" x2="340" y2="160" class="con" marker-end="url(#arrow)"/>
+  <rect x="40" y="164" width="600" height="160" rx="6" class="band"/>
+  <text x="52" y="182" class="lbl">Solvers</text>
+  <rect x="52" y="196" width="135" height="52" rx="4" class="bx"/><text x="119" y="218" class="t1">Source</text><text x="119" y="236" class="t2">positron / pbar</text>
+  <rect x="199" y="196" width="135" height="52" rx="4" class="bx"/><text x="266" y="218" class="t1">Transport</text><text x="266" y="236" class="t2">Boris kernel</text>
+  <rect x="346" y="196" width="135" height="52" rx="4" class="bx"/><text x="413" y="218" class="t1">Matter</text><text x="413" y="236" class="t2">Geant4 engine</text>
+  <rect x="493" y="196" width="135" height="52" rx="4" class="bx"/><text x="560" y="218" class="t1">Lattice</text><text x="560" y="236" class="t2">Xsuite adapter</text>
+  <rect x="52" y="258" width="135" height="52" rx="4" class="bx"/><text x="119" y="280" class="t1">Collective</text><text x="119" y="298" class="t2">space charge</text>
+  <rect x="199" y="258" width="135" height="52" rx="4" class="bx"/><text x="266" y="280" class="t1">Detector</text><text x="266" y="298" class="t2">response models</text>
+  <rect x="346" y="258" width="135" height="52" rx="4" class="bx"/><text x="413" y="280" class="t1">Analysis</text><text x="413" y="298" class="t2">openPMD &#183; ROOT</text>
+  <line x1="340" y1="324" x2="340" y2="344" class="con" marker-end="url(#arrow)"/>
+  <rect x="52" y="348" width="576" height="56" rx="4" class="bx"/><text x="340" y="370" class="t1">ParticleState</text><text x="340" y="390" class="t2">pytree &#183; alive mask &#183; per-particle loss ledger &#183; provenance</text>
+  <line x1="340" y1="404" x2="340" y2="424" class="con" marker-end="url(#arrow)"/>
+  <rect x="40" y="428" width="600" height="96" rx="6" class="band"/>
+  <text x="52" y="446" class="lbl">Compute</text>
+  <rect x="52" y="460" width="180" height="52" rx="4" class="bx"/><text x="142" y="482" class="t1">NumPy float64</text><text x="142" y="500" class="t2">reference pipeline</text>
+  <rect x="248" y="460" width="180" height="52" rx="4" class="bx"/><text x="338" y="482" class="t1">JAX</text><text x="338" y="500" class="t2">jit &#183; vmap &#183; grad &#183; GPU</text>
+  <rect x="444" y="460" width="180" height="52" rx="4" class="bx"/><text x="534" y="482" class="t1">Vanilla Geant4</text><text x="534" y="500" class="t2">v11.4.2 &#183; yield tables</text>
+</svg>

@@ -8,11 +8,14 @@
 [![python](https://img.shields.io/badge/python-3.10%E2%80%933.14-blue.svg)](pyproject.toml)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-Latent Dirac is an open interactive simulation platform for antimatter
-factories: declarative scenes of positron and antiproton facilities
-(source → transport → capture), batch-parallel simulation and sweeps, and
-interactive 3D visualization. The goal is to turn antimatter facility design
-iteration from a wall-clock problem into a compute problem.
+**Latent Dirac is an open, interactive simulation platform for antimatter
+factories — positron and antiproton facilities from source through
+transport to capture — built to turn facility design iteration from a
+wall-clock problem into a compute problem.**
+
+Declarative scenes describe the beamline. Batched solvers sweep whole
+configuration families in one launch. A per-particle ledger accounts for
+every antiparticle, because antiparticles are extraordinarily expensive.
 
 ![Animated 3D charge-sign splitter hero demo](assets/demos/charge_sign_splitter_3d.webp)
 
@@ -20,59 +23,55 @@ iteration from a wall-clock problem into a compute problem.
 rendered, like every animation below, from the recorded trajectories of a
 real solver run.*
 
-The platform is built on three pillars:
+## Table of Contents
 
-1. **Platform, not just a tracker** — declarative scenes routed across a
-   zoo of first-party and engine-backed solvers, with optional viewers,
-   on one shared data model.
+1. [What is Latent Dirac?](#what-is-latent-dirac)
+2. [Demos](#demos)
+3. [The Antimatter Factory Chain](#the-antimatter-factory-chain)
+4. [Quick Installation](#quick-installation)
+5. [Using the API](#using-the-api)
+6. [Current Status](#current-status)
+7. [Documentation](#documentation)
+8. [Contributing](#contributing)
+9. [License and Acknowledgments](#license-and-acknowledgments)
+
+## What is Latent Dirac?
+
+![Latent Dirac architecture](assets/architecture.svg)
+
+Latent Dirac is organized as four layers. A declarative **scene
+interface** (YAML/JSON schema, CLI, 3D rendering) drives a set of
+**solvers** — one authoritative component per physics domain — that all
+exchange the same **`ParticleState`**: a pytree-compatible state
+carrying an alive mask, a per-particle loss ledger, and result
+provenance. The **compute** layer underneath pairs a NumPy float64
+reference pipeline with a JAX backend (jit, vmap, autodiff) and the
+vendored vanilla Geant4 engine for particle-matter physics.
+
+The platform stands on three pillars:
+
+1. **Platform, not just a tracker** — declarative scenes routed across
+   first-party and engine-backed solvers, with optional viewers, on one
+   shared data model.
 2. **Throughput** — batched parameter sweeps designed for a JAX GPU backend
    (n_configs × n_particles in one launch).
 3. **Ledger** — loss accounting as a full life-cycle ledger for every
    antiparticle, because antiparticles are extraordinarily expensive.
 
-**Design intent vs current status.** The platform description above is what
-Latent Dirac is architected for. The current release is a lightweight
-NumPy-based Python core for source-to-acceptance modeling: fast scenario
-modeling, parameter sweeps, transport studies, and acceptance accounting,
-with placeholder adapters for future calibration against external scientific
-tools such as Xsuite, and the vanilla Geant4 v11.4.2 source tree vendored
-in-repo as the engine-track baseline (it builds via the `engine/README.md`
-recipe and feeds the pipeline through offline yield tables; no runtime
-coupling ships yet). GPU execution and interactive 3D viewers
-are roadmap items, not shipped features.
-See [docs/roadmap.md](docs/roadmap.md) for the phased plan.
+The core focuses on positron and antiproton source terms, relativistic
+charged-particle transport in electromagnetic fields, beamline
+acceptance, loss accounting, and accepted-yield diagnostics, with
+visualization backends kept separate from the physics core.
 
-## Fidelity Tiers
+### Solvers
 
-Every physics model in Latent Dirac declares one of five fidelity tiers:
-**placeholder**, **parameterized**, **surrogate**, **table-based**, or
-**externally calibrated**. Performance or physics claims in this repository
-must reference reproducible settings, and comparative performance statements
-require an open benchmark. Latent Dirac does not reimplement high-fidelity
-particle-matter physics in its Python core; that role belongs to the
-vendored vanilla Geant4 engine track and to external tools behind
-adapters, and the core stays honest about its own approximation level. Every demo
-animation below carries its field model and fidelity note in the title.
-
-## Focus
-
-- positron source term models
-- antiproton surrogate source term models
-- relativistic charged-particle transport in electromagnetic fields
-- beamline acceptance
-- loss accounting
-- accepted-yield diagnostics
-- optional visualization backends separated from the physics core
-
-## The Solver Zoo
-
-Latent Dirac composes independent solver components — each authoritative
-over one physics domain — behind one scene schema, one exchange currency
-(`ParticleState`), and one per-particle loss ledger that spans component
-boundaries. First-party solvers live on the NumPy/JAX substrate and are
-batchable and differentiable; engine-backed solvers enter behind
-adapters and anchor fidelity. Design record:
-[the solver-zoo spec](docs/superpowers/specs/2026-07-05-solver-zoo-composition-design.md).
+Each solver component is authoritative over one physics domain, behind
+one scene schema, one state container (`ParticleState`), and one
+per-particle loss ledger that spans component boundaries. First-party
+solvers live on the NumPy/JAX substrate and are batchable and
+differentiable; engine-backed solvers enter behind adapters and anchor
+fidelity. Design record:
+[the solver composition spec](docs/superpowers/specs/2026-07-05-solver-zoo-composition-design.md).
 
 | Component  | Authority domain                      | Form        | Backing                                     | Status |
 | ---------- | ------------------------------------- | ----------- | ------------------------------------------- | ------ |
@@ -93,108 +92,27 @@ always carry their provenance (engine version, physics list, dataset
 versions, patch list): the engine is invisible in the API, never in the
 report.
 
-## Current Status
+### Honesty discipline
 
-This repository contains the architecture skeleton and minimal working
-simulation demos.
+Every physics model declares one of five fidelity tiers: **placeholder**,
+**parameterized**, **surrogate**, **table-based**, or
+**externally calibrated** — and every demo animation below carries its
+field model and fidelity note in its title. Performance or physics claims must reference
+reproducible settings, and comparative performance statements require an
+open benchmark. Latent Dirac does not reimplement high-fidelity
+particle-matter physics in its Python core; that role belongs to the
+vendored vanilla Geant4 engine track and to external tools behind
+adapters.
 
-Implemented:
-
-- SI-unit constants, unit conversions, and particle species
-- `ParticleState` as the universal intermediate state: a pytree-compatible
-  dataclass with a per-particle loss ledger (`lost_at_element`)
-- parameterized positron pair source model
-- simplified beta-plus positron source model
-- surrogate antiproton source model
-- uniform, solenoid, dipole, quadrupole, composite, and ideal Penning
-  trap field models (analytic eigenfrequencies exposed and validated)
-- table-based field maps with trilinear interpolation and COMSOL
-  regular-grid CSV import
-- relativistic Boris transport as a pure-function kernel (dimensionless
-  momentum internally, SI at State boundaries)
-- aperture and momentum-window acceptance
-- staged pipeline loss accounting and the per-particle loss ledger
-- accepted-yield and spectrum diagnostics
-- declarative YAML/JSON scene schema with drift and monitor elements
-  ([docs/scene_schema.md](docs/scene_schema.md))
-- scene-driven 3D rendering with per-element fidelity labels (function API)
-- JAX batched scene execution (`run_scene_batched` and the reusable
-  `BatchedSceneProgram`: vmap over configurations, optional `[jax]` extra;
-  validated element-wise against the NumPy float64 pipeline on CPU — GPU
-  throughput is not yet measured)
-- Xopt-compatible scene evaluator (`make_scene_evaluator`: plain-callable
-  convention, `evaluate.batch` runs a candidate generation in one launch;
-  xopt itself is not a dependency)
-- the `latent-dirac` CLI: `run` prints the scene report, `render` writes
-  the interactive 3D HTML
-- time-gated fields (`TimeGatedField`; `t_on_s`/`t_off_s` on
-  `uniform_field` and `penning_trap` scene elements, both backends)
-- the `annihilation_plate` element: a ledgered loss endpoint recording
-  at-rest two-photon kinematics (no energetics; NumPy pipeline only)
-- differentiable capture objective (`make_differentiable_objective`:
-  sigmoid-relaxed acceptance, gradients of the soft accepted fraction
-  through every transport step via JAX autodiff; the relaxation is an
-  optimization device — the hard pipeline stays the source of truth)
-- optional Matplotlib and Plotly visualization backends
-- the engine yield-table route: a WSL/Linux build recipe for the vendored
-  Geant4 tree (`engine/README.md`), the `engine/yieldgen` antiproton
-  production app (FTFP_BERT, provenance header), and the table-based
-  `antiproton_yield_table` scene source that replays its output
-- openPMD particle output (`latent_dirac.io.openpmd_io`, optional
-  `[openpmd]` extra): monitor snapshots and the final cloud as openPMD
-  iterations with SI unit metadata, the loss-ledger channel, and the
-  engine provenance four-tuple lifted to species attributes
-- ROOT I/O via uproot (`latent_dirac.io.root_io`, optional `[root]`
-  extra, no ROOT installation): SI-unit TTrees per snapshot with a JSON
-  species/metadata sidecar, and full write→read round-trip back into
-  `ParticleState`
-- placeholder adapters for Geant4, Xsuite, and ROOT
-
-Not implemented yet:
-
-- Geant4 engine adapter integration (the vanilla tree builds via the
-  `engine/README.md` recipe and feeds the pipeline through offline yield
-  tables, but there is no runtime coupling — adapters remain
-  placeholders; see the roadmap)
-- the real Xsuite adapter and mean-field space charge (the remaining
-  closed-loop v1 items — see the solver zoo above)
-- buffer-gas collisions, rotating wall, and space charge in the trap
-- interactive 3D viewer application
-- GPU benchmark suite
-- field maps, batched monitor snapshots, and streaming trajectory
-  recording for extreme scales in the JAX backend
-- CST and SIMION field-map formats
-
-## Installation
-
-Create a virtual environment and install the package in editable mode:
-
-```bash
-python -m venv .venv
-.venv/bin/python -m pip install -e ".[dev]"
-```
-
-Install optional visualization dependencies:
-
-```bash
-.venv/bin/python -m pip install -e ".[dev,viz]"
-```
-
-The simulation core does not import Matplotlib or Plotly. Visualization
-packages are only loaded by `latent_dirac.viz` backend methods.
-
-## Hello Beamline (60 seconds)
-
-One YAML scene, one report, one interactive 3D rendering:
-
-```bash
-.venv/bin/latent-dirac run examples/scenes/hello_beamline.yaml
-.venv/bin/latent-dirac render examples/scenes/hello_beamline.yaml -o hello.html
-```
-
-Open `hello.html` in a browser to orbit the beamline: solenoid, aperture,
-trajectories, accepted/lost split, and per-element fidelity labels in the
-hover text.
+The platform description above is design intent. The current release is a
+lightweight NumPy-based Python core for source-to-acceptance modeling,
+with placeholder adapters for future calibration against external tools
+such as Xsuite, and the vanilla Geant4 v11.4.2 tree vendored in-repo as
+the engine-track baseline (it builds via the `engine/README.md` recipe
+and feeds the pipeline through offline yield tables; no runtime coupling
+ships yet). GPU execution and interactive 3D viewers are roadmap items,
+not shipped features — see [Current Status](#current-status) and
+[docs/roadmap.md](docs/roadmap.md).
 
 ## Demos
 
@@ -649,7 +567,44 @@ Regenerate all animations from source:
 .venv/bin/python tools/generate_scene_demo_webps.py
 ```
 
-## Minimal API Sketch
+## Quick Installation
+
+Create a virtual environment and install the package in editable mode:
+
+```bash
+python -m venv .venv
+.venv/bin/python -m pip install -e ".[dev]"
+```
+
+Optional extras:
+
+| Extra | Provides |
+| ----- | -------- |
+| `viz` | Matplotlib, Pillow, and Plotly visualization backends |
+| `jax` | the batched JAX backend |
+
+Install everything with `pip install -e ".[dev,viz,jax]"`. The simulation
+core imports none of these; visualization packages load only inside
+`latent_dirac.viz` backend methods. Building the vendored Geant4 engine
+is a separate, optional step — see [engine/README.md](engine/README.md).
+
+### Hello Beamline (60 seconds)
+
+One YAML scene, one report, one interactive 3D rendering:
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/hello_beamline.yaml
+.venv/bin/latent-dirac render examples/scenes/hello_beamline.yaml -o hello.html
+```
+
+Open `hello.html` in a browser to orbit the beamline: solenoid, aperture,
+trajectories, accepted/lost split, and per-element fidelity labels in the
+hover text.
+
+## Using the API
+
+The scene layer is a thin veneer over plain Python objects — the same
+pipeline can be built by hand:
 
 ```python
 import numpy as np
@@ -701,7 +656,7 @@ from latent_dirac.scene import load_scene, run_scene
 result = run_scene(load_scene("examples/scenes/positron_capture.yaml"))
 ```
 
-## Visualization
+### Visualization
 
 Static report figures:
 
@@ -725,7 +680,7 @@ figure.write_html("capture.html")
 
 See [docs/rendering.md](docs/rendering.md) for the rendering strategy.
 
-## Tests
+### Tests
 
 ```bash
 .venv/bin/python -m pytest -q
@@ -736,6 +691,78 @@ handling, the loss ledger, source models, relativistic motion in uniform
 fields, Larmor radius validation, field maps, scene validation, pipeline
 losses, accepted yield, the documentation honesty discipline, and optional
 visualization behavior.
+
+## Current Status
+
+This repository contains the architecture skeleton and minimal working
+simulation demos.
+
+Implemented:
+
+- SI-unit constants, unit conversions, and particle species
+- `ParticleState` as the universal intermediate state: a pytree-compatible
+  dataclass with a per-particle loss ledger (`lost_at_element`)
+- parameterized positron pair source model
+- simplified beta-plus positron source model
+- surrogate antiproton source model
+- uniform, solenoid, dipole, quadrupole, composite, and ideal Penning
+  trap field models (analytic eigenfrequencies exposed and validated)
+- table-based field maps with trilinear interpolation and COMSOL
+  regular-grid CSV import
+- relativistic Boris transport as a pure-function kernel (dimensionless
+  momentum internally, SI at State boundaries)
+- aperture and momentum-window acceptance
+- staged pipeline loss accounting and the per-particle loss ledger
+- accepted-yield and spectrum diagnostics
+- declarative YAML/JSON scene schema with drift and monitor elements
+  ([docs/scene_schema.md](docs/scene_schema.md))
+- scene-driven 3D rendering with per-element fidelity labels (function API)
+- JAX batched scene execution (`run_scene_batched` and the reusable
+  `BatchedSceneProgram`: vmap over configurations, optional `[jax]` extra;
+  validated element-wise against the NumPy float64 pipeline on CPU — GPU
+  throughput is not yet measured)
+- Xopt-compatible scene evaluator (`make_scene_evaluator`: plain-callable
+  convention, `evaluate.batch` runs a candidate generation in one launch;
+  xopt itself is not a dependency)
+- the `latent-dirac` CLI: `run` prints the scene report, `render` writes
+  the interactive 3D HTML
+- time-gated fields (`TimeGatedField`; `t_on_s`/`t_off_s` on
+  `uniform_field` and `penning_trap` scene elements, both backends)
+- the `annihilation_plate` element: a ledgered loss endpoint recording
+  at-rest two-photon kinematics (no energetics; NumPy pipeline only)
+- differentiable capture objective (`make_differentiable_objective`:
+  sigmoid-relaxed acceptance, gradients of the soft accepted fraction
+  through every transport step via JAX autodiff; the relaxation is an
+  optimization device — the hard pipeline stays the source of truth)
+- optional Matplotlib and Plotly visualization backends
+- the engine yield-table route: a WSL/Linux build recipe for the vendored
+  Geant4 tree (`engine/README.md`), the `engine/yieldgen` antiproton
+  production app (FTFP_BERT, provenance header), and the table-based
+  `antiproton_yield_table` scene source that replays its output
+- openPMD particle output (`latent_dirac.io.openpmd_io`, optional
+  `[openpmd]` extra): monitor snapshots and the final cloud as openPMD
+  iterations with SI unit metadata, the loss-ledger channel, and the
+  engine provenance four-tuple lifted to species attributes
+- ROOT I/O via uproot (`latent_dirac.io.root_io`, optional `[root]`
+  extra, no ROOT installation): SI-unit TTrees per snapshot with a JSON
+  species/metadata sidecar, and full write→read round-trip back into
+  `ParticleState`
+- placeholder adapters for Geant4, Xsuite, and ROOT
+
+Not implemented yet:
+
+- Geant4 engine adapter integration (the vanilla tree builds via the
+  `engine/README.md` recipe and feeds the pipeline through offline yield
+  tables, but there is no runtime coupling — adapters remain
+  placeholders; see the roadmap)
+- the real Xsuite adapter and mean-field space charge (the remaining
+  closed-loop v1 items — see the solver zoo above)
+- buffer-gas collisions, rotating wall, and space charge in the trap
+- interactive 3D viewer application
+- GPU benchmark suite
+- field maps, batched monitor snapshots, and streaming trajectory
+  recording for extreme scales in the JAX backend
+- CST and SIMION field-map formats
 
 ## Documentation
 
@@ -750,7 +777,22 @@ visualization behavior.
 - [License strategy](docs/license_strategy.md)
 - [Roadmap](docs/roadmap.md)
 
+## Contributing
 
-## License
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+Every new physics feature ships with tests and an explicit fidelity-tier
+declaration; that duty is part of the review bar, not an afterthought.
 
-Apache-2.0. See [LICENSE](LICENSE).
+
+
+## License and Acknowledgments
+
+First-party code is licensed under Apache-2.0 (see [LICENSE](LICENSE));
+the vendored Geant4 tree at [geant4-v11.4.2/](geant4-v11.4.2/) keeps
+its own Geant4 Software License (license text inside the tree;
+attribution in [NOTICE](NOTICE); safety boundaries in
+[docs/safety_scope.md](docs/safety_scope.md)).
+
+Latent Dirac builds on the work of the scientific open-source community —
+in particular the Geant4 Collaboration, whose toolkit anchors the engine
+track, and the NumPy, JAX, pydantic, Matplotlib, and Plotly projects.

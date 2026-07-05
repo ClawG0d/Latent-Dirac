@@ -5,6 +5,15 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- **README restructured Genesis-style.** One-line tagline, numbered
+  table of contents, a "What is Latent Dirac?" section led by the new
+  four-layer architecture diagram (`assets/architecture.svg`: scene
+  interface → solvers → `ParticleState` → compute), merged
+  Quick Installation / Using the API sections, new Contributing and
+  License-and-Acknowledgments sections. The solver layer is now called
+  "Solvers" in the README (the dated solver-zoo spec keeps its name as
+  a historical record). Demo sections are byte-identical to before.
+
 - The README no longer mirrors the safety-scope exclusion list or the
   vendored-engine section (owner decision): the canonical list stays
   pinned across `docs/safety_scope.md`, `AGENTS.md`, and
