@@ -1,0 +1,14 @@
+schema_version: 1
+name: scene-tour
+seed: 2026
+source:
+  type: beta_plus
+  label: na22-source
+  params: { half_life_s: 8.21e7, beta_plus_branching_ratio: 0.9, initial_activity_bq: 3.7e8,
+            endpoint_energy_MeV: 0.546, source_radius_m: 0.001, macro_particles: 96 }
+solver: { type: relativistic_boris, dt_s: 4.0e-12, steps: 80 }
+elements:
+  - { type: solenoid, label: guide-solenoid, b_tesla: 0.5, radius_m: 0.03, length_m: 0.2, center_z_m: 0.1 }
+  - { type: drift, label: gap, steps: 20 }
+  - { type: aperture, label: collimator, radius_m: 0.012, z_m: 0.1 }
+  - { type: monitor, label: end-station }

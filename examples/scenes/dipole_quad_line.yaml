@@ -1,0 +1,16 @@
+schema_version: 1
+name: dipole-quad-line
+seed: 2026
+source:
+  type: positron_pair
+  label: pair-source
+  params: { primary_count: 10000, yield_eplus_per_primary: 0.02, mean_energy_MeV: 3.0,
+            energy_spread_MeV: 0.2, angular_rms_rad: 0.05, source_sigma_m: 0.002,
+            bunch_length_s: 1.0e-12, macro_particles: 96 }
+solver: { type: relativistic_boris, dt_s: 2.0e-12, steps: 30 }
+elements:
+  - { type: dipole, label: bend, B_vector_t: [0.0, 0.25, 0.0], length_m: 0.03, center_z_m: 0.02 }
+  - { type: drift, label: drift-1, steps: 20 }
+  - { type: quadrupole, label: focus-quad, gradient_t_m: 25.0, length_m: 0.03, center_z_m: 0.075 }
+  - { type: drift, label: drift-2, steps: 35 }
+  - { type: monitor, label: end-station }

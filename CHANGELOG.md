@@ -5,6 +5,13 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Rebuilt every README demo as a 3D animation rendered from real
+  simulation runs through a shared matplotlib pipeline (`tools/mpl3d.py`,
+  `tools/generate_scene_demo_webps.py`). Most demos are now defined by
+  declarative scenes under `examples/scenes/`; new demos cover the Wien
+  velocity filter, a dipole+quadrupole beamline, a field-map-driven
+  magnetic mirror bottle, and the antiproton loss ledger. The 2D Pillow
+  canvas generator and its four 2D assets are retired.
 - **Breaking**: replaced the pydantic `ParticleCloud` with `ParticleState`,
   a pytree-compatible dataclass with the same attribute/method surface plus
   a per-particle loss ledger channel `lost_at_element` (int32, -1 = alive).

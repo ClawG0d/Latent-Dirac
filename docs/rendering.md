@@ -36,19 +36,15 @@ tier.
 
 ## README Animations
 
-The animated README demos are generated as WebP assets under `assets/demos/`.
-They are built from deterministic source and transport runs, then rendered by
-the repository tool:
-
-```bash
-.venv/bin/python tools/generate_demo_webp.py
-```
-
-The 3D hero animation is rendered from a recorded `Trajectory` of a real
-Boris-solver run:
+Every README demo is a 3D WebP animation rendered from real simulation
+output through the shared matplotlib pipeline in `tools/mpl3d.py`. Most
+demos are defined by the declarative scenes under `examples/scenes/`; the
+scene-driven ones also export interactive Plotly HTML files next to the
+WebPs.
 
 ```bash
 .venv/bin/python tools/generate_hero_3d_webp.py
+.venv/bin/python tools/generate_scene_demo_webps.py
 ```
 
 The tools import Pillow and Matplotlib only when they run. Core physics

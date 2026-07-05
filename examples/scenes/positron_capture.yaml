@@ -1,0 +1,15 @@
+schema_version: 1
+name: positron-capture
+seed: 2026
+source:
+  type: positron_pair
+  label: pair-source
+  params: { primary_count: 10000, yield_eplus_per_primary: 0.02, mean_energy_MeV: 3.0,
+            energy_spread_MeV: 0.7, angular_rms_rad: 0.15, source_sigma_m: 0.004,
+            bunch_length_s: 1.0e-12, macro_particles: 96 }
+solver: { type: relativistic_boris, dt_s: 3.0e-12, steps: 150 }
+elements:
+  - { type: solenoid, label: capture-solenoid, b_tesla: 0.8, radius_m: 0.02, length_m: 0.15, center_z_m: 0.075 }
+  - { type: aperture, label: capture-aperture, radius_m: 0.006, z_m: 0.13 }
+  - { type: momentum_window, label: momentum-cut, p_min_gev_c: 0.002, p_max_gev_c: 0.005 }
+  - { type: monitor, label: end-station }

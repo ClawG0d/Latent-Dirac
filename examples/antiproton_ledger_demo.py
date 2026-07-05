@@ -1,8 +1,8 @@
-"""Positron capture demo, defined by a declarative scene.
+"""Antiproton loss-ledger demo.
 
-A parameterized positron pair source spirals through an idealized
-hard-edge solenoid, then an aperture and a momentum window select the
-accepted cloud. The scene file is `examples/scenes/positron_capture.yaml`.
+A surrogate antiproton source is transported through a uniform solenoidal
+field, then cut by a beam-pipe aperture and a momentum window. The
+per-particle ledger records which element killed each antiparticle.
 """
 
 from __future__ import annotations
@@ -15,19 +15,20 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from examples.scene_report import scene_report
+from latent_dirac.diagnostics.loss_ledger import loss_ledger
 from latent_dirac.scene.build import run_scene
 from latent_dirac.scene.loader import load_scene
 
-SCENE_PATH = PROJECT_ROOT / "examples" / "scenes" / "positron_capture.yaml"
+SCENE_PATH = PROJECT_ROOT / "examples" / "scenes" / "antiproton_ledger.yaml"
 
 
 def run_demo() -> dict:
     scene = load_scene(SCENE_PATH)
     result = run_scene(scene)
-    final = result.pipeline_result.final_cloud
+    ledger = loss_ledger(result.pipeline_result.final_cloud, result.pipeline_result.stage_results)
     return {
-        "accepted_weighted": final.weighted_count(),
-        "mean_kinetic_energy_mev": final.mean_kinetic_energy_joule() / 1.602176634e-13,
+        "ledger": ledger,
+        "accepted_weighted": result.pipeline_result.final_cloud.weighted_count(),
     }
 
 
@@ -37,7 +38,7 @@ def run_report() -> str:
     return scene_report(
         scene,
         result,
-        "positron transport and acceptance diagnostic only",
+        "antiproton transport and acceptance ledger diagnostic only",
     )
 
 

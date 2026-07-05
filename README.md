@@ -5,6 +5,7 @@
 # Latent Dirac
 
 [![ci](https://github.com/ClawG0d/Latent-Dirac/actions/workflows/ci.yml/badge.svg)](https://github.com/ClawG0d/Latent-Dirac/actions/workflows/ci.yml)
+[![python](https://img.shields.io/badge/python-3.10%E2%80%933.14-blue.svg)](pyproject.toml)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 Latent Dirac is an open interactive simulation platform for antimatter
@@ -12,6 +13,12 @@ factories: declarative scenes of positron and antiproton facilities
 (source → transport → capture), batch-parallel simulation and sweeps, and
 interactive 3D visualization. The goal is to turn antimatter facility design
 iteration from a wall-clock problem into a compute problem.
+
+![Animated 3D charge-sign splitter hero demo](assets/demos/charge_sign_splitter_3d.webp)
+
+*Matched positron/electron clouds split by the same transverse field —
+rendered, like every animation below, from the recorded trajectories of a
+real solver run.*
 
 The platform is built on three pillars:
 
@@ -27,8 +34,8 @@ Latent Dirac is architected for. The current release is a lightweight
 NumPy-based Python core for source-to-acceptance modeling: fast scenario
 modeling, parameter sweeps, transport studies, and acceptance accounting,
 with placeholder adapters for future calibration against external scientific
-tools such as Geant4 and Xsuite. GPU execution, the declarative scene
-schema, and interactive 3D viewers are roadmap items, not shipped features.
+tools such as Geant4 and Xsuite. GPU execution and interactive 3D viewers
+are roadmap items, not shipped features.
 See [docs/roadmap.md](docs/roadmap.md) for the phased plan.
 
 ## Fidelity Tiers
@@ -39,7 +46,8 @@ Every physics model in Latent Dirac declares one of five fidelity tiers:
 must reference reproducible settings, and comparative performance statements
 require an open benchmark. Latent Dirac does not try to replace
 high-fidelity particle-matter simulation tools; it orchestrates them through
-adapters and stays honest about its own approximation level.
+adapters and stays honest about its own approximation level. Every demo
+animation below carries its field model and fidelity note in the title.
 
 ## Focus
 
@@ -64,18 +72,18 @@ Implemented:
 - parameterized positron pair source model
 - simplified beta-plus positron source model
 - surrogate antiproton source model
-- uniform and idealized solenoid fields
+- uniform, solenoid, dipole, quadrupole, and composite field models
+- table-based field maps with trilinear interpolation and COMSOL
+  regular-grid CSV import
 - relativistic Boris transport as a pure-function kernel (dimensionless
   momentum internally, SI at State boundaries)
 - aperture and momentum-window acceptance
-- staged pipeline loss accounting
+- staged pipeline loss accounting and the per-particle loss ledger
 - accepted-yield and spectrum diagnostics
-- optional Matplotlib and Plotly visualization backends
 - declarative YAML/JSON scene schema with drift and monitor elements
   ([docs/scene_schema.md](docs/scene_schema.md))
 - scene-driven 3D rendering with per-element fidelity labels (function API)
-- table-based field maps with trilinear interpolation and COMSOL
-  regular-grid CSV import
+- optional Matplotlib and Plotly visualization backends
 - placeholder adapters for Geant4, Xsuite, and ROOT
 
 Not implemented yet:
@@ -84,8 +92,6 @@ Not implemented yet:
 - interactive 3D viewer application
 - JAX GPU backend and batched sweep API
 - CST and SIMION field-map formats
-- Penning-Malmberg trap elements and buffer-gas collision physics
-- guiding-center long-timescale solver
 - full electromagnetic or hadronic shower physics
 - detailed target engineering
 - real facility control systems
@@ -112,133 +118,261 @@ packages are only loaded by `latent_dirac.viz` backend methods.
 
 ## Demos
 
-The demos show three layers of the current simulator: charge-sign-aware
-relativistic transport, magnetic-field parameter sweeps, and end-to-end
-source-to-acceptance accounting.
-Each animation includes a magnetic field status panel.
+Seven 3D demos, each rendered from real simulation output. Most are defined
+by a declarative YAML scene under [examples/scenes/](examples/scenes/) —
+the scene file *is* the demo. Interactive Plotly versions
+(`assets/demos/*_3d.html`) sit next to each scene-driven animation.
 
 ```text
-source model -> field transport -> beamline acceptance -> loss accounting -> report
+source model -> field transport -> beamline acceptance -> loss ledger -> report
 ```
 
-### Demo 1: Charge-Sign Splitter in 3D
+### Demo 1: A YAML Scene Is the Whole Beamline
 
-This signature demo starts matched positron and electron clouds from the same
-phase-space distribution. In the same transverse magnetic field, equal mass and
-opposite charge produce opposite Lorentz-force curvature, splitting the tracks
-without modeling any material interaction. The 3D view below is rendered from
-the recorded `Trajectory` of a real Boris-solver run.
+One declarative file drives the simulation, the text report, and the 3D
+rendering. An isotropic beta-plus source sprays in all directions; the
+guide solenoid captures a fraction and the collimator accounts for the rest.
 
-![Animated 3D charge-sign splitter demo](assets/demos/charge_sign_splitter_3d.webp)
+```yaml
+schema_version: 1
+name: scene-tour
+seed: 2026
+source:
+  type: beta_plus
+  label: na22-source
+  params: { half_life_s: 8.21e7, beta_plus_branching_ratio: 0.9, initial_activity_bq: 3.7e8,
+            endpoint_energy_MeV: 0.546, source_radius_m: 0.001, macro_particles: 96 }
+solver: { type: relativistic_boris, dt_s: 4.0e-12, steps: 80 }
+elements:
+  - { type: solenoid, label: guide-solenoid, b_tesla: 0.5, radius_m: 0.03, length_m: 0.2, center_z_m: 0.1 }
+  - { type: drift, label: gap, steps: 20 }
+  - { type: aperture, label: collimator, radius_m: 0.012, z_m: 0.1 }
+  - { type: monitor, label: end-station }
+```
 
-![Animated charge-sign splitter demo](assets/demos/charge_sign_splitter.webp)
+![Animated 3D scene tour demo](assets/demos/scene_tour_3d.webp)
 
 ```bash
-.venv/bin/python examples/charge_sign_splitter_demo.py
+.venv/bin/python examples/scene_tour_demo.py
 ```
 
-Example output:
+<details>
+<summary>Text report</summary>
 
 ```text
-Charge-sign splitter demo
+Latent Dirac scene report: scene-tour
 
-Shared setup:
-- macro-particles per species: 96
-- transverse magnetic field By: 0.45 T
-- transport model: relativistic Boris solver
+Stage accounting:
+- guide-solenoid: input=3.33e+08, output=3.33e+08, transmission=1, losses=0
+- gap: input=3.33e+08, output=3.33e+08, transmission=1, losses=0
+- collimator: input=3.33e+08, output=5.20312e+07, transmission=0.156, losses=2.80969e+08
+- end-station: input=5.20312e+07, output=5.20312e+07, transmission=1, losses=0
+
+Loss ledger (weighted, by killing element):
+- guide-solenoid: 0
+- gap: 0
+- collimator: 2.80969e+08
+- end-station: 0
+- surviving: 5.20312e+07
+
+Accepted state:
+- weighted count: 5.20312e+07
+- mean kinetic energy: 0.244291 MeV
 
 Magnetic field status:
-- field model: uniform transverse field
-- B vector [T]: [0, 0.45, 0]
-- status: active for both species
-
-Lorentz-force separation:
-- positron mean x: -0.0309958 m
-- electron mean x: 0.0308783 m
-- mean transverse separation: 0.0618741 m
+- field model: idealized solenoid (hard-edge)
+- B vector [T]: [0, 0, 0.5] inside solenoid envelope
+- status: active inside radius 0.03 m and length 0.2 m
 
 Scope note:
-- this is a charge-sign transport and acceptance diagnostic only
+- beta-plus transport and acceptance diagnostic only
 ```
 
-### Demo 2: Positron Capture
+</details>
 
-This demo samples a parameterized positron pair source, transports the cloud
-through an idealized solenoid field, applies an aperture and momentum window,
-then reports accepted yield.
+### Demo 2: Positron Spiral Capture
 
-![Animated positron capture demo](assets/demos/positron_capture.webp)
+A parameterized pair source spirals through a hard-edge solenoid; an
+aperture and momentum window select the accepted cloud (green) and the
+ledger accounts for the rest (red).
+
+![Animated 3D positron capture demo](assets/demos/positron_capture_3d.webp)
 
 ```bash
 .venv/bin/python examples/positron_capture_demo.py
 ```
 
-Example output:
+<details>
+<summary>Text report</summary>
 
 ```text
-Latent Dirac simulation report
+Latent Dirac scene report: positron-capture
 
 Stage accounting:
-- solenoid transport: input=200, output=200, transmission=1, losses=0
-- aperture: input=200, output=200, transmission=1, losses=0
-- momentum window: input=200, output=200, transmission=1, losses=0
+- capture-solenoid: input=200, output=200, transmission=1, losses=0
+- capture-aperture: input=200, output=87.5, transmission=0.438, losses=112.5
+- momentum-cut: input=87.5, output=79.1667, transmission=0.905, losses=8.33333
+- end-station: input=79.1667, output=79.1667, transmission=1, losses=0
 
-Accepted cloud:
-- weighted count: 200
-- mean kinetic energy: 3.01583 MeV
-- accepted yield: 0.02
+Loss ledger (weighted, by killing element):
+- capture-solenoid: 0
+- capture-aperture: 112.5
+- momentum-cut: 8.33333
+- end-station: 0
+- surviving: 79.1667
+
+Accepted state:
+- weighted count: 79.1667
+- mean kinetic energy: 3.00357 MeV
 
 Magnetic field status:
-- field model: idealized solenoid
+- field model: idealized solenoid (hard-edge)
 - B vector [T]: [0, 0, 0.8] inside solenoid envelope
-- status: active inside radius 0.05 m and length 0.5 m
+- status: active inside radius 0.02 m and length 0.15 m
+
+Scope note:
+- positron transport and acceptance diagnostic only
 ```
 
-### Demo 3: Antiproton Transport
+</details>
 
-This demo samples a surrogate antiproton source, transports it through a
-uniform magnetic field, applies a momentum acceptance window, and summarizes
-the accepted weighted yield.
+### Demo 3: Dipole Bend + Quadrupole Focusing
 
-![Animated antiproton transport demo](assets/demos/antiproton_transport.webp)
+The field model library at work: a hard-edge dipole bends the positron
+beam, then a quadrupole focuses one transverse plane and defocuses the
+other — beam optics visible directly in the envelope.
+
+![Animated 3D dipole quadrupole beamline demo](assets/demos/dipole_quad_line_3d.webp)
 
 ```bash
-.venv/bin/python examples/antiproton_transport_demo.py
+.venv/bin/python -c "from latent_dirac.scene import load_scene, run_scene; print(run_scene(load_scene('examples/scenes/dipole_quad_line.yaml')).pipeline_result.stage_results)"
 ```
 
-Example output:
+### Demo 4: Wien Velocity Filter
+
+Crossed uniform E and B fields pass exactly the velocity v = E/B; faster
+and slower positrons deflect and are removed by the velocity slit.
+
+![Animated 3D Wien filter demo](assets/demos/wien_filter_3d.webp)
+
+```bash
+.venv/bin/python examples/wien_filter_demo.py
+```
+
+<details>
+<summary>Text report (excerpt)</summary>
 
 ```text
-Latent Dirac simulation report
+Wien velocity filter demo
 
-Stage accounting:
-- uniform-field transport: input=1, output=1, transmission=1, losses=0
-- momentum window: input=1, output=1, transmission=1, losses=0
-
-Accepted cloud:
-- weighted count: 1
-- mean kinetic energy: 2209.39 MeV
-- accepted yield: 2e-05
+- matched velocity E/B: 2.587e+08 m/s
+- accepted fraction: 0.115
 
 Magnetic field status:
-- field model: uniform magnetic field
-- B vector [T]: [0, 0, 0.15]
+- field model: uniform field
+- B vector [T]: [0, 0.05, 0]
+- E vector [V/m]: [1.2936e+07, 0, 0]
 - status: active over all sampled positions
 ```
 
-### Demo 4: Magnetic Control Sweep
+</details>
 
-This demo scans a uniform transverse magnetic field over matched positron and
-electron clouds. It shows the charge-sign separation trend and reports fixed
-aperture acceptance and loss diagnostics.
+### Demo 5: Magnetic Mirror Bottle
 
-![Animated magnetic control sweep demo](assets/demos/magnetic_control_sweep.webp)
+A magnetic-mirror field is sampled onto a regular grid, written as a
+COMSOL-style CSV, and loaded back through the real field-map import
+pipeline. Trapped positrons (green) bounce between the throats; particles
+inside the loss cone (red) escape. The field is synthetic and labeled as
+such — a table-based teaser for the Phase 4 trap physics.
+
+![Animated 3D magnetic mirror demo](assets/demos/magnetic_mirror_3d.webp)
+
+```bash
+.venv/bin/python examples/magnetic_mirror_demo.py
+```
+
+<details>
+<summary>Text report</summary>
+
+```text
+Magnetic mirror bottle demo
+
+Magnetic field status:
+- field model: table-based field map (synthetic analytic mirror)
+- on-axis B: 1 T at center, mirror ratio 2
+- bottle half-length: 0.05 m
+
+Trapping:
+- trapped fraction: 0.750
+- max |z| reached: 0.04431 m
+
+Scope note:
+- single-particle transport in a static synthetic field map;
+  no collisions, no space charge, no trap operations
+```
+
+</details>
+
+### Demo 6: The Antiproton Loss Ledger
+
+Every antiparticle's fate is addressable: trajectory color shows which
+element killed each antiproton (beam pipe, momentum cut) and green shows
+the survivors — the per-particle `lost_at_element` ledger, drawn.
+
+![Animated 3D antiproton ledger demo](assets/demos/antiproton_ledger_3d.webp)
+
+```bash
+.venv/bin/python examples/antiproton_ledger_demo.py
+```
+
+<details>
+<summary>Text report</summary>
+
+```text
+Latent Dirac scene report: antiproton-ledger
+
+Stage accounting:
+- transport-field: input=1, output=1, transmission=1, losses=0
+- beam-pipe: input=1, output=0.989583, transmission=0.99, losses=0.0104167
+- momentum-cut: input=0.989583, output=0.447917, transmission=0.453, losses=0.541667
+- end-station: input=0.447917, output=0.447917, transmission=1, losses=0
+
+Loss ledger (weighted, by killing element):
+- transport-field: 0
+- beam-pipe: 0.0104167
+- momentum-cut: 0.541667
+- end-station: 0
+- surviving: 0.447917
+
+Accepted state:
+- weighted count: 0.447917
+- mean kinetic energy: 2184.17 MeV
+
+Magnetic field status:
+- field model: uniform field
+- B vector [T]: [0, 0, 1.5]
+- status: active over all sampled positions
+
+Scope note:
+- antiproton transport and acceptance ledger diagnostic only
+```
+
+</details>
+
+### Demo 7: Magnetic Control Sweep
+
+A transverse field ramps from 0 to 0.6 T across the animation: charge-sign
+separation grows frame by frame — the shape of the batched parameter
+sweeps the JAX backend will run in one launch.
+
+![Animated 3D magnetic control sweep demo](assets/demos/magnetic_control_sweep_3d.webp)
 
 ```bash
 .venv/bin/python examples/magnetic_control_sweep_demo.py
 ```
 
-Example output:
+<details>
+<summary>Full sweep table</summary>
 
 ```text
 Magnetic control sweep demo
@@ -272,36 +406,13 @@ Scope note:
 - this is a magnetic transport and aperture diagnostic only
 ```
 
-### Demo 5: Optional Report Figures
+</details>
 
-Install the visualization extra and save static report figures from any
-`PipelineResult`, such as the `result` object built in the API sketch below:
-
-```bash
-.venv/bin/python -m pip install -e ".[dev,viz]"
-```
-
-```python
-from latent_dirac.viz.matplotlib_backend import MatplotlibBackend
-
-backend = MatplotlibBackend()
-backend.save_all_basic_report_figures(result, "reports/positron_capture")
-```
-
-Interactive Plotly figures are available through `PlotlyBackend`:
-
-```python
-from latent_dirac.viz.plotly_backend import PlotlyBackend
-
-fig = PlotlyBackend().plot_losses_interactive(result)
-fig.show()
-```
-
-Regenerate the README WebP animations:
+Regenerate all animations from source:
 
 ```bash
-.venv/bin/python tools/generate_demo_webp.py
 .venv/bin/python tools/generate_hero_3d_webp.py
+.venv/bin/python tools/generate_scene_demo_webps.py
 ```
 
 ## Minimal API Sketch
@@ -348,6 +459,14 @@ result = PipelineRunner(
 print(text_report(result.stage_results, result.final_cloud, primary_count=10_000))
 ```
 
+Or drive the same pipeline from a scene file:
+
+```python
+from latent_dirac.scene import load_scene, run_scene
+
+result = run_scene(load_scene("examples/scenes/positron_capture.yaml"))
+```
+
 ## Visualization
 
 Static report figures:
@@ -356,17 +475,18 @@ Static report figures:
 from latent_dirac.viz.matplotlib_backend import MatplotlibBackend
 
 backend = MatplotlibBackend()
-fig = backend.plot_energy_spectrum(result)
-backend.save_all_basic_report_figures(result, "reports/basic")
+fig = backend.plot_energy_spectrum(result.final_cloud)
 ```
 
-Interactive figures:
+Interactive scene rendering (Plotly):
 
 ```python
-from latent_dirac.viz.plotly_backend import PlotlyBackend
+from latent_dirac.scene import load_scene, run_scene
+from latent_dirac.viz.scene_3d import render_scene_3d
 
-backend = PlotlyBackend()
-fig = backend.plot_losses_interactive(result)
+scene = load_scene("examples/scenes/positron_capture.yaml")
+figure = render_scene_3d(scene, run_scene(scene, record_trajectories=True))
+figure.write_html("capture.html")
 ```
 
 See [docs/rendering.md](docs/rendering.md) for the rendering strategy.
@@ -377,10 +497,11 @@ See [docs/rendering.md](docs/rendering.md) for the rendering strategy.
 .venv/bin/python -m pytest -q
 ```
 
-The test suite covers species assumptions, unit conversions, particle-cloud
-state handling, source models, relativistic motion in uniform fields, Larmor
-radius validation, pipeline losses, accepted yield, the documentation honesty
-discipline, and optional visualization behavior.
+The test suite covers species assumptions, unit conversions, particle-state
+handling, the loss ledger, source models, relativistic motion in uniform
+fields, Larmor radius validation, field maps, scene validation, pipeline
+losses, accepted yield, the documentation honesty discipline, and optional
+visualization behavior.
 
 ## Documentation
 
