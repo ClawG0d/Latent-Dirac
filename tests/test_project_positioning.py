@@ -125,11 +125,38 @@ def test_no_unsubstantiated_performance_claims():
     assert offenders == []
 
 
-def test_only_placeholder_adapters_are_present():
+def test_adapter_status_matches_roadmap():
     adapter_dirs = {
         path.name
         for path in (PROJECT_ROOT / "latent_dirac" / "adapters").iterdir()
         if path.is_dir() and path.name != "__pycache__"
     }
-
     assert adapter_dirs == ALLOWED_ADAPTERS
+
+    # xsuite is real (closed-loop v1): the adapter module exists, the
+    # placeholder is gone, and the module imports without xtrack installed
+    import importlib
+
+    xsuite_dir = PROJECT_ROOT / "latent_dirac" / "adapters" / "xsuite"
+    assert not (xsuite_dir / "placeholder.py").exists()
+    adapter = importlib.import_module("latent_dirac.adapters.xsuite.adapter")
+    for name in ("to_xtrack_particles", "from_xtrack_particles", "xsuite_tracking_stage"):
+        assert callable(getattr(adapter, name))
+
+    # geant4 and root stay placeholder-only until their milestones land
+    for adapter_name in ("geant4", "root"):
+        module = importlib.import_module(
+            f"latent_dirac.adapters.{adapter_name}.placeholder"
+        )
+        placeholder_classes = [
+            obj
+            for obj in vars(module).values()
+            if isinstance(obj, type) and obj.__name__.endswith("Placeholder")
+        ]
+        assert placeholder_classes, f"{adapter_name} placeholder class missing"
+        for cls in placeholder_classes:
+            try:
+                cls().run()
+            except NotImplementedError:
+                continue
+            raise AssertionError(f"{adapter_name} placeholder no longer raises")

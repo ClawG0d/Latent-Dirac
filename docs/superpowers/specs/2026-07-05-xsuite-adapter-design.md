@@ -1,7 +1,7 @@
 # Xsuite adapter design (closed-loop v1, item 3)
 
 Date: 2026-07-05
-Status: draft (implementation pending; the first adapter to become real)
+Status: adopted and implemented (the first adapter to become real)
 
 ## Decision
 
@@ -57,11 +57,17 @@ precision on all coordinates, weights, and ids for alive particles.
 `latent_dirac/adapters/xsuite/adapter.py`:
 
 - `ReferenceFrame(p0c_ev: float)` — pydantic model (Model layer)
-- `reference_from_state(state) -> ReferenceFrame`
-- `to_xtrack_particles(state, frame) -> xtrack.Particles`
+- `reference_from_state(state) -> ReferenceFrame` (alive-weighted mean)
+- `to_xtrack_particles(state, frame) -> xtrack.Particles` (raises on
+  backward-going alive particles — the forward convention is enforced,
+  not just documented)
 - `from_xtrack_particles(particles, species, frame,
-  template_state=None) -> ParticleState`
-- `track_state(state, line, frame, *, num_turns=1) -> ParticleState`
+  template_state=None, line_length_m=None) -> ParticleState`
+- `xsuite_tracking_stage(label, line, frame, *, num_turns=1) -> Stage`
+  (as built: replaces the sketched `track_state` so ledger stamping
+  flows through `Stage.run`; it passes `line.get_length()` because
+  xtrack resets per-particle `s` to 0 at turn end — z and time are
+  reconstructed from `at_turn`, the line length, and zeta)
 
 The placeholder module is deleted in the same change;
 `test_only_placeholder_adapters_are_present` is replaced by an
@@ -70,9 +76,11 @@ NotImplementedError) while geant4/root remain placeholders.
 
 ## Packaging and CI
 
-`pyproject.toml` gains `xsuite = ["xtrack>=0.65"]` (pin decided at
-implementation time against the installed version). CI: same
-non-fatal extra-install step; tests `importorskip("xtrack")`.
+`pyproject.toml` gains `xsuite = ["xsuite>=0.54"]` — the metapackage,
+not bare xtrack: `line.track()` loads its prebuilt kernels from the
+`xsuite` package at runtime, so xtrack alone can fail mid-track. CI:
+same non-fatal extra-install step; tests `importorskip` both
+`xtrack` and `xsuite`.
 
 ## Tests (TDD)
 

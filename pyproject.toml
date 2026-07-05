@@ -46,6 +46,9 @@ openpmd = [
 root = [
   "uproot>=5"
 ]
+xsuite = [
+  "xsuite>=0.54"
+]
 
 [tool.setuptools.packages.find]
 include = ["latent_dirac*"]

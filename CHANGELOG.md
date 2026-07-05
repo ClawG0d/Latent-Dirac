@@ -21,6 +21,16 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
   test-enforced link to `docs/safety_scope.md`. Geant4 attribution
   remains in `NOTICE`.
 
+- The Xsuite adapter is real (`latent_dirac.adapters.xsuite.adapter`,
+  new optional `[xsuite]` extra): `ParticleState` ↔ `xtrack.Particles`
+  conversion around an explicit `ReferenceFrame` (p0c never silently
+  inferred; zeta ↔ per-particle time mapping), and
+  `xsuite_tracking_stage` wrapping an `xtrack.Line` as a pipeline
+  Stage so xtrack losses stamp the per-particle ledger (xtrack's
+  reordering of lost particles is undone by id). The xsuite placeholder
+  is deleted; the placeholder gate test became the adapter-status test
+  (geant4/root placeholders still enforced). Closed-loop v1 item 3.
+
 - Added ROOT I/O via uproot (`latent_dirac.io.root_io`, new optional
   `[root]` extra; pure Python, no ROOT installation): labeled
   `ParticleState` snapshots as flat SI-unit TTrees plus a JSON

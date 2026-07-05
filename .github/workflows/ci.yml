@@ -32,4 +32,5 @@ jobs:
       # non-fatal: cells without an openpmd-api / uproot wheel just skip those tests
       - run: python -m pip install -e ".[openpmd]" || echo "openpmd extra unavailable; tests will skip"
       - run: python -m pip install -e ".[root]" || echo "root extra unavailable; tests will skip"
+      - run: python -m pip install -e ".[xsuite]" || echo "xsuite extra unavailable; tests will skip"
       - run: python -m pytest -q

@@ -29,10 +29,9 @@ Phase 2: architecture foundation with visuals first. Spec status:
 - 2d FieldMap import (COMSOL regular-grid CSV): done
 - 2e openPMD output: done (write-only, `[openpmd]` extra)
 
-Next: the remaining closed-loop v1 items (the Xsuite adapter, native
-mean-field space charge) with engine-track M1' build recipes in
-parallel; then the GPU lane and the interactive viewer. See
-docs/roadmap.md.
+Next: the last closed-loop v1 item (native mean-field space charge)
+with engine-track M1' build recipes in parallel; then the GPU lane and
+the interactive viewer. See docs/roadmap.md.
 
 Geant4 engine track: the complete vanilla Geant4 v11.4.2 source tree is
 vendored at `geant4-v11.4.2/` as the in-repo engine baseline. The first
@@ -59,10 +58,11 @@ Vendored Geant4 tree rules:
   as a regular file — see the engine positioning spec addendum, and do
   not restore the symlink).
 
-Do not integrate FLUKA, MAD-X, or RF-Track. Xsuite and ROOT I/O (via
-uproot) are scheduled closed-loop v1 items; until those changes land,
-keep adapter interfaces and placeholders only for Geant4, Xsuite, and
-ROOT.
+Do not integrate FLUKA, MAD-X, or RF-Track. The Xsuite adapter is real
+(closed-loop v1: `ParticleState` ↔ `xtrack.Particles` plus a tracking
+Stage); ROOT file I/O ships via uproot in `latent_dirac/io/`. The
+Geant4 and ROOT adapter packages stay placeholder-only until their
+milestones land.
 
 ## Core physics scope
 

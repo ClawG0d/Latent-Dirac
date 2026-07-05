@@ -56,14 +56,17 @@ one scene schema, one state container (`ParticleState`), and one
 per-particle loss ledger that spans component boundaries. First-party
 solvers live on the NumPy/JAX substrate and are batchable and
 differentiable; engine-backed solvers enter behind adapters and anchor
-fidelity. Design record:
+fidelity. Every physics model declares one of five fidelity tiers:
+placeholder, parameterized, surrogate, table-based, or
+externally calibrated — and every demo title carries its field model
+and fidelity note. Design record:
 [the solver composition spec](docs/superpowers/specs/2026-07-05-solver-zoo-composition-design.md).
 
 | Component  | Authority domain                      | Form        | Backing                                     | Status |
 | ---------- | ------------------------------------- | ----------- | ------------------------------------------- | ------ |
 | Source     | positron / antiproton source terms    | sampler     | first-party (pair, beta-plus, surrogate) + engine yield-table replay | shipped (first engine table committed); more tables per M3 |
 | Transport  | vacuum EM transport                   | stepper     | first-party Boris kernel (NumPy + JAX)      | shipped |
-| Lattice    | decelerator rings, transfer lines     | stepper     | Xsuite adapter                              | planned (closed-loop v1) |
+| Lattice    | decelerator rings, transfer lines     | stepper     | Xsuite adapter                              | adapter shipped (conversion + line tracking) |
 | Matter     | targets, degraders, annihilation      | transformer | vendored vanilla Geant4 v11.4.2             | builds via recipe; offline yield tables only, no runtime coupling |
 | Collective | in-trap space charge                  | stepper     | first-party mean-field v1, later WarpX      | planned (mean-field v1 in closed-loop v1) |
 | Detector   | detector response                     | transformer | parameterized model first, Garfield++ later | planned |
@@ -711,16 +714,21 @@ Implemented:
   extra, no ROOT installation): SI-unit TTrees per snapshot with a JSON
   species/metadata sidecar, and full write→read round-trip back into
   `ParticleState`
-- placeholder adapters for Geant4, Xsuite, and ROOT
+- the Xsuite adapter (`latent_dirac.adapters.xsuite.adapter`, optional
+  `[xsuite]` extra): `ParticleState` ↔ `xtrack.Particles` with an
+  explicit reference frame, and `xsuite_tracking_stage` running an
+  `xtrack.Line` with losses stamped into the per-particle ledger
+- placeholder adapters for Geant4 and ROOT
 
 Not implemented yet:
 
 - Geant4 engine adapter integration (the vanilla tree builds via the
   `engine/README.md` recipe and feeds the pipeline through offline yield
-  tables, but there is no runtime coupling — adapters remain
-  placeholders; see the roadmap)
-- the real Xsuite adapter and mean-field space charge (the remaining
-  closed-loop v1 items — see the solver zoo above)
+  tables, but there is no runtime coupling — the Geant4 adapter remains
+  a placeholder; see the roadmap)
+- mean-field space charge (the last closed-loop v1 item — see the
+  Solvers table above); scene-schema lattice elements for the Xsuite
+  adapter are a later extension
 - buffer-gas collisions, rotating wall, and space charge in the trap
 - interactive 3D viewer application
 - GPU benchmark suite

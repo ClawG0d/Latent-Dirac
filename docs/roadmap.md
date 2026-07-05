@@ -12,7 +12,8 @@ Component → next milestone:
 - Source → first engine yield table shipped (`engine/yieldgen`);
   positron/moderation tables per M3
 - Transport → shipped (NumPy float64 reference + JAX batch)
-- Lattice → Xsuite adapter (closed-loop v1)
+- Lattice → adapter shipped (conversion + tracking Stage);
+  scene-schema lattice elements later
 - Matter → first build recipe shipped (M1'-lite); real adapter next (M2)
 - Collective → native mean-field space charge v1 (closed-loop v1),
   WarpX adapter later
@@ -25,13 +26,14 @@ Component → next milestone:
 openPMD output — **done** (write-only particle output,
 `latent_dirac.io.openpmd_io`) → ROOT I/O via uproot — **done**
 (`latent_dirac.io.root_io`: SI-unit TTrees + JSON sidecar, write→read
-round-trip) → Xsuite adapter
-(`ParticleState` ↔ `xtrack.Particles` round-trip; the
-`test_only_placeholder_adapters_are_present` gate flips in the same
-change) → native mean-field space charge (fidelity-tiered, explicit
-validity envelope). Engine-track M1' proceeds in parallel; the GPU lane
-(float32 backend validation, then the honest benchmark suite) follows
-closed-loop v1.
+round-trip) → Xsuite adapter — **done**
+(`latent_dirac.adapters.xsuite.adapter`: `ParticleState` ↔
+`xtrack.Particles` with an explicit reference frame, tracking Stage
+with ledger stamping; the placeholder gate flipped into the
+adapter-status test) → native mean-field space charge (fidelity-tiered,
+explicit validity envelope). Engine-track M1' proceeds in parallel; the
+GPU lane (float32 backend validation, then the honest benchmark suite)
+follows closed-loop v1.
 
 ## Phase 1 (done)
 
