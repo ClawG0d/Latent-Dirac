@@ -743,44 +743,6 @@ visualization behavior.
 - [License strategy](docs/license_strategy.md)
 - [Roadmap](docs/roadmap.md)
 
-## Vendored Geant4 Engine Source
-
-The complete, unmodified source tree of vanilla Geant4 v11.4.2 is vendored
-at [geant4-v11.4.2/](geant4-v11.4.2/) as the in-repo baseline for the
-Geant4 engine track on the roadmap. The tree is read-only, is not part of
-the `latent-dirac` Python package, and carries its own license
-(Geant4 Software License, inside the vendored tree). It builds via the
-recipe in [engine/README.md](engine/README.md), and the first engine
-application (`engine/yieldgen`) exchanges data with the Python core
-through offline yield tables only — there is no runtime coupling, and
-`latent_dirac/adapters/` remains placeholder-only until the adapter
-milestone lands.
-
-This product includes software developed by Members of the Geant4
-Collaboration (http://cern.ch/geant4). See [NOTICE](NOTICE). The Geant4
-name identifies the vendored software only; no endorsement is implied.
-
-## Safety Scope
-
-Latent Dirac is scoped to open simulation architecture and diagnostics for
-antimatter facility design studies. Particle-matter interaction physics
-(showers, stopping, energy deposition) is delegated to the vendored
-vanilla Geant4 engine track and is in scope only as diagnostics; the red
-lines below sit at the application layer. The following remain out of scope:
-
-- weaponization scenarios
-- energetic-release applications (antimatter as an energy source or destructive payload in any form)
-- real facility control systems
-- detailed accelerator target engineering (thermal, mechanical, and materials design of production targets)
-- high-yield operational recipes
-- in-house shower physics (electromagnetic and hadronic showers are delegated to the vendored vanilla Geant4 engine; the Python core does not implement them)
-- annihilation energetics as a figure of merit (energy deposition is in scope only as an engine-computed diagnostic; the Python core models annihilation only as a loss endpoint with kinematic two-photon emission for visualization)
-- material activation
-- radiation shielding design
-
-The digital-twin direction is limited to offline forward simulation, replay
-of measured data, and historical parameter calibration. Latent Dirac provides
-no real-time control loops and no interfaces that write back to a facility.
 
 ## License
 
