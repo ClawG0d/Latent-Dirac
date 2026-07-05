@@ -1,0 +1,138 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4UserLimits inline methods implementation
+//
+// Author: Paul Kent, August 1996
+// Revisions:
+// - 01-11-1997, H.Kurashige: changed GetMaxAllowedStep()
+// - 08-04-1998: M.Maire: new data members
+// --------------------------------------------------------------------
+
+inline G4UserLimits::G4UserLimits(G4double ustepMax, G4double utrakMax,
+                                  G4double utimeMax, G4double uekinMin,
+                                  G4double urangMin)
+  : fMaxStep(ustepMax)
+  , fMaxTrack(utrakMax)
+  , fMaxTime(utimeMax)
+  , fMinEkine(uekinMin)
+  , fMinRange(urangMin)
+  , fType("base")
+{}
+
+// --------------------------------------------------------------------
+
+inline G4UserLimits::G4UserLimits(const G4String& type, G4double ustepMax,
+                                  G4double utrakMax, G4double utimeMax,
+                                  G4double uekinMin, G4double urangMin)
+  : fMaxStep(ustepMax)
+  , fMaxTrack(utrakMax)
+  , fMaxTime(utimeMax)
+  , fMinEkine(uekinMin)
+  , fMinRange(urangMin)
+  , fType(type)
+{}
+
+// --------------------------------------------------------------------
+
+inline const G4String& G4UserLimits::GetType() const { return fType; }
+
+// --------------------------------------------------------------------
+
+inline void G4UserLimits::SetType(const G4String& type) { fType = type; }
+
+// --------------------------------------------------------------------
+
+inline G4UserLimits::~G4UserLimits() {}
+
+// --------------------------------------------------------------------
+
+inline G4double G4UserLimits::GetMaxAllowedStep(const G4Track&)
+{
+  return fMaxStep;
+}
+
+// --------------------------------------------------------------------
+
+inline G4double G4UserLimits::GetUserMaxTrackLength(const G4Track&)
+{
+  return fMaxTrack;
+}
+
+// --------------------------------------------------------------------
+
+inline G4double G4UserLimits::GetUserMaxTime(const G4Track&)
+{
+  return fMaxTime;
+}
+
+// --------------------------------------------------------------------
+
+inline G4double G4UserLimits::GetUserMinEkine(const G4Track&)
+{
+  return fMinEkine;
+}
+
+// --------------------------------------------------------------------
+
+inline G4double G4UserLimits::GetUserMinRange(const G4Track&)
+{
+  return fMinRange;
+}
+
+// --------------------------------------------------------------------
+
+inline void G4UserLimits::SetMaxAllowedStep(G4double ustepMax)
+{
+  fMaxStep = ustepMax;
+}
+
+// --------------------------------------------------------------------
+
+inline void G4UserLimits::SetUserMaxTrackLength(G4double utrakMax)
+{
+  fMaxTrack = utrakMax;
+}
+
+// --------------------------------------------------------------------
+
+inline void G4UserLimits::SetUserMaxTime(G4double utimeMax)
+{
+  fMaxTime = utimeMax;
+}
+
+// --------------------------------------------------------------------
+
+inline void G4UserLimits::SetUserMinEkine(G4double uekinMin)
+{
+  fMinEkine = uekinMin;
+}
+
+// --------------------------------------------------------------------
+
+inline void G4UserLimits::SetUserMinRange(G4double urangMin)
+{
+  fMinRange = urangMin;
+}

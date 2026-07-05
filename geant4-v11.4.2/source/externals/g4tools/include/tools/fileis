@@ -1,0 +1,48 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_fileis
+#define tools_fileis
+
+#include <cstdio>
+#include <cstring>
+#include <string>
+
+namespace tools {
+namespace file {
+
+inline bool signature(const std::string& a_file,unsigned char a_head[],unsigned int& a_num){ //it is assumed a_head[] can contain a_num chars.
+  FILE* file = ::fopen(a_file.c_str(),"rb");
+  if(!file) {a_num=0;return false;}
+  a_num = (unsigned int)::fread(a_head,1,a_num,file);
+  ::fclose(file);
+  return true;
+}
+
+inline bool is_gzip(const std::string& a_file,bool& a_is){
+  unsigned char head[4];
+ {unsigned int num = 4;
+  if(!signature(a_file,head,num)) {a_is = false;return false;}
+  if(num!=4) {a_is = false;return true;}}
+  if(head[0]!=31) {a_is = false;return true;}
+  if(head[1]!=139) {a_is = false;return true;}
+  a_is = true;
+  return true;
+}
+
+inline bool is_root(const std::string& a_file,bool& a_is){
+  unsigned char head[4];
+ {unsigned int num = 4;
+  if(!signature(a_file,head,num)) {a_is = false;return false;}
+  if(num!=4) {a_is = false;return true;}}
+  if(head[0]!='r') {a_is = false;return true;}
+  if(head[1]!='o') {a_is = false;return true;}
+  if(head[2]!='o') {a_is = false;return true;}
+  if(head[3]!='t') {a_is = false;return true;}
+  a_is = true;
+  return true;
+}
+
+}}
+
+#endif

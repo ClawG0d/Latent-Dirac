@@ -1,0 +1,136 @@
+# - G4run module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4run
+  PUBLIC_HEADERS
+    G4AdjointPrimaryGeneratorAction.hh
+    G4AdjointSimManager.hh
+    G4ExceptionHandler.hh
+    G4MaterialScanner.hh
+    G4MSSteppingAction.hh
+    G4MTRunManager.hh
+    G4MTRunManagerKernel.hh
+    G4MultiRunAction.hh
+    G4PhysicsBuilderInterface.hh
+    G4PhysicsListHelper.hh
+    G4PhysicsListOrderingParameter.hh
+    G4PhysicsListWorkspace.hh
+    G4RNGHelper.hh
+    G4Run.hh
+    G4RunManagerFactory.hh
+    G4RunManager.hh
+    G4RunManagerKernel.hh
+    G4SubEvtRunManager.hh
+    G4TaskRunManager.hh
+    G4TaskRunManagerKernel.hh
+    G4UserRunAction.hh
+    G4UserSubEvtThreadInitialization.hh
+    G4UserTaskInitialization.hh
+    G4UserTaskThreadInitialization.hh
+    G4UserWorkerInitialization.hh
+    G4UserWorkerThreadInitialization.hh
+    G4VModularPhysicsList.hh
+    G4VPersistencyManager.hh
+    G4VPhysicsConstructor.hh
+    G4VUPLSplitter.hh
+    G4VUserActionInitialization.hh
+    G4VUserDetectorConstruction.hh
+    G4VUserParallelWorld.hh
+    G4VUserPhysicsList.hh
+    G4VUserPrimaryGeneratorAction.hh
+    G4WorkerRunManager.hh
+    G4WorkerRunManagerKernel.hh
+    G4WorkerSubEvtRunManager.hh
+    G4WorkerTaskRunManager.hh
+    G4WorkerTaskRunManagerKernel.hh
+    G4WorkerThread.hh
+    rundefs.hh
+  PRIVATE_HEADERS
+    G4AdjointSimMessenger.hh
+    G4CopyRandomState.hh
+    G4ExceptionHandlerMessenger.hh
+    G4MatScanMessenger.hh
+    G4RunMessenger.hh
+    G4UserPhysicsListMessenger.hh
+  SOURCES
+    G4AdjointPrimaryGeneratorAction.cc
+    G4AdjointSimManager.cc
+    G4AdjointSimMessenger.cc
+    G4ExceptionHandler.cc
+    G4ExceptionHandlerMessenger.cc
+    G4MaterialScanner.cc
+    G4MatScanMessenger.cc
+    G4MSSteppingAction.cc
+    G4MTRunManager.cc
+    G4MTRunManagerKernel.cc
+    G4MultiRunAction.cc
+    G4PhysicsListHelper.cc
+    G4PhysicsListWorkspace.cc
+    G4RNGHelper.cc
+    G4Run.cc
+    G4RunManager.cc
+    G4RunManagerFactory.cc
+    G4RunManagerKernel.cc
+    G4RunMessenger.cc
+    G4SubEvtRunManager.cc
+    G4TaskRunManager.cc
+    G4TaskRunManagerKernel.cc
+    G4UserPhysicsListMessenger.cc
+    G4UserRunAction.cc
+    G4UserSubEvtThreadInitialization.cc
+    G4UserTaskThreadInitialization.cc
+    G4UserWorkerThreadInitialization.cc
+    G4VModularPhysicsList.cc
+    G4VPersistencyManager.cc
+    G4VPhysicsConstructor.cc
+    G4VUserActionInitialization.cc
+    G4VUserDetectorConstruction.cc
+    G4VUserParallelWorld.cc
+    G4VUserPhysicsList.cc
+    G4VUserPrimaryGeneratorAction.cc
+    G4WorkerRunManager.cc
+    G4WorkerRunManagerKernel.cc
+    G4WorkerSubEvtRunManager.cc
+    G4WorkerTaskRunManager.cc
+    G4WorkerTaskRunManagerKernel.cc
+    G4WorkerThread.cc)
+
+geant4_module_compile_definitions(G4run PRIVATE G4RUN_ALLOC_EXPORT)
+
+geant4_module_link_libraries(G4run
+  PUBLIC
+    G4cuts
+    G4event
+    G4globman
+    G4heprandom
+    G4partman
+    G4tracking
+  PRIVATE
+    G4bosons
+    G4decay
+    G4detector
+    G4detutils
+    G4emutils
+    G4geometrymng
+    G4graphics_reps
+    G4hadronic_mgt
+    G4hepnumerics
+    G4hits
+    G4intercoms
+    G4ions
+    G4magneticfield
+    G4materials
+    G4navigation
+    G4optical
+    G4procman
+    G4scoring
+    G4specsolids
+    G4track
+    G4transportation
+    G4volumes
+    ${timemory_LIBRARIES})
+
+# List any source specific properties here
+if(GEANT4_BUILD_BUILTIN_BACKTRACE)
+  geant4_module_compile_definitions(G4run PRIVATE G4BT_DEBUG)
+endif()

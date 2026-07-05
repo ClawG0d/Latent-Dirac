@@ -1,0 +1,281 @@
+# Example B4 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2023-11-18 I. Hrivnacova (exampleB4-V11-01-04)
+- Updated vis.mac macros:
+  Changed "/vis/open OGL [600x600-0+0]" to "/vis/open" to allow run-time choices
+  and simplified comments
+
+## 2023-11-07 I. Hrivnacova (exampleB4-V11-01-03)
+- Fixed and improved setting of G4VisAttribute
+  - Do not create vis attributes with new (causing memory leak)
+  - Use Geant4 predefined colours (for clarity)
+
+## 2023-11-07 I. Hrivnacova (exampleB4-V11-01-02)
+- Removed unsused and unimplemented method declaration
+  PrimaryGeneratorAction::SetRandomFlag
+
+## 2023-11-03 I. Hrivnacova (exampleB4-V11-01-01)
+- Applied auto in main where suitable and not done by clang-tidy
+
+## 2023-01-30 M. Maire (exampleB4-V11-01-00)
+- PrimaryGeneratorAction: default e-, 300 MeV
+- RunAction: adjust binning of histograms
+- update of run1.mac and run2.mac
+
+## 2022-11-29 I. Hrivnacova (exampleB4-V11-00-02)
+- Activated merging ntuples with score ntuple writer in B4d
+
+## 2021-12-10 Ben Morgan (exampleB4-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+06-10-21 I. Hrivnacova (exampleB4-V10-07-06)
+- Migration to new G4AnalysisManager.hh header;
+  removed Analysis.hh,
+  define the output file name with an extension
+
+19-07-21 I. Hrivnacova (exampleB4-V10-07-05)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+13-07-21 I. Hrivnacova (exampleB4-V10-07-04)
+- Introduced namespace instead of a class names prefix
+- Declare overriding functions 'override' (and removed 'virtual' keyword)
+
+31-05-21 I. Hrivnacova (exampleB4-V10-07-03)
+- Use G4SteppingVerboseWithUnits, added option to switch to
+  the Geant4 default stepping verbose (-vDefault)
+- Use nullptr instead of 0
+- Clean trailing whitespaces from all files
+
+28/02/21 J. Allison (exampleB4-V10-07-02)
+- Remove visTutor menu in all gui.mac files.
+
+26/02/21 J. Allison (exampleB4-V10-07-01)
+- Remove macros/visTutor.
+  o A movies tutorial is now in examples/extended/visualization/movies.
+
+18/01/21 J. Allison (exampleB4-V10-07-00)
+- Fix README: Update VISUALIZATION TUTORIAL to follow smart parsing.
+
+06/11/20 I. Hrivnacova (exampleB4-V10-06-04)
+- Updated B4Analysis.hh with commented lines for using new generic analysis manager
+- Added "ignoreThreadsExcept 0" setting in run2.mac  (commented)
+
+02/11/20 B.Morgan (exampleB4-V10-06-03)
+- Support same CMake version range as core Geant4
+
+19/07/20 G. Cosmo (exampleB4-V10-06-02)
+- Removed redundant inclusion of headers in example B4d main().
+
+17/07/20 I. Hrivnacova (exampleB4-V10-06-01)
+- Migrated B4d example to use G4RunManagerFactory.
+
+30/06/20 G. Cosmo (exampleB4-V10-06-00)
+- Migrated examples (except for B4d) to use G4RunManagerFactory, therefore
+  implicitly enabling tasking by default in MT builds.
+
+21/11/19 G. Cosmo (exampleB4-V10-05-04)
+- Use default MixMax random engine.
+
+18/11/19 G. Cosmo (exampleB4-V10-05-03)
+- Fixed cases of type conversions from size_t to G4int in B4cCalorimeterSD.
+
+30/09/19 I. Hrivnacova (exampleB4-V10-05-02)
+- Updated B4d/run2.mac and comments in exampleB4d.cc for modified
+  score ntuple writer UI commands.
+
+08/07/19 I. Hrivnacova (exampleB4-V10-05-01)
+- Added score ntuple writer in B4d.
+
+24/03/19 J. Allison (exampleB4-V10-05-00)
+- Corrected name of include file: csv.hh.
+
+07/11/18 I. Hrivnacova (exampleB4-V10-04-03)
+- Fixed CMake: added missing plotNtuple.C
+
+30/10/18 I. Hrivnacova (exampleB4-V10-04-02)
+- Removed usage of G4ScoreNtupleWriter;
+  will be demonstrated in a new extended analysis example
+
+26/10/18 I. Hrivnacova (exampleB4-V10-04-01)
+- Activated storing scorers hits in B4d in Root file using
+  new G4ScoreNtupleWriter
+- Updated README
+
+17/05/18 J. Allison      (exampleB4-V10-04-00)
+- macros/visTutor/exN03Vis12(3).mac(loop):
+  o Replaced deprecated /vis/ogl/set with /vis/viewer/set/timeWindow/.
+
+26/06/17 I. Hrivnacova (exampleB4-V10-03-01)
+- Improved plotHisto.C, added plotNtuple.C and updated documentation
+
+23/06/17 M. Maire      (exampleB4-V10-03-00)
+- add the script plotHisto.C
+
+19/11/16 A. Dotti      (exampleB4-V10-02-04)
+- explicit set of SDs to manager
+
+03/11/16 I. Hrivnacova (exampleB4-V10-02-03)
+- Added C++11 features
+- Removed analysisManager->SetFirstHistoId(1); setting
+  and added meaningful names to histograms
+
+02/11/16 L.Garnier (exampleB4-V10-02-02)
+- Remove icons.mac. Automatically include since interfaces-V10-02-07
+
+10/10/16 I. Hrivnacova (exampleB4-V10-02-01)
+- Activate merging of ntuples
+
+09/12/15 I. Hrivnacova (exampleB4-V10-02-00)
+- Restored the third parameter in G4UIsession construction, which was
+  lost when moving G4UIExecutive at the beginning of main().
+  This fixes the problem report #1802.
+
+04/05/15 I. Hrivnacova (exampleB4-V10-01-02)
+- Coding guidelines: removed empty lines
+
+18/02/15 I. Hrivnacova (exampleB4-V10-01-01)
+- Fixed accessing gapHit (problem report #1714)
+
+02/02/15 I. Hrivnacova (exampleB4-V10-01-00)
+- Fixed documentation
+
+29/11/14 I. Hrivnacova
+- Use G4endl instead of \n in G4cout;
+  this makes each new line in the output on threads preceded with
+  G4WTN >
+
+06/11/14 I. Hrivnacova
+- Finalized modifications in previous tag 02, 03):
+  - Removed G4UI_USE/G4VIS_USE tests and init.mac macro (not needed)
+  - Moved G4UIExecutive at the beginning of main() in all examples
+  - Perform run initialization in macros instead of main()
+
+04/11/14 L. Garnier (exampleB4-V10-00-02 - exampleB4-V10-00-03)
+- Remove old G4UI_USE/G4VIS_USE
+- Move G4UIExecutive at the beginning of main()
+- Fix a problem bad design when calling .mac
+
+13/08/14 mma (exampleB4-V10-00-01)
+- update README and .README again
+
+11/08/14 mma (exampleB4-V10-00-00)
+- Restaure drawing in README and .README
+
+02 December 2013 Ivana Hrivnacova
+- Fixed gui.mac:
+  corrected wireframe parameter, removed run2.mac from gui
+
+28/11/13 I. Hrivnacova (exampleB4-V09-06-18)
+- Clean-up macros (fixed obsolete comments)
+
+26/11/13 I. Hrivnacova (exampleB4-V09-06-17)
+- Fixed deleting fMagFieldMessenger with use of G4AutoDelete utility
+
+30/10/13 I. Hrivnacova (exampleB4-V09-06-16)
+- Added a protection when /run/printProgress value is set to zero
+
+30/10/13 I. Hrivnacova (exampleB4-V09-06-15)
+- Updated README
+
+29/10/13 I. Hrivnacova (exampleB4-V09-06-14)
+- Fixed macro (using /run/printProgress)
+
+29/10/13 I. Hrivnacova (exampleB4-V09-06-13)
+- Using G4GlobalMagFieldMessenger
+- Using G4Exception for warnings and error messages
+- Using G4RunManager::SetPrintProgress()
+- Using Gent4 default number of threads when not set via command line
+- Updated README
+
+01/10/13 I. Hrivnacova (exampleB4-V09-06-12)
+- Updated for changes in analysis:
+  removal of G4AnalysisManager::Create(isMaster)
+
+19/08/13 I. Hrivnacova (exampleB4-V09-06-11)
+- Fixed B4[b]RunAction::EndOfRunAction() again: to get the printed
+  histogram statistics correct
+
+24/07/13 P. Gumplinger (exampleB4-V09-06-10)
+- remove unused B4RunAction* fRunAction in B4aEventAction.hh
+
+11/06/13 I. Hrivnacova (exampleB4-V09-06-09)
+- Fixed B4[b]RunAction::EndOfRunAction(): to get the analysis file
+  closed also when no events are processed
+- Fixed names for newly added data members (in B4dEventAction)
+
+10/06/13 I. Hrivnacova (exampleB4-V09-06-08)
+- Fixed names for newly added data members (in B4cEventAction)
+
+03/06/13 I. Hrivnacova (exampleB4-V09-06-07)
+- Updated README files for changes for MT
+
+03/06/13 I. Hrivnacova (exampleB4-V09-06-06)
+- Moved creating analysis manager and booking histograms & ntuples
+  in run action constructor; this makes available /analysis commands
+
+29/05/13 I. Hrivnacova (exampleB4-V09-06-05)
+- Fixed detector construction classes:
+  Moving creating setMagField command from the constructor in
+  ConstructSDandField(), as the command has to be created per thread,
+  and declaring fMagField and fMessenger data members as static
+  G4ThreadLocal
+
+24/04/13 M. Asai (exampleB4-V09-06-04)
+- Recover GNUmakefiles.
+
+23/04/13 I. Hrivnacova (exampleB4-V09-06-03)
+- Use G4Random::setTheEngine instead of CLHEP::HepRandom in main
+  (needed for MT)
+- In B4b: merged  B4bRunAction and B4RunAction in one class
+- Removed unnecessary includes in run action files
+- Minor fixes of coding guidelines
+
+18/04/13 M. Asai (exampleB4-V09-06-02)
+- Migrated to the new G4VUserActionInitialization class.
+
+08/04/13 M. Asai (exampleB4-V09-06-01)
+- Fixed the use of thread-local G4Allocator for B4c.
+
+06/04/13 M. Asai (exampleB4-V09-06-00)
+- Migrated to multi-threading.
+
+28/02/13 I. Hrivnacova
+- When building materials with NistManager
+  do not set fromIsotopes argument (which was set to false),
+  as since 9.6 all materials have to be built from isotopes.
+  Thanks to V. Ivantchenko for pointing at this.
+
+01/11/12 I. Hrivnacova (exampleB4-V09-05-02)
+- Implemented new way of handling program arguments in main()
+
+26/10/12 I. Hrivnacova (exampleB4-V09-05-01)
+- Replaced messenger classes with use of G4GenericMessenger
+
+18/09/12 I. Hrivnacova
+- Updated code using analysis:
+  - Now only a selected analysis manager is included
+  - Making directories in output file is optional
+  - Adding a line using G4AnalysisManager::GetType()
+- General changes (see basic/History)
+
+13/01/12 I. Hrivnacova (exampleB4-V09-05-00)
+- Fixed compiler warning on windows:
+  Allocating the messenger in the DetectorConstruction and EventAction classes
+  constructors in the constructor body and not in the initialization list
+  (to avoid passing 'this' in the initializer list).
+
+14/11/11 I. Hrivnacova
+- The first tagged version of the new B4 example
+  (tagged in basic).
+  Started from novice/N03.

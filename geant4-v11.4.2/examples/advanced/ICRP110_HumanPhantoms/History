@@ -1,0 +1,98 @@
+# Example ICRP110_HumanPhantoms History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-----------------------------------------------------------------------------
+
+## 2026-03-02 John Allison (ICRP110Phantoms-V11-03-00)
+- ICRP110PhantomConstruction.cc, ICRP110PhantomNestedParameterisation.cc,
+  ICRP110UserScoreWriter.cc:
+  - Fix "Implicit conversion loses integer precision" warnings.
+
+## 2023-11-25 C. Mancini (ICRP110Phantoms-V11-01-06)
+- Modified ICRP110PhantomNestedParameterisation.cc:
+  - Removed the "static" descriptor from the  "G4Material* mate" instantiation
+
+## 2023-11-15 I. Hrivnacova, John Allison (ICRP110Phantoms-V11-01-05)
+- Updated vis.mac and standalone.mac:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2023-10-23 John Allison (ICRP110Phantoms-V11-01-04)
+- openGLVis.mac:
+  - Remove /vis/ogl/set/displayListLimit (see also below).
+
+## 2023-10-20 John Allison (ICRP110Phantoms-V11-01-03)
+- vis.mac: Removed /vis/ogl/set/displayListLimit.
+  - This command no longer operates. There is now no display list limit.
+    (The only limit is available memory.)
+  - The command is deprecated and, anyway, causes a crash if the app is built
+    without an OpenGL driver.
+
+## 2023-09-02 Gabriele Cosmo (ICRP110Phantoms-V11-01-02)
+- Removed forward declaration for G4VTouchable.
+
+## 2023-03-21 John Allison (ICRP110Phantoms-V11-01-01)
+- standalone.mac: Disable auto refresh *before* creating scene.
+  - For auto-refresh viewers, without this change the viewer attempts
+    to draw the detector with the default view parameters, and in
+    the case of this phantom, it overwhelms the graphics system.
+  - This phantom should be displayed with special mesh rendering.
+
+## 2023-01-10 John Allison (ICRP110Phantoms-V11-01-00)
+- Introduce ICRP110standalone.
+  - "make" builds two executables - ICRP110phantoms and ICRP110standalone.
+  - ICRP110standalone allows you to visualise the phantom without the
+    overhead of the run manager and initialising all the physics tables.
+    Of course, you cannot run or visualise trajectories.
+
+## 2022-06-02 Susanna Guatelli (ICRP110Phantoms-V11-00-01)
+- Error reading the first voxels (in x=0, y=0) corrected
+- Migration to features of C++11/14/17
+
+## 2021-12-10 Ben Morgan (ICRP110Phantoms-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+07.10.2021 - I. Hrivnacova; ICRP110Phantoms-V10-07-07
+             Removed unused ICRP110PhantomAnalysisManager.hh.
+
+03.08.2021 - S. Guatelli; ICRP110Phantoms-V10-07-06
+             Implementation of bone material has been revised.
+             UserScorerWriter has been changed in order to fix system testing
+             problem (division by zero). Conditional operator introduced.
+
+01.08.2021 - V. Ivanchenko; ICRP110Phantoms-V10-07-05
+             Fixed hash code
+
+28.07.2021 - S. Guatelli; ICRP110Phantoms-V10-07-04
+             OrganMasses.dat has been updated. The Dose is now calculated
+             averaged over the entire mass of the organ, and not only in the voxels
+             of the organ where there is edep recorded.
+
+24.07.2021 - S. Guatelli; ICRP110Phantoms-V10-07-03
+             General code cleaning
+             
+12.07.2021 - J. Allison; ICRP110Phantoms-V10-07-02
+             Use /vis/viewer/set/specialMeshRendering
+             Draw the full phantom
+             ColourMap.dat: all materials (except air) are opaque
+
+24.05.2021 - B. Morgan (ICRP110Phantoms-V10-07-01)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+29.03.2021 - J. Allison; ICRP110Phantoms-V10-07-00
+             Introduced ICRP110PhantomVisAction
+             See vis.mac for how to activate
+
+15.11.2020 - S. Guatelli; ICRP110Phantoms-V10-06-01
+             Migration to G4RunManagerFactory
+
+27.10.2020 - S. Guatelli; ICRP110Phantoms-V10-06-00
+             New advanced example modelling ICRP110 phantom models
+

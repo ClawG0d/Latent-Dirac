@@ -1,0 +1,17 @@
+#
+# Open a viewer
+/vis/open
+# This opens the default viewer - see examples/basic/B1/vis.mac for a
+# more comprehensive overview of options. Also the documentation.
+#
+# draw all worlds
+/vis/drawVolume worlds
+#
+/vis/viewer/zoom 1.4
+#
+/vis/scene/endOfEventAction accumulate
+#
+# for drawing the tracks
+/vis/scene/add/trajectories
+# (if too many tracks cause core dump => storeTrajectory 0)
+

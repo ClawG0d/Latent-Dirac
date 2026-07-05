@@ -1,0 +1,169 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4UCutTubs
+//
+// Class description:
+//
+// Wrapper class for G4CutTubs to make use of VecGeom CutTube.
+
+// Author: G.Cosmo (CERN), 07.07.2017
+// --------------------------------------------------------------------
+#ifndef G4UCUTTUBS_HH
+#define G4UCUTTUBS_HH
+
+#include "G4UAdapter.hh"
+
+#if ( defined(G4GEOM_USE_USOLIDS) || defined(G4GEOM_USE_PARTIAL_USOLIDS) )
+
+#include <VecGeom/volumes/UnplacedCutTube.h>
+
+#include "G4Polyhedron.hh"
+
+/**
+ * @brief G4UCutTubs is a wrapper class for G4CutTubs to make use of
+ * VecGeom CutTube.
+ */
+
+class G4UCutTubs : public G4UAdapter<vecgeom::UnplacedCutTube>
+{
+  using Shape_t = vecgeom::UnplacedCutTube;
+  using Base_t = G4UAdapter<vecgeom::UnplacedCutTube>;
+
+  public:
+
+    /**
+     * Constructs a tube with the given name, dimensions and cuts.
+     *  @param[in] pName The name of the solid.
+     *  @param[in] pRmin Inner radius.
+     *  @param[in] pRmax Outer radius.
+     *  @param[in] pDZ Half length in Z.
+     *  @param[in] pSPhi Starting angle of the segment in radians.
+     *  @param[in] pDPhi Delta angle of the segment in radians.
+     *  @param[in] pLowNorm Outside normal vector at -Z.
+     *  @param[in] pHighNorm Outside normal vector at +Z.
+     */
+    G4UCutTubs( const G4String& pName,
+                      G4double pRMin,
+                      G4double pRMax,
+                      G4double pDz,
+                      G4double pSPhi,
+                      G4double pDPhi,
+                      const G4ThreeVector& pLowNorm,
+                      const G4ThreeVector& pHighNorm );
+
+    /**
+     * Default destructor.
+     */
+    ~G4UCutTubs() override = default;
+
+    /**
+     * Makes a clone of the object for use in multi-treading.
+     *  @returns A pointer to the new cloned allocated solid.
+     */
+    G4VSolid* Clone() const override;
+
+    /**
+     * Accessors.
+     */
+    G4double GetInnerRadius   () const;
+    G4double GetOuterRadius   () const;
+    G4double GetZHalfLength   () const;
+    G4double GetStartPhiAngle () const;
+    G4double GetDeltaPhiAngle () const;
+    G4double GetSinStartPhi   () const;
+    G4double GetCosStartPhi   () const;
+    G4double GetSinEndPhi     () const;
+    G4double GetCosEndPhi     () const;
+    G4ThreeVector GetLowNorm  () const;
+    G4ThreeVector GetHighNorm () const;  
+
+    /**
+     * Modifiers.
+     */
+    void SetInnerRadius   (G4double newRMin);
+    void SetOuterRadius   (G4double newRMax);
+    void SetZHalfLength   (G4double newDz);
+    void SetStartPhiAngle (G4double newSPhi, G4bool trig=true);
+    void SetDeltaPhiAngle (G4double newDPhi);
+    
+    /**
+     * Returns the type ID, "G4CutTubs" of the solid.
+     */
+    inline G4GeometryType GetEntityType() const override;
+
+    /**
+     * Computes the bounding limits of the solid.
+     *  @param[out] pMin The minimum bounding limit point.
+     *  @param[out] pMax The maximum bounding limit point.
+     */
+    void BoundingLimits(G4ThreeVector& pMin, G4ThreeVector& pMax) const override;
+
+    /**
+     * Calculates the minimum and maximum extent of the solid, when under the
+     * specified transform, and within the specified limits.
+     *  @param[in] pAxis The axis along which compute the extent.
+     *  @param[in] pVoxelLimit The limiting space dictated by voxels.
+     *  @param[in] pTransform The internal transformation applied to the solid.
+     *  @param[out] pMin The minimum extent value.
+     *  @param[out] pMax The maximum extent value.
+     *  @returns True if the solid is intersected by the extent region.
+     */
+    G4bool CalculateExtent(const EAxis pAxis,
+                           const G4VoxelLimits& pVoxelLimit,
+                           const G4AffineTransform& pTransform,
+                           G4double& pMin, G4double& pMax) const override;
+
+    /**
+     * Returns a generated polyhedron as graphical representations.
+     */
+    G4Polyhedron* CreatePolyhedron() const override;
+
+    /**
+     * Copy constructor and assignment operator.
+     */
+    G4UCutTubs(const G4UCutTubs& rhs);
+    G4UCutTubs& operator=(const G4UCutTubs& rhs); 
+
+  private:
+
+    /**
+     * Get Z value of the point on Cutted Plane.
+     */
+    G4double GetCutZ(const G4ThreeVector& p) const;
+};
+
+// --------------------------------------------------------------------
+// Inline methods
+// --------------------------------------------------------------------
+
+inline G4GeometryType G4UCutTubs::GetEntityType() const
+{
+  return "G4CutTubs";
+}
+
+#endif  // G4GEOM_USE_USOLIDS
+
+#endif

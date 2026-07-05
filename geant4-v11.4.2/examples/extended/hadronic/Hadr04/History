@@ -1,0 +1,140 @@
+# Example Hadr04 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-05-20 Michel Maire (exhadr04-V11-03-00)
+- Hadr04.cc - SetUseNRESP71Model(true)
+
+## 2024-03-07 Michel Maire (exhadr04-V11-02-00)
+- update Readme
+
+## 2023-05-28 Michel Maire (exhadr04-V11-01-00)
+- revision of all headers
+- PhysicsList : remove definition of meV
+
+## 2021-12-10 Ben Morgan (exhadr04-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+05-10-21 mma (exhadr04-V10-07-05)
+- NeutronHPphysics: use G4GenericMessenger instead of NeutronHPMessenger
+    
+06-10-21 I. Hrivnacova (exhadr04-V10-07-05)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+27-07-21 mma (exhadr04-V10-07-04)
+- RunAction::CountProcesses() : add a protection if (process == nullptr)
+    
+19-07-21 I. Hrivnacova (Hadr04-V10-07-03)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+15-04-21 mma (Hadr04-V10-07-02)
+- Hadr04.cc: RunManagerFactory
+             G4SteppingVerboseWithUnits
+             ParticleHP env variables 
+- ActionInitialization.hh and cc: remove SteppingVerbose class
+      
+18-03-21 A. Ribon (exhadr04-V10-07-01)
+- NeutronHPphysics : replaced G4HadronCaptureProcess with
+  G4NeutronCaptureProcess, and G4HadronFissionProcess with
+  G4NeutronFissionProcess.
+
+04-03-21 A. Ribon (exhadr04-V10-07-00)
+- NeutronHPphysics : replaced G4NeutronInelasticProcess (that has been
+  deleted) with G4HadronInelasticProcess.
+
+22-10-20 mma (exhadr04-V10-06-01)
+- README : add macros descrption
+
+05-08-20 A. Ribon (exhadr04-V10-06-00)
+- envHadronic.(c)sh , Hadr04.cc : removed deprecated HP environmental
+  variables and replaced them with corresponding C++ calls in the main.
+  (These two shell-script files will be removed in G4 11.0.)
+
+25-06-18 mma (exhadr04-V10-04-04)
+- envHadronic : add env variables for particleHP (PHP)
+
+09-05-18 B. Morgan (exhadr04-V10-04-03)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+05-04-18 mma (exhadr04-V10-04-02)
+- Hadr04.cc : set visualisation only in interactive session.
+
+16-03-18 mma (exhadr04-V10-04-01)
+- Hadr04.cc : remove G4UI_USE and G4VIS_USE
+
+17-12-17 mma  (exhadr04-V10-04-00)
+- NeutronHPphysics : use pManager->GetProcess(processName)
+
+11-04-17 mma  (exhadr04-V10-03-01)
+- BeginOfRunAction() : remove SetRandomNumberStore()
+
+12-07-16 mma (exhadr04-V10-02-00)
+- DetectorConstruction : add HeavyWater
+
+04-07-16 I. Hrivnacova
+- Fixes for Doxygen documentation
+
+02-11-15 A. Ribon (exhadr04-V10-01-00)
+- Migrated to ParticleHP
+	 
+19-11-14 mma (exhadr04-V10-00-06)
+- cosmetic in envHadronic.csh
+	 
+11-09-14 mma (exhadr04-V10-00-05)
+- Hadr04.cc : SetNumberOfThreads(G4Threading::G4GetNumberOfCores())
+
+15-09-14 I. Hrivnacova (exhadr04-V10-00-04)
+- Fixed test in envHadronic.sh
+     
+09-05-14 mma (exhadr04-V10-00-03)
+- NeutronHPphysics: check for pre-existing processes
+     
+24-04-14 mma (exhadr04-V10-00-02)
+- small cleanup in NeutronHPphysics.cc
+      
+25-03-14 mma (exhadr04-V10-00-01)
+- Run.cc : modify map fProcCounter 
+    
+12-12-13 mma (exhadr04-V10-00-00)
+- pass primary kinematic to Run
+
+21-11-13 A.Dotti       (exhadr04-V09-06-07)
+- Use G4RunManager::ReinitializeGeometry() to trigger geometry
+  rebuild
+- Remove ui command to Update geometry and corresponding method
+  in DetectorConstruction
+
+07-11-13 I. Hrivnacova (exhadr04-V09-06-06)
+- Setting SteppingVerbose in main only in seguential mode.
+     
+07-11-13 mma (exhadr04-V09-06-05)
+- BeginOfRunAction() : suppress printing
+
+05-11-13 I. Hrivnacova (exhadr04-V09-06-04)
+- Improved Run class:  define just one map of struct ParticleData
+  instead of four maps of G4int/G4double.
+
+04-11-13 I. Hrivnacova (exhadr04-V09-06-03)
+- Added merging for maps, fixed endOfRunAction,
+  use G4Random instead of CLHEP::Random
+     
+03-11-13 mma(exhadr04-V09-06-02)
+- MT: Hadr04.cc + ActionInitialisation + RunAction + Run
+- rm EventAction and EventActionMessenger
+     
+09-09-13 mma (exhadr04-V09-06-01)
+- cosmetic in RunAction
+     
+01-09-13 Michel Maire (exhadr04-V09-06-00)
+- created from Hadr03 and rdecay01

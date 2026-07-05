@@ -1,0 +1,151 @@
+# Example Hadr00 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2021-12-10 Ben Morgan (exhadr00-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+07-11-21 I. Hrivnacova (exhadr00-V10-07-02)
+- Added analysis manager Clear() call instead of
+  deleting in the end of run (removed on July 22)
+
+06-10-21 I. Hrivnacova (exhadr00-V10-07-01)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+22-07-21 I. Hrivnacova (exhadr00-V10-07-00)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+10-11-20 B. Morgan (exhadr00-V10-06-01)
+- Migration to G4RunManagerFactory.
+
+13-02-20  V.Ivanchenko (exhadr00-V10-06-00)
+- HistoManagerMessenger - fixed destructor
+
+27-08-19  V.Ivanchenko (exhadr00-V10-05-01)
+- cleaned-up macro files
+
+23-08-19  V.Ivanchenko (exhadr00-V10-05-00)
+- cleaned-up macro files
+
+03-05-18  J.Allison (exhadr00-V10-04-03)
+- RunAction.cc:
+  o Remove G4VIS_USE.
+  o Remove /vis/ commands - not necessary now and causes
+    problem in Qt with in multithreaded mode.
+
+29-03-18  V.Ivanchenko (exhadr00-V10-04-02)
+- DetectorConstruction - cleanup geometry
+- Hadr00.cc - more cleanup visualisation
+
+24-03-18  M.Maire (exhadr00-V10-04-01)
+- Hadr00.cc : come back to FTFP_BERT
+
+22-03-18  M.Maire (exhadr00-V10-04-00)
+- Hadr00.cc : remove G4UI_USE and G4VIS_USE
+
+25-09-17  V.Ivanchenko (exhadr00-V10-03-00)
+- Added possibility to enable radioactive decay
+
+01-11-16  I. Hrivnacova (exhadr00-V10-02-00)
+- Coding guidelines (class data member names)
+
+11-08-14  V.Ivanchenko (exhadr00-V10-00-01)
+- Reduced log output
+
+20-05-14  V.Ivanchenko (exhadr00-V10-00-00)
+- HistoManager - added histogram with cross section per volume
+
+27-11-13  I. Hrivnacova (exhadr00-V09-06-06)
+- Removed #ifdef G4MULTITHREADED from RunAction (not needed)
+- Fixed .README
+
+21-11-13  A. Dotti      (exhadr00-V09-06-05)
+- USe G4RunManager::ReinitializeGeometry() to trigger geometry
+  rebuilds.
+- Remove ui command /testhadr/Update and corresponding
+  DetectorConstruction::Update method
+- Mark UI command to change detector as ToBeBroadcasted(false)
+- Update README file for change in ui command
+
+06-11-13  V.Ivanchenko (exhadr00-V09-06-04)
+- Fixed for MT
+
+05-11-13  V.Ivanchenko (exhadr00-V09-06-03)
+- Fixed for sequential
+
+05-11-13  V.Ivanchenko (exhadr00-V09-06-02)
+- Appling review recommendations, migration to MT, simplified access
+    to histograms
+
+05-06-13  I. Hrivnacova (exhadr00-V09-06-01)
+- Applied coding guidelines (data members names and initialization,
+  tabulations, separators)
+
+05-04-13  V.Ivanchenko (exhadr00-V09-06-00)
+- Appling code guidelines
+
+15-11-12 I. Hrivnacova (exhadr00-V09-05-07)
+- Synchronized .README with changes in README
+
+13-07-12 V.Ivant (exhadr00-V09-05-06)
+- upgraded README
+
+21-09-12 I.Hrivnacova (exhadr00-V09-05-05)
+- Cleanup CMakeLists.txt
+- Adding explicit includes of G4SystemOfUnits.hh and G4PhysicalConstants.hh
+- Replaced tabulators with space characters
+
+12-07-12 V.Ivant (exhadr00-V09-05-04)
+- use FTFP_BERT as a default
+
+23-05-12 V.Ivant (exhadr00-V09-05-03)
+- Histo - fixed n-tuples
+
+30-04-12 V.Ivant (exhadr00-V09-05-02)
+- Fixed compillation problem of previous tag
+
+26-04-12 V.Ivant (exhadr00-V09-05-01)
+- Migration to built-in Geant4 analysis and apply code convention
+
+20-03-12 V.Ivant (exhadr00-V09-05-00)
+- HistoManager - use material pointer in the interface to cross
+   sections (avoid crash for Physics Lists with HP)
+
+11-10-10 V.Ivant (exhadr00-V09-03-04)
+- Cleanup AIDA interface
+
+06-06-10 J.Perl (exhadr00-V09-03-03)
+- Remove unused variable in EventAction
+
+03-06-10 J.Perl (exhadr00-V09-03-02)
+- Updated vis usage
+
+27-05-10 V.Ivant (exhadr00-V09-03-01)
+- Improved printout
+
+26-05-10 J.Allsion (exhadr00-V09-03-00)
+- Introduced G4UIExecutive.
+
+26-06-09 V.Ivant (exhadr00-V09-02-00)
+- added a possibility to define Physics List as a job parameter
+- added script for the test run of all Physics Lists
+
+20-11-08 V.Ivant (exhadr00-V09-01-02)
+- added charge exchange cross section
+
+06-08-08 V.Ivant (exhadr00-V09-01-01)
+- added capture and fission cross sections
+
+07-07-08 V.Ivant (exhadr00-V09-01-00)
+- first release
+

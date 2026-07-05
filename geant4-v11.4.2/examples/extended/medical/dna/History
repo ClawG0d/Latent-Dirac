@@ -1,0 +1,129 @@
+# Example dna History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-11-03 Miguel A. Cortes-Giraldo (exdna-V11-03-04)
+- added dna microtrack example
+
+## 2025-07-28 I. Hrivnacova (exdna-V11-03-03)
+- Migration of README pages to Markdown:
+  - .README.txt replaced with README.md and removed README 
+  - Reviewed and fixed references to code, improved formatting
+
+## 2025-07-18 Sebastien Incerti (exdna-V11-03-02)
+- added phasespace example
+
+## 2025-05-05 Hoang Tran (exdna-V11-03-01)
+- added molcounter examples
+
+## 2025-03-19 Hoang Tran (exdna-V11-03-00)
+- added dna radial example
+
+## 2024-10-22 Hoang Tran (exdna-V11-02-02)
+- clean up moleculardna (moved to advanced) in README files
+
+## 2024-10-15 Hoang Tran (exdna-V11-02-01)
+- Moved moleculardna example from extended example to advanced example.
+
+## 2024-04-18 Hoang Tran (exdna-V11-02-00)
+- add project(dna-example) to avoid cmake warning
+
+## 2023-11-07 I. Hrivnacova (exdna-V11-01-03)
+- add dnadamage2 example in dna/CMakeLists.txt
+  and README files
+
+## 2022-08-28 Hoang Tran (exdna-V11-01-02)
+- add UHDR example in dna/CMakeLists.txt
+
+## 2022-05-04 Hoang Tran (exdna-V11-01-01)
+- add dna example UHDR
+
+## 2022-10-03 Hoang Tran (exdna-V11-00-02)
+- add dna example jetcounter
+
+## 2022-01-07 Hoang Tran (exdna-V11-00-01)
+- add dna example moleculardna
+
+## 2021-12-10 Ben Morgan (exdna-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+17-11-2021 I. Hrivnacova (exdna-V10-07-02)
+- Updated documentation
+- Added missing examples in CMakelists.txt
+
+26-10-2021 H. Tran (exdna-V10-07-01)
+- Added new scavenger example
+
+31-05-2021 D. Sakata (exdna-V10-07-00)
+- Added new AuNP example
+
+06-11-2020 I. Hrivnacova (exdna-V10-06-04)
+- Added new chem6 example in the category README
+
+29-04-2020 W. G. Shin (exdna-V10-06-03)
+- Fixed warning message on chem6 example
+
+26-04-2020 W. G. Shin (exdna-V10-06-02)
+- Extended example guideline for chem6
+
+19-02-2020 W. G. Shin (exdna-V10-06-01)
+- Fixed memory issue
+
+10-02-2020 W. G. Shin (exdna-V10-06-00)
+- New example chem6
+
+28-11-2019 I. Hrivnacova (exdna-V10-05-03)
+- Fixed links and formatting in .README.txt
+- Added missing examples in CMakelists.txt
+
+20-11-2019 I. Hrivnacova (exdna-V10-05-02)
+- Updated README for newly added examples (S. Incerti)
+
+05-11-2019 H. Tran (exdna-V10-05-01)
+- Added check for no products reactions and
+  fixed sequential mode in example dnadamage1
+
+26-12-2018 H. Tran (exdna-V10-05-00)
+- New example dnadamage1
+
+19-11-2018 I. Hrivnacova (exdna-V10-04-00)
+- Updated README, CMake - new chem5 example
+
+28-11-2017 S. Incerti (exdna-V10-03-02)
+- Updated README
+
+06-06-2017 C. Villagrasa & S. Meylan (exicsd-V10-03-00)
+-New extended example using DNA materials
+
+03-04-2017 S. Incerti (exdna-V10-03-00)
+- Updated README
+
+24-11-2016 I. Hrivnacova (exdna-V10-02-00)
+- Fixes in Doxygen documentation
+
+15-09-2015 I. Hrivnacova (exdna-V10-01-04)
+- Fixes in Doxygen documentation
+
+21-08-2015 G. Cosmo (exdna-V10-01-03)
+- Re-tagged to include last tags to sub-directories.
+
+18-08-2015 S. Incerti (exdna-V10-01-02)
+- Added new example wvalue
+
+02-04-15 G. Cosmo (exdna-V10-01-01)
+- Corrected main CMakeLists.txt for name of microyz example.
+
+09-03-15 I. Hrivnacova (exdna-V10-01-00)
+- Added new example microyz (by S. Incerti)
+
+24-11-14 M. Karamitros
+- Add back all dna examples
+
+06-11-14 I. Hrivnacova
+- Added all dna examples in CMakeLists.txt

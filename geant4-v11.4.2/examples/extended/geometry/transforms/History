@@ -1,0 +1,90 @@
+# Example transforms History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2023-07-04 Hrivnacova (exTransforms-V11-01-00)
+- Clang-tidy fixes, new coding guidelines
+- Clean-up trailing whitespaces
+
+## 2021-12-10 Ben Morgan (exTransforms-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+04-06-21 I. Hrivnacova (exTransforms-V10-07-02)
+- added cleaning of the reflection factory
+
+31-04-21 mma (exTransforms-V10-07-01)
+- transforms.cc : initialize visualization only in interactive mode
+- PlaceWithReflections : permute z-positions
+- DetectorMessenger : AvailableForStates(G4State_PreInit,G4State_Idle)
+- new macros : rotations.mac  reflections.mac
+
+20-04-21 mma (exTransforms-V10-07-00)
+- transforms.cc : use G4SteppingVerboseWithUnits
+
+01-10-18 mma, I. Hrivnacova (exTransforms-V10-04-02)
+- DetectorConstruction::PlaceWithAxialRotations : use rotate(angle, axis)
+- Added descriptions for placement methods in README
+
+24-09-18 mma (exTransforms-V10-04-01)
+- update README
+
+11-03-18 mma (exTransforms-V10-04-00)
+- transforms.cc : remove G4UI_USE and G4VIS_USE
+
+12-10-16 mma (exTransforms-V10-02-04)
+- remove again debug.mac
+
+09-10-16 mma (exTransforms-V10-02-02, 03)
+- restaure debug.mac
+
+08-10-16 mma (exTransforms-V10-02-01)
+- rename debug.mac to transforms.in
+
+04-07-16 I. Hrivnacova  (exTransforms-V10-02-00)
+- Fixes for Doxygen documentation
+
+24-07-15 mma (exTransforms-V10-01-00)
+- vis.mac: draw axis.
+
+08-06-13 mma (exTransforms-V09-06-04)
+- Cosmetic in SteppingAction.
+
+24/03/2013 mma (exTransforms-V09-06-03)
+ - polish coding conventions
+
+17/03/2013 mma (exTransforms-V09-06-02)
+ - G4 coding conventions
+
+28/02/13 I. Hrivnacova (exTransforms-V09-06-01)
+- When building materials with NistManager
+  do not set fromIsotopes argument (which was set to false),
+  as since 9.6 all materials have to be built from isotopes.
+  (Thanks to V. Ivantchenko for pointing at this.)
+
+14/02/2013 I. Hrivnacova (exTransforms-V09-06-00)
+- Applied coding guidelines (data members initialization)
+
+06/09/2012 I. Hrivnacova (exTransforms-V09-05-03)
+- Fixed warning on windows from DetectorConstruction
+
+04/09/2012 I. Hrivnacova (exTransforms-V09-05-02)
+- Updated CMakeLists.txt:
+  adding visualization, copying macros, install target and comment lines
+- Minor fixes in .README
+
+25/06/2012 mma (exTransforms-V09-05-01)
+ - update readme and .readme
+
+12/03/2012 mma (exTransforms-V09-05-00)
+ - simplified version, limited to geometry functionalities
+
+15/11/2011 I. Hrivnacova (exTransforms-V09-04-00)
+ First version of Transforms examples implemented by M.Maire;
+ the reflection option added by I. Hrivnacova.

@@ -1,0 +1,74 @@
+#
+# Macro file for the test of AnaEx03 example
+#
+#
+
+#/run/numberOfThreads 2
+
+# reduce output in MT
+/control/cout/ignoreThreadsExcept 0
+
+# initialize
+/run/initialize
+
+# set file type via parameter passed from calling macro
+# or use the default value "root" set in main
+/analysis/setDefaultFileType {defaultFileType}
+
+# open analysis file
+/analysis/openFile e-
+
+# e- 100MeV 
+/gun/particle e-
+/gun/energy 100 MeV
+/run/beamOn 10
+/analysis/write
+# uncomment if in interactive mode
+#/control/execute plotter.mac
+/AnaEx03/runAction/printStatistic
+/analysis/reset
+
+
+# e- 200MeV 
+/gun/energy 200 MeV
+#
+# delete h1 with id 1 and 3
+/analysis/h1/delete 1
+/analysis/h1/delete 3 true
+#
+/run/beamOn 20
+/analysis/write
+/AnaEx03/runAction/printStatistic
+/analysis/reset
+#
+# e- 300MeV 
+/gun/energy 300 MeV
+#
+# create again h1 with id 1 and 3
+/analysis/h1/create "EGap2" "Edep in gap (MeV) 2" 10 0. 100.
+/analysis/h1/create "LGap2"  "trackL in gap (mm) 2" 10 0. 500.
+#
+/run/beamOn 30
+/analysis/write
+/AnaEx03/runAction/printStatistic
+/analysis/closeFile
+
+# open analysis file
+/analysis/openFile proton
+
+# proton 400MeV 
+/gun/particle proton
+/gun/energy 400 MeV
+/run/beamOn 40
+/analysis/write
+/AnaEx03/runAction/printStatistic
+/analysis/reset
+
+# proton 500MeV 
+/gun/energy 500 MeV
+#
+/run/beamOn 50
+/analysis/write
+/AnaEx03/runAction/printStatistic
+/analysis/closeFile
+#

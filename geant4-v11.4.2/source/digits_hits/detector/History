@@ -1,0 +1,99 @@
+# Category det History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2026-03-09 Gabriele Cosmo (det-V11-03-00)
+- Fixed compilation warning for implicit type conversions on macOS/XCode
+  in G4HCtable.
+
+## 2026-02-26 David Lange
+- Improve performance of GetCollectionID by avoiding unneded memory allocations.
+- Further improve it by adding a second interface that avoiding the need to concatenate
+  strings together and then take them apart again
+
+## 2024-07-11 Gabriele Cosmo (det-V11-02-00)
+- Fixed reported Coverity defects, use consistently 'const G4String&' to
+  avoid implicit copy.
+- Fixed class description in headers.
+
+## 2022-12-22 Ben Morgan (det-V11-01-00)
+- Apply standard clang-tidy plus range-based for and boolean simplification fixes
+- General code tidy and modernization
+  - Use consistent, grouped ordering of public-protected-private members
+- Move docstrings prior to function declarations for doxygen/IDE compatibility
+
+## 2022-11-17 Gabriele Cosmo (det-V11-00-01)
+- Fixed compilation warnings for implicit type conversions on macOS/XCode 14.1.
+
+## 2021-12-10 Ben Morgan (det-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+August 9th, 2021 I. Hrivnacova (det-V10-07-01)
+- Updated G4TScoreHistFiller for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+April 1, 2021 B. Morgan (det-V10-07-00)
+- Migrate build to modular CMake API
+
+Sep 12, 2020 B. Morgan (det-V10-06-02)
+- Apply typo fixes from Gurkan Myczko (https://github.com/Geant4/geant4/pull/15)
+
+Sep 23, 2020  M.Asai (det-V10-06-01)
+- G4VScoreHistFiller and G4TScoreHistFiller :
+  Adding 2D and 3D histogram and 1P and 2P profile graph options.
+
+Sep 7, 2020  M.Asai (det-V10-06-00)
+- Introducing G4VScoreHistFiller and G4TScoreHistFiller that allow scorers to fill
+  histograms defined by G4Analysis
+- G4VPrimitivePlotter.hh is moved from digits_hits/util.
+
+April 28, 2020  John Apostolakis
+- Added ComputeSolid methods to G4VPrimitiveScorer
+
+Febr 26, 2013 Andrea Dotti
+- Adding cloning capabilities to SD
+
+June 4, 2007, A.Howard
+- Put back some classes required for scoring of geometrical biasing cells:
+  G4CellScoreValues, G4CellScoreComposer
+  (in module tag: "digits_hits-V08-03-03")
+
+May 31, 2007, A.Howard
+- Removed classes associated with old biasing/scoring scheme:
+  G4CellScoreComposer, G4CellScoreValues, G4CellStoreScorer
+  (in module tag: "digits_hits-V08-03-02")
+- Files remain on the HEAD for testing purposes
+
+Jul,  1st 2004 G.Cosmo
+- G4CellScoreComposer.cc, G4TrackLogger.cc: trivial fix for extra
+  semicolons, required for porting on gcc-3.4.0 compiler.
+
+May,  3rd 2004 G.Cosmo
+- G4SDManager, G4SDStructure: added optional argument 'warning' to
+  FindSensitiveDetector(pathName, warning), defaulted to TRUE, to
+  eventually exclude warning issued by G4SDManager when sensitive
+  detector is not found.
+  The fix has been requested by ALICE to deactivate the warning when
+  a new sensitive-detector is created automatically in their framework.
+
+Oct,  4th 2003 G.Cosmo
+- Imported from digits+hits directory.
+
+Nov,  4th 2002 M.Dressel
+- Removed G4std:: where it does not belong to.
+
+Oct  28th, 2002 M.Dressel
+- Added G4CellScoreComposer[.hh.cc], G4CellScoreValues.hh,
+  G4CellStoreScorer[.hh.cc], G4TrackLogger[.hh.cc].
+
+June 6, 98 M.Asai
+- Created.

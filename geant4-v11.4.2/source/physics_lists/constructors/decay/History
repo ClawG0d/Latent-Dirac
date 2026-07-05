@@ -1,0 +1,195 @@
+# Category phys-ctor-decay History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2024-08-01 Alberto Ribon (phys-ctor-decay-V11-02-00)
+- G4UnknownDecayPhysics : extended to G4ChargedUnknownParticle.
+  ( This is part of ATLAS and LHCb request to assign automatically 
+    ionisation and multiple scattering processes to charged primary particles
+    with valid PDG code but not known to Geant4. )
+
+## 2023-11-07 Alberto Ribon (phys-ctor-decay-V11-01-01)
+- G4RadioactiveDecayPhysics : replaced G4RadioactiveDecay with
+  G4Radioactivation to be able to run in biasing mode (not only in
+  analogue mode, as before with G4RadioactiveDecay).
+
+## 2023-01-11 Alberto Ribon (phys-ctor-decay-V11-01-00)
+- G4RadioactiveDecayPhysics : assigned the RadioactiveDecay process
+  to G4Triton (which is the only light ion that decays).
+  Note: before, triton did not have beta decay, i.e. it was wrongly
+  treated as stable even when radioactive decay physics was enabled;
+  anti_triton did not, and still does not, have beta decay
+  (because RadioactiveDecay, in its current implementation, does
+  not handle any kind of anti-ions): in practice, this is an acceptable
+  approximation because of its relatively long lifetime and the fact
+  that annihilation and nuclear capture are more likely to happen
+  before decay.
+
+## 2022-11-16 Vladimir Ivanchenko (phys-ctor-decay-V11-00-03)
+- added calls to G4EmBuilder and G4PhysListUtil in order to 
+  prevent from warnings on hyper-nuclei decays in the case of 
+  simplified custom Physics List
+
+## 2022-08-16 Alberto Ribon (phys-ctor-decay-V11-00-02)
+- sources.cmake : added missed dependency on G4physlist_util
+
+## 2022-08-09 Vladimir Ivanchenko (phys-ctor-decay-V11-00-01)
+- G4DecayPhysics - added instantiation of singletones for physics
+
+## 2021-12-10 Ben Morgan (phys-ctor-decay-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+06-October-2020 Vladimir Ivanchenko  (phys-ctor-decay-V10-07-03)
+- G4RadioactiveDecayPhysics - Use SetAuger(..) method instead of 
+    the obsolete SetAugerCascade(..)
+
+25-August-2021 Dennis Wright      (part of physics-lists-V10-07-02)
+- G4RadioactiveDecayPhysics.cc: replace G4RadioactiveDecayBase with G4RadioactiveDecay
+  see top level History file 
+
+16-April-2021 Ben Morgan                (phys-ctor-decay-V10-07-01)
+- Migrate build to modular CMake API
+
+13-April-2021 Alberto Ribon             (phys-ctor-decay-V10-07-00)
+-  GNUmakefile, sources.cmake : removed dependency on hadronic/model/util
+   and hadronic/model/management (that have been now deleted, with their
+   classes moved to hadronic/util and hadronic/management).
+
+18-August-2020 Vladimir Ivanchenko      (phys-ctor-decay-V10-06-05)
+- G4RadioactiveDecayPhysics - defined EM parameters in ConstructProcess(..)
+    instead definition inside the constructor
+
+02-July-2020 Vladimir Ivanchenko        (phys-ctor-decay-V10-06-04)
+- G4RadioactiveDecayPhysics - improved initialisation: added
+    EM parameters definition in the class constructor; if atomic
+    de-excitation is not defined add it in each thread but not
+    change EM parameters in a thread; should address several
+    problems reported recently in the Forum and privately
+
+03-June-2020 Vladimir Ivanchenko        (phys-ctor-decay-V10-06-03)
+- G4RadioactiveDecayPhysics - coherent initialisation with recent
+    updates of initialisation of atomic de-excitation
+
+30-Apr-2020 Ben Morgan                  (phys-ctor-decay-V10-06-02)
+- Remove obsolete GRANULAR_DEPENDENCIES entries
+
+18-February-2020 Vladimir Ivanchenko    (phys-ctor-decay-V10-06-01)
+- G4DecayPhysics, G4RadioactiveDecayPhysics, G4SpinDecayPhysics,
+  G4UnknownDecayPhysics - general cleanup: removed thread local
+    pointers, do not delete objects, use C++11 keywords, use
+    standard signatures for constructors; define bulder type for
+    the main constructor G4DecayPhysics - bDecay, for others bUnknown,
+
+13-February-2020 Vladimir Ivanchenko    (phys-ctor-decay-V10-06-00)
+- G4RadioactiveDecayPhysics - add enabled flag of isomer production,
+    which is needed after fix of problem #2226
+
+25 June 2019  Dennis Wright (phys-ctor-decay-V10-05-00)
+- G4RadioactiveDecayPhysics: replace G4RadioactiveDecay with
+  G4RadioactiveDecayBase.  This removes the biasing functionality which
+  is generally not used in the physics lists.
+
+07-July-2018 Vladimir Ivanchenko        (phys-ctor-decay-V10-04-00)
+- G4RadioactiveDecayPhysics - fixed bug reported by M.Kelsey, which
+    resolves initialisation ordering of messages to EM physics
+
+07-Nov-2017, Vladimir Ivanchenko        (phys-ctor-decay-V10-03-08)
+- G4RadioactiveDecayPhysics - enable AugerCascade
+
+23-Oct-2017 K.L. Genser                 (phys-ctor-decay-V10-03-07)
+- G4MuonicAtomDecayPhysics fixed verbosity
+
+19-Oct-2017, Vladimir Ivanchenko        (phys-ctor-decay-V10-03-06)
+- G4RadioactiveDecayPhysics - defined new set of default parameters:
+  disable correlated gamma, enable only X-ray emission for atomic
+  de-excitation, internal conversion sampling in nuclear de-excitation
+  is left fully enabled
+
+12-September-2017 K.L. Genser           (phys-ctor-decay-V10-03-05)
+- G4MuonicAtomDecayPhysics use new G4MuonicAtomDecay
+
+05-Jul-2017, Vladimir Ivanchenko        (phys-ctor-decay-V10-03-04)
+29-May-2017, Vladimir Ivanchenko        (phys-ctor-decay-V10-03-03)
+- G4RadioactiveDecayPhysics - enable correlated gamma simulation by default
+
+27-Feb-2017, Vladimir Ivanchenko        (phys-ctor-decay-V10-03-02)
+- G4RadioactiveDecayPhysics - set time limit for the de-excitation module
+    the same as in G4NuclideTable, so only states from this table will
+    be created as ions
+
+23-Dec-2016, Laurent Desorgher (phys-ctor-decay-V10-03-01)
+-G4RadioactiveDecayPhysics switch on  the storing of all internal conversion data vector
+  (G4NuclearLevelData::GetInstance()->GetParameters()->SetStoreAllLevels(true)) for
+ correct gamma deexcitation modeling in radioactive decay.
+
+16-Dec-2016, Vladimir Ivanchenko        (phys-ctor-decay-V10-03-00)
+- G4RadioactiveDecayPhysics - simplified list of EM parameters;
+    use a new method AddPhysics() instead of old AddMsc()
+
+02-Dec-2016, Vladimir Ivanchenko        (phys-ctor-decay-V10-02-07)
+- G4RadioactiveDecayPhysics - fixed initialisation (also for the
+    cases when radioactive decay is registered before EM physics or
+    is the only physics constructor)
+
+01-Dec-2016, Vladimir Ivanchenko        (phys-ctor-decay-V10-02-06)
+- G4RadioactiveDecayPhysics - enable reading from new gamma evaporation
+    files, enable Auger cascade, do not apply cuts
+
+17-October-2016 Kevin Lynch (for Lynch and Genser) (phys-ctor-decay-V10-02-05)
+- Add G4MuonicAtomDecayPhysics constructor to enable decay of muonic atoms
+- depends on tag decay-V10-02-02
+
+16-October-2016 M.Maire   (phys-ctor-decay-V10-02-04)
+- add README
+
+12-October-2016 G.Folger  (phys-ctor-decay-V10-02-03)
+- replace direct use of aParticleIterator by GetParticleIterator().
+  fix required by clang39 on Windows and MAC
+
+22-Jun-2016, Vladimir Ivanchenko        (phys-ctor-decay-V10-02-02)
+22-Jun-2016, Vladimir Ivanchenko        (phys-ctor-decay-V10-02-01)
+- G4RadioactiveDecayPhysics - enable atomic de-excitation by the call
+    to EM parameters in ConstructProcess method (should co-work with
+    any EM physics)
+
+01-Jun-2016, Makoto Asai                (phys-ctor-decay-V10-02-00)
+- add G4UnknownDecayPhysics
+
+05-Nov-2015, Alberto Ribon              (phys-ctor-decay-V10-01-05)
+- Migrated to particle_hp/
+
+06-Oct-2015, Peter Gumplinger           (phys-ctor-decay-V10-01-04)
+- add G4Gamma::GammaDefinition() to G4SpinDecayPhysics::ConstructParticle()
+
+12-Aug-2015, Peter Gumplinger           (phys-ctor-decay-V10-01-02/03)
+- fix Coverity errors in G4SpinDecayPhysics
+
+30-Apr-2015, Peter Gumplinger           (phys-ctor-decay-V10-01-01)
+- G4SpinDecayPhysics inherits from G4VPhysicsConstructor and no longer
+  from G4DecayPhysics
+- fix Coverity errors with new pointer going out of scope
+
+09-Apr-2015, Peter Gumplinger           (phys-ctor-decay-V10-01-00)
+- add G4SpinDecayPhysics
+
+29-Jan-2014, Gunter Folger              (phys-ctor-decay-V10-00-00)
+- Removed from photolepton_hadron/muon_nuclear from sources.cmake
+
+07-Nov-2013, Alberto Ribon 		(phys-ctor-decay-V09-06-03)
+- Removed low_energy and high_energy from sources.cmake and GNUmakefile.
+
+09-Jun-2013, Andrea Dotti 		(phys-ctor-decay-V09-06-02)
+- Bug fixes for MT: wasActivated flag becomes TLS
+
+29-Mar-2013, Andrea Dotti		(phys-ctor-decay-V09-06-01)
+- Changes needed for MT: now G4VUserPhysicsList is a split class
+
+10-Jan-2013, Gunter Folger              (phys-ctor-decay-V09-06-00)
+- new directory structure introduced.
+   constructors/decay classes

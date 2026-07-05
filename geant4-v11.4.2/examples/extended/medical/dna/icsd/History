@@ -1,0 +1,65 @@
+# Example icsd History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2023-03-24 H. Tran (exicsd-V11-01-01)
+- Physics list: delete G4DNAVacuumModel
+
+## 2023-01-27 H. Tran (exicsd-V11-01-00)
+- Physics list: deleted unused models,
+apdated RegisterModel function with new structure
+
+## 2022-11-02 Y. Perrot (exicsd-V11-00-01)
+- Physics list: use of nitrogen material
+- Geometry: propose two geometries, nanodosimeter (N2)
+and dna (THF)
+
+## 2021-12-10 Ben Morgan (exicsd-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+06-10-2021 I. Hrivnacova - tag exicsd-V10-07-01
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root),
+  removed Analysis.hh.
+
+19-07-2021 I. Hrivnacova - tag exicsd-V10-07-00
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+10-11-2020 B. Morgan - tag exicsd-V10-06-00
+- Migration to G4RunManagerFactory.
+
+26-11-19 I. Hrivnacova - tag exicsd-V10-05-01
+- Fixed formatting in .README.txt and Doxygen warnings
+
+01-11-19 V. Ivanchenko - tag exicsd-V10-05-00
+- icsd.mac - reduce statistics to 75 in order not to hit time
+    limit nightly
+
+07-11-18 I. Hrivnacova - tag exicsd-V10-04-04
+- Updated plot.C for reading ntuples merged with row-wise mode
+  (now default)
+
+26-07-18 S. Incerti - tag exicsd-V10-04-03
+- added ntuple merging
+
+22-07-18 S. Incerti - tag exicsd-V10-04-02
+- removed obsolete RanecuEngine.
+
+20-05-18 J. Allison tag exicsd-V10-04-01
+- Remove G4UI_USE.
+
+09-05-18 B. Morgan tag exicsd-V10-04-00
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+06-06-2017 C. Villagrasa & S. Meylan tag exicsd-V10-03-01
+- New extended example using DNA materials

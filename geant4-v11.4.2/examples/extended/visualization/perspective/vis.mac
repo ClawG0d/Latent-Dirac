@@ -1,0 +1,35 @@
+# Macro for perspective demonstration.
+
+/control/verbose 2
+#/vis/verbose p
+
+# Open a viewer
+/vis/open
+# This opens the default viewer - see examples/basic/B1/vis.mac for a
+# more comprehensive overview of options. Also the documentation.
+
+# Disable auto refresh and quieten vis messages whilst scene and
+# trajectories are established:
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors
+
+/vis/scene/create
+/vis/scene/add/userAction
+/vis/scene/add/axes 0 0 0 1 m
+#/vis/scene/add/scale 10 m
+/vis/sceneHandler/attach
+
+/vis/viewer/set/background white
+/vis/viewer/set/viewpointVector 1 0 0
+/vis/viewer/set/upVector 0 0 1
+/vis/viewer/set/hiddenMarker true
+/vis/viewer/set/projection perspective 45 deg
+/vis/viewer/pan 0 50 cm
+/vis/viewer/dollyTo 241.5 m
+
+# To get perspective lines
+/perspectiveDemo/optionString x
+
+# Re-establish auto refreshing and verbosity:
+/vis/viewer/set/autoRefresh true
+/vis/verbose warnings

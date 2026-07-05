@@ -1,0 +1,48 @@
+# Decays of U238[44.916] in VR mode   
+#                                                                         
+/control/verbose 2
+/run/verbose 1
+#
+# set the target/detector geometry
+/rdecay02/det/setTargetRadius 1e10 pc
+/rdecay02/det/setTargetLength 1e10 pc
+/rdecay02/det/setDetectorThickness 1e10 pc
+/rdecay02/det/setDetectorLength 1e10 pc
+#
+/run/initialize
+#
+# Set a very high time threshold to allow all decays to happen
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+#
+/process/list
+#
+# rdm is applied only to the target volume
+/process/had/rdm/noVolumes
+/process/had/rdm/selectVolume Target
+
+# Place the isotopes in the middle of the target, at rest. 
+/gun/particle ion
+
+# Excitation energy of ion must be specified to within 1 eV
+/gun/ion 92 238 0 44.916
+
+# complete chain decays in VR mode
+/process/had/rdm/sourceTimeProfile beam.data
+/process/had/rdm/decayBiasProfile measures.data
+#/process/had/rdm/nucleusLimits 238 238 90 92
+
+# In biased mode the shortest allowed isomer lifetime is 
+# set to 1 usec regardless of this setting
+/process/had/rdm/hlThreshold 1e-6 s
+/process/had/rdm/analogueMC 0
+#
+/analysis/setFileName u238b
+
+# Set histogram binning 
+/analysis/h1/set 6 100 0. 10.0 MeV
+/analysis/h1/set 7 100 0. 1.0 MeV
+/analysis/h1/set 8 100 0. 0.1 MeV
+
+#
+/run/printProgress 100
+/run/beamOn 1000

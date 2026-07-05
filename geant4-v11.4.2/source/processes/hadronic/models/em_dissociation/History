@@ -1,0 +1,97 @@
+# Category hadr-emd History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-03-31 Vladimir Ivanchenko (hadr-emd-V11-03-01)
+- G4EMDissociation : next attempt to fix Coverity warnings
+
+## 2025-03-20 Vladimir Ivanchenko (hadr-emd-V11-03-00)
+- G4EMDissociation : fixed Coverity warnings
+
+## 2022-04-04 Vladimir Ivanchenko (hadr-emd-V11-00-01)
+- G4EMDissociation : make consistent with G4Fragment modifications
+
+## 2021-12-10 Ben Morgan (hadr-emd-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+04 August 2021 - Alberto Ribon (hadr-emd-V10-07-02)
+---------------------------------------------------
+- G4EMDissociation : set the creator model ID for secondaries created
+  by projectile and target diffraction, using the new version of
+  G4PhysicsModelCatalog
+
+16 April 2021 - Ben Morgan (hadr-emd-V10-07-01)
+--------------------------------------------------
+- Migrate build to modular CMake API
+
+13 April 2021 - Alberto Ribon  (hadr-emd-V10-07-00)
+-----------------------------------------------------
+- GNUmakefile, sources.cmake : removed the subdirectories
+  hadronic/models/management and hadronic/models/util
+  (that have been now deleted, with their classes moved to
+   hadronic/util and hadronic/management).
+  Removed also the useless dependency to hadronic/process.
+
+24 November 2020 - Alberto Ribon  (hadr-emd-V10-06-00)
+-----------------------------------------------------
+- G4EMDissociation : fix Lorentz kinematics (which was causing
+  energy-momentum violations) and switch off too frequent warning
+  messages by G4Fragment, as suggested by Laurie Nevay and
+  Andrey Abramov (bug report #2254).
+
+07 March 2017 - Vladimir Ivanchenko  (hadr-emd-V10-03-00)
+-----------------------------------------------------
+- G4EMDissociation.cc : removed explicit instantiation of
+    FermiBreakUp, Evaporation and MultiFragmentation models
+
+13 August 2015 - Alberto Ribon  (hadr-emd-V10-01-01)
+-----------------------------------------------------
+- G4EMDissociation.cc : fix of Coverity memory leaks.
+
+13 August 2015 - Alberto Ribon  (hadr-emd-V10-01-00)
+-----------------------------------------------------
+- G4EMDissociation.cc : removed useless header file dependency
+  on G4GeneralPhaseSpaceDecay.
+
+08 October 2014 - Alberto Ribon  (hadr-emd-V10-00-01)
+-----------------------------------------------------
+- G4EMDissociation.cc : replaced  G4ParticleTable::GetIon()  with
+                        G4IonTable::GetIon() .
+
+05 March 2014 - Alberto Ribon  (hadr-emd-V10-00-00)
+--------------------------------------------------
+- Removed useless const_cast<G4ParticleDefinition*> .
+
+20 June 2013 - Dennis Wright  (hadr-emd-V09-06-00)
+--------------------------------------------------
+- fix memory leak of products from G4ExcitationHandler
+
+14 November 2012 - Dennis Wright (hadr-emd-V09-05-03)
+-----------------------------------------------------
+- G4EMDissociation.hh : add protoype for copy ctor
+
+ 4 October 2012 - Dennis Wright (hadr-emd-V09-05-02)
+----------------------------------------------------
+- implemented user-reported bug fix (#1339) of double deletion of cross section
+  in dtor of G4EMDissociation
+
+25 Sep 2012 - Gabriele Cosmo (hadr-emd-V09-05-01)
+-------------------------------------------------
+- Explicitly use inclusion of headers for system of units and physical
+  constants, in plan to remove implicit inclusion from globals.hh.
+
+12 Jun 2012 - Dennis Wright (hadr-emd-V09-05-00)
+------------------------------------------------
+- Replaced shadowed variable m2 in G4EMDissociation.cc.
+
+27 Sep 2011 - Dennis Wright (hadr-emd-V09-04-00)
+------------------------------------------------
+- Migrated to integer Z and A.
+  Files affected: G4EMDissociation.cc.
+

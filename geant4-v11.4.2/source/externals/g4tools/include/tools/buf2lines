@@ -1,0 +1,60 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_buf2lines
+#define tools_buf2lines
+
+#include <vector>
+#include <string>
+#include <string.h> //memcpy
+
+namespace tools {
+
+inline bool strings2buf(const std::vector<std::string>& a_strings,size_t& a_size,char*& a_buffer) {
+  // For {"aa","bbb"}, it produces "aa0bbb00".
+  // For {""}, it produces "00".
+  // For {}, it produces "0".
+  size_t number = a_strings.size();
+  a_size = 0;
+  for(size_t index=0;index<number;index++) a_size += a_strings[index].size()+1;
+  a_size++;
+  a_buffer = new char[a_size];
+  if(!a_buffer) {a_size = 0;return false;}
+  char* pos = a_buffer;
+  size_t array_size;
+  for(size_t index=0;index<number;index++) {
+    const std::string& _s = a_strings[index];
+    array_size = _s.size()+1;
+    ::memcpy(pos,_s.c_str(),array_size);
+    pos += array_size;
+  }
+  *pos = '\0';
+  return true;
+}
+
+inline bool buf2strings(size_t a_size,char* a_buffer,std::vector<std::string>& a_strings) {
+  if(a_size<=1) return false;
+  // We assume here a_size>=1
+  // Exa : if ab0cde00, then a_strings should contain two strings ab and cde.
+  a_strings.clear();
+  char* begin = a_buffer;
+  char* pos = a_buffer;
+  size_t number = a_size-1;
+  for(size_t index=0;index<number;index++) {
+    if((*pos)=='\0') {
+      size_t l = pos - begin;
+      std::string _s(l,0);
+      char* data = (char*)_s.c_str();
+      ::memcpy(data,begin,l);
+      a_strings.push_back(_s);
+      begin = pos+1;
+    }
+    pos++;
+  }
+  return true;
+}
+
+}
+
+#endif
+

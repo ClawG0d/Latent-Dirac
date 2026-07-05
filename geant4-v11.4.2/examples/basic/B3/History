@@ -1,0 +1,200 @@
+# Example B3 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-10-21 I. Hrivnacova (exampleB3-V11-03-00)
+- Removed StackingAction class and using new 
+  G4RunManager::SetDefaultClassification() for killing neutrinos
+
+## 2024-08-12 I. Hrivnacova (exampleB3-V11-02-00)
+- Updated for changes in accumulables:
+  use new "Register" method with shorter name
+
+## 2024-05-07 I. Hrivnacova (exampleB3-V11-02-00)
+- Looping over G4THitsMap via range for loop instead of iterators.
+
+## 2023-11-15 I. Hrivnacova (exampleB3-V11-01-01)
+- Updated vis.mac macros:
+  Changed "/vis/open OGL [600x600-0+0]" to "/vis/open" to allow run-time choices
+  and simplified comments
+
+## 2023-11-03 I. Hrivnacova (exampleB3-V11-01-00)
+- Applied auto in main where suitable and not done by clang-tidy
+
+## 2022-11-29 I. Hrivnacova (exampleB3-V11-00-02)
+- Activated merging ntuples with score ntuple writer
+- Added commented setting in run2.mac:
+  /control/cout/ignoreThreadsExcept 0
+
+## 2022-03-02 I. Hrivnacova (exampleB3-V11-00-01)
+- Set new analysis file name for the second run
+  in run2.mac to avoid overwriting the output from
+  the first run
+
+## 2021-12-10 Ben Morgan (exampleB3-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+06-10-21 I. Hrivnacova (exampleB3-V10-07-03)
+- Migration to new G4AnalysisManager.hh header;
+  removed Analysis.hh.
+
+13-07-21 I. Hrivnacova (exampleB3-V10-07-02)
+- Introduced namespace instead of a class names prefix
+- Declare overriding functions 'override' (and removed 'virtual' keyword)
+
+31-05-21 I. Hrivnacova (exampleB3-V10-07-01)
+- Use nullptr instead of 0
+- Clean trailing whitespaces from all files
+
+30-05-21 M.Maire (exampleB3-V10-07-00)
+- exampleB3a,b.cc: use G4SteppingVerboseWithUnits
+
+02/11/20 B.Morgan (exampleB3-V10-06-01)
+- Support same CMake version range as core Geant4
+
+30/06/20 G. Cosmo (exampleB3-V10-06-00)
+- Migrated examples to use G4RunManagerFactory, therefore implicitly enabling
+  tasking by default in MT builds.
+
+21/11/19 G. Cosmo (exampleB3-V10-05-02)
+- Use default MixMax random engine.
+
+30/09/19 I. Hrivnacova (exampleB3-V10-05-01)
+- Updated comments in main() for modified score ntuple writer UI commands.
+
+08/07/19 I. Hrivnacova (exampleB3-V10-05-00)
+- Added score ntuple writer.
+
+30/11/18 I. Hrivnacova (exampleB3-V10-04-05)
+- Moved the previous update from B3b in B3 documentation
+  and removed obsolete README files from B3a and B3b.
+
+16/11/18 J. Madsen (exampleB3-V10-04-04)
+- Updated documentation for example B3b
+
+13/11/18 J. Madsen (exampleB3-V10-04-03)
+- Added StatAnalysis to example B3b according to Lund agreement
+  to demonstrate statistical computations in a basic example
+
+30/10/18 I. Hrivnacova (exampleB3-V10-04-02)
+- Removed usage of G4ScoreNtupleWriter;
+  will be demonstrated in a new extended analysis example
+
+26/10/18 I. Hrivnacova (exampleB3-V10-04-01)
+- Activated storing hits in Root file using new G4ScoreNtupleWriter
+- Replaced explicit printing of Run ID with /run/printProgress
+- Updated README
+
+08/05/18 B. Morgan     (exampleB3-V10-04-00)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+22/12/16 M. Maire      (exampleB3-V10-03-00)
+- PhysicsList : register Electromagnetic before RadioactiveDecay
+
+
+19/11/16 A. Dotti      (exampleB3-V10-02-04)
+- explicit set of SD to manager
+
+02/11/16 I. Hrivnacova (exampleB3-V10-02-03)
+- Fixed comments for Doxygen
+- Removed obsolete B3b/exampleB3.cc
+
+26/09/16 I. Hrivnacova (exampleB3-V10-02-02)
+- Updated for renaming G4Parameter in G4Accumulable
+
+24/05/16 I. Hrivnacova (exampleB3-V10-02-01)
+- Fixed compiler warning introduced in the previous update
+
+20/05/16 I. Hrivnacova (exampleB3-V10-02-00)
+- Fixed initialization of the hits collections IDs in B3aEventAction
+  (this fixes the problem report #1862)
+- Removed History files from B3a and B3b
+
+05/11/15 I. Hrivnacova (exampleB3-V10-01-01)
+- Splitting example in two variants of merging data:
+  -B3a (new) with the code based on G4Parameter
+  -B3b (as previous B3) with the code based on G4Run
+
+04/05/15 I. Hrivnacova (exampleB3-V10-01-00)
+- Coding guidelines: removed empty lines
+
+29/11/14 I. Hrivnacova
+- Use G4endl instead of \n in G4cout;
+  this makes each new line in the output on threads preceded with
+  G4WTN >
+
+06/11/14 I. Hrivnacova
+- Finalized modifications in previous tag (01):
+  - Removed G4UI_USE/G4VIS_USE tests and init.mac macro (not needed)
+  - Moved G4UIExecutive at the beginning of main() in all examples
+  - Perform run initialization in macros instead of main()
+
+04/11/14 L. Garnier (exampleB3-V10-00-01)
+- Remove old G4UI_USE/G4VIS_USE
+- Move G4UIExecutive at the beginning of main()
+
+29/10/13 I. Hrivnacova (exampleB3-V09-06-06)
+- Removed SetNumberOfThreads(4) from main (use Geant4 default)
+- Updated README
+
+09/09/13 M.Asai (exampleB3-V09-06-05)
+- B3PrimaryGeneratorAction.cc : Change G4ParticleTable::GetIon() to
+  G4IonTable::GetIon(), as the former method becomes obsolete.
+
+13/06/13 mma (exampleB3-V09-06-04)
+ Fixes for MT:
+- Set sensitive detector via SetSensitiveDetector(..)
+- Get hits collection IDs in B3Run::RecordEvent (and not B3Run constructor)
+- Add a test for primary generator action in B3RunAction::EndOfRunAction()
+  as it does not exist on master
+
+05/06/13 mma (exampleB3-V09-06-03)
+- add section about ACTION INITALIZATION to README and .README
+
+01/06/13 mma  (exampleB3-V09-06-02)
+- Migration for MT:
+  forgotten to add B3Run
+
+31/05/13 mma  (exampleB3-V09-06-01)
+- Migration for MT:
+  Added B3ActionInitialization, B3Run
+  Removed B3EventAction
+  and updated actions classes accordingly.
+  README files still need to be updated.
+
+28/02/13 I. Hrivnacova
+- When building materials with NistManager
+  do not set fromIsotopes argument (which was set to false),
+  as since 9.6 all materials have to be built from isotopes.
+  Thanks to V. Ivantchenko for pointing at this.
+
+21/11/11 I. Hrivnacova
+- Improved vis.mac
+- Removed alternative detector construction class
+
+14/11/11 I. Hrivnacova
+- The first tagged version of the new B3 example
+  (tagged in basic).
+
+11-11-11 (mma)
+- EventAction: printModulo 10000
+
+01-11-11 (mma)
+- DetectorConstruction2: - add an offset when replicate dPhi
+
+29-09-11 (mma)
+- DetectorConstruction: - replace crystal shape Trd by Box
+                        - add a gap for wrapping
+
+27-06-11 michel maire
+- Created.

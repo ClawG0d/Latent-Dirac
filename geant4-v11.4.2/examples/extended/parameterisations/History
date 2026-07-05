@@ -1,0 +1,74 @@
+# Example parameterisations History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2025-07-30 I. Hrivnacova (exParameterisations-V11-03-00)
+- Migration of README pages to Markdown:
+  - .README.txt replaced with README.md and removed README
+  - Reviewed and fixed references to code, improved formatting,
+    removed references to non existing claseses or files
+    (if present)
+
+## 2023-11-15 I. Hrivnacova (exParameterisations-V11-01-01)
+- Updated vis*.mac macros:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2023-09-29 Anna Zaborowska (exParameterisations-V11-01-00)
+- Run clang-tidy on Par01, Par02, Par03 and Par04
+
+## 2021-12-10 Ben Morgan (exParameterisations-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+Nov 8th 2021, D. Salamani, A. Zaborowska (exParameterisations-V10-07-01)
+- Add new Par04 example
+
+May 24th 2021,  B. Morgan (exParameterisations-V10-07-00)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+Nov 11th, 2020 B. Morgan (exParameterisations-V10-06-01)
+- Migration to G4RunManagerFactory.
+
+Nov 3rd, 2020 B. Morgan (exParameterisations-V10-06-00)
+- Support same CMake version range as core Geant4
+
+Oct 5th, 2020 A. Zaborowska (exParameterisations-V10-06-00)
+- Add new Par03 example
+
+Nov 28th, 2019  I. Hrivnacova (exParameterisations-V10-05-01)
+--------------------
+- Updated category README files for reorganization of gflash examples.
+
+Jan 31st, 2019  I. Hrivnacova (exParameterisations-V10-05-00)
+--------------------
+- Merged GitHub PR #4: all Boolean operators now return G4bool.
+
+Jun 10th, 2015 I. Hrivnacova (exParameterisations-V10-01-01)
+--------------------
+- Fixed handling required gdml package in CMake files
+
+May 13th, 2015 I. Hrivnacova (exParameterisations-V10-01-00)
+--------------------
+- Added new Par02 example
+
+Dec 13th, 2012 I. Hrivnacova (exParameterisations-V09-06-00)
+--------------------
+- Added Par01 example (moved from novice/N05)
+
+Sep 24th, 2012 I. Hrivnacova (exParameterisations-V09-05-00)
+--------------------
+- Updated CMakeLists.txt:
+  adding visualization, copying macros, install target and comment lines
+- Added explicit includes of G4SystemOfUnits.hh and G4PhysicalConstants.hh
+- Replaced tabulators with space characters
+
+Nov 4th, 2005 J.Weng (exparam-V07-01-01)
+--------------------
+- Added new example demonstrating usage 'gflash' shower parameterisation.

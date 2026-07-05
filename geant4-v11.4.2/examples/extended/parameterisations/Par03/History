@@ -1,0 +1,42 @@
+# Example Par03 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2023-10-19 Ben Morgan (expar03-V11-01-00)
+- Replace use of deprecated functions with modern equivalents
+
+## 2022-09-13 Anna Zaborowska (expar03-V11-00-01)
+- Start class member functions with uppercase
+  to match guidelines
+
+## 2021-12-10 Ben Morgan (expar03-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+07-Nov-21 I. Hrivnacova (expar03-V10-07-02)
+- Added analysis manager Clear() call at the end of run
+
+06-Oct-21 I. Hrivnacova (expar03-V10-07-01)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+19-Jul-21 I. Hrivnacova (expar03-V10-07-00)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+06-Nov-20  I. Hrivnacova (expar03-V10-06-02)
+- Added missing README for Doxygen
+- Fixed section numbering in README
+
+26-Oct-20  A. Zaborowska (expar03-V10-06-01)
+- Fix errors from Windows build
+
+06-Oct-20  A. Zaborowska (expar03-V10-06-00)
+- Create Par03 example

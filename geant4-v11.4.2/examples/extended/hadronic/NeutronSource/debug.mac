@@ -1,0 +1,20 @@
+
+/control/verbose 2
+/run/verbose 2
+/tracking/verbose 2
+#
+/run/initialize
+#
+# Set a very high time threshold to allow all decays to happen
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+#
+/process/list
+###/process/inactivate hadElastic
+#
+/gun/particle ion
+/gun/ion 95 241
+/gun/energy 0. eV
+#
+/control/execute vis.mac
+#
+/run/beamOn 1

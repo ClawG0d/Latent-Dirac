@@ -1,0 +1,30 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_carray
+#define tools_carray
+
+//fixed array manips
+
+namespace tools {
+
+template <class T,class I>
+inline T* _4s_to_3s(const T* a_4s,const I& a_w,const I& a_h) {
+  T* _3s = new T[a_w*a_h*3];
+  if(!_3s) return 0;
+  T* pfrom = (T*)a_4s;
+  T* pto = _3s;
+ {I _sz = a_w*a_h*4;
+  for(I i=0;i<_sz;i+=4) {
+    *(pto+0) = *(pfrom+0);
+    *(pto+1) = *(pfrom+1);
+    *(pto+2) = *(pfrom+2);
+    pfrom += 4;
+    pto += 3;
+  }}
+  return _3s;
+}
+
+}
+
+#endif

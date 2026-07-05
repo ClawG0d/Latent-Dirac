@@ -1,0 +1,192 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_file
+#define tools_file
+
+#include "forit"
+#include "get_env"
+#include "sep"
+#include "sout"
+#include "tokenize"
+
+#include <cstdlib>
+#include <cstring>
+#include <ostream>
+
+namespace tools {
+namespace file {
+
+inline bool exists(const std::string& a_string) {
+  FILE* file = ::fopen(a_string.c_str(),"rb");
+  if(!file) return false;
+  ::fclose(file);
+  return true;
+}
+
+inline bool read_bytes(const std::string& a_file,char*& a_buffer,long& a_length){
+  // Returned buffer should be deleted with delete [].
+  FILE* file = ::fopen(a_file.c_str(),"rb");
+  if(!file) {
+    a_buffer = 0;
+    a_length = 0L;
+    return false;
+  }
+  // Get file size :
+  ::fseek(file,0L,SEEK_END);
+  long filesize = ::ftell(file);
+  if(!filesize) {
+    ::fclose(file);
+    a_buffer = new char[1];
+    a_length = 0L;
+    return true; //empty file.
+  }
+  // Add one byte to be able to add \n if file contain lines.
+  a_buffer = new char[filesize+1];
+  if(!a_buffer) {
+    ::fclose(file);
+    a_buffer = 0;
+    a_length = 0L;
+    return false;
+  }
+  ::rewind(file);
+  size_t nitem = ::fread(a_buffer,(size_t)filesize,(size_t)1,file);
+  if(nitem!=1){
+    ::fclose(file);
+    delete [] a_buffer;
+    a_buffer = 0;
+    a_length = 0L;
+    return false;
+  }
+  ::fclose(file);
+  a_buffer[filesize] = 0;
+  a_length = filesize;
+  return true;
+}
+
+
+inline bool find_with_dirs(std::ostream& a_out,
+                           const std::vector<std::string>& a_dirs,
+                           const std::string& a_file,
+                           std::string& a_path,
+                           bool a_verbose = false ) {
+  std::vector<std::string>::const_iterator it;
+  for(it=a_dirs.begin();it!=a_dirs.end();++it) {
+    if((*it).empty()) {
+      // with a "" in dirs, this case could solve :
+      // - a_file in the current directory.
+      // - a_file with an absolute path name.
+      a_path = a_file; //may be an absolute file name.
+    } else {
+      a_path = *it;
+      a_path += sep();
+      a_path += a_file;
+    }
+
+    if(a_verbose) {
+      a_out << "find_with_dirs :"
+            << " look for " << sout(a_path) << " ..."
+            << std::endl;
+    }
+
+    if(file::exists(a_path)) {
+      if(a_verbose) {
+        a_out << "find_with_dirs :"
+              << " found " << sout(a_path) << "."
+              << std::endl;
+      }
+      return true;
+    }
+  }
+  a_path.clear();
+
+  if(a_verbose) {
+    a_out << "find_with_dirs :"
+          << " " << sout(a_file) << " not found."
+          << std::endl;
+  }
+
+  return false;
+}
+
+inline bool find_with_env(std::ostream& a_out,
+                          const std::string& a_env,
+                          const std::string& a_file,
+                          std::string& a_path,
+                          bool a_verbose = false ) {
+  std::string PATH;
+  if(!get_env(a_env,PATH)) {
+    //look for a a_file in current directory.
+    if(file::exists(a_file)) {
+      a_path = a_file;
+      return true;
+    }
+    a_out << "tools::find_with_env : env variable " << sout(a_env) << " not defined." << std::endl;
+    a_path.clear();
+    return false;
+  }
+  if(a_verbose) {
+    a_out << "find_with_env : env " << sout(a_env) << " is " << sout(PATH) << std::endl;
+  }
+
+  std::vector<std::string> dirs;
+  words(PATH,psep(),false,dirs); //or true ?
+
+  return find_with_dirs(a_out,dirs,a_file,a_path,a_verbose);
+}
+
+inline bool std_remove(const std::string& a_file) {
+  if(a_file.empty()) return true;
+  return (::remove(a_file.c_str()) ==0 ? true : false);
+}
+
+}}
+
+#include "file_reader"
+
+namespace tools {
+
+class FILE_reader : public virtual file::reader {
+public: //file_reader
+  virtual bool open(const std::string& a_file) {
+    if(m_FILE) return false;
+    m_FILE = ::fopen(a_file.c_str(),"rb");
+    if(!m_FILE) return false;
+    return true;
+  }
+  virtual void close() {
+    if(!m_FILE) return;
+    ::fclose(m_FILE);
+    m_FILE = 0;
+  }
+  virtual bool is_open() const {return m_FILE?true:false;}
+  virtual bool read(char* a_buff,unsigned int a_lbuf,size_t& a_length) {
+    a_length = ::fread(a_buff,1,a_lbuf,m_FILE);
+    return true;
+  }
+  virtual bool get_line(char* a_buff,unsigned int a_lbuf) {
+    return ::fgets(a_buff,a_lbuf,m_FILE)==NULL?false:true;
+  }
+  virtual bool eof() const {
+#if defined(_MSC_VER) && _MSC_VER <= 1400
+    return feof(m_FILE)?true:false;
+#else
+    return ::feof(m_FILE)?true:false;
+#endif
+  }
+public:
+  FILE_reader():m_FILE(0){}
+  virtual ~FILE_reader() {if(m_FILE) ::fclose(m_FILE);}
+protected:
+  FILE_reader(const FILE_reader& a_from)
+  :file::reader(a_from)
+  ,m_FILE(0)
+  {}
+  FILE_reader& operator=(const FILE_reader&){return *this;}
+protected:
+  FILE* m_FILE;
+};
+
+}
+
+#endif

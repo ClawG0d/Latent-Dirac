@@ -1,0 +1,690 @@
+
+# Category hadr-util History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-11-06 Vladimir Ivanchenko (hadr-util-V11-03-06)
+- G4HadronicParameters: added extra flag to enable/disable usage of precise
+    XS data for neutrons in resonance energy region.
+
+## 2025-09-15 Vladimir Ivanchenko (hadr-util-V11-03-05)
+- G4IsotopeList - A.Berngardt added data on energy interval of neutron resonance
+    regions per element for Z=1-92
+
+## 2025-05-20 Ben Morgan (hadr-util-V11-03-04)
+- G4HadronicParameters: Implement pretty-print to ostream to allow users to check
+  values at runtime, ala G4EmParameters (request from ATLAS).
+
+## 2025-04-22 Alberto Ribon (hadr-util-V11-03-03)
+- G4HadronicDeveloperParameters : introduced Getter/Setter for selecting the
+  Bertini model behavior as Geant4 version 11.3 (default) or 11.2.
+
+## 2025-03-31 Vladimir Ivanchenko (hadr-util-V11-03-02)
+- G4Nucleus - added move operator suggested by Coverity, make copy constructor and
+    assignment operator default.
+
+## 2025-03-05 Vladimir Ivanchenko (hadr-util-V11-03-01)
+- G4HadronicDeveloperParameters - added limitation of warning printout on
+    change of parameters (NA64 request).
+
+## 2025-01-09 Vladimir Ivanchenko (hadr-util-V11-03-00)
+- G4Fragment - added protection against precision loss in computation of a boost
+    vector at rest
+
+## 2024-10-29 Vladimir Ivanchenko (hadr-util-V11-02-05)
+- G4LegendrePolynomial - optimized implementation by Isaac Kunen GitHub PR #70
+
+## 2024-09-09 Vladimir Ivanchenko (hadr-util-V11-02-04)
+- G4IsotopeList - added table with low-energy threshold energies per atomic number.
+- G4NucleaRadii - added two static function to describe threshold shape by the
+    old parameterisations derived from GHEISHA.
+
+## 2024-08-21 Gabriele Cosmo (hadr-util-V11-02-03)
+- Fixed reported Coverity defects for use of std::move() and const G4String&;
+  in G4HadronicDeveloperParameters use const G4String& and const_iterator.
+
+## 2024-08-02 Alberto Ribon (hadr-util-V11-02-02)
+- G4HadronicParameters : introduced Getter/Setter for selecting the PT table
+  type (a choice between  "calendf"  and  "njoy" ) for the URR treatment of
+  low-energy neutrons.
+  ( Note that this choice must be done at initialization time, therefore it
+    cannot be made via UI command in ParticleHP. )
+
+## 2024-06-06 Vladimir Ivanchenko (hadr-util-V11-02-01)
+- G4HadronicParameters: introduced Getter/Setter of flag of the NUDEX gamma
+  de-excitation module. 
+
+## 2024-02-22 Vladimir Ivanchenko (hadr-util-V11-02-00)
+- G4IsotopeList header with static data is moved into this directory
+
+## 2023-11-30 Jean-Christophe David (hadr-util-V11-01-08)
+- G4HadronicParameters: added Get/SetMin/MaxEnergyINCLXX_Pbar() getters and
+  setters of recommended energy limits in physics lists for the
+  intranuclear cascade model INCLXX, for pbar interactions.
+
+## 2023-11-16 Alberto Ribon (hadr-util-V11-01-07)
+- G4HadronicParameters: introduced Getter/Setter for the time threshold of
+  radioactive decays (i.e. radioactive decays that happen later than this 
+  value are ignored). This offers a C++ interface to set this parameter.
+
+## 2023-05-25 Alberto Ribon (hadr-util-V11-01-06)
+- G4Fragment : replaced (fatal) G4HadronicException with G4Exception.
+  Note: in the method CalculateMassAndExcitationEnergy(), the exception type
+        is "EventMustBeAborted" to avoid rare crashes seen in INCLXX, which
+	are difficult to reproduce and fix.
+
+## 2023-04-25 Vladimir Ivanchenko (hadr-util-V11-01-05)
+- G4HadronicParameters: added extra Boolean method for access to debug
+    flag for the BinaryCascade, which may be defined via environment
+    variable BINARY_CASCADE_DEBUG
+
+## 2023-03-29 Vladimir Ivanchenko (hadr-util-V11-01-04)
+- G4HadronicParameters - added two strings and extra methods to access 
+  environment variables used in G4HadronicProcessStore. These variables
+  are not used in ordinary runs but are checked in each thread and for
+  each particle. With this update these variables will be checked only once.
+  Added G4Exception for the case, when environment variable G4PARTICLEXSDATA
+  is not defined (gitlab issue #160).
+
+## 2023-03-27 Alberto Ribon (hadr-util-V11-01-03)
+- G4HadronicParameter : introduced the neutron kinetic energy threshold for 
+  applying the SVT (Sampling of the Velocity of the Target) algorithm. 
+  This is needed to have a consistent value in the two methods
+  G4Nucleus::GetBiasedThermalNucleus and 
+  G4ParticleHPElasticFS::GetBiasedThermalNucleus
+  without cycling dependencies between util/ and models/particle_hp/ .
+- G4Nucleus : in the method GetBiasedThermalNucleus, get the neutron kinetic
+  energy threshold for applying the SVT algorithm from G4HadronicParameter
+  in the method DoKinematicsOfThermalNucleus, and corrected the way to pass
+  the last parameter, by reference instead of by value.
+
+## 2023-03-04 Alberto Ribon (hadr-util-V11-01-02)
+- G4Nucleus : split the method GetBiasedThermalNucleus into two parts, by
+  introducing a new public method, DoKinematicsOfThermalNucleus (which is
+  used also by G4ParticleHPElasticFS to implement the DBRC algorithm).
+
+## 2023-01-21 Vladimir Ivanchenko (hadr-util-V11-01-01)
+- G4HadronicParameters - removed two obsolete environment variables and access
+    methods; add flag for charge exchange
+
+## 2023-01-09 Vladimir Ivanchenko (hadr-util-V11-01-00)
+- G4HadronicParameters - added class members defined via environment variable
+    and access methods for these members, this allows exclude the major part
+    of calls to std::getenv in hadronics
+
+## 2022-11-26 Gabriele Cosmo (hadr-util-V11-00-13)
+- Fixed compilation warnings for implicit type conversions on macOS/XCode 14.1.
+
+## 2022-10-07 Alberto Ribon (hadr-util-V11-00-12)
+- G4Nucleus : corrected the method GetN_asInt for the case of hypernuclei.
+
+## 2022-08-02 Alberto Ribon (hadr-util-V11-00-11)
+- G4HadronicParametersMessenger : rolled back as it was in hadr-until-V11-00-09,
+  to avoid circular dependency between G4hadronic_util and G4had_string_diff.
+  A new messenger class is created in G4had_string_diff.
+
+## 2022-07-28 Alberto Ribon (hadr-util-V11-00-10)
+- G4HadronicParametersMessenger : added two new UI commands to select one
+  tuning of the FTF model's parameters.
+
+## 2022-07-05 Vladimir Ivanchenko (hadr-util-V11-00-09)
+- G4NuclearPolarization - fixed Coverity warning
+
+## 2022-07-05 Vladimir Ivanchenko (hadr-util-V11-00-08)
+- G4HadronicParameters - added flag to enable general neutron process
+- G4HadDataHandler - new data class
+
+## 2022-06-09 Laurie Nevay (hadr-util-V11-00-07)
+- Add option to G4HadronicParameters to control diffraction for baryon
+  number greater than 10.
+
+## 2022-05-25 Alberto Ribon (hadr-util-V11-00-06)
+- G4KineticTrack, G4HadSecondary, G4ReactionProduct, G4DecayKineticTracks,
+  G4DecayStrongResonances: propagate the information on parent resonance 
+
+## 2022-05-14 Vladimir Ivanchenko (hadr-util-V11-00-05)
+- G4HadronicParameters - changed integral flags from per particle
+    to for elastic and inelastic processes; by default enable
+    for inelastic
+
+## 2022-05-04 Vladimir Ivanchenko (hadr-util-V11-00-04)
+- G4HadronicParameters - moved G4Threading header to the source;
+    added flags for integral method per particle type for
+    protons, pions, kaons, and anti-protons
+
+## 2022-04-04 Vladimir Ivanchenko (hadr-util-V11-00-03)
+- G4Fragment - fixed computation of binding energy for hypernuclei;
+    added a new private method to recompute ground state mass, 
+    excitation energy, and to check consistency of input;
+    left inlined only simple methods; added new methods
+    SetZAandMomentum(...) and RecomputeGroundStateMass();
+    improved comments and warning messages
+
+## 2022-02-09 Gabriele Cosmo (hadr-util-V11-00-02)
+- Fixed compilation warning on Intel compilers for unused variables
+  and deprecated declaration of operator=().
+
+## 2021-12-11 Vladimir Ivanchenko (hadr-util-V11-00-01)
+- G4Fragment - added IsLongLived flag and Get/Set methods needed
+  for the de-excitation module; clean-up inline methods.
+
+## 2021-12-10 Ben Morgan (hadr-util-V11-00-00)
+- Change to new Markdown History format.
+
+---
+
+# History entries prior to 11.0
+
+05 November 2021 Alberto Ribon (hadr-util-V10-07-08)
+--------------------------------------------------------
+- G4Nucleus : the method  GetBiasedThermalNucleus  has been rewritten
+  (by Loic Thulliez and Eric Dumonteil of CEA Saclay) according to the
+  Sampling of the Velocity of the Target nucleus (SVT) algorithm.
+
+27 October 2021 Alberto Ribon (hadr-util-V10-07-07)
+---------------------------------------------------
+- G4Nucleon, G4Nucleus, G4V3DNucleus, G4Fancy3DNucleus, G4Fragment:
+  extended for hypernuclei and anti-hypernuclei.
+
+22 October 2021 Vladimir Ivanchenko (hadr-util-V10-07-06)
+--------------------------------------------------------
+- G4HadronicParameters - added hyper-nuclei flag
+
+04 August 2021 Alberto Ribon (hadr-util-V10-07-05)
+--------------------------------------------------------
+- G4Fragment, G4KineticTrack, G4HadSecondary, G4ReactionProduct : 
+  introduced consistent naming of the Set/Get methods for the
+  creator model ID.
+- G4DecayKineticTracks, G4KineticTrack, G4DecayStrongResonances : 
+  propagate correctly the information regarding the creator model ID.
+
+19 July 2021 Alberto Ribon (hadr-util-V10-07-04)
+--------------------------------------------------------
+- G4SampleResonance : bug-fix in the method GetMinimumMass in the case
+  that users include rare and light decay channels (e.g. e+ e-) for
+  hadronic resonances.
+  Thanks to Thomas Ruf (SHiP Collaboration) for pointing out this issue
+  (Bug #2299).
+
+09 July 2021 Vladimir Ivanchenko (hadr-util-V10-07-03)
+--------------------------------------------------------
+- G4Nucleus - use const pointer to G4Element
+
+16 April 2021 Ben Morgan (hadr-util-V10-07-02)
+--------------------------------------------------------
+- Migrate build to modular CMake API
+
+13 April 2021 Alberto Ribon (hadr-util-V10-07-01)
+--------------------------------------------------------
+- GNUmakefile, sources.cmake : moved all classes of hadronic/models/util
+  into hadronic/util ; also a few classes of hadronic/models/management
+  have been moved into hadronic/util (with the rest of them moved into
+  hadronic/management).
+
+16 March 2021 Alberto Ribon (hadr-util-V10-07-00)
+--------------------------------------------------------
+- Removed unused classes: G4LightMedia, G4IsoResult, G4GHEKinematicsVector,
+    G4HadronicDeprecate, G4HadReentrentException, G4HadSignalHandler,
+    DumpFrame. Removed also the file G4Pair.hhnew .
+
+05 November 2020 Alberto Ribon (hadr-util-V10-06-08)
+--------------------------------------------------------
+- G4HadronicParameters, G4HadronicParametersMessenger : added boolean
+  switch that allows to apply the Cosmic Ray (CR) coalescence algorithm
+  to the secondaries produced by a string model.
+  This can be useful in particular for Cosmic Ray applications.
+  By default it is disabled.
+
+27 October 2020   Gunter Folger       (hadr-util-V10-06-07)
+--------------------------------------------------------
+-  disable G4HadSignalHandler
+
+02 September 2020 Vladimir Ivanchenko (hadr-util-V10-06-06)
+--------------------------------------------------------
+- G4HadronicParameters : added disable b-, c- particles by default
+
+05 August 2020 Alberto Ribon (hadr-util-V10-06-05)
+--------------------------------------------------------
+- G4HadronicParametersMessenger : added new macro command to set
+  the max hadronic energy (required by DAMPE/HERD Collaboration).
+
+29 July 2020 Vladimir Ivanchenko (hadr-util-V10-06-04)
+--------------------------------------------------------
+- G4HadronicParameters : added Get/Set methods for cross section factors
+    separately for nucleons, pions, other hadrons, and leptons; added
+    high energy limit for low-energy physics
+
+13 May 2020 Vladimir Ivanchenko (hadr-util-V10-06-03)
+--------------------------------------------------------
+- G4HadronicParameters : added Get/Set methods to enable b-, c- particles
+
+12 May 2020 Alberto Ribon (hadr-util-V10-06-02)
+-----------------------------------------------
+- G4HadronicParametersMessenger : created new messenger class for
+  G4HadronicParameters. For the time being it has only the global
+  verbosity level for hadronics.
+- G4HadronicParameters : added Set methods; creates the new messenger.
+
+21 January 2020 Vladimir Ivanchenko (hadr-util-V10-06-01)
+--------------------------------------------------------
+- G4HadronicParameters : added Set methods for Cascade-FTF transition
+    due to CMS request
+
+16 January 2020 Alberto Ribon (hadr-util-V10-06-00)
+---------------------------------------------------
+- G4HadFinalState : fixed warning (seen on Windows) regarding the conversion
+  from 'size_t' to 'G4int'.
+
+06 August 2019 Alberto Ribon (hadr-util-V10-05-02)
+--------------------------------------------------
+- G4HadronicParameters : extended to the recommended (default) energy
+  transition regions between FTF and cascade models (BERT and/or BIC)
+  and between strings models (QGS and FTF).
+
+12 May 2019 Vladimir Ivanchenko (hadr-util-V10-05-01)
+--------------------------------------------------------
+- G4HadProjectile - clean-up for small kinetic energy of the projectile
+- G4HadFinalState, G4Bessel, G4ReactionProduct, G4GHEKinematicsVector
+    replaced fabs -> abs
+
+31 January 2019  I. Hrivnacova (hadr-man-V10-05-00)
+---------------------------------------------------
+- Merged GitHub PR #4:
+  Improvements to G4HadronicException.
+  - Align the behavior of G4HadronicException with std::exception: what() returns
+    the exception explanation.
+  - Move the member definition to a source file.
+  - Added some consts.
+
+22 August 2018 Vladimir Ivanchenko (hadr-util-V10-04-04)
+--------------------------------------------------------
+- sources.cmake, GNUmakefile - removed G4HadronicWhiteBoard
+
+10 August 2018 Alberto Ribon (hadr-util-V10-04-03)
+-------------------------------------------------
+- sources.cmake, G4HadronicParameters : moved in class G4HadronicParameters
+  from hadronic/management/ to avoid circular dependency between
+  hadronic/management/ and hadronic/cross_sections/ (the former has to depend
+  on the latter, but not vice versa; hadronic/util/ does not depend on either).
+
+17 May 2018 Jonathan Madsen (hadr-util-V10-04-02)
+-------------------------------------------------
+- updated "thread-local-static-var" model to
+  "function-returning-thread-local-static-reference" model
+  which fixes Windows DLL + MT
+
+09 February 2018 Ben Morgan (hadr-util-V10-04-01)
+-------------------------------------------------
+- G4StableIsotopes - Move member function definitions to source file
+  to avoid global data visibility issues in Windows DLLs.
+
+19 December 2017 Gabriele Cosmo (hadr-util-V10-04-00)
+--------------------------------------------------------
+- Fixed self-consistency in headers (missing #include) in DumpFrame,
+  G4GHEKinematicsVector and G4ping.
+  Thanks to Raphael Isemann for reporting these.
+
+04 July 2017 Vladimir Ivanchenko (hadr-util-V10-03-05)
+--------------------------------------------------------
+- G4NuclearPolarization - added extra members and update the class
+    for correlated gamma emission
+
+16 June 2017 Vladimir Ivanchenko (hadr-util-V10-03-04)
+--------------------------------------------------------
+- G4NuclearPolarization - improved printout
+
+28 April 2017 Tatsumi Koi (hadr-util-V10-03-03)
+--------------------------------------------------------
+- Fix warning message in previous tag
+
+14 April 2017 Tatsumi Koi (hadr-util-V10-03-02)
+--------------------------------------------------------
+- Fix warning message in previous tag
+
+10 April 2017 Tatsumi Koi (hadr-util-V10-03-01)
+--------------------------------------------------------
+- Introduce G4HadronicDeveloperParameter which helps
+sharing a parameter between developer and experineced user
+
+08 March 2017 Vladimir Ivanchenko (hadr-util-V10-03-00)
+--------------------------------------------------------
+- G4GHEKinematicsVector - fixed variable shadowing
+
+ 5 December 2016  Dennis Wright    (hadr-util-V10-02-01)
+--------------------------------------------------------
+- G4Nucleus::GetThermalNucleus: fix mistake in branch on total energy
+  calculation using relativistic energy at higher energies (see bug
+  report #1911)
+
+10 February 2016 Alberto Ribon     (hadr-util-V10-02-00)
+--------------------------------------------------------
+- G4Nucleus : increased the max number of loops allowed in the method
+    GetBiasedThermalNucleus.
+
+02 November 2015 Alberto Ribon     (hadr-util-V10-01-02)
+--------------------------------------------------------
+- G4Nucleus : checking of 'while' loops.
+
+17 August 2015 Vladimir Ivanchenko (hadr-util-V10-01-01)
+--------------------------------------------------------
+- G4NuclearPolarization - new container class keeping nuclear
+    polarisation tensor (author Jason Detwiler)
+
+06 August 2015 Alberto Ribon         (hadr-util-V10-01-00)
+----------------------------------------------------------
+- G4Nucleus, G4Bessel and G4LightMedia : replaced std::exp, std::log
+  and std::pow with the faster G4Exp, G4Log and G4Pow, respectively.
+
+07 November 2014 Vladimir Ivanchenko (hadr-util-V10-00-08)
+--------------------------------------------------------
+- G4HadSecondary - added creator
+
+30 October 2014 Vladimir Ivanchenko (hadr-util-V10-00-07)
+--------------------------------------------------------
+- G4HadFinalState, G4HadSecondary, G4ReactionProduct - added creator
+    model type to secondary, moved simple methods inline
+
+05 June 2014 Alberto Ribon       (hadr-util-V10-00-06)
+------------------------------------------------------
+- Removed G4ReactionKinematics and G4ReactionDynamics classes.
+
+19 May 2014 Gunter Folger        (hadr-util-V10-00-05)
+------------------------------------------------------
+- remove temp. method GetDefintion_asConst()
+
+26 March 2014 Gunter Folger      (hadr-util-V10-00-04)
+------------------------------------------------------
+- G4ReactionDynamics: convert to const G4ParticleDefinition*
+
+10 March 2014 Gunter Folger      (hadr-util-V10-00-03)
+------------------------------------------------------
+- ReactionProduct::GetDefinition() returns a const G4ParticleDefinition*
+
+05 March 2014 Gunter Folger      (hadr-util-V10-00-02)
+------------------------------------------------------
+- remove not needed several const_casts in G4HadronicWhiteBoard.
+
+20 February 2014 Gunter Folger   (hadr-util-V10-00-01)
+------------------------------------------------------
+- G4ReactionProduct: make G4ParticleDefinition* const.
+    add temp. method returning const G4ParticleDefinition* GetDefintion_asConst()
+	 will replace GetDefinition() once hadronics converted.
+
+22 January 2014  Gabriele Cosmo  (hadr-util-V10-00-00)
+------------------------------------------------------
+- Cleanup of automatic TLS data conversion in G4ReactionProduct,
+  G4HadSignalHandler and G4HadronicWhiteBoard.
+
+02 May 2013  Alberto Ribon  (hadr-util-V09-06-00)
+-------------------------------------------------
+- For thread safety, replaced CLHEP::RandFlat with G4RandFlat in
+  G4Nucleus.cc.
+
+13 Nov 2012  Dennis Wright  (hadr-util-V09-05-13)
+-------------------------------------------------
+- initialize fIsotope in copy ctor.  Fixes Coverity bug 15146.
+
+06 Nov 2012  Gabriele Cosmo (hadr-util-V09-05-12)
+-------------------------------------------------
+- Fix for porting on AIX in G4ReactionProduct header.
+
+15 Oct 2012  Michael Kelsey (hadr-util-V09-05-11)
+-------------------------------------------------
+- sources.cmake:  G4HadronicDeprecate.hh missing; why did nightly builds
+  work?
+
+05 Oct 2012  Michael Kelsey (hadr-util-V09-05-10, hadr-util-V09-05-09)
+----------------------------------------------------------------------
+- G4HadronicDeprecate.hh:  Macro function to generate deprecation messages.
+  Used by hadronic/stopping and hadronic/models/low_energy (so far).
+
+19 Sep 2012  Gabriele Cosmo (hadr-util-V09-05-08, hadr-util-V09-05-07)
+----------------------------------------------------------------------
+- Explicitly use inclusion of headers for system of units and physical
+  constants, in plan to remove implicit inclusion from globals.hh.
+
+31 Jul 2012  Vladimir Ivanchenko        (hadr-util-V09-05-06)
+-------------------------------------------------------------
+- G4Nucleus - added methods GetIsotope, SetIsotope
+
+13 Jul 2012  Gunter Folger              (hadr-util-V09-05-05)
+-------------------------------------------------------------
+- G4GHEKinematicsVector: Fix coverity warning about self assignment
+    in assignment operator
+
+08 Jun 2012  Gabriele Cosmo             (hadr-util-V09-05-04)
+-------------------------------------------------------------
+- More variable shadowing fixes in G4GHEKinematicsVector.hh.
+
+08 Jun 2012  Gabriele Cosmo             (hadr-util-V09-05-03)
+-------------------------------------------------------------
+- Fixed trivial cases of hidden variable visibility, detected with
+  '-Wshadow' compilation option on gcc compiler.
+
+25 May 2012  Vladimir Ivantchenko       (hadr-util-V09-05-02)
+-------------------------------------------------------------
+- G4HadProjectile - added protection to kinetic energy computation
+
+05 May 2012  Vladimir Ivantchenko       (hadr-util-V09-05-01)
+-------------------------------------------------------------
+- G4HadProjectile - added default constructor
+
+05 May 2012  Vladimir Ivantchenko       (hadr-util-V09-05-00)
+-------------------------------------------------------------
+- G4HadProjectile - added methods SetGlobalTime, SetBoundEnergy
+    GetBoundEnergy needed for general stopping process;
+    always set time to zero when construct or initialise, so
+    hadronic interaction is starting from zero local time;
+    added Initialise method allowing to update the projectile
+    and not instantiate it for any new interaction;
+    all get methods are inlined
+
+17 Nov 2011  Gunter Folger              (hadr-util-V09-04-05)
+-------------------------------------------------------------
+- removed G4lrint(), G4lint(), and G4rint(); these are now in global
+
+15 Sep 2011  Gabriele Cosmo             (hadr-util-V09-04-04)
+-------------------------------------------------------------
+- Changed DLL export flag for symbols to G4HADRONIC_ALLOC_EXPORT.
+
+14 Sep 2011  Gunter Folger              (hadr-util-V09-04-03)
+-------------------------------------------------------------
+-  G4Nucleus.hh: put obsolete interface GetN/GetZ into ifndef block.
+    this allows to try to compile without the obsolete interface.
+
+09 Sep 2011  Michael Kelsey             (hadr-util-V09-04-02)
+-------------------------------------------------------------
+- G4HadFinalState:  Remove AddSecondary(G4HadSecondary*) interface.  Improve
+  constness and add interfaces to merge two final states together.
+- G4HadSecondary:  Improve constness.
+
+NOTE:  These changes require modifications to a few packages:
+
+	CHIPS:      hadr-chips-inter-V09-04-03
+	Elastic:    hadr-cohe-V09-04-13
+	NeutronHP:  hadr-hpn-V09-04-23
+	Management: hadr-man-V09-04-12
+
+29 Aug 2011  Michael Kelsey             (hadr-util-V09-04-01)
+-------------------------------------------------------------
+- G4ReactionProduct:  Use G4Allocator to reduce memory churn.
+- GNUmakefile:  Add G4REACTIONPRODUCT_ALLOC_EXPORT flag.
+
+10 Aug 2011  Michael Kelsey             (hadr-util-V09-04-00)
+-------------------------------------------------------------
+- G4HadFinalState:  Store vector of values instead of pointers to reduce
+  memory churn.  Improve constness of argument passing and functions, and
+  reduce creation of temporary objects.  Drop unneeded staleness flag.
+
+ 6 Dec 2010  Dennis Wright              (hadr-util-V09-03-02)
+-------------------------------------------------------------
+- G4Nucleus::ChooseParameters : fix fall-through case in which element = 0:
+  make last element in list the default
+- G4HadronicWhiteBoard: fix uninitialized ptrs (theZ, theA, theE, thePx,
+    thePy, thePz)
+
+11 Nov 2010  Dennis Wright              (hadr-util-V09-03-01)
+-------------------------------------------------------------
+- G4HadronicWhiteBoard: fix uninitialized ptrs (theProjectile, theDef,
+    theName)
+- G4Nucleus: add dtaBlackTrackEnergyfromAnnihilation and
+    pnBlackTrackEnergyfromAnnihilation to copy ctor
+    initialize theA, theZ. aEff, zEff to 0 in ctor
+
+08 Mar 2010 G.Folger                    (hadr-util-V09-03-00)
+-------------------------------------------------------------
+-  add interface for integer A&Z to G4Nucleus, and modify G4HadronicWhiteBoard
+   G4LightMedia, and G4ReactionDynamics to use the new interface.
+
+06 Mar 2009 D.H. Wright for Tatsumi Koi (hadr-util-V09-02-00)
+-------------------------------------------------------------
+- G4StableIsotopes.cc - fill in missing isotope names
+
+23 Jul 2008 D.H. Wright for Vladimir Uzhinskiy (hadr-util-V09-01-01)
+--------------------------------------------------------------------
+- G4ReactionDynamics::GenerateXandPt: fixed bug in momentum bin which
+  caused oscillatory behavior in spectrum:  changed
+    x = std::min( 1.0, pt*(binl[l-1] + G4UniformRand()*(binl[l]-binl[l-1])/2 ) )
+  to
+    x = std::min( 1.0, pt*(binl[l-1] + G4UniformRand()*(binl[l]-binl[l-1]) ) )
+
+ 9 Jul 2008 D.H. Wright (hadr-util-V09-01-00)
+---------------------------------------------
+- G4ReactionDynamics::GenerateXandPt: replace exit with G4Exception.
+
+11 Oct 2007 F.W. Jones (hadr-util-V09-00-00)
+--------------------------------------------
+- G4LightMedia: fixed coding errors in inequalities for
+                charge exchange occurrence in PionPlusExchange,
+                KaonZeroShortExchange, and NeutronExchange.
+
+13 August 2007 Dennis Wright (hadr-util-V08-03-00a)
+---------------------------------------------------
+- special CMS tag: geant4-08-03-ref-00 + hadr-util-V08-03-02.
+  On top of geant4-08-03-ref-00, this contains only array bounds, units
+  and backward peak fixes in G4ReactionDynamics
+
+27 June 2007 Alex Howard (hadr-util-V08-03-03)
+------------------------------------------------
+- Removed DumpCoreOnHadronicException protection around Report() in
+  G4HadronicException, temporary fix to give output for G4NEUTRONHPDATA not set
+
+12 June 2007 Dennis Wright (hadr-util-V08-03-02)
+------------------------------------------------
+- G4ReactionDynamics::TwoCluster : fix array bound violation when backward
+    nucleon count is 0
+
+12 June 2007 Dennis Wright (hadr-util-V08-03-01)
+------------------------------------------------
+- G4ReactionDynamics::TwoCluster : fix two bugs:
+  1) sharp peak at 180 degrees for low and medium energies due to a units
+     error:
+         G4double totalE = kineticE + vMass;
+     was changed to
+         G4double totalE = kineticE*GeV + vMass;
+     Result is that particles from intra-nuclear cascade now have energies
+     ~ 100 MeV instead of almost 0.
+
+  2) sharp peak at 180 degrees for low and medium energies and target nuclei
+     with Z > 6 due to incorrect sampling of polar angle:
+     replaced
+         G4double costheta =
+            1.0 + 2.0*std::log(1.0 - G4UniformRand()) / dtb;
+     with
+         G4double costheta =
+            1.0 + 2.0*std::log(1.0 - G4UniformRand()*factor) / dtb;
+            where factor = 1.0 - std::exp(-dtb) and dtb is momentum-dependent
+
+10 June 2007 Dennis Wright (hadr-util-V08-03-00)
+------------------------------------------------
+- remove un-used classes G4Fuzzy, G4EffectiveCharge, G4ParticleVector
+
+16 April 2007 Dennis Wright (hadr-util-V08-02-01)
+-------------------------------------------------
+- G4HadronicWhiteboard.hh, .cc : add methods to set process and model names
+- G4ReactionDynamics.cc : add pi0 to anti-particle test
+
+19 February 2007 V.Ivanchenko (hadr-util-V08-02-00)
+----------------------------------------------------
+- G4HadFinalState - add initialisation of energy deposition
+
+11 December 2006 Dennis Wright (hadr-util-V08-01-01)
+----------------------------------------------------
+- G4ReactionDynamics::AddBlackTrackParticles
+  protect variables local_npnb, local_ndta from divide by zero
+
+24 November 2006 Dennis Wright (hadr-util-V08-01-00)
+----------------------------------------------------
+- G4HadronicWhiteBoard:
+  replace GHAD message with
+  "Geant4 Hadronic Reaction Information" and use
+  G4Exception to kill run.
+
+15 May 2006 Dennis Wright (hadr-util-V08-00-05)
+-----------------------------------------------
+- G4Nucleus:
+  replace code in method AtomicMass() with
+
+    return G4NucleiProperties::GetNuclearMass(A, Z);
+
+  in order to agree with other methods for getting nucleus mass.
+  Note: new version has electron masses subtracted, while old version
+        included them
+
+02 May 2006 Dennis Wright (hadr-util-V08-00-04)
+-----------------------------------------------
+- G4ReactionDynamics:
+  1) in energy balance part of method GenerateXandPt, try removing pions and kaons
+     before removing nucleons
+  2) in method GetFinalStateNucleons improve and simplify nucleon counting
+  3) method SuppressChargedPions: check available CM energy before changing pion to
+           nucleon, also extend test for anti-particles to include strange particles
+  4) in methods GenerateXandPt and TwoCluster, call GenerateNBodyEvent a second time
+           if energy sum is violated, this time with total system energy
+  5) in method TwoCluster, use annihilation black track energy when annihilation channel
+     occurs
+
+07 Apr 2006 Dennis Wright (hadr-util-V08-00-03)
+-----------------------------------------------
+- G4ReactionDynamics:
+  1) implement exact proton and neutron accounting to improve baryon number
+     conservation
+  2) add new method GetFinalStateNucleons which returns number of
+     protons and neutrons generated by the initial projectile-nucleon collision
+  3) replace spall argument in AddBlackTrackParticles with PinNucleus and
+     NinNucleus
+
+- G4Nucleus:
+  1) add new method AnnihilationEvaporationEffects which calculates energy to
+     be given to evaporated nucleons after annihilation
+  2) add new methods GetAnnihilationPNBlackTrackEnergy and
+     GetAnnihilationDTABlackTrackEnergy to retrieve the values calculated above
+
+13 Mar 2006 Dennis Wright (hadr-util-V08-00-02)
+-----------------------------------------------
+- G4Nucleus::GetFermiMomentum(),
+  G4ReactionKinematics::TwoBodyScattering() :
+
+    fix bug #838: momentum is now isotropic.  Previously theta was
+    incorrectly sampled by pi*G4UniformRand().
+
+15 Dec 2005 Dennis Wright (hadr-util-V08-00-01)
+-----------------------------------------------
+- G4ReactionDynamics.cc: add array bounds protection in TwoCluster
+                         (cpar, gpar)
+
+30 Nov 2005 Gabriele Cosmo (hadr-util-V07-01-01)
+-----------------------------------------------
+- Trivial fix in G4ReactionKinematics and G4Nucleus for support of
+  CLHEP-2.0.X series.
+
+25 Nov 2005 Dennis Wright (hadr-util-V07-01-00)
+----------------------------------------------
+- G4HadTmpUtil.cc : <sstream> migration
+
+
+

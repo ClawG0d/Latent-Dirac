@@ -1,0 +1,125 @@
+# Example AnaEx02 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2023-07-03 I. Hrivnacova (AnaEx02-V11-01-00)
+- Moved default declaration of ctor in .hh *was in .cc)
+
+## 2021-12-10 Ben Morgan (AnaEx02-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+13-11-20 B. Morgan (AnaEx02-V10-06-01)
+- Enforce use of Serial RunManager.
+
+10-11-20 B. Morgan (AnaEx02-V10-06-00)
+- Migration to G4RunManagerFactory.
+
+15-10-18 G. Cosmo (AnaEx02-V10-04-01)
+- Added missing include of G4SteateManager.hh in DetectorConstruction source.
+
+05-07-18 I. Hrivnacova (AnaEx02-V10-04-00)
+- Macro & commands review:
+  - Removed obsolete /N03 top command directory
+  - Added protection against warnings issued from ReinitializeGeometry() if
+    called in PreInit phase
+  - Added test for all commands defined in this example in AnaEx01.in
+  - Updated README files
+
+28-11-17 B. Morgan (AnaEx02-V10-03-01)
+- Replace ROOT_INCLUDE_DIR with ROOT_INCLUDE_DIRS
+
+27-07-17 I. Hrivnacova (AnaEx02-V10-03-00)
+- Coding guidelines: removed redundant empty lines
+
+26-10-16 I. Hrivnacova (AnaEx02-V10-02-02)
+- Updated main program according to basic examples
+
+04-07-16 I. Hrivnacova (AnaEx02-V10-02-01)
+- Fixes for Doxygen documentation
+
+01-07-16 I. Hrivnacova (AnaEx02-V10-02-00)
+- Coding guidelines (function, members names)
+
+30-08-15 I. Hrivnacova (AnaEx02-V10-01-02)
+- Corrected previous update which caused compilation error
+
+28-08-15 I. Hrivnacova (AnaEx02-V10-01-01)
+- Fixed compilation on Windows
+
+27-08-15 I. Hrivnacova (AnaEx02-V10-01-00)
+- Introduced meaningful histograms and ntuple names instead of numbers
+  in all AnaEx0N examples and use histogram ids starting from 0
+- Simplified HistoManager classes and fixed function names to follow
+  coding guidelines
+
+06-11-14 I. Hrivnacova (AnaEx02-V10-00-04)
+- Updated for moving script in shared (analysisShared-V10-00-01)
+- Updated README - commented special compilation (via make setup)
+
+05-11-14 I. Hrivnacova (AnaEx02-V10-00-03)
+- Including shared directory directly in the example
+  to avoid out-of-project sources
+  - based on analysisShared-V10-00-00
+- Adding utility scripts for GNUmake build (much simpler replacement
+  for scripts from common) \
+  - based on analysisScripts-V10-00-00
+
+13-08-14 mma (AnaEx02-V10-00-02)
+- update Readme and .Readme again
+
+12-08-14 mma (AnaEx02-V10-00-01)
+- restaure calorimeter drawing in Readme and .Readme
+
+11-06-14 I. Hrivnacova (AnaEx02-V10-00-00)
+- Fixed path to copy_files.sh, clean_files.sh in GNUmalefile
+  (this makes GNUmake build working with Geant4 installation via
+   CMake)
+- Fixed SharedFilesList.txt - removed PhysicList class
+
+28-05-14 I. Hrivnacova
+- Use Geant4 physics list (FTFP_BERT) in AnaEx01,02,03,
+  removed PhysicList class from shared
+  (tag in examples/analysis)
+
+02-04-13 I. Hrivnacova (AnaEx02-V09-06-00)
+- Create two ntuples instead of one in order to demonstrate
+  how to do this with all tools.
+
+28-11-12 G. Cosmo (AnaEx02-V09-05-04)
+- Fixed cases of variable shadowing.
+
+31-08-12 I. Hrivnacova (AnaEx02-V09-05-03)
+- Updated CMakeLists.tx:
+  adding install target, minor fixes
+- Adding .README
+
+21-06-12 Ivana Hrivnacova (AnaEx02-V09-05-02)
+- G4ANALYSIS_USE flag removed from both GNUmakefile and HistoManager.cc
+- ROOT support added in CMakeLists.txt
+
+20-06-12 Gabriele Cosmo (AnaEx02-V09-05-01)
+- GNUmakefile: protect ROOT setup by G4ANALYSIS_USE flag.
+
+20-06-12 Ivana Hrivnacova
+- Added Doxygen comments.
+
+10-04-12 mma (AnaEx02-V09-05-00)
+- AnaEx02.cc : change order of UI and Vis
+
+07-06-11 mma (AnaEx02-V09-04-02)
+PhysicsList migrated to new scheme G4PhysListHelper
+
+3 February 2011 Jean Jacquemier (AnaEx02-V09-04-01)
+  AnaEx02.cc: fixe in interactive session
+
+2 February 2011 Jean Jacquemier (AnaEx02-V09-04-00)
+- identical to AnaEx01
+  class HistoManager : direct interface to ROOT system
+  see also GNUMakefile

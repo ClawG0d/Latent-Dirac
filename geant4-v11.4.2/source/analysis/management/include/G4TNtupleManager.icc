@@ -1,0 +1,450 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+
+#include "G4AnalysisManagerState.hh"
+#include "G4AnalysisUtilities.hh"
+
+using std::to_string;
+
+//
+// private template functions
+//
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4TNtupleManager<NT, FT>::G4TNtupleManager(
+  const G4AnalysisManagerState& state)
+  : G4BaseNtupleManager(state)
+{}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4TNtupleManager<NT, FT>::~G4TNtupleManager()
+{
+  for ( auto ntupleDescription : fNtupleDescriptionVector ) {
+    delete ntupleDescription;
+  }
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4TNtupleDescription<NT, FT>*
+G4TNtupleManager<NT, FT>::GetNtupleDescriptionInFunction(
+  G4int id, std::string_view functionName, G4bool warn) const
+{
+  auto index = id - fFirstId;
+  if ( index < 0 || index >= G4int(fNtupleDescriptionVector.size()) ) {
+    if ( warn) {
+      G4Analysis::Warn("Ntuple " + to_string(id) + " does not exist.",
+        fkClass, functionName);
+    }
+    return nullptr;
+  }
+
+  return fNtupleDescriptionVector[index];
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+NT* G4TNtupleManager<NT, FT>::GetNtupleInFunction(
+  G4int id, std::string_view functionName, G4bool warn) const
+{
+  auto ntupleDescription = GetNtupleDescriptionInFunction(id, functionName);
+  if ( ! ntupleDescription ) return nullptr;
+
+  if ( ! ntupleDescription->GetNtuple() ) {
+    if ( warn ) {
+      G4Analysis::Warn("Ntuple " + to_string(id) + " does not exist.",
+        fkClass, functionName);
+    }
+    return nullptr;
+  }
+
+  return ntupleDescription->GetNtuple();
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+template <typename T>
+G4bool G4TNtupleManager<NT, FT>::FillNtupleTColumn(
+  G4int ntupleId, G4int columnId, const T& value)
+{
+  if (fNewCycle) {
+    CreateNtuplesFromBooking(*fNtupleBookingVector);
+    fNewCycle = false;
+  }
+
+  if ( fState.GetIsActivation() && ( ! GetActivation(ntupleId) ) ) {
+    //G4cout << "Skipping FillNtupleIColumn for " << ntupleId << G4endl;
+    return false;
+  }
+
+  // get ntuple
+  auto ntuple = GetNtupleInFunction(ntupleId, "FillNtupleTColumn");
+  if ( ! ntuple ) return false;
+
+  // get generic column
+  auto index = columnId - fFirstNtupleColumnId;
+  if ( index < 0 || index >= G4int(ntuple->columns().size()) ) {
+    G4Analysis::Warn(
+      "Ntuple " + to_string(ntupleId) + " column " + to_string(columnId) +
+      " does not exist.",
+      fkClass, "FillNtupleTColumn");
+    return false;
+  }
+  auto icolumn =  ntuple->columns()[index];
+
+  // get column and check its type
+  auto column = dynamic_cast<typename NT::template column<T>* >(icolumn);
+  if ( ! column ) {
+    G4Analysis::Warn(
+      "Column type does not match: "
+      " ntuple " + to_string(ntupleId) + " column " + to_string(columnId) +
+      " value " + G4Analysis::ToString(value),
+      fkClass, "FillNtupleTColumn");
+    return false;
+  }
+
+  column->fill(value);
+
+  if ( IsVerbose(G4Analysis::kVL4) ) {
+    Message(G4Analysis::kVL4, "fill", "ntuple T column",
+      " ntupleId " + to_string(ntupleId) +
+      " column " + to_string(columnId) +
+      " value " + G4Analysis::ToString<T>(value));
+  }
+
+  return true;
+}
+
+//
+// protected functions
+//
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4int G4TNtupleManager<NT, FT>::CreateNtuple(G4NtupleBooking* ntupleBooking)
+{
+  Message(G4Analysis::kVL4, "create from booking", "ntuple",
+    ntupleBooking->fNtupleBooking.name());
+
+  // The ntuple index
+  auto index = ntupleBooking->fNtupleId - fFirstId;
+
+  // Allocate the vector element(s) if needed
+  while ( index >= G4int(fNtupleDescriptionVector.size()) ) {
+    fNtupleDescriptionVector.push_back(nullptr);
+  }
+
+  auto ntupleDescription = fNtupleDescriptionVector[index];
+  if (ntupleDescription == nullptr) {
+    // Create ntuple description from ntuple booking
+    // if it does not yet exist
+    ntupleDescription = new G4TNtupleDescription<NT, FT>(ntupleBooking);
+    fNtupleDescriptionVector[index] = ntupleDescription;
+  }
+
+  // Do not create ntuple if it is inactivated
+  // or if it was deleted
+  if ( ( ntupleBooking->GetDeleted() ) ||
+       ( fState.GetIsActivation() &&
+         ( ! ntupleDescription->GetActivation() ) ) ) return G4Analysis::kInvalidId;
+
+  // Do not create ntuple if it already exists
+  if ( ntupleDescription->GetNtuple() != nullptr ) {
+    return ntupleBooking->fNtupleId;
+  }
+
+  // Create ntuple
+  CreateTNtupleFromBooking(ntupleDescription);
+
+  // Update ntuple vector if ntuple was created
+  if ( ntupleDescription->GetNtuple() != nullptr ) {
+    // Allocate the ntuple vector element(s) if needed
+    while ( index >= G4int(fNtupleVector.size()) ) {
+      fNtupleVector.push_back(nullptr);
+    }
+    fNtupleVector[index] = ntupleDescription->GetNtuple();
+  }
+
+  // finish created ntuple
+  auto fromBooking = true;
+  FinishTNtuple(ntupleDescription, fromBooking);
+
+  Message(G4Analysis::kVL3, "create from booking", "ntuple",
+    ntupleBooking->fNtupleBooking.name());
+
+  return ntupleBooking->fNtupleId;
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+void G4TNtupleManager<NT, FT>::CreateNtuplesFromBooking(
+  const std::vector<G4NtupleBooking*>& ntupleBookings)
+{
+// Create ntuple from ntuple bookings.
+
+  // Save the ntuple booking for new cycle
+  fNtupleBookingVector = &ntupleBookings;
+
+  // Create ntuple descriptions from ntuple booking.
+  for ( auto ntupleBooking : ntupleBookings ) {
+    CreateNtuple(ntupleBooking);
+  }
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4bool
+G4TNtupleManager<NT, FT>::Reset()
+{
+  // Reset ntuple description, this will delete ntuple if present and
+  // we have its ownership.
+  // The ntuples will be recreated with new cycle or new open file.
+
+  for ( auto ntupleDescription : fNtupleDescriptionVector ) {
+    ntupleDescription->Reset();
+  }
+
+  fNtupleVector.clear();
+
+  return true;
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+void
+G4TNtupleManager<NT, FT>::Clear()
+{
+  // Clear all data
+
+  for ( auto ntupleDescription : fNtupleDescriptionVector ) {
+    delete ntupleDescription;
+  }
+
+  fNtupleDescriptionVector.clear();
+  fNtupleVector.clear();
+
+  Message(G4Analysis::kVL2, "clear", "ntuples");
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4bool
+G4TNtupleManager<NT, FT>::Delete(G4int id)
+{
+  if ( IsVerbose(G4Analysis::kVL4) ) {
+    Message(G4Analysis::kVL4, "delete", "ntuple ntupleId " + to_string(id));
+  }
+
+  auto ntupleDescription = GetNtupleDescriptionInFunction(id, "Delete", true);
+
+  if (ntupleDescription == nullptr) return false;
+
+  // Delete ntuple and update ntuple description
+  delete ntupleDescription->GetNtuple();
+  ntupleDescription->SetNtuple(nullptr);
+  // ntupleDescription->SetDeleted(true, keepSetting);
+
+  // Update ntuple vector
+  if (! fNtupleVector.empty()) {
+    auto index = id - GetFirstId();
+    fNtupleVector[index] = nullptr;
+  }
+
+  // Register freed Id
+  // fFreeIds.insert(id);
+
+  Message(G4Analysis::kVL2, "delete", "ntuple ntupleId " + to_string(id));
+
+  return true;
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4bool G4TNtupleManager<NT, FT>::FillNtupleIColumn(
+  G4int ntupleId, G4int columnId, G4int value)
+{
+  return FillNtupleTColumn<int>(ntupleId, columnId, value);
+}
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4bool G4TNtupleManager<NT, FT>::FillNtupleFColumn(
+  G4int ntupleId, G4int columnId, G4float value)
+{
+  return FillNtupleTColumn<float>(ntupleId, columnId, value);
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4bool G4TNtupleManager<NT, FT>::FillNtupleDColumn(
+  G4int ntupleId, G4int columnId, G4double value)
+{
+  return FillNtupleTColumn<double>(ntupleId, columnId, value);
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4bool G4TNtupleManager<NT, FT>::FillNtupleSColumn(
+  G4int ntupleId, G4int columnId, const G4String& value)
+{
+  return FillNtupleTColumn<std::string>(ntupleId, columnId, value);
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4bool G4TNtupleManager<NT, FT>::AddNtupleRow(
+  G4int ntupleId)
+{
+  if ( fState.GetIsActivation() && ( ! GetActivation(ntupleId) ) ) {
+    //G4cout << "Skipping AddNtupleRow for " << ntupleId << G4endl;
+    return false;
+  }
+
+  if ( IsVerbose(G4Analysis::kVL4) ) {
+    Message(G4Analysis::kVL4, "add", "ntuple row",
+      " ntupleId " + to_string(ntupleId));
+  }
+
+  auto ntupleDescription = GetNtupleDescriptionInFunction(ntupleId, "AddNtupleRow");
+  if ( ! ntupleDescription ) return false;
+
+  auto ntuple = ntupleDescription->GetNtuple();
+  if ( ! ntuple ) return false;
+
+  auto result = ntuple->add_row();
+  if ( ! result ) {
+    G4Analysis::Warn(
+      "Ntuple " + to_string(ntupleId) + " adding row has failed.",
+      fkClass, "AddTNtupleRow");
+  }
+
+  ntupleDescription->SetHasFill(true);
+
+  if ( IsVerbose(G4Analysis::kVL4) ) {
+    Message(G4Analysis::kVL4, "add", "ntuple row",
+      " ntupleId " + to_string(ntupleId));
+  }
+
+  return true;
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+void  G4TNtupleManager<NT, FT>::SetActivation(
+  G4bool activation)
+{
+  for ( auto ntupleDescription : fNtupleDescriptionVector ) {
+    ntupleDescription->SetActivation(activation);
+  }
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+void  G4TNtupleManager<NT, FT>::SetActivation(
+  G4int ntupleId, G4bool activation)
+{
+  auto ntupleDescription = GetNtupleDescriptionInFunction(ntupleId, "SetActivation");
+  if ( ! ntupleDescription ) return;
+
+  ntupleDescription->SetActivation(activation);
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4bool  G4TNtupleManager<NT, FT>::GetActivation(
+  G4int ntupleId) const
+{
+  auto ntupleDescription = GetNtupleDescriptionInFunction(ntupleId, "GetActivation");
+  if ( ! ntupleDescription ) return false;
+
+  return ntupleDescription->GetActivation();
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+void G4TNtupleManager<NT, FT>::SetNewCycle(G4bool value)
+{
+  fNewCycle = value;
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+G4bool G4TNtupleManager<NT, FT>::GetNewCycle() const
+{
+  return fNewCycle;
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+NT*
+G4TNtupleManager<NT, FT>::GetNtuple() const
+{
+  return GetNtuple(fFirstId);
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+NT*
+G4TNtupleManager<NT, FT>::GetNtuple(G4int ntupleId) const
+{
+  auto ntupleDescription = GetNtupleDescriptionInFunction(ntupleId, "GetNtuple");
+  if ( ! ntupleDescription ) return nullptr;
+
+  return ntupleDescription->GetNtuple();
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+typename std::vector<NT*>::iterator
+G4TNtupleManager<NT, FT>::BeginNtuple()
+{
+  return fNtupleVector.begin();
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+typename std::vector<NT*>::iterator
+G4TNtupleManager<NT, FT>::EndNtuple()
+{
+  return fNtupleVector.end();
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+typename std::vector<NT*>::const_iterator
+G4TNtupleManager<NT, FT>::BeginConstNtuple() const
+{
+  return fNtupleVector.begin();
+}
+
+//_____________________________________________________________________________
+template <typename NT, typename FT>
+typename std::vector<NT*>::const_iterator
+G4TNtupleManager<NT, FT>::EndConstNtuple() const
+{
+  return fNtupleVector.end();
+}

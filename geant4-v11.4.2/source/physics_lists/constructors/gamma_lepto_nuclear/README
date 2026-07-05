@@ -1,0 +1,83 @@
+-------------------------------------------------------------------
+
+
+ G4BertiniElectroNuclearBuilder
+ ------------------------------
+ It includes gamma-nuclear, electron-nuclear and positron-nuclear
+ processes.
+ For gamma-nuclear, it uses Bertini (BERT) model for gamma below 6 GeV,
+ and Quark-Gluon-String (QGS) model above 3 GeV.
+ For electron-nuclear and positron-nuclear, it uses the equivalent photon
+ approximation in which the incoming lepton generates a virtual photon, 
+ and then the virtual photon is converted to a real photon. This real
+ photon is handled by BERT if its energy is below 10 GeV; if it is above
+ 10 GeV, then the real photon is transformed into a (on-shell) pi0 and
+ then handled by Fritiof (FTF) string model.
+
+ 
+ G4EmExtraPhysics
+ ----------------
+ It uses G4BertiniElectroNuclearBuilder for gamma-nuclear, electron-nuclear
+ and positron-nuclear.
+ Moreover, it includes muon-nuclear process (for mu- and mu+), and 
+ synchrotron process (either for electron & positron, or for all
+ charged particles).
+ The muon-nuclear process is treated similarly as for electrons and
+ positrons (i.e. the equivalent photon approximation in which the incoming
+ lepton generates a virtual photon, and then the virtual photon is converted
+ to a real photon, which is handled by BERT below 10 GeV or by FTF as a pi0
+ above 10 GeV).
+ By default, gamma-nuclear, electron-nuclear, positron-nuclear, and
+ muon-nuclear are switched on, whereas synchrotron process is switched off
+ for all particles. It is however possible, at run time via macro commands,
+ to change this default (see G4EmMessenger below).
+
+
+ G4EmMessenger
+ -------------
+ Used by G4EmExtraPhysics to be able to switch on/off: 
+ -  synchrotron radiation for electron and positron
+    (note: electron and positron together, not individually)
+ -  synchrotron radiation for all charged particles
+    (note: all charged particles together, not individually)
+ -  gamma-nuclear, electron-nuclear and positron-nuclear
+    (note: all these three particles together, not individually)
+ -  muon-nuclear
+    (note: mu- and mu+ together, not individually)
+ at run time, via macro commands.
+
+
+ G4CoherentPairProductionPhysics
+ -------------
+ Used by G4CoherentPairProduction process (in parameterisations/channeling/)
+ of coherent pair production by high energy gamma in an oriented crystal.
+ - IMPORTANT: with default parameters (incoherent scattering switched off)
+   can work in parallel with a standard physics list.
+ - It is possible to activate incoherent scattering using
+   ActivateIncoherentScattering() function.
+   IMPORTANT: requires switching off gamma conversion in
+   the physics list to not simulate it twice
+ - IMPORTANT: the geometry and material crystal data are contained in
+   G4ChannelingFastSimCrystalData which is automatically copied from
+   G4ChannelingFastSimModel into G4CoherentPairProduction using also
+   the default G4ChannelingFastSimModel and G4Region names ("ChannelingModel"
+   and "Crystal", respectively), which can be changed using
+   SetNameChannelingModel and SetNameG4Region, respectively,
+   being G4CoherentPairProductionPhysics set functions.
+ - IMPORTANT: G4ChannelingFastSimModel and its G4Region are required
+   for G4ChannelingFastSimCrystalData. If not found, an exception will
+   be generated.
+ - The intrinsic parameters of G4CoherentPairProduction can be changed
+   using G4CoherentPairProductionPhysics set functions:
+      - cuts of the model:
+        - SetLowEnergyLimit(G4double energy); default is 1 GeV
+        - SetHighAngleLimit(G4double angle); default is 50 mrad
+        - SetPPKineticEnergyCut(G4double kineticEnergyCut); default is 1 MeV
+      - internal parameters of the model (!!! it is strongly UNRECOMMENDED to decrease them):
+        - SetSamplingPairsNumber(G4int nPairs);
+            //default is 150 (amount of sampling pairs for Baier-Katkov algorithm)
+        - SetChargeParticleAngleFactor(G4double chargeParticleAngleFactor);
+            //default is 4 (angular distribution parameter = 4/gamma)
+        - void SetNTrajectorySteps(G4int nTrajectorySteps);
+            //default is 250 (amount of trajectory steps for tracking of
+            //sampling pair in Baier-Katkov algorithm).

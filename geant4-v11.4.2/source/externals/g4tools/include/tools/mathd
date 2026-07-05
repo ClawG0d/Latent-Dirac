@@ -1,0 +1,40 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_mathd
+#define tools_mathd
+
+namespace tools {
+
+//have : static const pi = 3.1415926535897931160E0; ???
+
+//HEALPix lsconstants.h. Quite not the same as us.
+//const double pi=3.141592653589793238462643383279502884197;
+//const double twopi=6.283185307179586476925286766559005768394;
+//const double fourpi=12.56637061435917295385057353311801153679;
+//const double halfpi=1.570796326794896619231321691639751442099;
+
+inline double pi()      {return 3.1415926535897931160E0;}
+inline double two_pi()  {return 6.2831853071795862320E0;}
+inline double half_pi() {return 1.5707963267948965580E0;}
+
+inline double deg2rad() {
+  static const double s_v = pi()/180.0;
+  return s_v;
+}
+inline double rad2deg() {
+  static const double s_v = 180.0/pi();
+  return s_v;
+}
+
+}
+
+#include <cmath>
+
+namespace tools {
+
+inline double dfabs(const double& a_x) {return ::fabs(a_x);} //if passing a_fabs(const T&).
+
+}
+
+#endif

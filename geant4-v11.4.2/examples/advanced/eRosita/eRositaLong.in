@@ -1,0 +1,20 @@
+# -----------------------------------------------
+#
+# example input file for running eRosita
+#
+# 10000 protons with energy 100 MeV are simulated
+#
+# -----------------------------------------------
+
+/control/verbose 2
+
+/gun/energy 100 MeV
+/gun/particle proton
+
+/run/verbose 2
+/tracking/verbose 0
+/tracking/storeTrajectory 1
+
+/run/beamOn 10000
+
+exit

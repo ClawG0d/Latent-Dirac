@@ -1,0 +1,32 @@
+#
+# macro file for TestEm18.cc
+#
+/control/cout/ignoreThreadsExcept 0
+/control/verbose 2
+/run/verbose 1
+#
+/testem/det/setMat Water
+/testem/det/setSize 10 cm
+#
+/run/setCut 100 um
+#
+/process/em/verbose 0
+/process/em/printParameters 
+#
+/run/initialize
+#
+/gun/particle proton 
+/gun/energy 1 GeV
+#
+/analysis/setFileName proton
+#
+/analysis/h1/set 1 100 0 10 cm	  #step size
+/analysis/h1/set 2 100 0 40 MeV  #continuous Edeposited 
+/analysis/h1/set 3 100 0 40 MeV  #Etransfered by ionisation
+/analysis/h1/set 6 100 0 40 MeV  #total Etransfered
+/analysis/h1/set 7 100 0 40 MeV  #total Elost
+/analysis/h1/set 8 100 0 40 MeV  #energy balance
+/analysis/h1/set 12 100 0 5 MeV  #e- energy spectrum
+#
+/run/printProgress 10000
+/run/beamOn 100000

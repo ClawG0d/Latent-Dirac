@@ -1,0 +1,146 @@
+# Category phys-util History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2024-11-04 Philippe Canal (phys-util-V11-02-00)
+- Static initialization improvement for G4HadParticles.
+
+## 2023-10-15 Vladimir Ivanchenko (phys-util-V11-01-01)
+- G4HadProcesses - more accurate implementation for the neutron genelal process
+
+## 2022-12-30 Vladimir Ivanchenko (phys-util-V11-01-00)
+- G4HadProcesses - avoid double instantiation of capture cross section
+
+## 2022-11-24 Gabriele Cosmo (phys-util-V11-00-09)
+- Fixed compilation warnings for implicit type conversions on macOS/XCode 14.1.
+
+## 2022-09-05 Ben Morgan (phys-util-V11-00-08)
+- Update public/private dependencies for consistency
+
+## 2022-08-24 Vladimir Ivanchenko (phys-util-V11-00-07)
+- G4PhysListUtil - use enumerator for neutron general process
+    instead of hard-coded number
+
+## 2022-08-24 Gabriele Cosmo (phys-util-V11-00-06)
+- Added missing dependencies on G4hadronic_deex_photon_evaporation
+  and G4run in GNUmakefile and CMake script.
+  Added missing dependency on G4procman to GNUmakefile.
+
+## 2022-08-21 Vladimir Ivanchenko (phys-util-V11-00-05)
+- G4PhysListUtil, G4HadProcesses - added extra methods needed for
+    neutron general process initialisation
+- GNUmakefile, source.cmake - added dependences on needed hadronic
+    sub-libraries in order to fix granular build
+
+## 2022-08-16 Alberto Ribon (phys-util-V11-00-04)
+- G4PhysListUtil : in the method InitialiseParameters(), called
+  the singleton G4FTFTunings::Instance() to allow the setting of
+  a FTF tune via UI commands at PreInit state.
+
+## 2022-08-09 Vladimir Ivanchenko (phys-util-V11-00-03)
+- G4PhysListUtil - extended InitialiseParameters() method
+
+## 2022-03-26 Vladimir Ivanchenko (phys-util-V11-00-02)
+- G4PhysListUtil - use dynamic_cast instead of static_cast
+
+## 2022-03-10 Vladimir Ivanchenko (phys-util-V11-00-01)
+- G4PhysListUtil - added new utility method to access a process
+    via sub-type, simplified methods to access hadron processes
+
+## 2021-12-10 Ben Morgan (phys-util-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+22-October-2021, Vladimir Ivanchenko (phys-util-V10-07-02)
+- G4HadParticles - added hyper-nuclei
+
+16-April-2021 Ben Morgan             (phys-util-V10-07-01)
+- Migrate build to modular CMake API
+
+13-April-2021, Alberto Ribon            (phys-util-V10-07-00)
+-  GNUmakefile, sources.cmake : removed dependency on hadronic/model/util
+   and hadronic/model/management (that have been now deleted, with their
+   classes moved to hadronic/util and hadronic/management).
+
+09-October-2020, Gabriele Cosmo         (phys-util-V10-06-10)
+- Added new dependencies to "processes/electromagnetic/utils" and
+  "processes/hadronic/models/de_excitation/management" modules in
+  GNUMakefile.
+
+07-October-2020, Vladimir Ivanchenko    (phys-util-V10-06-09)
+- G4PhysListUtil - added utility method InitialiseParameters()
+
+22-August-2020, Vladimir Ivanchenko     (phys-util-V10-06-08)
+- G4HadProcesses - added optional GG nucl-nucl cross section
+
+21-August-2020, Vladimir Ivanchenko     (phys-util-V10-06-07)
+- G4HadProcesses - use G4PhysListUtil to access processes
+- G4PhysListUtil - added method to access elastic x-section
+
+24-July-2020, Alberto Ribon             (phys-util-V10-06-06)
+- G4HadParticles : removed eta and eta_prime from the list of
+  charmed and bottom hadrons; removed the short-lived hadrons
+  (Sigma0, etac, JPsi, SigmaC++, SigmaC+, SigmaC0, Upsilon,
+  SigmaB+, SigmaB0, SigmaB-) whose hadronic interactions can be
+  neglected (consistently with what is done currently in Geant4
+  for pi0 and Sigma0) because they decay too quickly.
+
+19-July-2020, Vladimir Ivanchenko       (phys-util-V10-06-05)
+- G4HadParticles - subdivide for different methods hyperons and
+    anti-hyperons
+
+11-July-2020, Vladimir Ivanchenko       (phys-util-V10-06-04)
+- G4HadProcesses - new utility class providing access to hadronic
+    processes and addition of a cross section per particle type
+    and hadronic process; Using this class it is possible to
+    customise hadronic cross sections
+
+01-July-2020, Vladimir Ivanchenko       (phys-util-V10-06-03)
+- G4HadParticles - separated light anti-particles to the extra
+    vector and added extra access method
+
+28-May-2020 Ben Morgan                  (phys-util-V10-06-02)
+-  Remove obsolete GRANULAR_DEPENDENCIES entries
+
+25-May-2020, Vladimir Ivanchenko        (phys-util-V10-06-01)
+- G4HadParticles - updated list of heavy EM particles, more comments
+
+11-May-2020, Vladimir Ivanchenko        (phys-util-V10-06-00)
+- G4HadParticles - utility providing several lists of PDG codes
+    for kaons, hyperons, b- and c- particles in order to
+    be used for construction of hadronic physics
+
+31-July-2019  Gunter Folger (phys-util-V10-05-00)
+-  removed G4DataQuestionaire.hh as consequence to code cleanup
+   in lists, see phys-lists-V10-05-02
+
+03-Nov-2018, Vladimir Ivanchenko        (phys-util-V10-04-01)
+- G4DataQuestionaire - substituted G4NEUTRONXSDATA by G4PARTICLEXSDATA
+
+21-Jul-2018, Vladimir Ivanchenko        (phys-util-V10-04-00)
+- G4PhysListUtil - added methods GetCaptureProcess and GetFissionProcess
+
+26-Oct-2017, Tatsumi Koi                (phys-util-V10-03-00)
+- Fix address of ftp site of LEND data
+- Improve instruction about download file and environment variable for LEND data
+
+05-Nov-2015, Alberto Ribon              (phys-util-V10-01-00)
+- Removed neutron_hp/
+
+29-Jan-2014, Gunter Folger              (phys-util-V10-00-00)
+- Removed electromagnetic/dna, cascade/{evaporation,utils}
+  from sources.cmake
+
+07-Nov-2013, Alberto Ribon              (phys-util-V09-06-01)
+- Removed low_energy and high_energy from sources.cmake
+
+10-Jan-2013, Gunter Folger              (phys-util-V09-06-00)
+- new directory structure introduced.
+   util directory keeps utility classes

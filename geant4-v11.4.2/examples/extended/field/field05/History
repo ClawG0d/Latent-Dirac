@@ -1,0 +1,86 @@
+# Example field05 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2024-09-18 Gabriele Cosmo (fieldex05-V11-02-00)
+- Migrated to use G4RunManagerFactory.
+- Use default MixMax random generator.
+
+## 2023-07-05 Ivana Hrivnacova (fieldex05-V11-01-00)
+- Clang-tidy, new coding guidelines
+- Clean-up trailing white-spaces
+
+## 2022-11-16 John Apostolakis (fieldex05-V11-00-01)
+- Corrected assignement of epsMax=0.001 .  Also epsMin is dimensionless!
+
+## 2021-12-10 Ben Morgan (fieldex05-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+July 27, 2018 I.Hrivnacova - fieldex05-V10-04-02
+- Macro review and code clean-up:
+  - Separated other than visualization settings from vis.mac in a
+    new init_vis.mac
+  - Added "beamOn 10" button in gui.mac
+  - Updated README files
+
+May 15, 2018 J.Allison - fieldex05-V10-04-01
+- Remove G4UI_USE and G4VIS_USE.
+- Move instantiation of G4UIExecutive to start of main.
+- vis.mac, gui.mac: Clean up.
+
+May 09, 2018 B.Morgan - fieldex05-V10-04-00
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+Nov 03, 2016 L.Garnier - fieldex05-V10-02-01
+- remove icons.mac. Automatically include since interfaces-V10-02-07
+
+July 01, 2016 I. Hrivnacova - fieldex05-V10-02-00
+- Replaced F05ExtraPhysics with use of G4StepLimiterPhysics
+
+April 09, 2015 P. Gumplinger - fieldex05-V10-01-00
+- use new G4SpinDecayPhysics constructor in F05PhysicsList
+
+December 04, 2013 I. Hrivnacova, P. Gumplinger - fieldex05-V10-00-00
+- Fixes in gui.mac:
+  Let execute vis.mac first to make the command in added menus available;
+  Corrected wireframe parameter;
+  Commented out command specific to B2 example;
+- updated CMakeLists.txt
+
+Nov 18, 2013 Ivana Hrivnacova - fieldex05-V09-06-05
+- Minor fix in .README
+
+Nov 04, 2013 P. Gumplinger - fieldex05-V09-06-04
+- place G4Random::setTheSeed(myseed) so that it is executed for both
+  sequential and MT mode
+
+Nov 01, 2013 P. Gumplinger - fieldex05-V09-06-03
+- Migration to MT
+
+May 06, 2013 P. Gumplinger - fieldex05-V09-06-02
+- Apply all Examples Coding Guidelines
+
+April 1st, 2013 A. Dotti - fieldex05-V09-06-01
+- New API for physics list needed for MT
+
+February 22th, 2013 Peter Gumplinger - fieldex05-V09-06-00
+- changed GetFieldValue signature to Point[4] and added
+  F05SteppingVerbose to print GlobalTime
+
+November 14th, 2012 Ivana Hrivnacova - fieldex05-V09-05-00
+------------------------------------
+- In vis.mac: replaced OGLIX with OGL
+
+November 19th, 2009 Peter Gumplinger - fieldex05-V09-02-00
+------------------------------------
+- First implementation.

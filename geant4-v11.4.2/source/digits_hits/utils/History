@@ -1,0 +1,208 @@
+# Category detutil History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2024-07-15 Gabriele Cosmo (detutil-V11-02-01)
+- Fixed additional Coverity defect in G4VScoringMesh.
+
+## 2024-07-12 Gabriele Cosmo (detutil-V11-02-00)
+- Fixed reported Coverity defects, use consistently 'const G4String&' to
+  avoid implicit copy.
+- Fixed class description in headers.
+- Use G4 types.
+
+## 2023-05-24 Makoto Asai (detutil-V11-01-01)
+- Additional fix for probe scorer.
+
+## 2023-04-28 Makoto Asai (detutil-V11-01-00)
+- Fixed probe scorer with alternative material setting, that didn't properly 
+  work in tasking mode.
+
+## 2022-11-29 I. Hrivnacova (detutil-V11-00-06)
+- Added support for ntuple merging in G4TScoreNtupleWriter;
+  it can be activated with
+     G4TScoreNtupleWriter::SetNtupleMerging()
+
+## 2022-11-17 Gabriele Cosmo (detutil-V11-00-05)
+- Fixed compilation warnings for implicit type conversions on macOS/XCode 14.1.
+
+## 2022-10-05 Ben Morgan (detutil-V11-00-04)
+- Remove large commented-out blocks of dead code
+
+## 2022-09-27 Ben Morgan (detutil-V11-00-03)
+- Remove inclusion of unused interfaces from G4detscorer
+- Apply core+recommended clang-tidy fixes, plus some code cleanup
+
+## 2022-09-01 Gabriele Cosmo (detutil-V11-00-02)
+- G4VScoringMesh: fixed reported Coverity defects for use of auto&.
+  Some minor code cleanup.
+
+## 2022-05-17 Makoto Asai (detutil-V11-00-01)
+- G4VScoringMesh.hh : Fixing virtual keyword.
+
+## 2021-12-10 Ben Morgan (detutil-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+October 7th, 2021  I. Hrivnacova (detutil-V10-07-06)
+- Updated G4TScoreNtupleWriter for changes in the analysis category:
+  added fDefaultFileType (with default value "root") and its setter
+
+September 27th, 2021 M. Asai (detutil-V10-07-05)
+- Fix indexing of cylindrical scoring mesh commands.
+  Co-working with detscorer-V10-07-01.  Addressing to bug report #2418.
+
+August 23rd, 2021 M. Asai (detutil-V10-07-04)
+- G4VScoringMesh : Correct the warning messages when the size or number 
+  of bins have already been set but tried to change.
+
+July 22nd, 2021 I. Hrivnacova (detutil-V10-07-03)
+- Updated G4TScoreNtupleWriter for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+April 15th, 2021 M. Asai (detutil-V10-07-02)
+- Making sure probe commands are not unnecessarily broadcasted to
+  the worker threads.
+
+April 1st, 2021 B. Morgan (detutil-V10-07-01)
+- Migrate build to modular CMake API
+
+December 7th, 2020  M.Asai (detutil-V10-07-00)
+- Extending cylindrical scoring mesh to tube and tube segment.
+
+November 15th, 2020  M.Asai (detutils-V10-06-10)
+- Adding Mutex lock to G4ScoringProbe::SetMaterial() to avoid the
+  race condition.
+
+September 16th, 2020  M.Asai (detutils-V10-06-09)
+- Adding /score/fill1D command that lets a primitive scorer to
+  directly fill a 1D histogram.
+
+September 3rd, 2020  M.Asai (detutils-V10-06-08)
+- Move G4VPrimitivePlotter.hh to digits_hits/detector
+
+April 29th, 2020  M.Asai (detutils-V10-06-07)
+- G4ScoringProbe.cc : Minor cosmetic changes.
+
+April 22nd, 2020  M.Asai (detutils-V10-06-06)
+- Introducing G4VPrimitivePlotter.hh that enables the user to extend
+  a primitive scorer and directly fill 1D histogram.
+
+April 13th, 2020  M.Asai (detutils-V10-06-05)
+- Introducing Probe mesh.
+
+April 7th, 2020  M.Asai (detutils-V10-06-04)
+- G4VScoringMesh.hh, .cc : further extension for Proble scoring mesh.
+
+April 2nd, 2020  M.Asai (detutils-V10-06-03)
+- G4ScoringMessenger.cc: Fix Coverity error.
+
+March 31st, 2020  M.Asai (detutils-V10-06-02)
+- G4VScoringMesh.hh: Add a new enum entry for future extension.
+
+Feburary 13th, 2020 T.Aso (detutils-V10-06-01)
+- G4ScoreQuantityMessengerQCmd.cc: default parameter for unit
+in trackLength scorer was changed.
+
+December 29th, 2019  M.Asai (detutils-V10-06-00)
+- G4ScoringManager, G4VScoreWriter, G4ScoringMessenger:
+   Add missing setter/getter functions.
+
+October 23rd, 2019  M.Asai (detutils-V10-05-04)
+- Revising utils/src/G4ScoringQuantiryMessenger.cc to better handle
+  ther error cases.
+
+September 30th, 2019  I. Hrivnacova (detutils-V10-05-03)
+- Added 'ntuple' subdirectory for score ntuple writer UI commands
+
+September 30th, 2019  M.Asai (detutils-V10-05-02)
+- Revising utils/src/G4ScoringMessenger.cc to better handle the error
+  cases.
+
+September 19th, 2019  M.Asai (detutils-V10-05-01)
+- Introducing G4ScoringRealWorld that allows to define command-based
+  scorers to a logical volume in the mass world.
+- Co-working with run-V10-05-05.
+
+July 8th, 2019  I. Hrivnacova (detutils-V10-05-00)
+- Added G4TScoreNtupleWriter and G4TScoreNtupleWriterMessenger
+  which implements storing hits collections of G4THitsMap<G4double>
+  type vith Geant4 analysis tools, define in G4VcoreNtupleWriter
+  The dependency on the analysis category is avoided via template.
+
+March 20, 2015  A.Kimura (detutils-V10-01-02)
+- fixed type convertion warnigs at l.132 and l.157 of G4VScoreColorMap.cc
+
+March 11, 2015  A.Kimura (detutils-V10-01-01)
+- fine adjustment of the position drawing surfaces in G4ScoringBox::Draw(...)
+
+March 11, 2015  A.Kimura (detutils-V10-01-00)
+March 11, 2015  A.Kimura (detutils-V10-01-00)
+- Revised G4ScoringBox::Draw(...), ::DrawColumn(...),
+  G4ScoringCylinder::Draw(...) and ::DrawColumn(...) to spped up
+  drawing primitive scorers attached to the scoring meshes.
+
+October 03, 2014  A.Kimura (detutils-V10-00-00)
+- Added several sets of G4VisManager::BeginDraw2D() call and
+  G4VisManager::EndDraw() call in G4VScoreColorMap.cc for the speedup
+  of drawing the texts and the color chart.
+
+October 05, 2013  A.Kimura (detutils-V09-06-00)
+- Fixed a bug in G4ScoringBox::DrawColumn(...), which was a wrong size check of the column.
+
+June 14, 2010  G.Cosmo (detutils-V09-03-00)
+- Added missing virtual destructor to G4VScoringMesh and removed unnecessary
+  virtual qualifiers to G4ScoringBox.
+
+November 06, 2007  M.Asai (detutils-V09-00-06)
+- Introducing DrawColumn() method and related UI commands.
+
+November 04, 2007  M.Asai (detutils-V09-00-05)
+- Introducing G4VScoreColorMap and its concrete class G4DefaultLinearColorMap.
+
+November 03, 2007  M.Asai (detutils-V09-00-04)
+- Split messenger class.
+- Command name changed.
+- Commands for cylindrical and spharic mesh disabled.
+
+November 01, 2007  M.Asai (detutils-V09-00-03)
+- Temporary tag after removing G4ScoringTubs.
+
+November 01, 2007  M.Asai (detutils-V09-00-02)
+- Temporary tag before removing G4ScoringTubs.
+
+July 13, 2007  M.Asai (detutils-V09-00-01)
+- First implementation of basic classes
+- test/test1
+
+July 11, 2007  M.Asai (detutils-V09-00-00)
+- Move all scorers and filters to digits_hits/scorer.
+
+June 06, 2007  A.Howard (detutils-V08-03-02)
+- Added modified G4PSPopulation removing event (circular) dependency
+  (file form T.Aso).
+
+June 05, 2007  M.Asai (detutils-V08-03-01)
+- Drop G4PSPopulation from the release.
+
+May 17, 2007  M.Asai (detutils-V08-03-00)
+- New scorers for event biasing.
+- kCarTolerance now becomes a local data member obtained from G4GeometryTolerance class.
+
+November 17, 2006  M.Asai (detutils-V08-01-00)
+- G4PSCellCharge is introduced.
+
+November 18, 2005  M.Asai (detutils-V07-01-01)
+- Introducing concrete primitive scorer and filter classes.
+
+November 16, 2005  M.Asai (detutils-V07-01-00)
+- Created.
+

@@ -1,0 +1,67 @@
+# Example perspective History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2023-11-15 I. Hrivnacova (exam-ext-vis-persp-V11-01-02)
+- Updated vis.mac macros:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2023-03-28 John Allison (exam-ext-vis-persp-V11-01-01)
+- PerspectiveVisAction.hh:
+  - Remove unnecessary forward class declarations.
+  - clang-format.
+
+## 2023-02-02 Igor Semeniouk (exam-ext-vis-persp-V11-01-00)
+- PerspectiveVisAction.hh - fix missing include for G4Transform3D
+
+## 2021-12-10 Ben Morgan (exam-ext-vis-persp-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+25th October 2021 B.Morgan (exam-ext-vis-persp-V10-07-00)
+- Use G4StrUtil functions replacing deprecated G4String member functions
+
+3rd November 2020 B. Morgan (exam-ext-vis-persp-V10-06-00)
+- Support same CMake version range as core Geant4
+
+8th January 2017  John Allison  (exam-ext-vis-persp-V10-03-00)
+- perspective.cc:
+  o Changed SetUserAction to RegisterRunDurationUserVisAction.
+  o Updated to current practice.
+
+27th March 2013  John Allison  (exam-ext-vis-persp-V09-06-02)
+- Added separators between functions.
+
+19th February 2013  Ivana Hrivnacova  (exam-ext-vis-persp-V09-06-00)
+- Applied coding guidelines (data members initialization)
+
+11th June 2012  John Allison  (exam-ext-vis-persp-V09-05-03)
+- Added .README for doxygen.
+
+9th April 2012  John Allison  (exam-ext-vis-persp-V09-05-02)
+- perspective.cc: Corrected vis user action extent.
+- vis.mac, visXm.mac: Removed arguments from /vis/scene/add/userAction.
+
+21st March 2012  John Allison  (exam-ext-vis-perps-V09-05-01)
+- Minor cosmetic improvements to comments.
+
+19th March 2012  John Allison  (exam-ext-vis-perps-V09-05-00)
+- Added README.
+- /perspectiveDemo/optionString: Improved guidance.
+
+9th November 2010  John Allison  (exam-ext-vis-perps-V09-03-00)
+- Introduced G4UIExecutive.
+- Introduced vis.mac, visXm.mac (was perspective.g4m).
+
+6th November 2006 (exam-ext-vis-perps-V08-01-00)
+- Improve command guidance.
+
+25th May 2006 (exam-ext-vis-V08-00-00)
+- First perspective example.

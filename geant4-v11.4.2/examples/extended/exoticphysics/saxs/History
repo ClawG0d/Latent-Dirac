@@ -1,0 +1,41 @@
+# Example saxs History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2021-12-10 Ben Morgan (saxs-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+October 13, 2021, V. Ivanchenko (saxs-V10-07-03)
+- G4EmPenelopePhysicsMI - removed unused obsolete header
+
+October 6, 2021, I. Hrivnacova (saxs-V10-07-02)
+- Migration to new G4AnalysisManager.hh header,
+  define the default output file type (root),
+  removed SAXSAnalysis.hh.
+
+July 26, 2021, V. Ivanchenko (saxs-V10-07-01)
+- Fixed using G4Analysis - do not apply in class destructor
+- Clean-up PhysicsList
+
+July 22, 2021, I. Hrivnacova (saxs-V10-07-00)
+- Fixed using G4Analysis: add call to CloseFile()
+
+November 10, 2020, B. Morgan (saxs-V10-06-03)
+- Migration to G4RunManagerFactory.
+
+Nov 6, 2020, I. Hrivnacova (saxs-V10-06-02)
+- Fixed doxygen documentation
+
+Nov 2, 2020, G. Paternò and L. Pandola (saxs-V10-06-01)
+- Finalize documentation (README and .README.txt)
+
+Oct 13, 2020, G. Paternò and L. Pandola (saxs-V10-06-00)
+- First import.
+

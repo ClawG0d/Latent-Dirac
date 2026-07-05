@@ -1,0 +1,64 @@
+# - G4hadronic_proc module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4hadronic_proc
+  PUBLIC_HEADERS
+    G4ElectronNuclearProcess.hh
+    G4ElNeutrinoNucleusProcess.hh
+    G4HadronElasticProcess.hh
+    G4HadronInelasticProcess.hh
+    G4MuNeutrinoNucleusProcess.hh
+    G4MuonNuclearProcess.hh
+    G4NeutrinoElectronProcess.hh
+    G4NeutronCaptureProcess.hh
+    G4NeutronFissionProcess.hh
+    G4NeutronGeneralProcess.hh
+    G4NuVacOscProcess.hh
+    G4PositronNuclearProcess.hh
+    G4TauNeutrinoNucleusProcess.hh
+    G4UCNProcessSubType.hh
+    G4UCNBoundaryProcess.hh
+    G4UCNBoundaryProcessMessenger.hh
+    G4UCNLoss.hh
+    G4UCNAbsorption.hh
+    G4UCNMultiScattering.hh
+  SOURCES
+    G4ElectronNuclearProcess.cc
+    G4ElNeutrinoNucleusProcess.cc
+    G4HadronElasticProcess.cc
+    G4HadronInelasticProcess.cc
+    G4MuNeutrinoNucleusProcess.cc
+    G4MuonNuclearProcess.cc
+    G4NeutrinoElectronProcess.cc
+    G4NeutronCaptureProcess.cc
+    G4NeutronFissionProcess.cc
+    G4NeutronGeneralProcess.cc
+    G4NuVacOscProcess.cc
+    G4PositronNuclearProcess.cc
+    G4TauNeutrinoNucleusProcess.cc
+    G4UCNBoundaryProcess.cc
+    G4UCNBoundaryProcessMessenger.cc
+    G4UCNLoss.cc
+    G4UCNAbsorption.cc
+    G4UCNMultiScattering.cc)
+
+geant4_module_link_libraries(G4hadronic_proc
+  PUBLIC
+    G4baryons
+    G4globman
+    G4hadronic_mgt
+    G4hadronic_util
+    G4intercoms
+    G4materials
+    G4procman
+  PRIVATE
+    G4cuts
+    G4detector
+    G4geometrymng
+    G4hadronic_xsect
+    G4ions
+    G4leptons
+    G4navigation
+    G4partman
+    G4scoring
+    G4track)

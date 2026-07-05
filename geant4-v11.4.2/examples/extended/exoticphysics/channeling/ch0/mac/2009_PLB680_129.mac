@@ -1,0 +1,26 @@
+/run/verbose 1
+#detector geometry
+/xtal/setMaterial G4_Si
+/xtal/setAngle 0. -25.25E-6 0. rad
+/xtal/setSize 1.0 70. 1.94 mm
+/xtal/setBR 38.416 0. 0. m
+/xtal/setEC data/Si220pl
+
+#initialize run before stacking and primary generator actions
+/run/initialize
+
+#set gps properties
+/gps/ene/mono 400. GeV
+/gps/particle proton
+
+/gps/pos/type Point
+/gps/pos/centre 0 0 -10.5 m
+
+/gps/ang/type beam2d
+/gps/ang/rot1 1  0  0
+/gps/ang/rot2 0 -1  0
+/gps/ang/sigma_x 13.36E-6 rad
+/gps/ang/sigma_y 11.25E-6 rad
+
+#beam on
+/run/beamOn 1000

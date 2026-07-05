@@ -1,0 +1,141 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4BorisDriver inline methods implementation
+//
+// Author: Divyansh Tiwari (CERN, Google Summer of Code 2022), 05.11.2022
+// Supervision: John Apostolakis (CERN), Renee Fatemi, Soon Yung Jun (FNAL)
+// --------------------------------------------------------------------
+
+inline
+G4double G4BorisDriver::AdvanceChordLimited(G4FieldTrack& track,
+                                            G4double hstep,
+                                            G4double eps,
+                                            G4double chordDistance)
+{
+  return ChordFinderDelegate::
+         AdvanceChordLimitedImpl(track, hstep, eps, chordDistance);
+}
+
+inline
+void G4BorisDriver::OnStartTracking()
+{
+  ChordFinderDelegate::ResetStepEstimate();
+}
+
+inline
+void G4BorisDriver::OnComputeStep(const G4FieldTrack*)
+{
+}
+
+inline
+G4bool G4BorisDriver::DoesReIntegrate() const
+{
+  return true;
+}
+
+inline
+G4double G4BorisDriver::ComputeNewStepSize( G4double /* errMaxNorm*/,
+                                            G4double  hstepCurrent)
+{
+  return hstepCurrent;
+}
+
+inline
+void G4BorisDriver::SetVerboseLevel(G4int level)
+{
+  fVerbosity = (level != 0);
+}
+
+inline
+G4int G4BorisDriver::GetVerboseLevel() const
+{
+  return static_cast<G4int>(fVerbosity);
+}
+
+inline
+const G4EquationOfMotion* G4BorisDriver::GetEquationOfMotion() const
+{
+  auto eq = boris->GetEquationOfMotion();
+  return eq;
+}
+
+inline
+G4EquationOfMotion* G4BorisDriver::GetEquationOfMotion()
+{
+  auto eq = boris->GetEquationOfMotion();
+  return eq;
+}
+
+inline
+G4int G4BorisDriver::GetNumberOfVariables() const
+{
+  return boris->GetNumberOfVariables();
+}
+
+inline
+const G4MagIntegratorStepper* G4BorisDriver::GetStepper() const
+{
+  return nullptr;
+}
+
+inline
+G4MagIntegratorStepper* G4BorisDriver::GetStepper()
+{
+  return nullptr;
+}
+
+inline
+void G4BorisDriver::CheckStep(const G4ThreeVector& posIn,
+                              const G4ThreeVector& posOut,
+                              G4double hdid) const
+{
+  const G4double endPointDist = (posOut - posIn).mag();
+  if (endPointDist >= hdid * (1. + CLHEP::perMillion))
+  {
+    // ++fNoAccurateAdvanceBadSteps;
+// #ifdef G4DEBUG_FIELD
+    // Issue a warning only for gross differences -
+    // we understand how small difference occur.
+    if (endPointDist >= hdid * (1. + CLHEP::perThousand))
+    {
+      G4Exception("G4BorisDriver::CheckStep()", "GeomField1002", JustWarning,
+                  "endPointDist >= hdid!");
+    }
+    else
+    {
+      G4cerr << "G4BorisDriver::CheckStep: moved further than curve distance! "
+             << "  curve hdid= " << hdid << " endpoint dist= " << endPointDist
+             << "  ratio - 1 = " << (endPointDist - hdid) / hdid
+             << " ( > 1.0e-6 threshold to report ) "
+             << G4endl; 
+    }
+// #endif
+  }
+  else
+  {
+    // ++fNoAccurateAdvanceGoodSteps;
+  }
+}

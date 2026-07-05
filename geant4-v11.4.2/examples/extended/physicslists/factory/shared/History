@@ -1,0 +1,29 @@
+# Example shared History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2021-12-10 Ben Morgan (physicslistsShared-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+24/3/19  J.Allison      (physicslistsShared-V10-05-00)
+- Part of Merge Request exampleB4-V10-05-00.
+- Corrected name of include file: csv.hh
+
+15/1/18  G.Folger       (physicslistsShared-V10-04-00)
+-  Retag previously rejected tag.
+
+4/12/17  G.Folger       (physicslistsShared-V10-03-01)
+- Correct copy script
+
+26/10/17 I. Hrivnacova  (physicslistsShared-V10-03-00)
+- The first tag
+
+25/10/17 I. Hrivnacova
+- First version of example

@@ -1,0 +1,60 @@
+#
+# Macro file for the test of field03 example
+#
+# It creates the default geometry (simple absorber cylinder )        
+#
+/tracking/verbose 1
+/run/verbose 1
+/control/verbose 2
+#/control/cout/ignoreThreadsExcept 0
+#
+#
+#
+/field/stepperType ClassicalRK4
+/field/setMinimumStep 10 mm
+/field/Radiator/stepperType ClassicalRK4
+/field/Radiator/setMinimumStep 10 mm
+#/field/printParameters
+#
+/run/initialize
+#
+/run/particle/dumpCutValues
+#
+/gun/particle e-
+/gun/energy 500.0 MeV
+#
+/run/beamOn 1
+#
+/tracking/verbose 0
+/run/printProgress 50
+/run/beamOn 100
+#
+/field03/setField 0. 0. 1.0 kG
+#
+/run/beamOn 10
+#
+/tracking/verbose 1
+/field03/setField 3.3 0 0 tesla
+/field03/setLocalField 0 0 0 tesla
+/run/beamOn 1
+#
+# Test commands defined in this example
+/control/verbose 2
+/tracking/verbose 0
+#
+/calor/setAbsMat Xe20CO2      # default Air
+/calor/setWorldMat Kr20CO2    # default Air
+/calor/setAbsThick  0.8 mm    # default 1 mm
+/calor/setAbsRad 1900 mm      # default 20000.*mm
+/calor/setAbsZpos  20990 mm   # default 21990.0*mm
+/calor/setWorldZ  45000 mm    # default 44000.*mm
+/calor/setWorldR  23000 mm    # default 22000.*mm
+/gun/random   on       # default "off"
+/gun/xvertex  100 mm   # default 0
+/gun/yvertex  100 mm   # default 0
+/gun/zvertex  100 mm   # default 0
+#
+/run/beamOn 1
+
+
+

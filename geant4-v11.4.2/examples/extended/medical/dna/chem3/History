@@ -1,0 +1,124 @@
+# Example chem3 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2024-11-20 Hoang Tran (chem3-V11-02-02)
+- updated TimeStepAction and
+- added function to show how to get a specific species ID,
+positions at each time step.
+
+## 2024-09-20 Ivana Hrivnacova (chem3-V11-02-01)
+- Updated the HOW TO START section in README once more:
+  commented macros vis.mac and vis_vm.mac.
+
+## 2024-09-19 Ivana Hrivnacova (chem3-V11-02-00)
+- Extended the HOW TO START section in README with
+  the beam.in, gui.mac macros usage
+
+## 2023-10-20 John Allison (chem3-V11-01-00)
+- vis.mac and vis_vm.mac:
+  - Remove defunct command /vis/ogl/set/displayListLimit.
+  - This command no longer operates. There is now no display list limit.
+    (The only limit is available memory.)
+  - The command is deprecated and, anyway, causes a crash if the app is built
+    without an OpenGL driver.
+
+## 2021-12-10 Ben Morgan (chem3-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+14.07.2021 John Allison         tag chem3-V10-07-01
+-----------------------------------------------------
+- Replace /vis/ogl/printEPS with /vis/ogl/export in relevant macros.
+
+31.12.2020 John Allison         tag chem3-V10-07-00
+-----------------------------------------------------
+- Change /vis/ogl/set/ to /vis/viewer/set/timeWindow/.
+
+10.11.2020 Ben Morgan           tag chem3-V10-06-00
+-----------------------------------------------------
+- Migration to G4RunManagerFactory.
+
+08.02.2019 VI, WGS, SI          tag chem3-V10-05-01
+-----------------------------------------------------
+- Fixed PhysicsList
+
+05.02.2019 S. Incerti           tag chem3-V10-05-00
+-----------------------------------------------------
+- Clean-up of TimeStepAction
+
+27.11.2018 V. Ivanchenko        tag chem3-V10-04-01
+-----------------------------------------------------
+- Fixed nightly problem in PhysicsList
+
+26.02.2018 R. Hatcher           tag chem3-V10-04-00
+-----------------------------------------------------
+- Use G4RegisterPhysicsConstructors.icc to ensure G4PhysicsConstructorRegisty
+  is filled when using static libraries
+
+29.11.2016 I.Hrivnacova         tag chem3-V10-03-00
+-----------------------------------------------------
+- Fixed typo in chem3.cc
+
+09.07.2016 S.Incerti            tag chem3-V10-02-01
+-----------------------------------------------------
+-  Updated README
+
+04.07.2016 I.Hrivnacova         tag chem3-V10-02-00
+-----------------------------------------------------
+-  Fixes for Doxygen documentation
+
+22.03.2015 M.K                  tag chem3-V10-01-01
+-----------------------------------------------------
+- CommandLine options: -mt option restaured with 2 as default number of threads
+- name of macros changed
+- gui.mac added + reverse order of call between gui.mac and vis.mac in chem3.cc
+
+18.03.2015 M.K                  tag chem3-V10-01-00
+-----------------------------------------------------
+- G4UserTimeStepAction::UserReactionAction : vector of reaction products becomes
+a pointer instead of a reference
+
+28.11.2014 M.K                  tag chem3-V10-00-06
+-----------------------------------------------------
+- Update to last dna version
+
+24.11.2014 M.K                  tag chem3-V10-00-05
+-----------------------------------------------------
+- Retag before release
+- Initialization of chemistry applications is simplified
+
+06.11.2014 I.Hrivnacova
+-----------------------------------------------------
+- Fixes in .README
+
+06.10.2014 M.K                  tag chem3-V10-00-04
+-----------------------------------------------------
+- Remove selection of vis driver from vis.mac
+
+06.10.2014 M.K                  tag chem3-V10-00-03
+-----------------------------------------------------
+- Make the tag
+
+05.10.2014 M.K
+-----------------------------------------------------
+- Update CommandLineParser
+- Select the GUI type by command line option
+- Select visualization driver from command line
+
+24.10.2014 M.K                  tag chem3-V10-00-02
+-----------------------------------------------------
+- G4ITTimeStepper --> G4VScheduler
+
+24.10.2014 M.K                  tag chem3-V10-00-01
+-----------------------------------------------------
+- CommandLineParser added
+
+20.10.2014 M.K                  tag chem3-V10-00-00
+-----------------------------------------------------
+- chem3 added

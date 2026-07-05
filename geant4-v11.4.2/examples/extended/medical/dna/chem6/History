@@ -1,0 +1,92 @@
+# Example chem6 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-12-11 Hoang Tran (chem6-V11-03-03)
+- Fixed energy unit for LET(100)
+
+## 2025-12-10 Gabriele Cosmo
+- Cleanup implementation in main(): use default random engine MixMax and
+  use auto whenever appropriate.
+- Set 1 as number of threads in beam.in to clear run-time warnings and fix
+  Windows crash on exit.
+
+## 2025-09-23 Adrien Paillet, Hoang Tran, Sebastien Incerti (chem6-V11-03-02)
+- Added UI commands to select physics constructor and output file name
+- README file updated
+- Refactored the code
+
+## 2025-05-05 Hoang Tran (chem6-V11-03-01)
+- Replaced the shared_ptr with unique_ptr and raw for manager counters.
+
+## 2025-04-22 Hoang Tran (chem6-V11-03-00)
+- used new G4MoleculeCounterManager to manage the G4MoleculeCounter
+
+## 2024-10-28 Hoang Tran (chem6-V11-02-02)
+- added the /process/chem/TimeStepModel IRT command in the macro file beam_HCP.in
+
+## 2024-10-14 Hoang Tran (chem6-V11-02-01)
+- corrected molecule name in chem6 macro file
+
+## 2024-05-23 Hoang Tran (chem6-V11-02-00)
+- Use EmParameter to control chemistry models
+
+## 2022-09-08 Hoang Tran (chem6-V11-00-07)
+- Fix ROOT macros for error running of ROOT in Windows
+
+## 2022-06-10 Sergio Losilla (chem6-V11-00-06)
+- Added missing headers.
+
+## 2022-05-02 Hoang Tran (chem6-V11-00-05)
+- Add localthread for fUse of G4VMoleculeCounter
+
+## 2022-03-21 Hoang Tran (chem6-V11-00-04)
+- Add PhysicsListMessenger
+- Add macro commands to control chemistry models in PhysicsListMessenger
+- Add infomation in README
+- Add short chemical reaction list
+
+## 2022-03-15 Hoang Tran (chem6-V11-00-03)
+- remove macro commands to control chemistry models
+(due to circular dependency)
+- add infomation in README
+
+## 2022-03-04 Hoang Tran (chem6-V11-00-02)
+- Add macro commands to control chemistry models
+
+## 2022-02-21 Hoang Tran (chem6-V11-00-01)
+- add the condition for only one event of chem6 (FPE detection)
+
+## 2021-12-10 Ben Morgan (chem6-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+08-11-2021: H. Tran  chem6-V10-07-02
+- delete limit time step
+- reduce the number of incident particle
+
+21-10-2021: W.G. Shin  chem6-V10-07-01
+- Added limit time step
+
+06-10-2021: I. Hrivnacova  chem6-V10-07-00
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+10-11-2020: B. Morgan chem6-V10-06-03
+- Migration to G4RunManagerFactory.
+
+06-11-20: I. Hrivnacova chem6-V10-06-02
+- Fixed doxygen documentation
+
+19-02-20: W. G. Shin chem6-V10-06-01
+- fixed memory issue
+
+10-02-20: W. G. Shin chem6-V10-06-00
+- created and adapted from chem4

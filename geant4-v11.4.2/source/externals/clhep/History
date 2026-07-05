@@ -1,0 +1,503 @@
+# Category clhep History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-02-04 Gabriele Cosmo (clhep-V11-03-00)
+- Properly export static symbols in RandFlat for DLL build support on Windows.
+
+## 2023-10-13 Gabriele Cosmo (clhep-V11-01-03)
+- Synchronised with CLHEP-2.4.7.1.
+  * Random (L.Garren)
+    o Added missing shootArray() implementation in RandPoissonQ.
+
+## 2023-09-19 Gabriele Cosmo (clhep-V11-01-02)
+- In Random module:
+  * Fixes to MixMax previous commit to resolve reproducibility issues.
+  * Removed obsolete MixMax matrix files mixmax_skip_N8.icc and
+    mixmax_skip_N240.icc.
+
+## 2023-08-16 Gabriele Cosmo (clhep-V11-01-01)
+- In Random module:
+  * Random (K.Savvidy)
+    o Optimised MixMax performance based on experience learned since 2017.
+    o Updated MixMax class structure.
+
+## 2022-12-13 Gabriele Cosmo (clhep-V11-01-00)
+- Synchronised with CLHEP-2.4.6.4.
+  * Fixed compilation warnings for implicit type conversions on macOS/XCode 14.1
+    in Random and Evaluator code.
+  * Fixed cases of C++20 deprecated arithmetics with unnamed enumerations
+    in Vector classes.
+
+## 2022-10-10 Gabriele Cosmo (clhep-V11-00-08)
+- Synchronised with CLHEP-2.4.6.2.
+  * Random (L.Garren)
+    o Add <cstdint> header where uint32_t and uint64_t are used.
+
+## 2022-10-10 Gabriele Cosmo (clhep-V11-00-07)
+- Synchronised with CLHEP-2.4.6.1.
+  * Evaluator (G.Cosmo)
+    o Fixed inconsistencies in evaluator set of units [setSystemOfUnits.cc]
+      with SystemOfUnits header.
+
+## 2022-10-10 Gabriele Cosmo (clhep-V11-00-06)
+- Synchronised with CLHEP-2.4.6.0.
+  * Evaluator (C.Green)
+    o Resolved gcc-12 warnings.
+
+## 2022-10-06 Gabriele Cosmo (clhep-V11-00-05)
+- Synchronised with CLHEP-2.4.5.4.
+  * Random (J.Junggeburth)
+    o Fix in RandGamma::genGamma() to fix reproducibility in multi-threading
+      environment.
+
+## 2022-09-22 Ben Morgan (clhep-V11-00-04)
+- Apply patch for MinGW from [GitHub PR 51](https://github.com/Geant4/geant4/pull/51)
+
+## 2022-03-10 Evgueni Tcherniaev (clhep-V11-00-03)
+- Fixed compilation warnings in LorentzVector.h when c++20 is enabled
+
+## 2022-03-10 Ben Morgan (clhep-V11-00-02)
+- Remove obsolete CMake functionality
+
+## 2022-02-08 Gabriele Cosmo (clhep-V11-00-01)
+- Fixed compilation warnings for shadowing data member in RandPoisson.
+
+## 2021-12-10 Ben Morgan (clhep-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+01 September 2021 - G.Cosmo
+- Synchronised with CLHEP-2.4.5.1.
+  * Random (J.Hahnfeld)
+    o Introducing new random engine RANLUX++ and related helper classes.
+      RANLUX++ is an extension of RANLUX and uses the equivalent LCG to
+      offer a much higher luxury level at better performance. It inherits
+      the excellent statistical properties and passes the full BigCrush.
+
+07 July 2021 - G.Cosmo
+- Random (J.Hahnfeld)
+  o Fixed seeding in Ranlux64Engine.
+
+28 May 2021 - G.Cosmo
+- Synchronised with CLHEP-2.4.4.2.
+
+07 May 2021 - G.Cosmo
+- Units (M.Maire)
+  o Added in SystemOfUnits.h: minute, hour, day, year and millielectronvolt.
+  o Added in PhysicalConstants.h: Bohr_magneton and nuclear_magneton.
+
+06 May 2021 - G.Cosmo
+- Random (G.Cosmo)
+  o Fixed trivial compilation warnings on gcc-11 in Random headers.
+
+11 November 2020 - G.Cosmo
+- Synchronised with CLHEP-2.4.4.0:
+  * Vector (G.Amadio)
+    o Removed obsolete #pragma interface/implementation
+      These pragmas are obsolete since GCC 2.7.2.
+      https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Interface.html.
+    o Get rid of switch statement in operator()/operator[] of Hep3Vector
+      Replaced dx/dy/dz with operator[] in Hep3Vector
+      Note: The substitution of x()/y()/z() in operator() is necessary to
+            avoid infinite recursion, as x()/y()/z() are now defined in terms
+            of operator[] instead.
+    o Replaced private dx/dy/dz with public x()/y()/z() in Hep3Vector
+      This is in preparation to change the data layout of Hep3Vector
+      by replacing the private dx/dy/dz members with a vector, data[3],
+      to allow us to remove the inefficient switch from operator[]().
+  * Vector, Random (V.Vassilev)
+    o Added missing includes for translation unit encapsulation.
+
+17 July 2020 - G.Cosmo
+- Updated values in SystemOfUnits.h and PhysicalConstants.h for:
+  - e_SI, electron charge
+  - h_Planck, Planck constant
+  - Avogadro, Avogadro constant
+  - k_Boltzmann, Boltzmann constant
+  based on May 2019 redefinition of SI units. References:
+  https://en.wikipedia.org/wiki/2019_redefinition_of_the_SI_base_units
+  https://www.britannica.com/science/electron-charge. 
+
+14 July 2020 - K.Savvidis, G.Cosmo
+- Use 32-bit internal seeds types coherently in MixMaxRng.
+  Addressing CLHEP JIRA ticket #156.
+
+19 November 2019 - G.Cosmo
+- Fixed warnings for cases of implicit type conversions in
+  Rand*Ziggurat classes.
+
+14 October 2019 - E.Tcherniaev
+- Synchronised with CLHEP-2.4.1.3:
+  CLHEP/Geometry: Use std::enable_if and std::is_same to explicitly
+  define constructor for BasicVector<double> from BasicVector<float>.
+  Added move constructor and move assignment in all classes.
+
+11 October 2019 - E.Tcherniaev
+- CLHEP/Vector: added move constructor and move assignment in all classes.
+- CLHEP/Geometry: added move constructor and move assignment in Transform3D.
+
+20 June 2019 - G.Cosmo
+- Synchronised with CLHEP-2.4.1.2:
+  MixMaxRng: throw if seed is zero. Use throw instead of exit() elsewhere.
+
+07 June 2019 - G.Cosmo
+- Defaulted operator=() also for Plan3D; fixing deprecation warnings
+  on gcc-9.1.
+- Fixed shadowing compilation warnings in Transform3D as reported on gcc-9.1.
+
+06 June 2019 - G.Cosmo
+- Defaulted operator=() for BasicVector3D; fixing deprecation warnings
+  on gcc-9.1.
+
+23 April 2019 - B.Morgan
+- Remove G4MULTITHREADED blocks in Utility module
+
+10 July 2018 - G.Cosmo
+- Removed not implemented constructor declaration in MixMaxRng.
+
+24 May 2018 - G.Cosmo
+- Fixed compilation warnings from gcc-8.1.0 when using -Woverloaded-virtual
+  compilation option (default in Geant4).
+
+16 March 2018 - G.Cosmo
+- Synchronised with CLHEP-2.4.0.4.
+
+07 March 2018 - G.Cosmo
+- Removed kludge for Windows introduced in tag "clhep-V10-04-00" to
+  MinMaxRng.hh.
+- Further simplified setup for thread-local storage and atomics, as
+  now all supported by c++11 in either clang or VC++.
+
+06 March 2018 - G.Cosmo
+- Enabled thread-local storage and atomics on Windows; added flag in
+  thread_local.h, use_atomic.h and atomic_in.h.
+
+19 February 2018 - J.Madsen (clhep-V10-04-00)
+- Fixed Windows MT data race in MinMaxRng.hh.
+- Fixed warning C4293: '>>': shift count negative or too big, undefined behavior
+  in Ranlux64Engine on Windows
+
+11 December 2017 - G.Cosmo
+- MixMaxRng: fixed guard for assembly code in modadd() to protect
+  builds on 32-bit systems.
+
+15 November 2017 - G.Cosmo
+- MixMaxRng: fixed print_state() method to proper C++.
+
+13 November 2017 - G.Cosmo
+- Fixed shadowing warning in MixMaxRng.
+
+09 November 2017 - G.Cosmo
+- Updated MixMaxRng class to include latest C++ revision by K.Savvidy
+  based in MixMax-2.0. Replaced skipping coefficients optional set for
+  N=256 with N=240. Removed old C implementation files.
+- Set MixMax as the default random number generator in HepRandom.
+
+09 October 2017 - G.Cosmo
+- Added missing DLL_API specification for static data member in Transform3D
+  class.
+
+10 May 2017 - G.Cosmo
+- Fixed shadowing compilation warnings on RotationA.cc.
+
+09 May 2017 - G.Cosmo
+- Updated to CLHEP-2.3.4.4.
+- Fix in HepRotation::axis() for proper treatment of degenerating cases.
+- Fixed compilation warnings on gcc-7.1 in Evaluator.cc.
+
+03 February 2017 - B.Morgan (clhep-V10-03-00)
+- Set interface include directories on G4clhep{-static} targets
+  in CMakeLists.txt. This provides the needed interface to allow transparent
+  usage of internal/external CLHEP via targets and without needing to use
+  include_directories explicitly. Only set include paths in BUILD
+  interface for consistency with other targets.
+
+04 November 2016 - G.Cosmo
+- Updated to CLHEP-2.3.4.3.
+- Fixed array initialisation in Evaluator static method function().
+
+08 July 2016 - G.Cosmo
+- Corrected value of SPECIALMUL in mixmax.h to correspond to exact formula
+  for N=17 (m=2^36+1).
+
+10 May 2016 - G.Cosmo
+- Updated to CLHEP-2.3.3.0.
+- Corrected check for counter range in MixMaxRng::getState().
+  Avoid hard-coded constant for initialisation of VECTOR_STATE_SIZE in
+  MixMaxRng, to directly use actual value of "N" from mixmax.
+
+02 May 2016 - G.Cosmo
+- Added symbols 'us' and 'ps' for microsend and picosecond respectively
+  to SystemOfUnits.h and setSystemOfUnits.cc and converted all symbols and
+  constants from "static const" to "static constexpr".
+
+28 April 2016 - G.Cosmo
+- Restored skipping of sequences for safer setting of seeds in setSeeds()
+  in MixMaxRng. Changed number of N in mixmax to 17 (was 256) and provided
+  new skipping coefficients for the new value of N and for the case N=8.
+
+25 April 2016 - G.Cosmo
+- Use seed_spbox() for seeding MixMax with single seed.
+
+21 April 2016 - G.Cosmo
+- Refined fix for sequence skipping; make it optional by adding Boolean flag
+  argument (true by default) in seed_uniquestream() function in mixmax.cc to
+  force sequence skipping when setting seeds. Simplified code, removing
+  compilation guard flags.
+  Set flag to false by default in MixMaxRng wrapper and defined function
+  skipSequencesOnce() to optional instruct to apply skipping of sequences
+  at the next seeds setting.
+
+20 April 2016 - G.Cosmo
+- Updated to CLHEP-2.3.2.2:
+  * Utility (L.Garren <garren@fnal.gov>)
+    o Added use_atomic.h: use std::atomic when the compiler declares it 
+      uses the C++11 standard.
+  * Random (W.D.Dagenhart <wdd@fnal.gov>)
+    o MixMaxRng.cc: the uncorrected code might not always yield independent
+      seeds.
+      If two threads execute numberOfEngines++ and after both finish that both
+      execute setSeed, then they will have the same seed. Fixed.
+    o Random.cc: there is a thread local variable of the type "defaults"
+      that contains two shared_ptr's in Random.cc.  This causes an intermittent
+      problem on OSX.  The complex objects containing the shared_ptr's have been
+      moved into a list of objects and the now the thread_local only contains a
+      simple pointer now that points into the list.
+      Use the new Utility/use_atomic.h header.
+
+19 April 2016 - G.Cosmo
+- Commented out sequence skipping from built-in table in mixmax.cc (undefined
+  flag SKIPISON), in order to avoid contention in multi-threaded jobs and
+  simplify seeding procedure. Removed use of obselete 'register' keyword.
+- Minor code cleanup in MixMaxRng.
+
+11 April 2016 - G.Cosmo
+- Use simple loop for flatArray() in MixMaxRng; engine built-in function
+  turns out to be extremely slot and unefficient.
+
+09 November 2015 - G.Cosmo
+- Updated to CLHEP-2.3.1.1.
+- Added MixMaxRng to Randomize.h.
+
+30 October 2015 - G.Cosmo
+- Fixed default seeding in MixMaxRng::setSeeds().
+
+28 September 2015 - G.Cosmo
+- Fixed compilation warning on gcc in mixmax.h for signed/unsigned comparison.
+- Added reference to MixMaxRng.h.
+
+25 September 2015 - G.Cosmo
+- Added MixMaxRng to EngineFactory.
+- Added copy-constructor and assignment operator to MixMaxRng.
+- Replaced "#define N 256" with "static const unsigned int N = 256;"
+  in mixmax[.h.cc] and adapted code accordingly; commented out unused
+  cases for different values of N.
+  Fixes symbols clashes within CLHEP namespace.
+
+18 September 2015 - G.Cosmo
+- Disable thread_local and atomic c++11 features specific for Intel-icc
+  compiler in Utility module: thread_local.h, atomic_int.h.
+  Use settings related to gcc.
+
+15 September 2015 - G.Cosmo
+- Fixes by K.Savvidy to allow for porting on Intel-icc compiler and
+  Windows Visual Studio. Updated files: minmax[h.cc].
+
+14 September 2015 - G.Cosmo
+- Included changes by K.Savvidy to make MixMax support 32-bits platforms.
+  Updated files: minmax[h.cc], mixmax_skip_N256.icc.
+
+25 August 2015 - G.Cosmo
+- Added MixMax random engine classes implementing the "Matrix Generator of
+  Pseudorandom Numbers", as described in J. Compt. Phy. 97, 573 (1991).
+  Added files:
+  o MixMaxRng[h.cc]: CLHEP interface class to MixMax generator.
+  o minmax[h.cc]: C++ translation/adaptation of the MixMax generator.
+  o mixmax_skip_N256.icc: table of skipping coefficients for MixMax (N=256).
+
+19 August 2015 - M.Maire
+- Added liter and its sub units to SystemOfUnits.h: liter, L, dL, cL, mL.
+
+12 August 2015 - G.Cosmo
+- Use std::shared_ptr in random classes instead of internal Boost-derived
+  implementation.
+- Corrected RandExpZiggurat to use shared_ptr as for all other distributions.
+- Utility module: removed Boost derived implementation of shared_ptr and
+  weak_ptr, now typedefs to c++0x standard std::shared_ptr and std::weak_ptr
+  respectively. Removed no longer used type_traits.h header.
+
+7 August 2015 - G.Cosmo
+- Temporarly commented out assertion in memory.h, in view of full transition
+  to C++11 for use of shared_ptr et al..
+
+6 August 2015 - G.Cosmo
+- Enable thread_local and atomic c++11 features for Intel-icc compiler
+  in Utility module: thread_local.h, atomic_int.h.
+
+15 June 2015 - G.Cosmo
+- Updated to CLHEP-2.2.0.8. 
+- Switch off gcc-5 warning for unused variable in Randomize.h header.
+
+11 June 2015 - G.Cosmo
+- Moved static methods handling static data in G4RandGauss from inline
+  to source. Addressing problem report #1754.
+- Switch off gcc-5 warnings for deprecated calls to auto_ptr in Utility headers.
+
+9 April 2015 - G.Cosmo
+- Fixed usage of std::abs() in RandGaussZiggurat source...
+
+12 December 2014 - G.Cosmo
+- Fixed usage of std::abs() in RandGaussZiggurat header.
+
+24 November 2014 - G.Cosmo
+- Updated to CLHEP-2.2.0.4:
+  * Utility (L.Garren <garren@fnal.gov>)
+    o memory.h: fixed a type mismatch (compilation warning on Windows/VC9).
+  * Random (L.Garren <garren@fnal.gov>)
+    o RanshiEngine.cc: use a pragma to ignore aggressive 32bit compiler
+      warnings.
+  * Vector (L.Garren <garren@fnal.gov>)
+    o ThreeVector.icc: inline Hep3Vector::operator () (int i), following
+      patch included in Geant4 on November 12th below.
+
+14 November 2014 - G.Cosmo
+- Updated to CLHEP-2.2.0.3:
+  * Units (L.Garren <garren@fnal.gov>)
+    o Moved definition of pi into SystemOfUnits.h so that its hard-coded
+      value is not defined twice.
+
+12 November 2014 - G.Cosmo
+- Moved operators 'operator()(int)' in Hep3Vector to be inline and
+  removed printout to improve CPU performance.
+  Patch provided by S.Wenzel/CERN.
+
+17 June 2014 - G.Cosmo
+- Updated to CLHEP-2.2.0.0:
+  * Random (L.Garren <garren@fnal.gov>)
+    o RanshiEngine.cc: use explicit 32bit mask to avoid compiler warnings
+    o MTwistEngine.cc: make sure we don't go past the end of the 
+      array in MTwistEngine::showStatus().
+
+24 April 2014 - G.Cosmo
+- Corrected definition of 'thread_local' keyword in Utility/thread_local.h.
+- Removed 'inline' specification in Random.cc for theDefaults().
+
+9 April 2014 - G.Cosmo
+- Updated to CLHEP-2.2.0.0.b01:
+  * Random (D.Dagenhart <wdd@fnal.gov>)
+    o Converted statics and globals to const, thread-local or atomic
+      to improve thread safety.
+    o Introduced CLHEP_THREAD_LOCAL and CLHEP_ATOMIC_INT_TYPE macros
+      thread_local and atomic<int> keywords.
+
+24 February 2014 - G.Cosmo
+- Removed deprecated 'register' qualifier in implementation.
+
+14 November 2013 - G.Cosmo
+- Updated to CLHEP-2.1.4.1:
+  * Random (L.Garren <garren@fnal.gov>):
+    o Added RandGaussZiggurat and RandExpZiggurat distributions
+      contributed by ATLAS.
+  * Units (L.Garren <garren@fnal.gov>):
+    o Added new units for Radioactivity:
+      kilo/mega/gigabecquerel, milli/microcurie.
+
+20 August 2013 - G.Cosmo
+- Corrected CMakeLists.txt script to have missing .icc and .cdat files
+  explicitly listed.
+
+15 November 2012 - G.Cosmo
+- Updated to CLHEP-2.1.3.1:
+  * Vector (L.Garren <garren@fnal.gov>):
+    o Fixed typo in operator*() for HepRotation.
+    o Clean up remaining naming overlap between Units and internal variables.
+
+14 November 2012 - G.Cosmo
+- Updated to CLHEP-2.1.3.0:
+  * Vector (L.Garren <garren@fnal.gov>):
+    o Make the HepLorentzVector(double t) constructor explicit.
+
+5 June 2012 - G.Cosmo
+- Updated to CLHEP-2.1.2.3:
+  * Random, Vector (L.Garren <garren@fnal.gov>):
+    o More fixes for shadowing when global units used.
+  * Vector, Evaluator, Random, Geometry (L.Garren <garren@fnal.gov>):
+    o Use explicit std:: with math functions.
+
+10 May 2012 - G.Cosmo
+- Updated to CLHEP-2.1.2.2:
+  * Random (L.Garren <garren@fnal.gov>):
+    o Use a template to get rid of the warnings in Ranlux64Engine.
+  * Vector, Geometry, Random (L.Garren <garren@fnal.gov>):
+    o Changed names of internal variables so -Wshadow does not complain.
+  * Evaluator (M.Fischler <mf@fnal.gov>):
+    o Fixed a problem with unary +/- and exponentials in Evaluator class.
+
+7 November 2011 - G.Cosmo
+- Updated to CLHEP-2.1.1.0:
+  * Utility (W.E.Brown  <wb@fnal.gov>):
+    o removing C++0X-like keywords constexpr, noexcept, and nullptr
+      to avoid collision with similar symbols in other packages.
+
+20 September 2011 - G.Cosmo
+- Added missing export statements for static symbols required for DLL build.
+
+22 June 2011 - B.Morgan
+- CMakeLists.txt : Added the CLHEP include directory to
+  GEANT4_BUILDTREE_INCLUDE_DIRS so that its visible from the build tree if
+  we use the internal CLHEP.
+
+20 June 2011 - B.Morgan
+- CMakeLists.txt : Install CLHEP headers to
+  CMAKE_INSTALL_INCLUDEDIR/PROJECT_NAME in line with new standard install
+  directory structure.
+
+14 June 2011 - B.Morgan
+- CMakeLists.txt : Build G4clhep through standard GEANT4_LIBRARY_TARGET
+  macro. Keep installation of headers as is.
+
+13 June 2011 - B.Morgan
+- CMakeLists.txt : Added use of new CMAKE_INSTALL_XXX variables to control
+  installation of libraries and headers, and add exported libraries to a
+  global property as per other Geant4 targets. Header paths are not added to
+  a global property though because these can be internal or external, so
+  we handle them higher up when generating the configuration files.
+
+2 June 2011 - B.Morgan
+- CMakeLists.txt : NEW file adding CMake build of 'G4clhep'
+  Implemented as a single CMakeLists.txt because special handling of
+  the nested header structure of CLHEP is needed at install time.
+
+1 June 2011 - G.Cosmo
+- Fixed trivial compilation warnings on gcc-4.6.0 in NonRandomEngine.h
+  and Ranlux64Engine.cc for parameters defined but not used.
+
+24 May 2011 - G.Cosmo
+- Added missing files in CLHEP built-in module.
+  Allow for generation of DLL library on Windows for it.
+
+11 May 2011 - G.Cosmo
+- Including a subset of CLHEP classes imported from version CLHEP-2.1.0.1.
+- Modifications applied vs. original CLHEP classes:
+  * Removed dependency on internal CLHEP "defs.h" configuration header;
+    the Geant4 built-in module for CLHEP follows the Geant4 build scheme.
+  * Adopt "std" namespace for standard mathematical functions, where needed.
+  * Removed dependency on ZM exceptions and replaced with "cerr" printouts
+    where necessary.
+  * Renamed following files for coherency and standard:
+    o Inlined code *.src to *.icc and moved to includes set;
+    o DualConv.hh to DualConv.h.
+  * Use coherent inclusion scheme also for internal headers/data/inline-code,
+    where applicable.
+  * Use of standard WIN32 compiler flag where applicable.
+  * Cleared source code of de-activated debug blocks and minor cleanup,
+    where applicable.
+  * Rename of final CLHEP library produced, from 'CLHEP' to 'g4clhep'.

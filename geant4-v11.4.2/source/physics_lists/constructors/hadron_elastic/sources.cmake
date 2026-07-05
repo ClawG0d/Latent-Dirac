@@ -1,0 +1,57 @@
+# - G4phys_ctor_helastic module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4phys_ctor_helastic
+  PUBLIC_HEADERS
+    G4ChargeExchangeMessenger.hh
+    G4ChargeExchangePhysics.hh
+    G4HadronDElasticPhysics.hh
+    G4HadronElasticPhysics.hh
+    G4HadronElasticPhysicsHP.hh
+    G4HadronElasticPhysicsHPT.hh
+    G4HadronElasticPhysicsLEND.hh
+    G4HadronElasticPhysicsXS.hh
+    G4HadronHElasticPhysics.hh
+    G4IonElasticPhysics.hh
+    G4HadronElasticPhysicsPHP.hh
+    G4HadronElasticPhysicsVI.hh
+    G4ThermalNeutrons.hh
+  SOURCES
+    G4ChargeExchangeMessenger.cc
+    G4ChargeExchangePhysics.cc
+    G4HadronDElasticPhysics.cc
+    G4HadronElasticPhysics.cc
+    G4HadronElasticPhysicsHP.cc
+    G4HadronElasticPhysicsHPT.cc
+    G4HadronElasticPhysicsLEND.cc
+    G4HadronElasticPhysicsXS.cc
+    G4HadronHElasticPhysics.cc
+    G4IonElasticPhysics.cc
+    G4HadronElasticPhysicsPHP.cc
+    G4HadronElasticPhysicsVI.cc
+    G4ThermalNeutrons.cc)
+
+geant4_module_link_libraries(G4phys_ctor_helastic
+  PUBLIC
+    G4globman
+    G4hadronic_coherent_elastic
+    G4hadronic_mgt
+    G4intercoms
+    G4phys_ctor_hinelastic
+    G4run
+  PRIVATE
+    G4baryons
+    G4had_lend
+    G4had_par_hp
+    G4hadronic_proc
+    G4hadronic_util
+    G4hadronic_xsect
+    G4ions
+    G4mesons
+    G4partman
+    G4phys_builders
+    G4phys_ctor_factory
+    G4physlist_util
+    G4procman
+    G4shortlived
+)

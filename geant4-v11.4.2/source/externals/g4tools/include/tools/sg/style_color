@@ -1,0 +1,41 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_sg_style_color
+#define tools_sg_style_color
+
+#include "../colorf"
+
+namespace tools {
+namespace sg {
+
+class style_color : public std::pair<std::string,colorf> {
+  typedef std::pair<std::string,colorf> parent;
+public:
+  style_color():parent("",colorf()) {
+  }
+  style_color(const std::string& a_name,const colorf& a_color):parent(a_name,a_color) {
+  }
+  style_color(const std::string& a_name,float a_r,float a_g,float a_b):parent(a_name,colorf(a_r,a_g,a_b)) {
+  }
+  virtual ~style_color(){
+  }
+public:
+  style_color(const style_color& a_from):parent(a_from.first,a_from.second) {
+  }
+  style_color& operator=(const style_color& a_from){
+    first = a_from.first;
+    second = a_from.second;
+    return *this;
+  }
+public:
+  void set_name(const std::string& a_name) {first = a_name;}
+  void set_value(float a_r,float a_g,float a_b,float a_a) {second.set_value(a_r,a_g,a_b,a_a);}
+};
+
+}}
+
+#endif
+
+
+

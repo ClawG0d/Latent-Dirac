@@ -1,0 +1,147 @@
+# Example Activation History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-10-29 Michel Maire (activation-V11-03-01)
+- GammaNuclearPhysics.cc: use G4GammaNuclearXS dataset
+
+## 2025-05-20 Michel Maire (activation-V11-03-00)
+- Activation.cc - SetUseNRESP71Model(true)
+
+## 2024-02-14 Michel Maire  (activation-V11-02-00)
+- PhysicsList: add G4HadronElasticPhysicsXS
+- RadioactiveDecayPhysic: add Triton
+- GammaNuclearPhysics, GammaNuclearPhysicsLEND: apply coding rules
+
+## 2023-11-10 Alberto Ribon (activation-V11-01-02)
+- In all macro files, introduced the UI command
+  '/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year'
+  to allow all radioactive decays (including the very long ones).
+  This is necessary since G4 11.2, being 1 year the default time
+  threshold above which the decays are ignored.
+
+## 2023-08-04 Michel Maire (activation-V11-01-01)
+- add run.mac
+- update README, CMakeLists.txt
+
+## 2023-07-16 Michel Maire  (activation-V11-01-00)
+- revision of all headers
+
+## 2022-04-03 Michel Maire  (activation-V11-00-01)
+- PhysicsList : SetThresholdOfHalfLife(1*nanosecond*log(2))
+
+## 2021-12-10 Ben Morgan (activation-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+     
+13-10-21 mma (activation-V10-07-11)
+- HadronElasticPhysicsHP : use G4GenericMessenger instead of NeutronHPMessenger
+- RadioactiveDecayPhysics : do not change ThresholdOfHalfLife
+    
+06-10-21 I. Hrivnacova (activation-V10-07-10)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+16-08-21 mma (activation-V10-07-09)
+- TrackingAction : take weight into account
+
+05-08-21 mma (activation-V10-07-08)
+- ElectromagneticPhysics : update EM parameters
+- RadioactiveDecayPhysics : new constructor, include G4Radioactivation process,
+                            inactivate atomic deexcitation
+          
+27-07-21 mma (activation-V10-07-07)
+- RunAction::CountProcesses() : add a protection if (process == nullptr)
+- RunAction : add a comment for excited states
+    
+19-07-21 I. Hrivnacova (activation-V10-07-06)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+22-06-21 G. Cosmo (activation-V10-07-05)
+- Use new CLHEP units for minute, hour, day, year and millielectronvolt
+  in PhysicsList.
+
+15-04-21 mma (activation-V10-07-04)
+- Activation.cc: RunManagerFactory
+                 G4SteppingVerboseWithUnits
+	         ParticleHP env variables 
+- ActionInitialization.hh and cc: remove SteppingVerbose class
+
+04-03-21 A. Ribon (activation-V10-07-03)
+- GammaNuclearPhysics, GammaNuclearPhysicsLEND : replaced
+  G4PhotoNuclearProcess (that has been deleted) with
+  G4HadronInelasticProcess.
+
+15-01-21 mma (activation-V10-07-02)
+- TrackingAction: count secondary particles with meanLife > 0.
+
+05-01-21 mma (activation-V10-07-01)
+- PhysicsList: add GammaNuclearPhysicsLEND
+     
+30-12-20 mma (activation-V10-07-00)
+- update ElectromagneticPhysics
+
+26-10-20 mma (activation-V10-06-03)
+- README : add macros description
+
+05-08-20 Alberto Ribon  (activation-V10-06-02)
+- envHadronic.(c)sh : removed deprecated HP environmental variables
+  and replaced them with corresponding C++ calls in the main.
+  (These two shell-script files will be removed in G4 11.0.)
+     
+21-06-20 mma (activation-V10-06-01)
+- Run.cc, line 188 : correct a protection on maximum number of histos
+     
+13-05-20 mma (activation-V10-06-00)
+- GammaNuclearPhysics : add G4LowEGammaNuclearModel
+
+07-10-18 mma (activation-V10-04-04)
+- PhysicsList : use G4IonElasticPhysics and G4IonPhysicsXS
+
+25-06-18 mma (activation-V10-04-03)
+- envHadronic : add env variables for particleHP (PHP)
+
+08-05-18 Ben Morgan (activation-V10-04-02)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+06-04-18 mma (activation-V10-04-01)
+- Activation.cc : set visualisation only in interactive mode
+
+15-03-18 mma (activation-V10-04-00)
+- Activation.cc : remove G4UI_USE and G4VIS_USE
+
+28-11-17 Ivana Hrivnacova (activation-V10-03-05)
+- Fixed Doxygen warnings
+
+25-10-17 Ivana Hrivnacova (activation-V10-03-03,04)
+- Reverted back the example name; 
+  (it's not possible to tag the renamed example)
+- Minor modifications in  readme only
+
+19-10-17 Ivana Hrivnacova (activation-V10-03-02)
+- Renamed example from Activation in activation
+
+17-10-17 mma (activation-V10-03-01)
+- update readme
+
+16-05-17 mma (activation-V10-03-00)
+- first tag. Cowork with ctests-V10-03-07
+
+21-04-17 Ivana Hrivnacova
+- Make the Run::fIonMap, fIonId static and added lock in Run::GetIonId()
+  where these data are updated. This makes the code working in MT mode. 
+- Simplified code in Run class:
+  - Introduced C++11 range for-loops
+  - Added a private function for merging particle data maps to avoid code duplication
+
+07-02-17 Michel Maire
+- created from Hadr06

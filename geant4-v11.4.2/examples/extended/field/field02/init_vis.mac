@@ -1,0 +1,17 @@
+# Macro file for the initialization phase of example field01
+# in interactive session
+#
+# It creates the default geometry (simple absorber cylinder )        
+#
+/tracking/verbose 1
+/run/verbose 1
+#
+/run/initialize
+#
+/run/particle/dumpCutValues
+#
+/gun/particle e-
+/gun/energy 50.0 MeV
+#
+# Visualization setting
+/control/execute vis.mac

@@ -1,0 +1,432 @@
+Environment variable "G4FORCE_RUN_MANAGER_TYPE" enabled with value == Serial. Forcing G4RunManager type...
+
+        ############################################
+        !!! WARNING - FPE detection is activated !!!
+        ############################################
+
+
+          ################################
+          !!! G4Backtrace is activated !!!
+          ################################
+
+
+**************************************************************
+ Geant4 version Name: geant4-11-04-patch-02    (12-June-2026)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+Accumulable registered as "Accumulated_edep"
+Accumulable registered as "Accumulated_edep2"
+Visualization Manager instantiating with verbosity "warnings (3)"...
+Visualization Manager initialising...
+Registering graphics systems...
+
+You have successfully registered the following graphics systems.
+Registered graphics systems are:
+  ASCIITree (ATree)
+  DAWNFILE (DAWNFILE)
+  RayTracer (RT)
+  VRML2FILE (VRML2FILE)
+  gMocrenFile (gMocrenFile)
+  TOOLSSG_OFFSCREEN (TSG_OFFSCREEN, TSG_FILE)
+  OpenGLImmediateQt (OGLIQt, OGLI)
+  OpenGLStoredQt (OGLSQt, OGLS)
+  OpenGLImmediateXm (OGLIXm, OGLIQt_FALLBACK)
+  OpenGLStoredXm (OGLSXm, OGLSQt_FALLBACK)
+  OpenGLImmediateX (OGLIX, OGLIQt_FALLBACK, OGLIXm_FALLBACK)
+  OpenGLStoredX (OGLSX, OGLSQt_FALLBACK, OGLSXm_FALLBACK)
+  RayTracerX (RTX)
+  RayTracerQt (RTQt)
+  TOOLSSG_X11_GLES (TSG_X11_GLES, TSGX11, TSG_XT_GLES_FALLBACK)
+  TOOLSSG_X11_ZB (TSG_X11_ZB, TSGX11ZB)
+  TOOLSSG_XT_GLES (TSG_XT_GLES, TSGXt, TSG_QT_GLES_FALLBACK)
+  TOOLSSG_XT_ZB (TSG_XT_ZB, TSGXtZB)
+  TOOLSSG_QT_GLES (TSG_QT_GLES, TSGQt, TSG, OGL)
+  TOOLSSG_QT_ZB (TSG_QT_ZB, TSGQtZB, TSGZB)
+You may choose a graphics system (driver) with a parameter of
+the command "/vis/open" or "/vis/sceneHandler/create",
+or you may omit the driver parameter and choose at run time:
+- by argument in the construction of G4VisExecutive
+- by environment variable "G4VIS_DEFAULT_DRIVER"
+- by entry in "~/.g4session"
+- by build flags.
+- Note: This feature is not allowed in batch mode.
+For further information see "examples/basic/B1/exampleB1.cc"
+and "vis.mac".
+
+Registering model factories...
+
+You have successfully registered the following model factories.
+Registered model factories:
+  generic
+  drawByAttribute
+  drawByCharge
+  drawByOriginVolume
+  drawByParticleID
+  drawByEncounteredVolume
+
+Registered models:
+  None
+
+Registered filter factories:
+  attributeFilter
+  chargeFilter
+  originVolumeFilter
+  particleFilter
+  encounteredVolumeFilter
+
+Registered filters:
+  None
+
+You have successfully registered the following user vis actions.
+Run Duration User Vis Actions: none
+End of Event User Vis Actions: none
+End of Run User Vis Actions: none
+
+Some /vis commands (optionally) take a string to specify colour.
+"/vis/list" to see available colours.
+G4SDManager::AddNewCollection : the collection <SensitiveCylinder/edep> is registered at 1
+G4SDManager::AddNewCollection : the collection <SensitiveCylinder/current_electron> is registered at 2
+G4SDManager::AddNewCollection : the collection <SensitiveCylinder/current_proton> is registered at 3
+G4SDManager::AddNewCollection : the collection <SensitiveCylinder/current_gamma> is registered at 4
+New sensitive detector <SensitiveCylinder> is registered at /
+### G4VEnergyLossProcess::SetLossFluctuations has no effect and will be removed for the next major release
+G4AdjointPhysicsList::SetCuts:CutLength : 1 mm 
+G4AdjointPhysicsList::SetCuts:CutLength : 10 um 
+/adjoint/DefineExtSourceOnExtSurfaceOfAVolume Shielding
+/adjoint/SetExtSourceEmax 10. MeV
+/adjoint/DefineAdjSourceOnExtSurfaceOfAVolume SensitiveVolume
+/adjoint/SetAdjSourceEmin 1. keV
+/adjoint/SetAdjSourceEmax 10. MeV
+/RMC01/analysis/SetExponentialSpectrumForAdjointSim e- 1. cm-2 1. 1e-3 10. MeV
+/RMC01/analysis/SetExpectedPrecisionOfResults 1.
+/run/verbose 1
+/tracking/verbose 0
+/adjoint/start_run 100000
+****************************************************************
+*** Geant4 Reverse/Adjoint Monte Carlo mode                  ***
+*** Author:       L.Desorgher                                ***
+*** Company:      SpaceIT GmbH, Bern, Switzerland            ***
+*** Sponsored by: ESA/ESTEC contract contract 21435/08/NL/AT ***
+****************************************************************
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      100 TeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Positron annihilation at rest model                SimplePositronium
+Enable 3 gamma annihilation on fly                 0
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Use RiGe 5D e+e- pair production model by muons    0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks saturation                      0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           1
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 100 TeV in 56 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+       Klein-Nishina : Emin=    0 eV  Emax=  100 TeV
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 100 TeV in 61 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+       PhotoElectric : Emin=    0 eV  Emax=  100 TeV  SauterGavrila
+
+msc:  for e-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  100 TeV
+========== Computation of cross section matrices for adjoint models ==========
+Build adjoint cross section matrices for Inv_eIon_model
+Build adjoint cross section matrices for AdjointeBremModel
+The model AdjointeBremModel does not use cross section matrices
+Build adjoint cross section matrices for AdjointCompton
+The model AdjointCompton does not use cross section matrices
+Build adjoint cross section matrices for AdjointPEEffect
+The model AdjointPEEffect does not use cross section matrices
+              All adjoint cross section matrices are computed!
+======================================================================
+
+========= Table of registered couples ============================
+
+Index : 0     used in the geometry : Yes
+ Material : Vacuum
+ Range cuts        :  gamma  10 um     e-  10 um     e+  10 um  proton 10 um 
+ Energy thresholds :  gamma  990 eV     e-  990 eV     e+  990 eV  proton 1 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 1     used in the geometry : Yes
+ Material : Aluminum
+ Range cuts        :  gamma  10 um     e-  10 um     e+  10 um  proton 10 um 
+ Energy thresholds :  gamma  990 eV     e-  34.1132 keV    e+  33.7298 keV proton 1 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 2     used in the geometry : Yes
+ Material : Air
+ Range cuts        :  gamma  10 um     e-  10 um     e+  10 um  proton 10 um 
+ Energy thresholds :  gamma  990 eV     e-  990 eV     e+  990 eV  proton 1 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 3     used in the geometry : Yes
+ Material : Silicon
+ Range cuts        :  gamma  10 um     e-  10 um     e+  10 um  proton 10 um 
+ Energy thresholds :  gamma  990 eV     e-  31.6994 keV    e+  31.3501 keV proton 1 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 4     used in the geometry : Yes
+ Material : Tantalum
+ Range cuts        :  gamma  10 um     e-  10 um     e+  10 um  proton 10 um 
+ Energy thresholds :  gamma  6.87436 keV    e-  74.8006 keV    e+  73.3227 keV proton 1 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+==================================================================
+
+### Run 0 starts.
+### Run 0 start.
+
+----> Histogram Tree is opened in adjoint_sim.
+nb event 0
+nb event 1
+nb event 2
+nb event 3
+nb event 4
+nb event 5
+nb event 6
+nb event 7
+nb event 8
+nb event 9
+nb event 10
+nb event 11
+nb event 12
+nb event 13
+nb event 14
+nb event 15
+nb event 16
+nb event 17
+nb event 18
+nb event 19
+nb event 20
+nb event 21
+nb event 22
+nb event 23
+nb event 24
+nb event 25
+nb event 26
+nb event 27
+nb event 28
+nb event 29
+nb event 30
+nb event 31
+nb event 32
+nb event 33
+nb event 34
+nb event 35
+nb event 36
+nb event 37
+nb event 38
+nb event 39
+nb event 40
+nb event 41
+nb event 42
+nb event 43
+nb event 44
+nb event 45
+nb event 46
+nb event 47
+nb event 48
+nb event 49
+nb event 50
+nb event 51
+nb event 52
+nb event 53
+nb event 54
+nb event 55
+nb event 56
+nb event 57
+nb event 58
+nb event 59
+nb event 60
+nb event 61
+nb event 62
+nb event 63
+nb event 64
+nb event 65
+nb event 66
+nb event 67
+nb event 68
+nb event 69
+nb event 70
+nb event 71
+nb event 72
+nb event 73
+nb event 74
+nb event 75
+nb event 76
+nb event 77
+nb event 78
+nb event 79
+nb event 80
+nb event 81
+nb event 82
+nb event 83
+nb event 84
+nb event 85
+nb event 86
+nb event 87
+nb event 88
+nb event 89
+nb event 90
+nb event 91
+nb event 92
+nb event 93
+nb event 94
+nb event 95
+nb event 96
+nb event 97
+nb event 98
+nb event 99
+nb event 100
+nb event 200
+nb event 300
+nb event 400
+nb event 500
+nb event 1000
+nb event 1500
+nb event 2000
+nb event 2500
+nb event 3000
+nb event 3500
+nb event 4000
+nb event 4500
+nb event 5000
+nb event 10000
+nb event 15000
+nb event 20000
+nb event 25000
+nb event 30000
+nb event 35000
+nb event 40000
+nb event 45000
+nb event 50000
+nb event 55000
+nb event 60000
+nb event 65000
+nb event 70000
+nb event 75000
+nb event 80000
+nb event 85000
+nb event 90000
+nb event 95000
+nb event 100000
+nb event 105000
+nb event 110000
+nb event 115000
+nb event 120000
+nb event 125000
+nb event 130000
+nb event 135000
+nb event 140000
+nb event 145000
+nb event 150000
+nb event 155000
+nb event 160000
+nb event 165000
+nb event 170000
+nb event 175000
+nb event 180000
+nb event 185000
+nb event 190000
+nb event 195000
+ Run terminated.
+Run Summary
+  Number of events processed : 200000
+  User=37.380000s Real=37.795970s Sys=0.070000s
+Results of reverse/adjoint simulation!
+normalised edep [MeV] = 0.00163827
+precision[MeV] = 1.70863e-05
+
+----> Histogram Tree is saved in adjoint_sim.
+Graphics systems deleted.
+Visualization Manager deleting...
+================== Deleting memory pools ===================
+Number of memory pools allocated: 12 of which, static: 0
+Dynamic pools deleted: 12 / Total memory freed: 32 MB
+============================================================

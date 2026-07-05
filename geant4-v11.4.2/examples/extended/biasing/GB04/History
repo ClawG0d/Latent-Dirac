@@ -1,0 +1,53 @@
+# Example GB04 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-03-10 Igor Semeniouk (GB04-V11-03-00)
+- Remove unused WITH_GEANT4_UIVIS cmake option
+- Add vis.mac (copied from GB03) and enable detector visualization on startup
+- Propagate biasing on/off to detector construction to initialization of biasing classes only if biasing requested.
+
+## 2021-12-10 Ben Morgan (GB04-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+November 10th, 2020 Ben Morgan - GB04-V10-06-00
+- Migration to G4RunManagerFactory.
+
+May 20, 2018 J. Allison (GB04-V10-04-01)
+- Remove G4UI_USE and G4VIS_USE.
+- Move instantiation of G4UIExecutive nearer to start of main.
+
+May 8, 2018 B. Morgan (GB04-V10-04-00)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+Jul 20, 2016 I. Hrivnacova
+- Coding guidelines(redundant empty lines, class data member names)
+
+Jun 05, 2015, M. Verderi (GB04-V10-01-00)
+- Bug fix in GB04BOptnBremSplitting.cc : missing
+  fParticleChange.SetSecondaryWeightByProcess(true);
+  as reported privately by Akihisa WAKITA.
+
+Nov 20, 2014, G. Cosmo  (GB04-V10-00-03)
+- Again included correction in GNUmakefile introduced in tag -01 which
+  was lost in previous tag...
+
+Nov 14, 2014, I. Hrivnacova (GB04-V10-00-02)
+- Added files descriptions
+- Coding guidelines (data member names, separators)
+
+Nov 13, 2014, G. Cosmo  (GB04-V10-00-01)
+- Corrected GNUmakefile to point to correct main() translation unit.
+
+Nov 12, 2014, M. Verderi  (GB04-V10-00-00)
+- Created.

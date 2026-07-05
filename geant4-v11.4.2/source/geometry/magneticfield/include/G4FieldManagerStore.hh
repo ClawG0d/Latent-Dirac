@@ -1,0 +1,106 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4FieldManagerStore
+//
+// Class description:
+//
+// Container for all FieldManagers, with functionality derived
+// from std::vector<T>. The class is a 'singleton', in that only
+// one can exist, and access is provided via the static function
+// G4FieldManagerStore::GetInstance().
+//
+// All FieldManagers should be registered with G4FieldManagerStore,
+// and removed on their destruction. 
+// Intended principally to enable resetting of 'state' at start of event.
+// The underlying container initially has a capacity of 100.
+
+// Author: John Apostolakis (CERN), 07.12.2007 - Initial version
+// --------------------------------------------------------------------
+#ifndef G4FIELDMANAGERSTORE_HH
+#define G4FIELDMANAGERSTORE_HH
+
+#include <vector>
+
+#include "G4FieldManager.hh"
+
+/**
+ * @brief G4FieldManagerStore is a container for all field managers, with
+ * functionality derived from std::vector<T>. The class is a singleton.
+ * All field managers should be registered with G4FieldManagerStore,
+ * and removed on their destruction. Intended principally to enable resetting
+ * of 'state' at start of an event.
+ */
+
+class G4FieldManagerStore : public std::vector<G4FieldManager*>
+{
+  public:
+
+    /**
+     * Gets a pointer to the unique G4FieldManagerStore, creating it if
+     * necessary.
+     */
+    static G4FieldManagerStore* GetInstance();
+    static G4FieldManagerStore* GetInstanceIfExist();
+
+    /**
+     * Adds the field manager to the collection.
+     */
+    static void Register(G4FieldManager* pFieldMan);
+
+    /**
+     * Removes the field manager from the collection.
+     */
+    static void DeRegister(G4FieldManager* pFieldMan);
+
+    /**
+     * Deletes all managers from the store.
+     */
+    static void Clean();
+
+    /**
+     * Loops over all field managers and calls each one to reset step estimate.
+     */
+    void ClearAllChordFindersState();
+
+    /**
+     * Destructor: takes care to delete the allocated field managers.
+     */
+    ~G4FieldManagerStore();
+
+  private:
+  
+    /**
+     * Private constructor.
+     */
+    G4FieldManagerStore();
+
+  private:
+
+    static G4ThreadLocal G4FieldManagerStore* fgInstance;
+    static G4ThreadLocal G4bool locked;
+};
+
+#endif

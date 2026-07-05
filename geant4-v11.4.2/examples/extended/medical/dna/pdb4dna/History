@@ -1,0 +1,101 @@
+# Example pdb4dna History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2022-10-04 Gabriele Cosmo (pdb4dna-V11-00-01)
+- Fixed compilation warnings on Intel-icx compiler for set but unused variables
+  in DetectorConstruction and PDBlib sources.
+
+## 2021-12-10 Ben Morgan (pdb4dna-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+06-10-21 I. Hrivnacova          tag pdb4dna-V10-07-00
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root),
+  removed Analysis.hh.
+
+19-07-21 I. Hrivnacova          tag pdb4dna-V10-06-02
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+16-11-20 B.Morgan            tag pdb4dna-V10-06-01
+- Revert migration to G4RunManagerFactory due to current incompatibility
+  with Tasking system identified in testing.
+
+10-11-20 B. Morgan           tag pdb4dna-V10-06-00
+- Migration to G4RunManagerFactory.
+
+22-07-18 S. Incerti             tag pdb4dna-V10-04-01
+- removed obsolete RanecuEngine
+
+18-04-2018 S. Incerti           tag pdb4dna-V10-04-00
+- Fix to analysis.C
+
+23.02.2017 I. Hrivnacova        tag pdb4dna-V10-03-00
+- fixed compilation (G4UIQt.hh include)
+
+09.07.2016 S.Incerti            tag pdb4dna-V10-02-02
+- updated README
+
+05.07.2016 M.Karamitros         tag pdb4dna-V10-02-01
+- DBL_MAX->INT_MAX
+- Prevent warnings when -Wmaybe-uninitialized with gcc > 4.6
+
+04.07.2016 I.Hrivnacova         tag pdb4dna-V10-02-00
+- Fixes for Doxygen documentation
+
+05.05.2015 S.I.                 tag pdb4dna-V10-01-02
+- renamed affiche as Affiche in PDBresidue.hh
+- cleaned for coding guidelines
+
+05.05.2015 S.I.                 tag pdb4dna-V10-01-01
+- removed compilation warning
+
+04.05.2015 S.I.                 tag pdb4dna-V10-01-00
+- removed modulo printing at EventAction level
+
+24.11.2014 M.K                  tag pdb4dna-V10-00-06
+-----------------------------------------------------
+- Retag before release
+
+06.11.2014 I.Hrivnacova
+-----------------------------------------------------
+- Fixes in README files
+
+05.11.2014 M.K                  tag pdb4dna-V10-00-05
+-----------------------------------------------------
+- order of parsing changed. The goal: one can both
+select a macro, mt, gui or choose a visualization
+driver
+
+05.11.2014 M.K                  tag pdb4dna-V10-00-04
+-----------------------------------------------------
+- add CommandLineParser
+- select visu + gui by command line
+
+04.11.2014 M.K                  tag pdb4dna-V10-00-03
+-----------------------------------------------------
+- try to solve FPE error
+
+30.10.2014 M.K                  tag pdb4dna-V10-00-02
+-----------------------------------------------------
+- Add missing GNUmakefile
+
+23.10.2014 M.K                  tag pdb4dna-V10-00-01
+-----------------------------------------------------
+- try to solve FPE error
+
+23.10.2014 M.K                  tag pdb4dna-V10-00-00
+-----------------------------------------------------
+- pdb4dna added
+
+

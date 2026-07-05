@@ -1,0 +1,51 @@
+# - G4hadronic_deex_multifragmentation module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4hadronic_deex_multifragmentation
+  PUBLIC_HEADERS
+    G4StatMF.hh
+    G4StatMFChannel.hh
+    G4StatMFFragment.hh
+    G4StatMFMacroBiNucleon.hh
+    G4StatMFMacroCanonical.hh
+    G4StatMFMacroChemicalPotential.hh
+    G4StatMFMacroMultiNucleon.hh
+    G4StatMFMacroMultiplicity.hh
+    G4StatMFMacroNucleon.hh
+    G4StatMFMacroTemperature.hh
+    G4StatMFMacroTetraNucleon.hh
+    G4StatMFMacroTriNucleon.hh
+    G4StatMFMicroCanonical.hh
+    G4StatMFMicroManager.hh
+    G4StatMFMicroPartition.hh
+    G4StatMFParameters.hh
+    G4VMultiFragmentation.hh
+    G4VStatMFEnsemble.hh
+    G4VStatMFMacroCluster.hh
+  SOURCES
+    G4StatMF.cc
+    G4StatMFChannel.cc
+    G4StatMFFragment.cc
+    G4StatMFMacroBiNucleon.cc
+    G4StatMFMacroCanonical.cc
+    G4StatMFMacroChemicalPotential.cc
+    G4StatMFMacroMultiNucleon.cc
+    G4StatMFMacroMultiplicity.cc
+    G4StatMFMacroNucleon.cc
+    G4StatMFMacroTemperature.cc
+    G4StatMFMacroTetraNucleon.cc
+    G4StatMFMacroTriNucleon.cc
+    G4StatMFMicroCanonical.cc
+    G4StatMFMicroManager.cc
+    G4StatMFMicroPartition.cc
+    G4StatMFParameters.cc
+    G4VMultiFragmentation.cc
+    G4VStatMFMacroCluster.cc)
+
+geant4_module_link_libraries(G4hadronic_deex_multifragmentation
+  PUBLIC
+    G4globman
+    G4hadronic_util
+    G4hepnumerics
+    G4heprandom
+    G4partman)

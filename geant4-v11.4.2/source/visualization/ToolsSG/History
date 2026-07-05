@@ -1,0 +1,415 @@
+# Category vis_toolssg History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2026-01-30 John Allison (vis_toolssg-V11-03-13)
+- G4ToolsSGSceneHandler.cc:
+  - Obtain applicable auxiliary edge flag.
+
+## 2026-01-10 John Allison
+- G4ToolsSGSceneHandler.cc:
+  - G4ToolsSGSceneHandler::AddPrimitive (const G4Polymarker& ...
+    - Fix Bug #2691: Daughter of cloud-represented volume in wrong position.
+    - Transformation of cloud-represented volume was being accumulated with daughter's.
+    - Add and missing separator, prevent accumulation.
+
+## 2025-10-24 Guy Barrand (vis_toolssg-V11-03-12)
+- implementation/sources.cmake: handle "-DTOOLS_USE_GL_VERSION_3_2" in case "GEANT4_USE_VTK".
+
+## 2025-10-13 Guy Barrand (vis_toolssg-V11-03-11)
+- G4ToolsSceneHandler.cc/AddPrimitive(G4Polymarker):
+  - G4Polymarker::dots: handle "dot smoothing".
+  - G4Polymarker::circles, squares: by default, have them "filled" instead of "line" to match OGLI/OGLS style.
+- G4ToolsSceneHandler.cc/ClearTransientStore: have a "viewer EmitWindowRender()" to fix a "missing refresh" with
+  extended/runAndEvent/RE03/run.mac.
+- G4ToolsSGViewer.hh: have a G4ToolsSG_viewer base class with a virtual EmitWindowRender() method
+  to be used in G4ToolsSceneHander::ClearTransientStore.
+- G4ToolsSceneHandler.cc: two corrections to quiet Coverity.
+
+## 2025-10-01 John Allison (vis_toolssg-V11-03-10)
+- G4ToolsSGViewer.hh:
+  - CompareForKernelVisit():
+    - Include dotsSize and dotsSmooth for decision on kernel visit.
+- G4ToolsSGSceneHandler.cc:
+  - AddPrimitive(G4Polymarker&):
+    - Respect marker size for dots.
+
+## 2025-08-12 Guy Barrand (vis_toolssg-V11-03-09)
+- G4ToolsSGViewer.hh: in CreateSG(), for 3D scenes, have a tools::sg::shade_model node set to "smooth" so that
+  TSG_GLES have the same "/vis/viewer/set/style surface" rendering as in OGLI/OGLS. (Then issuing Gouraud shading
+  on surfaces by default, as for OGLI/OGLS). Note that for TSG_ZB, the rendering of surfaces will be still "flat",
+  since we have not (yet) Gouraud shading on triangles for this TSG sub driver.
+
+## 2025-06-18 Andrea Barresi (vis_toolssg-V11-03-08)
+- G4ToolsSGViewer.hh:
+  - Modified wheel_rotate function to call ZoomFromMouseWheel of G4VViewer
+  - Added method GetSceneNearWidth
+
+## 2025-06-17 Guy Barrand (vis_toolssg-V11-03-07)
+- G4ToolsSGViewer.hh: in mouse_move(), use the event.shift_modifier() method, introduced
+  in g4tools-V11-03-03, to pass in pan mode.
+  Suppress then the no more needed fKeyPressed, fKeyShift fields and the related logic.
+
+## 2025-06-02 Guy Barrand (vis_toolssg-V11-03-06)
+- G4ToolsSGViewer.hh: have the GetWindowSize, GetRenderAreaSize methods to retrieve the actual sizes of the "seen/visibl window" and
+  of the "render area" size. These may return different sizes, for example with Qt/OpenGL on Mac and Windows.
+- G4ToolsSGViewer::SetView: use the new GetWindowSize, GetRenderAreaSize methods to set the "marker scale" on G4ToolsSGSceneHandler.
+- G4ToolsSGSceneHandler.hh, .cc: handle the fMarkerScale field. Used in AddPrimitive(G4Text).
+- G4ToolsSGQtGLESViewer.hh, G4ToolsSGQtZBViewer.hh, G4ToolsSGOffscreenViewer.hh: supress the SetView method no more needed
+  because of the upper "marker scale" modifications in G4ToolsSGViewer.hh.
+
+## 2025-05-29 John Allison (vis_toolssg-V11-03-05)
+- Allow accumulation of transients (trajectories) during multithreading.
+- G4ToolsSGViewer.hh:
+  - Remove SwitchToVisSubThread and SwitchToMasterThread.
+    - No action needed on thread switching.
+- G4ToolsSGSceneHandler.cc:
+  - G4ToolsSGSceneHandler::GetOrCreateNode():
+    - Remove restriction on multithreading:
+      - Remove if (!G4Threading::IsMasterThread()) return nullptr;
+- Trajectories are stored in the database during the run, and displayed at end
+  of run. Try "/run/beamOn 1000" (exampleB1).
+  - All events are displayed at end of run.
+  - Of course, change of style, time evolution, view cloning, etc., only
+    operates on kept events, as before.
+  
+## 2025-05-25 John Allison (vis_toolssg-V11-03-04)
+- G4ToolsSGSceneHandler.cc:
+  - Respect line width in vis attributes and view parameters.
+
+## 2025-03-21 Ben Morgan (vis_toolssg-V11-03-03)
+- Modernize g4tools macro-based loops with range-based for.
+- Update raw for loops with range-for where possible.
+
+## 2025-03-06 John Allison (vis_toolssg-V11-03-02)
+- G4ToolsSGViewer.hh:
+  - Implement CompareForTransientsRedraw().
+  - Take advantage of ProcessTransients(), which reconstructs that part of
+    the graphical database for transient objects, e.g., trajectories,
+    without reconstructing the "permanent" (run-duration) objects, e.g.,
+    the detector. In other words, something short of a complete "kernel
+    visit". For example, if the time window changes.
+  - Maximises the efficiency of the recently implemented "generic" time
+    windowing.
+
+## 2025-02-13 John Allison (vis_toolssg-V11-03-01)
+- G4ToolsSGViewer.hh: CompareForKernelVisit:
+  - Cause kernel visit if viewer start/end time changes.
+    - This is to take advantage of the new generic time window - modeling-V11-03-04.
+
+## 2025-01-06 John Allison (vis_toolssg-V11-03-00)
+- Co-works: visman-V11-03-00, interfaces-V11-03-00, modeling-V11-03-00,
+  opengl-V11-03-00, visQt3D-V11-03-00, openinventor-V11-03-00,
+  greps-V11-03-00.
+- Re-instate the transparency slider (see lengthy explanation in management/History).
+- G4Qt3DViewer:
+  - Initiate kernel visit if TransparencyByDepth or its options change.
+
+## 2024-06-21 Ben Morgan (vis_toolssg-V1-02-02)
+- Use runtime checks for MT mode.
+
+## 2024-04-30 Ben Morgan (vis_toolssg-V11-02-01)
+- Replace TOOLSSG vis driver variables that are just synonyms for more
+  fundamental config options (e.g. GEANT4_USE_QT) with the underlying
+  variable.
+
+## 2024-01-11 Ben Morgan (vis_toolssg-V11-02-00)
+- Make Freetype a private dependency
+
+## 2023-09-05 Ben Morgan (vis_toolssg-V11-01-12)
+- Set AUTOMOC property on module when Qt used.
+
+## 2023-08-14 John Allison (vis_toolssg-V11-01-11)
+- G4ToolsSGQtGLES, G4ToolsSGQtZB:
+  - Simplify IsUISessionCompatible.
+    - Exploit new method, G4UImanager::GetBaseSession (intercoms-V11-01-07).
+
+## 2023-07-16 John Allison (vis_toolssg-V11-01-10)
+- G4ToolsSGViewer: Protect null scene pointer (in case user forgets to create a scene).
+
+## 2023-07-12 Guy Barrand (vis_toolssg-V11-01-09)
+- G4ToolsSGQtViewer.[hh,cc] renamed G4ToolsSGQtGLESViewer.[hh,cc] for consistency with the file naming pattern G4ToolsSG<windowing><renderer><something> applied in other sub-drivers as in G4ToolsSGQtZBViewer.hh.
+- G4ToolsSGQtGLES.cc, sources.cmake: class name G4ToolsSGQtViewer changed to G4ToolsSGQtGLESViewer.
+
+## 2023-06-04 John Allison (vis_toolssg-V11-01-08)
+- IsUISessionCompatible: Remove the function where not necessary and tidy.
+
+## 2023-05-29 Guy Barrand (vis_toolssg-V11-01-07)
+- sources.cmake: declare the G4*ZB.hh, G4*ZB.cc files.
+- new ToolsSG Qt ZB sub-driver: new files: G4ToolsSGQtZB.hh, G4ToolsSGQtZB.cc, G4ToolsSGQtZBViewer.hh, G4ToolsSGQtZBViewer.cc.
+- new ToolsSG X11 sub-driver. New files: G4ToolsSGX11ZB.hh, G4ToolsSGX11ZB.cc.
+- new ToolsSG Xt sub-driver. New files: G4ToolsSGXtZB.hh, G4ToolsSGXtZB.cc.
+- new ToolsSG Windows sub-driver. New files: G4ToolsSGWindowsZB.hh, G4ToolsSGWindowsZB.cc.
+- sources.cmake: in if(GEANT4_USE_TOOLSSG_XT_GLES), PUBLIC G4VIS_USE_TOOLSSG_X11_GLES should be PUBLIC G4VIS_USE_TOOLSSG_XT_GLES.
+- src/G4ToolsSGQtGLES.cc, G4ToolsSGXtGLES.cc: avoid the "tools::argcv" logic by using the "get argcv" from G4Qt, G4Xt. This should fix a Coverity issue.
+
+## 2023-04-27 Ben Morgan (vis_toolssg-V11-01-06)
+- Link to Qt6OpenGLWidgets library when using Qt6 to access QOpenGLWidget.
+
+## 2023-04-14 John Allison (vis_toolssg-V11-01-05)
+- Co-working: visman-V11-01-04, greps-V11-01-03, interfaces-V11-01-11,
+  opengl-V11-01-06, openinventor-V11-01-04.
+- New Scene Tree Phase 2 - first implementation of a no-frills GUI-side
+  - See visualization/management/History for full description.
+- Revert earlier changes for the new scene tree.
+  - After the introduction of virtual G4VInteractiveSession::UpdateSceneTree
+    they are no loner necessary.
+
+## 2023-04-02 Ben Morgan (vis_toolssg-V11-01-04)
+- No longer link to QtPrintSupport, which is not used in the toolkit.
+
+## 2023-03-28 John Allison (vis_toolssg-V11-01-03)
+- G4ToolsSGViewer.hh:
+  -  Call UpdateGUISceneTree() if (kernelVisitWasNeeded).
+- G4ToolsSGQtViewer.hh:
+  - uiQt becomes fUIQt, i.e., a data member.
+  - Implement virtual void UpdateGUISceneTree() {
+    - if (fUIQt) fUIQt->UpdateSceneTree(fSceneTree);
+
+## 2023-03-22 Ben Morgan (vis_toolssg-V11-01-02)
+- Export public compile definitions to indicate availablity of specific drivers. Moves to
+  "use on link" model.
+
+## 2023-02-06 Ben Morgan (vis_toolssg-V11-01-01)
+- Isolate private headers and update dependencies
+
+## 2023-01-30 Ben Morgan (vis_toolssg-V11-01-00)
+- Link to new G4UIcore/UIimplementation modules in place of former G4UIbasic/UIcommon
+
+## 2022-11-25 Gabriele Cosmo (vis_toolssg-V11-00-15)
+- Fixed compilation warnings for implicit type conversions on macOS/XCode 14.1.
+
+## 2022-10-28 John Allison (vis_toolssg-V11-00-14)
+- Request kernel visit when cutaway mode changes:
+  - G4ToolsSGViewer.hh
+
+## 2022-10-13 Guy Barrand (vis_toolssg-V11-00-13)
+- new offscreen sub-driver.
+- new files: include/G4ToolsSGOffscreen.hh, include/G4ToolsSGOffscreenViewer.hh and src/G4ToolsSGOffscreen.cc.
+- sources.cmake, GNUmakefile: G4ToolsSGOffscreen .hh and .cc files.
+- G4ToolsSGViewer.hh: handle ambient lightening.
+- G4ToolsSGViewer.hh: for "write paper", handle zb_png, zb_jpeg formats.
+- G4ToolsSGViewer.hh: correct fSGViewer->set_clear_color(). The passed "green" was... blue.
+
+## 2022-09-06 Ben Morgan (vis_toolssg-V11-00-12)
+- Address dependency inconsistencies reported by geant4_module_check
+
+## 2022-05-18 Guy Barrand (vis_toolssg-V11-00-11)
+- have "toolx" namespace for g4tools code related to "externals", then:
+  - tools::[Qt,Windows,X11,Xt,sg::text_freetype] become toolx::[Qt,Windows,X11,Xt,sg::text_freetype].
+  - and corresponding includes #include <tools/...> become #include <toolx/...>
+
+## 2022-05-03 Ben Morgan (vis_toolssg-V11-00-10)
+- Preliminary build support for Qt5 and Qt6
+
+## 2022-04-13 Ben Morgan (vis_toolssg-V11-00-09)
+- Add needed dependencies
+
+## 2022-04-06 John Allison (vis_toolssg-V11-00-08)
+- `G4ToolsSGSceneHandler.cc`:
+  - void G4ToolsSGSceneHandler::AddPrimitive(const G4Polyhedron& polyhedron):
+    - Comment out common line elimination - too expensive for a large
+      polyhedron.
+    - Maybe eliminate altogether in future?
+    - Allow the graphics-reps utilities to optimise things like this.
+  - Use StandardSpecialMeshRendering(mesh).
+    - Of course, only if special mesh rendering is requested.
+
+## 2022-03-22 Ben Morgan (vis_toolssg-V11-00-07)
+- Use geant4_module_sources to add optional sources
+
+## 2022-03-07 John Allison (vis_toolssg-V11-00-06)
+- `G4ToolsSGSceneHandler`:
+  - `AddPrimitive (const G4Polymarker& a_polymarker)`:
+    - Define dots as a single pixel.
+    - Use `GetMarkerSize(...)` for circles and squares.
+  - `AddCompound(const G4Mesh& mesh)`:
+    - For parameterised tetrahedron mesh, call default
+      G4VSceneHandler::DrawTetMeshAsDots(mesh).
+    - Tested on "ICRP145", a Geant4 application that we hope can become
+      a Geant4 advanced example, downloaded from the supplementary material
+      of Kim et al, ICRP, 2020. Adult mesh-type reference computational
+      phantoms, ICRP Publication 145, Ann. ICRP 49(3).
+
+## 2022-03-05 John Allison (vis_toolssg-V11-00-05)
+- `G4ToolsSGSceneHandler::SetPlotterHistograms`:
+  - Suppress /control/verbose messages for /analysis/*/get* commands.
+
+## 2022-02-08 Ben Morgan (vis_toolssg-V11-00-04)
+- Access G4VVisCommand::G4VisManager pointer through static function GetVisManager
+  to prevent DLL issues on Windows.
+
+## 2022-01-30 John Allison (vis_toolssg-V11-00-03)
+- Co-works with visman-V11-00-05.
+- G4ToolsSGViewer.hh:
+  - G4ToolsSGViewer::SwitchToMasterThread:
+    - At the moment, the ToolsSG viewer cannot draw trajectories *during* a run
+      so in multithreading mode, so in this function we draw any events that
+      have been kept by the vis manager. But we only need to do it if there are
+      end-of-event models in the scene - this tag fixes that.
+    - It fixes an issue where plots were being drawn twice.
+- G4ToolsSGSceneHandler.cc:
+  - G4ToolsSGSceneHandler::SetPlotterHistograms:
+    - Add warning message if plot cannot be found:
+```
+G4ToolsSGSceneHandler::SetPlotterHistograms: cannot get histogram - maybe doesn't exist?
+  Maybe this app does not do analysis at all?
+```
+
+## 2022-01-28 Ben Morgan (vis_toolssg-V11-00-02)
+- Replace `geant4_global_library_target` with direct file inclusion and
+  call to `geant4_add_category` to define library build from source modules.
+
+## 2022-01-16 John Allison (vis_toolssg-V11-00-01)
+- G4ToolsSGViewer::wheel_rotate:
+  - Re-program wheel_rotate for perspective projection:
+    - Takes into account the extent of the scene.
+- Reactivate G4ToolsSGQtGLES::IsUISessionCompatible
+  - Paves way for permitted instantiation of multiple TSG drivers.
+
+## 2021-12-10 Ben Morgan (vis_toolssg-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+13 November 2021 - John Allison (vis_toolssg-V10-07-16)
+- G4ToolsSGSceneHandler.cc: Bug fix:
+  - In AddPrimitive, use preferred GetColour(a_polyline) instead of GetColour().
+    - Similarly for a_polymarker and a_polyhedron.
+    - If the vis attributes pointer is not up to date, GetColour() picks up
+      the colour of the previous object!
+      - GetColour() will probably be deprecated in future! It's use is
+        misleading - see visman-V10-07-27.
+
+12 November 2021 - Ben Morgan (vis_toolssg-V10-07-15)
+- Retire G4VIS_... preprocessor symbols in toolkit build, only required
+  by obsolete GNUmake system
+
+8 November 2021 - Ben Morgan (vis_toolssg-V10-07-14)
+- Retire G4UI/G4INTY_... preprocessor symbols in toolkit build, only required
+  by obsolete GNUmake system
+
+05 November 2021  Guy Barrand (vis_toolssg-V10-07-13)
+- G4ToolsSGSceneHandler: SetPlotterHistograms(): revisit
+  in order that, from an int histogram hid given by a user (and
+  passed to a G4Plotter), the address of the tools::histo, managed by G4/analysis,
+  is retrieved by using a /analysis/h/get command so that the
+  histo is copied in a tools::sg::plottable managed by a tools::sg::plotter.
+  This way of doing secures the relationship tools::sg::plotter, managed by G4/vis
+  relative to the histo, managed by G4/analysis.
+   This overall way of doing permits to have the commands:
+     /vis/plotter/add/h1,h2
+  managed back in G4/vis, and then avoids to instrument
+  G4/examples and user code with the templated G4VisPlotMessenger
+  which is no more needed.
+
+03 November 2021  Guy Barrand (vis_toolssg-V10-07-12)
+- G4ToolsSGSceneHandler: changes to deal with the changes
+  in management/G4PlotterManager that handles a local list of styles.
+
+25 October 2021  Guy Barrand  (vis_toolssg-V10-07-11)
+- src/G4ToolsSGQtViewer.cc, sources.cmake: Linux: it permits to have cmake doing the
+  "mocing" of G4ToolsSGQtViewer.hh. (Strangely not needed on my mac).
+- include/G4ToolsSGQtViewer.hh: handle a Qt "destroy" signal/slot to properly
+  delete the G4ToolsSGViewer from the G4ToolsSGSceneHandler in case a user
+  delete the viewer QWidget in the G4UIQt tab container widget.
+- include/G4ToolsSGViewer.hh: FinishView: handle the update of plotters
+  (tools::sg::plots nodes) if any in the scene graph. Done by using
+  fSGSceneHandler.TouchPlotters()
+- remove G4ToolsSGExport.hh. Now done by using tools/sg/write_paper.
+- G4ToolsSGSceneHandler.hh,.cc: have a /vis/tsg/plotter/printParameters. To
+  print available style parameters of the tools::sg::plotter node.
+- G4ToolsSGSceneHandler.hh,.cc: plotting logic. Mainly implement AddPrimitive(G4Plotter)
+  by handling a tools::sg::plots node in the scene graph. Have code to attach histograms
+  and setup styles
+
+22 October 2021  Guy Barrand  (vis_toolssg-V10-07-10)
+- ToolsSG/History: change vis_toolsg to vis_toolssg in tags.
+- include/G4ToolsSGQtViewer.hh: remove ShowView, FinishView: the below modification
+  permits to rely on the parent ShowView, FinishView. (No more need to have code
+  to handle the "in tab" case).
+- include/G4ToolsSGQtViewer.hh/Initialise: enforce a Qt show() to be able
+  to retreive the true QGLWidget size at startup.
+- include/G4ToolsSGQtViewer.hh: __APPLE__: implement a SetView to enforce a
+    fVP.SetGlobalMarkerScale(2);
+  so that 2D text have a similar size than other drivers and platforms.
+- include/G4ToolsSGViewer.hh: handle a /vis/tsg/export command to
+  produce "paper" output files.
+- include/G4ToolsSGViewer.hh: ShowView calls FinishView.
+- include/G4ToolsSGViewer.hh: handle a scene graph so that camera and lighting nodes
+  belong to the viewer.
+- G4ToolsSGSceneHandler.cc: AddPrimitives : use G4VSceneHandler::GetColour(), GetTextColour()
+  instead of the viewer vis attributs ones.
+- G4ToolsSGSceneHandler.hh,.cc: revisit the scene graph logic so that camera and lighting
+  nodes be handled by G4ToolsSGViewer.
+
+13 October 2021  Guy Barrand  (vis_toolssg-V10-07-09)
+- Following g4tools-V10-07-07.
+- for 2D text with freetype; have a mechanism to handle embedded fonts.
+  Have the font lato_regular.ttf embedded in the C++ file:
+    tools/sg/font/lato_regular_ttf
+  The embedding of a .ttf file is done by using 'xxd -i' on a UNIX.
+  With this in place, usage of the env variable TOOLS_FONT_PATH is no more
+  needed for 2D freetype text to find the lato_regular font at run time.
+- handle G4/vis lightening. Use a tools::sg::torche.
+- for 2D: handle mouse resize of the viewer (Qt,Xt,X11,Windows).
+- handle transparency. Cowork with modifs in:
+    tools/sg[GL_viewer,atb_vertices,render_action]
+- G4ToolsSGViewer, G4ToolsSGSceneHandler: revisit the scene graph organization
+  to handle 2D text
+- handle 2D graphics. Cowork with modifs in:
+    tools/sg/[text_freetype_marker,text_hershey_marker] to avoid text squashing.
+
+12 October 2021  Ben Morgan (vis_toolssg-V10-07-08)
+- Xt backend does not depend on Xm
+
+01 September 2021  John Allison  (vis_toolssg-V10-07-07)
+- Store default background in view parameters.
+
+30 June 2021  John Allison  (vis_toolssg-V10-07-06)
+- Requires greps-V10-07-09, modeling-V10-07-11 and visman-V10-07-11.
+- Revise vis models. See visualization/modeling/History for more details.
+- Consequent changes:
+  o AddPrimitive(const G4Scale&) has been removed from all scene handlers.
+
+07 June 2021  John Allison  (vis_toolssg-V10-07-05)
+- Requires greps-V10-07-07 (new method AddCompound (const G4Mesh&)).
+- Requires modeling-V10-07-09 (new class G4Mesh).
+- Requires visman-V10-07-10 (new default method and new commands).
+- G4ToolsSGViewer.hh:
+  o Force kernel visit if special mesh rendering parameters change.
+
+28 May 2021 Ben Morgan (vis_toolssg-V10-07-04)
+- Migrate to modular CMake build
+
+27 May 2021  John Allison (vis_toolssg-V10-07-03)
+- AddPrimitive(const G4Polyhedron&):
+  o Minor improvement to error message in the case of unexpected number
+    of edges.
+
+23 May 2021  John Allison (vis_toolssg-V10-07-02)
+- Corrections to cmake files for freetype fonts:
+  o Move freetype setup from CMakeLists.txt to sources.cmake.
+- G4ToolsSGSceneHandler.cc: Remove redundant comments.
+
+14 May 2021  Guy Barrand (vis_toolssg-V10-07-01)
+- cosmetic/style improvements:
+  o 0 => nullptr.
+  o have '= default' for some destructors.
+  o G4ToolsSGNode.hh : have public cpstor and operator=.
+  o G4ToolsSGViewer.hh : rm #ifdef G4TOOLSSG_DEBUG code.
+
+05 May 2021  Guy Barrand (vis_toolssg-V10-07-00)
+- Requires cmake-V10-07-15, visman-V10-07-06 and externals-V10-07-02.
+- First committal of a tools_sg driver (Guy Barrand).
+  o Four (mutually exclusive) options:
+    . TOOLSSG_X11_GLES
+    . TOOLSSG_WINDOWS_GLES
+    . TOOLSSG_XT_GLES
+    . TOOLSSG_QT_GLES

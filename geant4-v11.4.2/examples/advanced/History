@@ -1,0 +1,24 @@
+# Example advanced History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-11-06 Ivana Hrivnacova (exadvanced-V11-03-01)
+- Updated examples macros for removal of HepRep[File] vis drivers
+  (thanks to John Allison) 
+
+## 2025-05-16 Ben Morgan (exadvanced-V11-03-00)
+- Replace the URL root.cern.ch with canonical root.cern
+  - Fixes [GitHub PR 87](https://github.com/Geant4/geant4/pull/87)
+
+## 2024-10-16 Hoang Tran (exadvanced-V11-02-01)
+- Created a new dna category in advanced example
+- Moved moleculardna example from extended dna example to advanced dna example.
+
+## 2024-06-10 Gabriele Cosmo (exadvanced-V11-02-00)
+- Updated GDML files to use short URL for schema validation.
+- Initial overall History file for extended examples, used for global changes
+  affecting all examples under here.

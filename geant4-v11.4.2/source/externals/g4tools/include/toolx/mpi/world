@@ -1,0 +1,51 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef toolx_mpi_world
+#define toolx_mpi_world
+
+// code to wrap MPI global things by having an interface (toolx::mpi).
+
+#include <tools/impi_world>
+
+#include <mpi.h>
+
+namespace toolx {
+namespace mpi {
+
+class world : public virtual tools::impi_world {
+  typedef tools::impi_world parent;
+public:
+  virtual bool init(int* a_argc,char*** a_argv) {
+    if(::MPI_Init(a_argc,a_argv)!=MPI_SUCCESS) return false;
+    return true;
+  }
+  virtual bool rank(int& a_rank) const {
+    if(::MPI_Comm_rank(MPI_COMM_WORLD,&a_rank)!=MPI_SUCCESS) {a_rank=-1;return false;}
+    return true;
+  }
+  virtual bool size(int& a_size) const {
+    if(::MPI_Comm_size(MPI_COMM_WORLD,&a_size)!=MPI_SUCCESS) {a_size=0;return false;}
+    return true;
+  }
+  virtual bool processor_name(std::string& a_s) const {
+    char name[MPI_MAX_PROCESSOR_NAME];
+    int lname;
+    if(::MPI_Get_processor_name(name,&lname)!=MPI_SUCCESS) {a_s.clear();return false;}
+    a_s = std::string(name);
+    return true;
+  }
+public:
+  world() {
+  }
+  virtual ~world(){
+  }
+protected:
+  world(const world& a_from):parent(a_from) {
+  }
+  world& operator=(const world&) {return *this;}
+};
+
+}}
+
+#endif

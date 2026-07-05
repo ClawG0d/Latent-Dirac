@@ -1,0 +1,205 @@
+# Example Hadr06 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-10-29 Michel Maire (exhadr06-V11-03-01)
+- GammaNuclearPhysics.cc: use G4GammaNuclearXS dataset
+
+## 2025-05-20 Michel Maire (exhadr06-V11-03-00)
+- Hadr06.cc - SetUseNRESP71Model(true)
+
+## 2024-03-20 Michel Maire (exhadr06-V11-02-00)
+- RadioactiveDecayPhysics.cc: add Triton
+- apply coding rules. document hadr06.in 
+     
+## 2023-11-12 Alberto Ribon (exhadr06-V11-01-02)
+- fission.mac, singleFission.mac : introduced the UI command
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+to allow all radioactive decays (including the very long ones).
+This is necessary since G4 11.2, being 1 year the default time
+threshold above which the decays are ignored.
+
+## 2023-06-04 Michel Maire (exhadr06-V11-01-01)
+- revision of all headers
+
+## 2022-12-19 mma (exhadr06-V11-01-00)
+- Run.hh, Run.cc, EventAction.cc, HistoManager.cc :
+     compute and plot total energy released
+
+## 2022-04-01 mma (exhadr06-V11-00-01)
+- PhysicsList: add G4NuclideTable::SetThresholdOfHalfLife(1ns*log2)
+- TrackingAction: print ions with meanLife = 0
+
+## 2021-12-10 Ben Morgan (exhadr06-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+     
+13-10-21 I. Hrivnacova (exhadr06-V10-07-14)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+11-10-21 mma (exhadr06-V10-07-13)
+- HadronElasticPhysicsHP : use G4GenericMessenger instead of NeutronHPMessenger
+- RadioactiveDecayPhysics : do not change ThresholdOfHalfLife
+     
+category:)
+05-08-21 mma (exhadr06-V10-07-12)
+- ElectromagneticPhysics : update EM parameters
+- RadioactiveDecayPhysics : new constructor, include G4Radioactivation process,
+                            inactivate atomic deexcitation
+     
+27-07-21 mma (exhadr06-V10-07-11)
+- RunAction::CountProcesses() : add a protection if (process == nullptr)
+- TrackingAction, RunAction : add a comment for excited states
+
+19-07-21 I. Hrivnacova (exhadr06-V10-07-10)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+22-06-21 G. Cosmo (exhadr06-V10-07-09)
+- Use new CLHEP units for minute, hour, day, year and millielectronvolt
+  in PhysicsList.
+
+06-04-21 mma (exhadr06-V10-07-08)
+- main : set true few env variables for ParticleHP
+         more on stepping verbose initialsation
+     
+22-03-21 mma (exhadr06-V10-07-07)
+- TrackingAction : add TrackingMessenger with 2 commands
+- minor cosmetic in Run.cc
+     
+15-03-21 mma (exhadr06-V10-07-06)
+- DetectorConstruction::SetRadius() : update fWorldSize
+- Migration to G4RunManagerFactory and G4SteppingVerboseWithUnits
+     
+04-03-21 A. Ribon (exhadr06-V10-07-05)
+- GammaNuclearPhysics, GammaNuclearPhysicsLEND : replaced
+  G4PhotoNuclearProcess (that has been deleted) with
+  G4HadronInelasticProcess.
+
+30-01-21 mma (exhadr06-V10-07-04)
+- PhysicsList: add new units for time
+     
+27-01-21 mma (exhadr06-V10-07-03)
+- TrackingAction, Run: print meanLife
+     
+15-01-21 mma (exhadr06-V10-07-02)
+- TrackingAction: count secondary particles with meanLife > 0.
+     
+05-01-21 mma (exhadr06-V10-07-01)
+- PhysicsList: add GammaNuclearPhysicsLEND
+      
+22-12-20 mma (exhadr06-V10-07-00)
+- update ElectromagneticPhysics
+- suppress command /process/list in several macros
+     
+16-10-20 mma (exhadr06-V10-06-03)
+- add macro singleFission.mac
+- TrackingAction : add commented code for singleFission
+
+05-08-20 A. Ribon (exhadr06-V10-06-02)
+- Hadr06.cc , fission.mac , envHadronic.(c)sh : removed deprecated
+  HP environmental variables and replaced them with corresponding
+  C++ calls in the main, and UI commands in the macros. 
+  (The two shell-script files will be removed in G4 11.0.)
+
+10-06-20 mma (exhadr06-V10-06-01)
+- HistoManager, TrackingAction : plot particle energy at creation
+     
+08-05-20 mma (exhadr06-V10-06-00)
+- GammaNuclearPhysics : add G4LowEGammaNuclearModel
+
+04-10-18 mma (exhadr06-V10-04-04)
+- PhysicsList : use G4IonPhysicsXS
+
+25-06-18 mma (exhadr06-V10-04-03)
+- envHadronic : add env variables for particleHP (PHP)
+
+09-05-18 B. Morgan (exhadr06-V10-04-02)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+05-04-18 mma (exhadr06-V10-04-01)
+- Hadr06.cc : set visualisation only in interactive session.
+
+16-03-18 mma (exhadr06-V10-04-00)
+- Hadr06.cc : remove G4UI_USE and G4VIS_USE
+
+28-11-17 I. Hrivnacova  (exhadr06-V10-03-04)
+- Fixed Doxygen warnings
+
+27-04-17 mma  (exhadr06-V10-03-03)
+- update readme
+
+12-04-17 mma  (exhadr06-V10-03-02)
+- BeginOfRunAction() : remove SetRandomNumberStore()
+
+19-02-17 mma  (exhadr06-V10-03-01)
+- Readme, HistoManager : add a comment
+
+17-02-17 mma  (exhadr06-V10-03-00)
+- Run.cc : modify normalisation of histos
+		 
+14-10-16 G.Folger (exhadr06-V10-02-04)
+- remove direct use of aParticleIterator, use GetParticleTableIterator().
+    fix required by clang39 on Linux and MAC
+	 
+10-09-16 mma  (exhadr06-V10-02-03)
+- rename GammaPhysics --> GammaNuclearPhysics
+         EmStandardPhysics --> ElectromagneticPhysics
+		 
+12-07-16 mma (exhadr06-V10-02-02)
+- DetectorConstruction : add HeavyWater
+
+04-07-16 I. Hrivnacova
+- Fixes for Doxygen documentation
+
+13-04-16 mma  (exhadr06-V10-02-01)
+- EmStandardPhysics: use G4EmParameters
+
+14-02-16 mma (exhadr06-V10-02-00)
+- PhysicsList : add G4StoppingPhysics
+- materials : add NE213
+	 
+02-11-15 A. Ribon (exhadr06-V10-01-00)
+- Migrated to ParticleHP
+	 
+19-11-14 mma (exhadr06-V10-00-09)
+- cosmetic in envHadronic.csh
+	 
+15-11-14 mma (exhadr06-V10-00-08)
+- Run::Merge() : add fEnergyFlow
+
+26-10-14 mma (exhadr06-V10-00-07)
+- PhysicsList : activate G4RadioactivedecayPhysics
+- Hadr06.cc : option set nThreads via command
+
+18-09-14 mma (exhadr06-V10-00-06)
+- Hadr06.cc : SetNumberOfThreads(G4Threading::G4GetNumberOfCores())
+
+15-09-14 I. Hrivnacova (exhadr06-V10-00-05)
+- Fixed test in envHadronic.sh
+     
+15-07-14 mma (exhadr06-V10-00-04)
+- remove PhysicsList::ConstructParticles() 
+	 
+13-05-14 mma (exhadr06-V10-00-03)
+- new macro fission.mac
+
+03-05-14 mma (exhadr06-V10-00-02)
+- HadronElasticPhysicsHP inherit from G4HadronElasticPhysics
+- do not register G4RadioactiveDecay
+     
+24-04-14 mma (exhadr06-V10-00-01)
+- local physics constructor HadronElasticPhysicsHP
+- NeutronHPMessenger to set up neutron thermal scattering
+     
+13-03-14 Michel Maire (exhadr06-V10-00-00)
+- created from Hadr03 and Hadr04

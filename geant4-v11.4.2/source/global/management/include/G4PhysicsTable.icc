@@ -1,0 +1,112 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4PhysicsTable inline methods implementation
+//
+// Author: G.Cosmo, 2 December 1995 - First implementation based on object model
+// --------------------------------------------------------------------
+
+inline void G4PhysicsTable::clearAndDestroy()
+{
+  G4PhysicsVector* a = nullptr;
+  while(!empty())
+  {
+    a = G4PhysCollection::back();
+    G4PhysCollection::pop_back();
+    delete a;
+  }
+  G4PhysCollection::clear();
+  vecFlag.clear();
+}
+
+inline G4PhysicsVector*& G4PhysicsTable::operator()(std::size_t i)
+{
+  return (*this)[i];
+}
+
+inline G4PhysicsVector* const& G4PhysicsTable::operator()(std::size_t i) const
+{
+  return (*this)[i];
+}
+
+inline void G4PhysicsTable::push_back(G4PhysicsVector* pvec)
+{
+  G4PhysCollection::push_back(pvec);
+  vecFlag.push_back(true);
+}
+
+inline void G4PhysicsTable::insert(G4PhysicsVector* pvec)
+{
+  G4PhysCollection::push_back(pvec);
+  vecFlag.push_back(true);
+}
+
+inline void G4PhysicsTable::insertAt(std::size_t idx, G4PhysicsVector* pvec)
+{
+  if(idx > entries())
+  {
+    G4ExceptionDescription ed;
+    ed << "Sprcified index (" << idx
+       << ") is larger than the size of the vector (" << entries() << ").";
+    G4Exception("G4PhysicsTable::insertAt()", "Global_PhysTbl0001",
+                FatalException, ed);
+  }
+
+  auto itr = cbegin();
+  for(std::size_t i = 0; i < idx; ++i)
+  {
+    ++itr;
+  }
+  G4PhysCollection::insert(itr, pvec);
+
+  auto itrF = vecFlag.cbegin();
+  for(std::size_t j = 0; j < idx; ++j)
+  {
+    ++itrF;
+  }
+  vecFlag.insert(itrF, true);
+}
+
+inline std::size_t G4PhysicsTable::entries() const
+{
+  return G4PhysCollection::size();
+}
+
+inline std::size_t G4PhysicsTable::length() const
+{
+  return G4PhysCollection::size();
+}
+
+inline G4bool G4PhysicsTable::isEmpty() const
+{
+  return G4PhysCollection::empty();
+}
+
+inline G4bool G4PhysicsTable::GetFlag(std::size_t i) const
+{
+  return vecFlag[i];
+}
+
+inline void G4PhysicsTable::ClearFlag(std::size_t i) { vecFlag[i] = false; }

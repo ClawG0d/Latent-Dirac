@@ -1,0 +1,174 @@
+# Example basic History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2025-11-06 Ivana Hrivnacova (exbasic-V11-03-01)
+- Updated examples macros and READMEs for removal of HepRep[File] 
+  vis drivers (thanks to John Allison) 
+
+## 2025-07-22 I. Hrivnacova (exbasic-V11-03-00)
+- Migration of basic examples README files to Markdown:
+  - Replaced .README.txt with README.md:
+    - removed \file declarations and descriptions
+    - replaced \section with ## and removed its id
+    - replaced \verbatim and \ensverbation with '```'
+  - Removed plain text README
+
+## 2024-09-18 I. Hrivnacova (exbasic-V11-02-04)
+- Added information about gui.mac and icons.mac
+  in the USER INTERFACES section in README
+
+## 2024-09-16 I. Hrivnacova (exbasic-V11-02-03)
+- Added information about TSG visualization driver and tsg_offscreen.mac
+  in the VISUALIZATION section in README
+
+## 2024-07-01 Ben Morgan (exbasic-V11-02-02)
+- Simplify and modernize CMake scripts for all basic examples
+
+## 2024-06-10 I. Hrivnacova (exbasic-V11-02-01)
+- Fix includes, simplified local variables names:
+  - Applied suggestions of include-what-you-use tools,
+  - Adjustment for include "globals.hh":
+    alway prefer "globals.hh" in examples to explicit includes of containing definitions
+  - Simplified local variables names:
+    aStep, aTrack, anEvent, aRun -> step, track, event, run
+
+## 2024-06-01 Ben Morgan (exbasic-V11-02-00)
+- Apply clang-format to all basic examples
+- Address coding style warnings
+
+## 2023-10-09 Ben Morgan (exbasic-V11-01-00)
+- Bump CMake range to 3.16...3.27 in line with main toolkit
+
+## 2022-11-04  I. Hrivnacova (exbasic-V11-00-02)
+- Fixed Doxygen file descriptions:
+  since removing class prefixes the filenames must be provided with a path
+
+## 2022-08-02  I. Hrivnacova (exbasic-V11-00-01)
+- Applied clang-tidy checks
+
+## 2021-12-10 Ben Morgan (exbasic-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+17/11/21,  I. Hrivnacova (exbasic-V10-07-02)
+- Updated documentation
+
+02/11/21,  I. Hrivnacova (exbasic-V10-07-01)
+- Moved data members initialization in header files
+  (to comply new examples coding guidelines)
+- Removed trailing whitespaces from the code and README files
+
+24/05/21,  B. Morgan (exbasic-V10-07-00)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+06/11/20,  I. Hrivnacova (exbasic-V10-06-03)
+- Updated category README
+
+02/11/20,  B. Morgan (exbasic-V10-06-02)
+- Support same CMake version range as core Geant4
+
+30/06/20,  G. Cosmo (exbasic-V10-06-01)
+- Migrated all basic examples to use G4RunManagerFactory, therefore
+  implicitly enabling tasking by default in MT builds.
+
+24/01/20,  A. Zaborowska (exbasic-V10-06-00)
+- Fix suggested in macros command /run/numberOfThreads
+
+31/01/19, I.Hrivnacova (exbasic-V10-05-00)
+- Merged GitHub PR #4: all Boolean operators now return G4bool.
+
+30/11/18 I. Hrivnacova (exbasic-V10-04-00)
+- Updated README files:
+  Added info about usage of G4Accumulable and G4StatAnalysis
+
+08/01/16 I. Hrivnacova (exbasic-V10-02-00)
+- Updated README files:
+  Added G4ENSDFSTATEDATA in the lists of mandatory data sets.
+
+29/11/14 I. Hrivnacova (exbasic-V10-00-01)
+- Use G4endl instead of \n in G4cout;
+  this makes each new line in the output on threads preceded with
+  G4WTN >
+
+06/11/14 I. Hrivnacova (exbasic-V10-00-00)
+- Removed G4UI_USE/G4VIS_USE tests from B1-B4 examples and
+  init.mac macro (not needed)
+- Moved G4UIExecutive at the beginning of main() in all examples
+- Perform run initialization in macros instead of main()
+
+02/12/13 I. Hrivnacova (exbasic-V09-06-03)
+- Fixed gui.mac in B2, B4 and B5:
+  corrected wireframe parameter, removed run2.mac from gui
+
+30/11/13 I. Hrivnacova (exbasic-V09-06-02)
+- Fixes in documentation
+- Fixed B2a/gui.mac and obsolete comments in a few more macros
+
+09/11/13 I. Hrivnacova (exbasic-V09-06-01)
+- Added B5 in Cmake, GNUmake and README files;
+  fixed B2/README
+
+28/02/13 I. Hrivnacova (exbasic-V09-06-00)
+- When building materials with NistManager
+  do not set fromIsotopes argument (which was set to false),
+  as since 9.6 all materials have to be built from isotopes.
+  Thanks to V. Ivantchenko for pointing at this.
+
+23/11/12 I. Hrivnacova (exbasic-V09-05-05)
+- Updated documentation: synchronized with DocBook
+
+22/11/12 I. Hrivnacova (exbasic-V09-05-04)
+- Updated gui.mac macros (in B2 and B4):
+  Added File menu, as it was removed from Qt driver
+
+17/11/12 I. Hrivnacova (exbasic-V09-05-03)
+- Updated documentation:
+  - Fixed .README files for artefacts from Markdown support
+  - Removed obsolete instructions (how to compile & link)
+  - Updated info about used physics lists and needed data files
+
+02/11/12 I. Hrivnacova (exbasic-V09-05-02)
+- Fixed CMake build for added macros in B2, B4
+
+02/11/12 I. Hrivnacova (exbasic-V09-05-01)
+- Improved README (.README); updated sections on visualization
+  and UI (J. Allison)
+- In B2, B4: Adding icons.mac macro for gui with icons of general use;
+  updated gui.mac with added call to icons.mac and added an example
+  of user defined icon (L. Garnier)
+
+18/09/12 I. Hrivnacova (exbasic-V09-05-00)
+- Adding explicit includes of G4SystemOfUnits.hh and G4PhysicalConstants.hh
+  where needed
+- Replaced tabulators with space characters
+- Updated .README
+
+29/11/11 B.Morgan (exbasic-V09-04-05)
+- Fixed CMakeLists.txt to setup UI and VIS as needed, and copy all macros
+  to build directory so executable is runnable directly.
+
+23/11/11 I. Hrivnacova (exbasic-V09-04-04)
+- Fixed the example name in the top comment line in init.mac and
+  init_vis.mac
+
+21/11/11 I. Hrivnacova (exbasic-V09-04-03)
+- Improved vis.mac
+- Removed alternative detector construction class in B3
+
+18/11/11 I. Hrivnacova (exbasic-V09-04-02)
+- Fixes in macros and README files
+
+15/11/11 I. Hrivnacova (exbasic-V09-04-01)
+- Migration to new G4Exception in B2aDetectorConstruction.cc
+  and B2bChamberParameterisation.cc.
+
+14/11/11 I. Hrivnacova (exbasic-V09-04-00)
+- The first tagged version of the new basic examples.
+

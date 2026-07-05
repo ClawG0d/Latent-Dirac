@@ -1,0 +1,75 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4IdentityTrajectoryFilter
+//
+// Class description:
+//
+// Implements a trajectory point filter which accepts all points submitted
+// to it.
+//
+// IMPORTANT: The base class heap allocates vectors of auxiliary
+// points, which it does not delete. The vectors must find their way
+// to a subclass of G4VTrajectoryPoint, which must take responsibility
+// for deleting them.
+
+// Author: Jacek Generowicz (CERN), 19.11.2002
+// ------------------------------------------------------------------------
+#ifndef G4IDENTITYTRAJECTORYFILTER_HH
+#define G4IDENTITYTRAJECTORYFILTER_HH
+
+#include "G4VCurvedTrajectoryFilter.hh"
+#include "G4ThreeVector.hh"
+
+/**
+ * @brief G4IdentityTrajectoryFilter implements a trajectory point filter
+ * which accepts all points submitted to it.
+ */
+
+class G4IdentityTrajectoryFilter : public G4VCurvedTrajectoryFilter
+{
+  public:
+
+    /**
+     * Default Constructor & Destructor.
+     */
+    G4IdentityTrajectoryFilter() = default;
+    ~G4IdentityTrajectoryFilter() override = default;
+
+    /**
+     * Copy constructor and assignement operator not allowed.
+     */
+    G4IdentityTrajectoryFilter(const G4IdentityTrajectoryFilter&) =  delete;
+    G4IdentityTrajectoryFilter& operator=(const G4IdentityTrajectoryFilter&) = delete;
+
+    /**
+     * Submits intermediate points for the filter to consider keeping or
+     * rejecting.
+     *  @param[in] newPoint The new point to submit.
+     */
+    void TakeIntermediatePoint( G4ThreeVector newPoint ) override;
+};
+
+#endif

@@ -1,0 +1,37 @@
+# Example RE07 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2024-11-20 Gabriele Cosmo (exampleRE07-V11-02-01)
+- In TrackingManagerHelper, fixed compilation warning on clang-19 for unused
+  variable. Fixed use of G4 types.
+
+## 2024-05-02 Gabriele Cosmo (exampleRE07-V11-02-00)
+- Fixed compilation warnings for potentially initialised local variable
+  in EmStandardPhysicsTrackingManager::PostStepDoIt().
+
+## 2023-11-09 Ivana Hrivnacova (exampleRE07-V11-01-00)
+- Coding guidelines - document macros in README files
+- Added separators in EmStandardPhysicsTrackingManager.cc
+
+## 2022-09-14 Jonas Hahnfeld (exampleRE07-V11-00-01)
+- Run `clang-format`
+- Rename static class member `fMasterTrackingManager`
+
+## 2021-12-10 Ben Morgan (exampleRE07-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+Nov. 12, 2021 J. Hahnfeld (exampleRE07-V10-07-01)
+- SpecializedTrackingManager: Fix condition for particles switching
+  regions (entering or exiting the Back region in this case)
+
+Oct. 31, 2021 J. Hahnfeld (exampleRE07-V10-07-00)
+- Created

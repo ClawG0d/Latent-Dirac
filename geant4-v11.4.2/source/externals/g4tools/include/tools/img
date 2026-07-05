@@ -1,0 +1,494 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_img
+#define tools_img
+
+#include <string> //memcpy
+#include <cstring> //memcpy
+#include "mnmx"
+#include "S_STRING"
+
+#include <vector> //concatenate
+
+namespace tools {
+
+template <class T>
+class img {
+public:
+  TOOLS_T_SCLASS(T,tools::img)
+public:
+  img()
+  :m_w(0),m_h(0),m_n(0)
+  ,m_buffer(0)
+  ,m_owner(false)
+  {
+  }
+  img(unsigned int a_w,unsigned int a_h,unsigned int a_n,T* a_buffer,bool a_owner)
+  :m_w(a_w),m_h(a_h),m_n(a_n)
+  ,m_buffer(a_buffer)
+  ,m_owner(a_owner)
+  {
+  }
+  virtual ~img() {
+    if(m_owner) delete [] m_buffer;
+  }
+public:
+  img(const img& a_from)
+  :m_w(a_from.m_w),m_h(a_from.m_h),m_n(a_from.m_n)
+  ,m_buffer(0)
+  ,m_owner(a_from.m_owner)
+  {
+    if(m_owner) {
+      unsigned int sz = m_w*m_h*m_n;
+      if(!sz) return;
+      m_buffer = new T[sz];
+      if(!m_buffer) {
+        m_w = 0;m_h = 0;m_n = 0;m_owner = false;
+        return; //throw
+      }
+      ::memcpy(m_buffer,a_from.m_buffer,sz*sizeof(T));
+    } else {
+      m_buffer = a_from.m_buffer;
+    }
+  }
+  img& operator=(const img& a_from){
+    if(&a_from==this) return *this;
+    if(m_owner) delete [] m_buffer;
+    m_buffer = 0;
+    m_w = a_from.m_w;
+    m_h = a_from.m_h;
+    m_n = a_from.m_n;
+    m_owner = a_from.m_owner;
+    if(m_owner) {
+      unsigned int sz = m_w*m_h*m_n;
+      if(!sz) return *this;
+      m_buffer = new T[sz];
+      if(!m_buffer) {
+        m_w = 0;m_h = 0;m_n = 0;m_owner = false;
+        return *this;  //throw
+      }
+      ::memcpy(m_buffer,a_from.m_buffer,sz*sizeof(T));
+    } else {
+      m_buffer = a_from.m_buffer;
+    }
+    return *this;
+  }
+public:
+  bool operator==(const img& a_from) const {return equal(a_from);}
+  bool operator!=(const img& a_from) const {return !operator==(a_from);}
+public:
+  void set(unsigned int a_w,unsigned int a_h,unsigned int a_n,T* a_buffer,bool a_owner) {
+    if(m_owner) delete [] m_buffer;
+    m_w = a_w;
+    m_h = a_h;
+    m_n = a_n;
+    m_buffer = a_buffer;
+    m_owner = a_owner;
+  }
+  bool copy(unsigned int a_w,unsigned int a_h,unsigned int a_n,T* a_buffer) {
+    if(m_owner) delete [] m_buffer;
+    m_buffer = 0;
+    m_w = a_w;
+    m_h = a_h;
+    m_n = a_n;
+    unsigned int sz = m_w*m_h*m_n;
+    if(!sz) {
+      m_w = 0;m_h = 0;m_n = 0;m_owner = false;
+      return false;
+    }
+    m_buffer = new T[sz];
+    if(!m_buffer) {
+      m_w = 0;m_h = 0;m_n = 0;m_owner = false;
+      return false;
+    }
+    ::memcpy(m_buffer,a_buffer,sz*sizeof(T));
+    m_owner = true;
+    return true;
+  }
+  void make_empty(bool a_delete = true) {
+    if(m_owner && a_delete) delete [] m_buffer;
+    m_w = 0;
+    m_h = 0;
+    m_n = 0;
+    m_buffer = 0;
+    m_owner = false;
+  }
+  bool is_empty() const {
+    if(!m_w) return true;
+    if(!m_h) return true;
+    if(!m_n) return true;
+    if(!m_buffer) return true;
+    return false;
+  }
+  bool equal(const img& a_from) const {
+    if(m_w!=a_from.m_w) return false;
+    if(m_h!=a_from.m_h) return false;
+    if(m_n!=a_from.m_n) return false;
+    //don't test ownership.
+    unsigned int sz = m_w*m_h*m_n;
+    T* pos = m_buffer;
+    T* fpos = a_from.m_buffer;
+    for(unsigned int index=0;index<sz;index++,pos++,fpos++) {
+      if((*pos)!=(*fpos)) return false;
+    }
+    return true;
+  }
+  unsigned int width() const {return m_w;}
+  unsigned int height() const {return m_h;}
+  unsigned int bytes_per_pixel() const {return m_n;}
+  const T* buffer() const {return m_buffer;}
+  T* buffer() {return m_buffer;}
+  bool owner() const {return m_owner;}
+  unsigned int size() const {return m_w*m_h*m_n*sizeof(T);} //bytes.
+public:
+  bool pixel(unsigned int a_i,unsigned a_j,std::vector<T>& a_pixel) const {
+    if((!m_w)||(!m_h)||(a_i>=m_w)||(a_j>=m_h)) {
+      a_pixel.clear();
+      return false;
+    }
+    a_pixel.resize(m_n);
+    T* pos = m_buffer + a_j * (m_w * m_n) + a_i*m_n;
+    for(unsigned int ipix=0;ipix<m_n;ipix++) {
+      a_pixel[ipix] = *(pos+ipix);
+    }
+    return true;
+  }
+
+  bool contract(unsigned int a_w,unsigned int a_h,img<T>& a_res,bool a_force_res_owner = true) const {
+    //optimized version of contract_raw().
+
+    if((a_w==m_w)&&(a_h==m_h)) {
+      if(a_force_res_owner) {
+        a_res.copy(m_w,m_h,m_n,m_buffer);
+      } else {
+        a_res.set(m_w,m_h,m_n,m_buffer,false);
+      }
+      return true;
+    }
+
+    size_t sz = a_h*a_w*m_n;
+    if(!sz) {
+      a_res.make_empty();
+      return false;
+    }
+
+    T* rb = new T[sz];
+    if(!rb) {
+      a_res.make_empty();
+      return false;
+    }
+
+    double* pixels = new double[m_n]; //for mean value.
+    if(!pixels) {
+      delete [] rb;
+      a_res.make_empty();
+      return false;
+    }
+   {for(unsigned int ipix=0;ipix<m_n;ipix++) pixels[ipix] = 0;}
+
+    unsigned int wfac = (unsigned int)(double(m_w)/double(a_w));
+    unsigned int hfac = (unsigned int)(double(m_h)/double(a_h));
+    if(!wfac) wfac = 1;
+    if(!hfac) hfac = 1;
+
+    double wfac_hfac = wfac*hfac;
+
+    T* hpos;T* pos;T* hrpos;T* rpos;T* hhpos;T* _pos;double* ppos;
+    unsigned int i,j,fr,fc,ipix,i0;
+    unsigned int astride = a_w * m_n;
+    unsigned int mstride = m_w * m_n;
+    unsigned int wfacstride = wfac * m_n;
+
+    for(j=0;j<a_h;j++) {
+      hrpos = rb + j * astride;
+      hhpos = m_buffer + j*hfac*mstride;
+      for(i=0;i<a_w;i++) {
+
+        // take mean value of wfac*hfac pixels :
+
+        i0 = i*wfacstride;
+
+        hpos = hhpos;
+        for(fr=0;fr<hfac;fr++,hpos+=mstride) {
+          _pos = hpos + i0;
+          for(fc=0;fc<wfac;fc++,_pos+=m_n) {
+            pos = _pos;
+            ppos = pixels;
+            for(ipix=0;ipix<m_n;ipix++,pos++,ppos++) {
+              *ppos += double(*pos)/wfac_hfac;
+            }
+          }
+        }
+
+        //position in the result image.
+        rpos = hrpos + i*m_n;
+        ppos = pixels;
+        for(ipix=0;ipix<m_n;ipix++,rpos++,ppos++) {
+          *rpos = T(*ppos);
+          *ppos = 0;
+        }
+      }
+    }
+
+    delete [] pixels;
+
+    a_res.set(a_w,a_h,m_n,rb,true);
+    return true;
+  }
+
+  bool contract(unsigned int a_factor,img<T>& a_res,bool a_force_res_owner = true) const {
+    // a_factor pixels are contracted in one.
+    unsigned int nw = m_w/a_factor;
+    unsigned int nh = m_h/a_factor;
+    return contract(nw,nh,a_res,a_force_res_owner);
+  }
+
+  bool get_part(unsigned int a_sx,unsigned int a_sy,unsigned int a_sw,unsigned int a_sh,img<T>& a_res) const {
+
+    if((a_sx>=m_w)||(a_sy>=m_h)){
+      a_res.make_empty();
+      return false;
+    }
+
+    // 012345
+    unsigned int rw = min_of<unsigned int>(m_w-a_sx,a_sw);
+    unsigned int rh = min_of<unsigned int>(m_h-a_sy,a_sh);
+    unsigned int sz = rh*rw*m_n;
+    if(!sz) {
+      a_res.make_empty();
+      return false;
+    }
+
+    T* rb = new T[sz];
+    if(!rb) {
+      a_res.make_empty();
+      return false;
+    }
+
+    unsigned int rstride = rw * m_n;
+    T* rpos = rb;
+
+    unsigned int stride = m_w * m_n;
+    T* pos = m_buffer+a_sy*stride+a_sx*m_n;
+
+    for(unsigned int j=0;j<rh;j++,rpos+=rstride,pos+=stride) {//j=0 -> bottom.
+      ::memcpy(rpos,pos,rstride*sizeof(T));
+    }
+
+    a_res.set(rw,rh,m_n,rb,true);
+    return true;
+  }
+
+  bool to_texture(bool a_expand,
+                  const T a_pixel[], //size shoulde be a_img.m_n.
+                  img<T>& a_res,bool a_res_force_owner = true) const {
+
+    //NOTE : pixels of the original image are not expanded or shrinked.
+
+    if((!m_w)||(!m_h)) {
+      a_res.make_empty();
+      return false;
+    }
+
+    // in case (m_w==1)||(m_h==1), expand the pixel
+    // up to the closest power of 2 ?
+
+    if((m_w==1)||(m_h==1)||a_expand) {
+      // find closest power of two upper than m_w, m_h :
+      unsigned int rw = 2;
+      while(true) {if(rw>=m_w) break;rw *=2;}
+      unsigned int rh = 2;
+      while(true) {if(rh>=m_h) break;rh *=2;}
+
+      if((rw==m_w)&&(rh==m_h)) { //exact match.
+        if(a_res_force_owner) {
+          a_res.copy(m_w,m_h,m_n,m_buffer);
+        } else {
+          a_res.set(m_w,m_h,m_n,m_buffer,false); //WARNING owner=false.
+        }
+        return true;
+      }
+
+      // we expand the image and fill new spaces with a_pixel.
+
+      T* rb = 0;
+      bool res_set = true;
+      if(a_res.owner()&&(a_res.size()==(rh*rw*m_n))) {
+        // a_res has already the right allocation.
+        rb = a_res.buffer();
+        res_set = false;
+      } else {
+        rb = new T[rh*rw*m_n];
+        if(!rb) {
+          a_res.make_empty();
+          return false;
+        }
+      }
+
+      unsigned int num = rw*m_n;
+
+      // initialize with given color :
+     {T* pos = rb;
+      for(unsigned int i=0;i<rw;i++,pos+=m_n) {
+        ::memcpy(pos,a_pixel,m_n*sizeof(T));
+      }
+      unsigned int sz = num*sizeof(T);
+      for(unsigned int j=1;j<rh;j++,pos+=num) {  //j=0 -> bottom.
+        ::memcpy(pos,rb,sz);
+      }}
+
+      // center :
+      unsigned int col = (rw-m_w)/2;
+      unsigned int row = (rh-m_h)/2;
+
+      unsigned int mnum = m_w*m_n;
+
+      // copy original image in a centered part of the new one :
+     {T* pos = m_buffer;
+      T* rpos = rb+row*num+col*m_n;
+      unsigned int sz = mnum*sizeof(T);
+      for(unsigned int j=0;j<m_h;j++,pos+=mnum,rpos+=num) {
+        ::memcpy(rpos,pos,sz);
+      }}
+
+      if(res_set) a_res.set(rw,rh,m_n,rb,true);
+
+      return true;
+    } else {
+      // then m_w>=2 and m_h>=2
+
+      // find closest power of two lower than m_w, m_h :
+      unsigned int sw = 2;
+      while(true) {if((sw*2)>m_w) break;sw *=2;}
+      unsigned int sh = 2;
+      while(true) {if((sh*2)>m_h) break;sh *=2;}
+
+      if((sw==m_w)&&(sh==m_h)) { //exact match.
+        if(a_res_force_owner) {
+          a_res.copy(m_w,m_h,m_n,m_buffer);
+        } else {
+          a_res.set(m_w,m_h,m_n,m_buffer,false); //WARNING owner=false.
+        }
+        return true;
+      }
+
+      unsigned int sx = (m_w-sw)/2;
+      unsigned int sy = (m_h-sh)/2;
+
+      return get_part(sx,sy,sw,sh,a_res);
+    }
+
+  }
+
+  bool check_gl_limit(unsigned int a_GL_MAX_TEXTURE_SIZE,img<T>& a_res) const {
+    // if ret true and a_res.is_empty(), "this" does not exceeds the limit.
+    // if ret true and !a_res.is_empty(), "this" exceeds the limit and a new fitting image is returned in a_res.
+    // if ret false, "this" exceeds the limit but something went wrong in building a_res.
+    unsigned int tw = m_w;
+    unsigned int th = m_h;
+    if((tw<=a_GL_MAX_TEXTURE_SIZE)&&(th<=a_GL_MAX_TEXTURE_SIZE)) {
+      a_res.make_empty();
+      return true;
+    }
+    unsigned int fac = 2;
+    while(true) {
+      unsigned int pw = tw/fac;
+      unsigned int ph = th/fac;
+      if((pw<=a_GL_MAX_TEXTURE_SIZE)&&(ph<=a_GL_MAX_TEXTURE_SIZE)) {
+        if(!contract(fac,a_res)) {
+          a_res.make_empty();
+          return false;
+        }
+        return true;
+      }
+      fac *= 2;
+    }
+    a_res.make_empty();
+    return false;
+  }
+
+  bool bw2x(unsigned int a_n,img<T>& a_res) const {
+    //expect a bw img.
+    if(m_n!=1) return false;
+
+    a_res.make_empty();
+    if(a_n<m_n) return false;
+    unsigned int sz = m_w*m_h*a_n;
+    if(!sz) return false;
+
+    a_res.m_buffer = new T[sz];
+    if(!a_res.m_buffer) return false;
+    a_res.m_owner = true;
+    a_res.m_w = m_w;
+    a_res.m_h = m_h;
+    a_res.m_n = a_n;
+
+    for(unsigned int j=0;j<m_h;j++) {
+      for(unsigned int i=0;i<m_w;i++) {
+        //position in the original image.
+        T* pos = m_buffer + j * (m_w * m_n) + i*m_n;
+
+        T* rpos = a_res.m_buffer + j * (m_w * a_n) + i*a_n;
+
+        for(unsigned int ipix=0;ipix<a_n;ipix++) {
+          *(rpos+ipix) = *pos;
+        }
+
+      }
+    }
+
+    return true;
+  }
+
+  bool rgb2rgba(img<T>& a_res,const T& a_pixel) const {
+    if(m_n!=3) return false;
+
+    unsigned int n = 4;
+
+    a_res.make_empty();
+    unsigned int sz = m_w*m_h*n;
+    if(!sz) return false;
+
+    a_res.m_buffer = new T[sz];
+    if(!a_res.m_buffer) return false;
+    a_res.m_owner = true;
+    a_res.m_w = m_w;
+    a_res.m_h = m_h;
+    a_res.m_n = n;
+
+    for(unsigned int j=0;j<m_h;j++) {
+      for(unsigned int i=0;i<m_w;i++) {
+        //position in the original image.
+        T* pos = m_buffer + j * (m_w * m_n) + i*m_n;
+
+        T* rpos = a_res.m_buffer + j * (m_w * n) + i*n;
+
+        *(rpos+0) = *(pos+0);
+        *(rpos+1) = *(pos+1);
+        *(rpos+2) = *(pos+2);
+        *(rpos+3) = a_pixel;
+
+      }
+    }
+
+    return true;
+  }
+
+protected:
+  unsigned int m_w;
+  unsigned int m_h;
+  unsigned int m_n;
+  T* m_buffer;
+  bool m_owner;
+
+private: static void check_instantiation() {img<float> dummy;}
+};
+
+// NOTE : img_byte is ready for OpenGL glTexImage2D UNSIGNED_BYTE RGB.
+//        For glTexImage2D, first row in m_buffer is bottom of image.
+typedef img<unsigned char> img_byte;
+
+}
+
+#endif

@@ -1,0 +1,349 @@
+# Category g4tools History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2026-05-27 Gabriele Cosmo (g4tools-V11-03-14)
+- Fixed compilation warning on gcc-16.1; implemented construction-order fix
+  in columns.icc: added column_string_data so column_string::m_value exists
+  before column_string_ref binds a leaf_string_ref to it.
+  Added column_vector_string_buffer so column_vector_string_ref::m_string
+  exists before the base leaf stores its reference.
+  Added column_vector_string_data so column_vector_string::m_value exists
+  before column_vector_string_ref binds through to it.
+  Updated copy/assignment paths to preserve the previous behavior while moving
+  storage into these early-constructed bases.
+
+## 2026-05-12 Gabriele Cosmo
+- Fixed compilation warning on gcc-16.1 for variable set but not used in
+  array::fill().
+
+## 2025-10-17 Guy Barrand (g4tools-V11-03-13)
+- toolx/sg/GL_manager, GL_action, GL_viewer: template the access to the OpenGL functions.
+  By default, the code still use a OpenGL-1.1 logic.
+  If the cpp macrp TOOLS_USE_GL_VERSION_3_2 is defined, then the logic passes on OpenGL-3.2.
+  In particular then, in GL_manager_T::create_shader_program(), we activate the "shader" logic.
+- toolx/GL/gl_functions: "OpenGL functions accessor" to be used with the upper templates.
+  By default it defines accessors for OpenGL-1.1 and for OpenGL-3.2 if the cpp macrp
+  TOOLS_USE_GL_VERSION_3_2 is defined.
+- toolx/Qt/gl_function: OpenGL-1.1 and 3.2 accessors by using the Qt QOpenGLFunctions_1_1
+  or QOpenGLFunctions_3_2_Core classes. We are then complient to what Qt recommand to access OpenGL.
+  This way of doing permits to build (in particular access) OpenGL-3.2 on Windows.
+- toolx/Qt/glarea: instanciate GL_manager, GL_action, GL_viewer with the adequate OpenGL accessor
+  by using toolx/Qt/gl_functions.
+- toolx/Qt/sg_viewer: have a get_infos() method to be able to get which version of OpenGL we use.
+- toolx/X11/sg_viewer: instanciate GL_manager, GL_action, GL_viewer with the adequate OpenGL accessor
+  by using toolx/GL/gl_functions. Have also a dispatch() method to handle Buttons as what is done in zb_viewer.
+- toolx/Xt/sg_viewer: instanciate GL_manager, GL_action, GL_viewer with the adequate OpenGL accessor
+  by using toolx/GL/gl_functions. Have a get_infos() method to be able to get which version of OpenGL we use.
+- toolx/Xt/OpenGLArea: before including gl.h and glext.h, have the GL_GLEXT_LEGACY, GL_GLEXT_PROTOTYPES
+  logic to master when OpenGL extensions are included.
+- toolx/Windows/gl_function: OpenGL-1.1 and 3.2 accessors. For 3.2 functions not in 1.1, we use
+  the "wglGetProcAddress" technic to dynamic-load them. (The functions ">1.1" are seen as "extensions"
+  by Microsoft and not made public for linking in the opengl32.lib).
+- toolx/Windows/sg_viewer: instanciate GL_manager, GL_action, GL_viewer with the adequate OpenGL accessor
+  by using toolx/Windows/gl_functions. Have also a dispatch() method to handle Buttons as done in zb_viewer.
+- toolx/OpenGL: this file is removed since all the include of the OpenGL API is now too specific and be done in
+  the various toolx/[Qt,X11,Xt,Windows]/sg_viewer.
+- toolx/glbuf, sg/gl: suppressed. The utility functions over OpenGL found here are now within sg/GL_manager,
+  sg/GL_action in order to be "under" the OpenGL accessor mechanism.
+- toolx/sg/text_freetype, text_freetype_marker: remove #ifdef ANDROID cases.
+- tools/HEADER: have TOOLS_T_HEADER, TOOLS_T2_HEADER used in the GL_manager_T, GL_action_T, GL_viewer_T templates.
+- tools/sg/viewer: set_use_gsto()/use_gsto() : to change the "graphical store mode" (used by OpenGL-3.2).
+- tools/version: pass to 8.0.0.
+
+## 2025-10-13 Guy Barrand (g4tools-V11-03-12)
+- tools/sg/vertices, atb_vertices: remove the "#ifdef __APPLE__" logic related to blending. It permits
+  to have same rendering as OGLI/OGLS for G4Polymarker::dots if "dots smoothing" is actived on the
+  advanced/ICRP110_HumanPhantoms example.
+- tools/sg/draw_style: have the point_smooth smart field.
+- toolx/[Qt,X11,Xt,Windows]/[sg_viewer,zb_viewer]:
+  have win_render() enforcing an immediate rendering, and introduce an emit_win_render() to
+  "ask to render at the next windowing/GUI event loop processing".
+- tools/version: pass to 7.1.0.
+
+## 2025-08-12 Ben Morgan (g4tools-V11-03-11)
+- Remove no longer requirred `cmem_alloc_copy` function 
+
+## 2025-08-12 Guy Barrand (g4tools-V11-03-10)
+- add tools/sg/shade_model node to handle Gouraud shading.
+
+## 2025-08-10 Ben Morgan (g4tools-V11-03-09)
+- Rationalize main headers by merging related functionality.
+- Remove unused classes, class member functions/data members.
+- Remove additional headers, free functions no longer used due to this removal.
+
+## 2025-08-01 Ben Morgan (g4tools-V11-03-08)
+- Remove unused functions and headers.
+
+## 2025-08-04 Guy Barrand (g4tools-V11-03-07)
+- tools/zb/buffer, edge_table, line, point, polygon: modifications to avoid
+  the "ToolsSG-ZB too much zoom in" crash. It came from the "#define LARGE_COORDINAT 100000" limit
+  in the original scan-line algorithm that were exceeded in the case of "too much zoom in" for some triangles.
+  (In this case the "edge_table" linked list were badly initialized and the original alogorithm was led to
+  crash at some point in the treatment of a large triangle). The modifications avoid the usage of this limit
+  and also arrange to avoid treating triangles outside the zbuffer viewport.
+- toolx/X11/sg_viewer: correct the head comment.
+- tools/version: pass to 7.0.0 after all the modifications done in various files by the two previous
+  g4tools-V11-03-06 and g4tools-V11-03-05 MRs.
+
+## 2025-07-20 Ben Morgan (g4tools-V11-03-06)
+- Remove commented out blocks and never touched preprocessor blocks.
+
+## 2025-07-18 Ben Morgan (g4tools-V11-03-05)
+- Remove obsolete tools::mem class and TOOLS_MEM blocks that use it.
+
+## 2025-06-17 Guy Barrand (g4tools-V11-03-04)
+- toolx/Qt/glarea: bug: Qt5: in mouseMoveEvent() for Qt5, correct a bad cut/paste when creating the
+  mouse_move_event (instead of "x,shift,control,y" have "x,y,shift,control").
+- tools/version: pass to 6.5.1
+
+## 2025-06-16 Guy Barrand (g4tools-V11-03-03)
+- tools/sg/event: have a new position_modifiers class to handle the shift, control key modifiers and mouse position.
+  It is inherited by mouse_[down,up,move]_event and the wheel_rotate_event class.
+- toolx/Qt,Windows/glarea,pixwin, toolx/Xt/[sg,zb]_viewer, toolx/X11/zb_viewer: handle the shift and control
+  modifiers in the mouse_[down,up,move]_event and wheel_rotation_event.
+- tools/version: pass to 6.5.0
+
+## 2025-06-06 Guy Barrand (g4tools-V11-03-02)
+- tools/rroot/ntuple: fix bugzilla 2657: in initialize(), line 708, pass the message from
+  "warning" to "error" and "return false" if the name of a booking column is not found in the file.
+- tools/rcsv_ntuple: initialize(read with binding): check if given binding variables names are in the read from file column names.
+  If not, return an error; then have the same behaviour than for root ntuple reading with binding.
+- tools/hdf5/ntuple: initialize(read with binding): check if given binding variables names are in the read from file column names.
+  If not, return an error; then have the same behaviour than for root ntuple reading with binding.
+- tools/version: pass to 6.4.1.
+
+## 2025-06-02 Guy Barrand (g4tools-V11-03-01)
+- toolx/Qt,Windows,Xt,X11/sg_viewer and zb_viewer: implement window_size, and render_area_size methods.
+  (These may return different sizes, for example with Qt/OpenGL on Mac and Windows).
+- tools/offscreen/sg_viewer: implement window_size, and render_area_size methods.
+- tools/sg/event: handle the mouse position in the wheel_rotate_event class.
+- toolx/Qt/glarea,pixwin: set the mouse position in the wheel_rotation_event.
+- toolx/Windows/glarea,pixwin: set the mouse position in the wheel_rotation_event.
+- toolx/Xt/sg_viewer: set the mouse position in the wheel_rotation_event.
+- toolx/X11/zb_viewer: set the mouse position in the wheel_rotation_event.
+- tools/version: pass to 6.4.0
+
+## 2025-04-07 Gabriele Cosmo (g4tools-V11-03-00)
+- Fixed compilation errors on Windows in glarea header, triggered when enabling
+  GL WIN32 support, as reported in problem report #2599.
+
+## 2024-10-24 Guy Barrand (g4tools-V11-02-05)
+- wroot/file: in compress_buffer(): to fix bugzilla-2625: arrange to have a greater
+  output buffer size when using deflate(), and check at end, that in case of some
+  compressions being done, "a_klen<a_buffer.length()" to comply to the ROOT/IO specification
+  that the overall output size should be stricly lower than the input size.
+  (A "specification" encoded in ROOT/TKey.cxx/TKey::ReadObj() method in the form
+  of a "if (fObjlen > fNbytes-fKeylen) {}"). In case "a_klen>=a_buffer.length()", the
+  input buffer is returned.
+- wroot/basket: in write_on_file(): suppress the test "if(klen>m_object_size)" now done
+  in file::compress_buffer().
+- tools/version: pass to 6.3.3.
+
+## 2024-09-26 Ben Morgan (g4tools-V11-02-04)
+- Fix typo in member name that is picked up by clang19 compilation on Linux
+  - Discovered/fixed by ATLAS (Johannes Elmsheuser) in Geant4 10.6.3(!) (ATLASSIM-7265),
+    but remains in current version.
+
+## 2024-09-04 Guy Barrand (g4tools-V11-02-03)
+- streamers: in TH_read_1D(), fix a "std::move" minor Coverity issue.
+- axis: in avoid_labels_overlap(), fix a "divide by zero" medium Coverity issue.
+- tools/version: pass to 6.3.2.
+
+## 2024-07-11 Guy Barrand (g4tools-V11-02-02)
+- fix twenty "std::move" Coverity issues.
+- wroot/buffer: have argument of write_array[2](std::vector) passed as a const reference.
+- tess_contour: have argument of getFilledArea(std::vector) passed as a const reference.
+- tools/version: pass to 6.3.1.
+
+## 2024-03-13 Gabriele Cosmo (g4tools-V11-02-01)
+- Fixed string assignments in 'window' and 'pixwin', to support either UNICODE
+  or UTF-16 encoding on Windows. Addressing problem report #2599.
+
+## 2024-02-15 Gabriele Cosmo (g4tools-V11-02-00)
+- Fixed compilation warnings in ccontour and gl2ps on gcc when LTO settings
+  are enabled.
+
+## 2023-11-09 Guy Barrand (g4tools-V11-01-06)
+- tools/wroot/file: in the constructor, for the streaming of the root directory, take into account the streaming of what would be
+  the fUUID (a TUUID in ROOT) field of the TDirectory version 4. This permits to fix the "G4AnalysisManager creates ROOT files
+  that are not updateable" issue described in bugzilla problem 2570.
+- tools/version: pass to 6.3.0.
+
+## 2023-07-03 Guy Barrand (g4tools-V11-01-05)
+- toolx/Xt/session: quiet Coverity CID=104821: in copy constructor, initialise m_app_owner(false).
+- tools/version: pass to 6.2.1.
+
+## 2023-06-15 Gabriele Cosmo (g4tools-V11-01-04)
+- Fixed compilation warning for implicit type conversions on macOS/XCode 14.1
+  in toolsx/Xt/zb_viewer.
+
+## 2023-05-29 Guy Barrand (g4tools-V11-01-03)
+- toolx/Qt: zb_viewer, pixwin, session, s2q: have a Qt viewer for the tools/zbuffer rendering.
+- toolx/Xt: zb_viewer, ImageArea, session: have a Xt viewer for the tools/zbuffer rendering.
+- toolx/X11: zb_viewer, pixwin, colors, base_session: have a X11 viewer for the tools/zbuffer rendering.
+- toolx/Windows: zb_viewer, pixwin, ession: have a Windows viewer for the tools/zbuffer rendering.
+- tools/sg/zb_viewer: generic code used by the upper zb_viewer doing the connection with a windowing system.
+- tools: sg/zb_action, sg/write_paper, mat4f, buffer, mat4: modifications used by the upper files.
+- tools: zb/buffer: optimizations. In particular by avoiding the usage of the point_writer class (now removed).
+
+## 2023-04-13 Guy Barrand (g4tools-V11-01-02)
+- toolx/Xt/session: quiet coverity: remove unused field m_app_owner.
+- toolx/sg/GL_manager: quiet coverity: remove unused field m_gsto_on_cardsy.
+- toolx/sg/gl: quiet coverity: in gl_dump_if_errors(), avoid to set the std::hex format on arg a_out. Have a local std::ostringstream.
+- tools/version: pass to 6.1.2.
+
+## 2023-01-18 Guy Barrand (g4tools-V11-01-01)
+- toolx/Qt/glarea: handle Qt6.
+- toolx/Qt/glarea: for Qt5, Qt6: in paintGL(), use devicePixelRatio() to set the size of the toolx::sg::GL_viewer.
+
+## 2023-01-16 Guy Barrand (g4tools-V11-01-00)
+- tools/ccontour: intel-icx: fix compilation warnings about argument of type 'double[]' with mismatched bound.
+- tools/rcsv_histo: coverity: quiet coverity about some "Unchecked return value (CHECKED_RETURN)".
+- tools/version: pass to 6.1.1.
+
+## 2022-11-25 Gabriele Cosmo (g4tools-V11-00-13)
+- Fixed compilation warnings for implicit type conversions on macOS/XCode 14.1
+  in files: spline, THistogram and zlib.
+
+## 2022-10-13 Guy Barrand (g4tools-V11-00-12)
+- tools/fpng, fpng.icc: a pure header, thread safe, png writer.
+- tools/toojpeg, toojpeg.icc: a pure header, thread safe, jpeg writer.
+- tools/offscreen/session, sg_viewer: to handle offscreen graphics.
+- tools/sg/gl2ps_action: revisit lightening logic to be closer than the OpenGL one.
+- tools/sg/zb_action: revisit lightening logic to be closer than the OpenGL one.
+- tools/sg/zb_action: handle blending (transparency).
+- tools/sg/plots_viewer: handle blending (transparency).
+- tools/zb/buffer: handle blending (transparency).
+- tools/sg/torche, head_light, gl2ps_action, render_action: handle ambient color lightening.
+- toolx/sg/GL_action: handle ambient color lightening.
+- tools/sg/write_paper: gl2ps, zb formats: handle transparency.
+- tools/gl2ps: handle the TOOLS_GL2PS_PORTABLE_SORT to be able to produce same output
+  file on all platforms. (Related to the fact that qsort, for "same objects", may not
+  produce the same "equal" sub lists on all platforms).
+- tools/version: pass to 6.1.0.
+
+## 2022-10-10 Guy Barrand (g4tools-V11-00-11)
+- intel-icx: fix compilation warnings for the variable "size"
+  set but not used glutess/render/static_RenderFan, static_RenderStrip.
+- intel-icx: fix compilation warnings #3179: deprecated conversion of string literal to char*.
+
+## 2022-10-05 Guy Barrand (g4tools-V11-00-10)
+- tools/typedefs, rroot/file, wroot/file and toolx/Windows/glarea, Qt/session, mpi/wrmpi:
+  some #ifdef for MinGW. The ones in wroot/file are important to produce good .root files.
+- tools/gl2ps: replace the usage of sprintf, by strcpy or std::ostringstream.
+
+## 2022-10-04 Gabriele Cosmo (g4tools-V11-00-09)
+- Fixed compilation warnings on Intel-icx compiler for variables
+  set but not used in plotter::rep_bins2D_xy_random_one() and
+  plots::update_sg().
+
+## 2022-09-22 Ben Morgan (g4tools-V11-00-08)
+- Apply patch for MinGW from [GitHub PR 51](https://github.com/Geant4/geant4/pull/51)
+
+## 2022-06-09 Guy Barrand (g4tools-V11-00-07)
+- toolx/X11/base_session: show_window(): check that the window is not already mapped. (Else it hangs in the XIfEvent).
+- tools/version: pass to 6.0.1.
+
+## 2022-05-18 Guy Barrand (g4tools-V11-00-06)
+- have code related to "externals" under toolx directory and namespaced with "toolx". It concerns code related to Qt, Windows, X11, Xt, OpenGL, hdf5, expat, mpi, zlib.
+- tools/version: pass to 6.0.0.
+
+## 2022-05-03 Guy Barrand (g4tools-V11-00-05)
+- tools/version: pass to 5.7.1.
+- gl2ps: gl2psPrintPostScriptPixmap(): pass greyscale, nbit in arguments to avoid a "Logically dead code" issue.
+- gl2ps: gl2psPDFgroupListInit(): have a gl2psPDFgroupObjectInit(&gro) to avoid an "Uninitialized pointer read" issue.
+- gl2ps: remove commented out code about a "class gl2ps" at end.
+- sg/text: corrections in update_sg() about "Copy-paste error". 
+
+## 2022-03-30 Guy Barrand (g4tools-V11-00-04)
+- tools/version: pass to 5.7.0.
+- gl2ps, gl2ps_def.h, sg/gl2ps_action: have, use a thread safe version of gl2ps-1.4.2.
+- gl2ps_begin.icc, gl2ps_end.icc: remove.
+
+## 2022-03-11 Guy Barrand (g4tools-V11-00-03)
+- tools/version: pass to 5.6.3.
+- in a lot of files (see History_tools for a list): for intel compiler: quiet "hides variable" warnings; mainly by renaming "s" to "_s" to avoid a clash with CLHEP::s.
+
+## 2022-02-11 Guy Barrand (g4tools-V11-00-02)
+- tools/version: pass to 5.6.2.
+- tools/gl2ps: in tools_gl2psFindRoot(), have a '*root = 0" initialisation before the first in "if()" return.
+- tools/gl2ps: in tools_gl2psBuildBspTree(), initialize *prim to NULL.
+
+## 2022-02-09 Guy Barrand (g4tools-V11-00-01)
+- tools/version: pass to 5.6.1.
+- tools/sg/text_hershey: in decode_PAW(), font_type font => font_type hershey_font to quiet "hides variable" warnings with intel compiler.
+- tools/typedefs: static const char s[] => static const char s_v[] to quiet "hides variable" warnings with intel compiler.
+- tools/rroot/rall: in find_dir(), have a "delete tdir;" in the "if(!tdir->stream(b)) {}". Seen by Coverity.
+
+## 2021-12-10 Ben Morgan (g4tools-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+9 November 2021  I. Hrivnacova (g4tools-V10-07-11)
+- Restored files for MPI
+
+25 October 2021, G. Barrand (g4tools-V10-07-10)
+- tools/tokenize: to help parsing some Geant4 commands "new value".
+  It permits to get arguments within double quotes to handle, for example, file path that
+  may contains spaces or a color given as "r g b".
+- tools/sg/event_dispatcher,bcbk,ecbk,cbks: classes to have a mechanism in G4/G4ToolsSGSceneHandler
+  so that tools::sg::plots be properly resized when doing a mouse G4Viewer resize.
+- tools/sg/plotter_some_styles: have the plotting setup of ROOT_default, hippodraw, style done in C++
+  to avoid the usage of expat for these defaults styles.
+- tools/sg/light_off: a node to switch off light in a sub scene graph.
+- tools/Qt/sg_viewer: in dstor, reset the "interactors" to null in the glarea.
+
+21 October 2021  G. Barrand (g4tools-V10-07-09)
+- tools/hdf5/ntuple: add code to write/read a column of vectors of strings.
+- tools/waxml/ntuple: add code to write a column of vectors of strings.
+
+19 October 2021  I. Hrivnacova (g4tools-V10-07-08)
+- Added rroot/rall and rroot/THistogram needed for
+  tools::rroot::find_dir (used in Root analysis reader)
+
+13 October 2021  Guy Barrand  (g4tools-V10-07-07)
+- sg/base_freetype, text_freetype: modifs to be able to handle embedded fonts.
+- font/lato_regular_ttf: embedded lato_regular.ttf font.
+- font/roboto_bold_ttf: embedded roboto_bold.ttf font.
+- sg/text_hershey_marker, text_freetype_marker: modifs to avoid 'squashing' of text.
+- sg/render_action, GL_viewer, atb_vertices: handle transparency by using a two pass rendering method.
+- sg/gl2ps_actions/2format: avoid a warning if returning false.
+- have 5.6.0 in tools/version.
+
+08th October 2021, G. Barrand (g4tools-V10-07-06)
+- remove the files not used by other Geant4 categories (up so far analysis and visualization).
+- remove the test directory. It will be maintained in github/gbarrand/g4tools.
+- remove the not used src/csz_inflate.cc file but have a dummy.cc for Geant4/cmake.
+- CMakeLists.txt: refer to src/dummy.cc (instead of src/csz_inflate.cc) when declaring the g4tools module.
+- have 5.5.0 in tools/version.
+
+25th May 2021, B. Morgan (g4tools-V10-07-05)
+- Move fonts from analysis category to tools to assist cross-category use
+
+18th May 2021, G. Barrand (g4tools-V10-07-04)
+- tools/zb/polygon: in scan() : initialize ET,AET,SLLBlock, before calling
+  CreateETandAET, to quiet g++-11 -Wmaybe-uninitialized warnings.
+
+5th May 2021, J. Allison (g4tools-V10-07-03)
+- Rename g4tools/include/tools/sg/gL_manager to GL_manager.
+
+16th April 2021, I. Hrivnacova (g4tools-V10-07-02)
+- Updated to g4tools 5.4.0 (Guy Barrand):
+  “Windowing” code update needed for the new “ToolsSG” vis drivers.
+  See History_tools for the complete list of modifications.
+
+04th March 2021, I. Hrivnacova (g4tools-V10-07-01)
+- Updated to g4tools 5.3.1 (Guy Barrand):
+  "Windowing" code needed for G4/vis/tools_sg
+  See History_tools for the complete list of modifications.
+
+18th February 2021, B. Morgan (g4tools-V10-07-00)
+- Move g4tools from g4analysis to externals category

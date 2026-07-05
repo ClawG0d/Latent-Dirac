@@ -1,0 +1,73 @@
+# Example exoticphysics History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-07-30 I. Hrivnacova (exExoticPhysics-V11-03-00)
+- Migration of README pages to Markdown:
+  - .README.txt replaced with README.md and removed README
+  - Reviewed and fixed external links, references to code,
+    improved formatting.
+
+## 2024-10-30 A. Sytov (exExoticPhysics-V11-02-00)
+-Updated README related to channeling (added information about
+ channeling examples instead of old channeling exampled which
+ was moved in channeling/ch0 folder)
+
+## 2023-11-15 I. Hrivnacova (exExoticPhysics-V11-01-01)
+- Updated vis.mac macros:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2023-01-09 Ben Morgan (exExoticPhysics-V11-01-00)
+- Use PROJECT_ scoped _SOURCE/BINARY_DIR variables in place of CMAKE_ 
+  scope version to ease use of Geant4 as a CMake subproject. 
+  - Fixes [GitHub PR #52](https://github.com/Geant4/geant4/pull/52)
+
+## 2021-12-10 Ben Morgan (exExoticPhysics-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+17 November 2021:  I. Hrivnacova (exExoticPhysics-V10-07-01)
+- Added new saxs example in CMake and README's
+
+24 May 2021:  B. Morgan (exExoticPhysics-V10-07-00)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+10 November 2020: B. Morgan (exExoticPhysics-V10-06-01)
+- Migration to G4RunManagerFactory.
+
+03 November 2020: B. Morgan (exExoticPhysics-V10-06-00)
+- Support same CMake version range as core Geant4
+
+31 January 2019:  I. Hrivnacova (exExoticphysics-V10-05-00)
+- Merged GitHub PR #4: all Boolean operators now return G4bool.
+
+9 November 2018:  I. Hrivnacova (exExoticphysics-V10-04-00)
+- Added new dmparticle example in CMake and README's
+
+27 November 2014: I. Hrivnacova (exExoticphysics-V10-00-02)
+- Minor fixes in top README, .README
+
+8 June 2014: P. Gumplinger (exExoticphysics-V10-00-01)
+- Added new example subdirectory ucn
+
+6 June 2014: A. Dotti (exExoticphysics-V10-00-00)
+- Added new example subdirectory channeling
+
+17 November 2012: I. Hrivnacova (exExoticphysics-V09-05-02)
+- Updated documentation:
+  - Removed obsolete instructions (how to compile & link)
+  - Fixed example page name in phonon example .README
+
+1 November 2012: I. Hrivnacova (exExoticphysics-V09-05-01)
+- Renamed "phononExample" to "phonon" per Gabriele Cosmo.  Updated README
+  and CMakeLists.txt accordingly.
+
+29 October 2012: I. Hrivnacova (exExoticphysics-V09-05-00)
+- Updated top files (makefiles, READMEs) with added phononExample.
+

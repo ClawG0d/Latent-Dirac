@@ -1,0 +1,24 @@
+#
+# Macro file for "Hadr06.cc"
+#
+/control/verbose 2
+/run/verbose 1
+#
+/testhadr/det/setMat graphite
+/testhadr/det/setRadius 20 cm
+#
+###/testhadr/phys/thermalScattering true
+#
+/run/initialize
+#
+/gun/particle neutron
+/gun/energy 14 MeV
+#
+/analysis/setFileName Graphite
+/analysis/h1/set 14  100  0. 15. MeV	#emerging gamma
+/analysis/h1/set 16  100  0. 15. MeV	#emerging neutrons
+/analysis/h1/set 19  100  0. 15. MeV	#emerging alphas
+/analysis/h1/set 20  100  0. 15. MeV	#emerging generic ions
+#
+/run/printProgress 1000
+/run/beamOn 10000

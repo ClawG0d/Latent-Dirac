@@ -1,0 +1,86 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_xml_element
+#define tools_xml_element
+
+// This is only needed to satisfy a use in source/analysis/hntools/src/G4PlotManager.cc
+#include "../srep"
+
+#include "../sto"
+#include "../scast"
+
+namespace tools {
+namespace xml {
+
+class ielem {
+public:
+  virtual ~ielem(){}
+public:
+  virtual void* cast(cid) const = 0;
+};
+
+class element : public virtual ielem {
+public:
+  static cid id_class() {return 0;}
+  virtual void* cast(cid a_class) const {
+    if(void* p = cmp_cast<element>(this,a_class)) {return p;}
+    else return 0;
+  }
+public:
+  typedef std::pair<std::string,std::string> atb;
+public:
+  element(const std::string& a_name,
+          const std::vector<atb>& a_atbs,
+          const std::string& a_value){
+    m_name = a_name;
+    m_atbs = a_atbs;
+    m_value = a_value;
+  }
+  virtual ~element(){
+  }
+public:
+  element(const element& a_from)
+  :ielem(a_from) {
+    m_name = a_from.m_name;
+    m_atbs = a_from.m_atbs;
+    m_value = a_from.m_value;
+  }
+  element& operator=(const element& a_from) {
+    m_name = a_from.m_name;
+    m_atbs = a_from.m_atbs;
+    m_value = a_from.m_value;
+    return *this;
+  }
+public:
+  const std::string& name() const {return m_name;}
+  const std::vector<atb>& attributes() const {return m_atbs;}
+  const std::string& value() const {return m_value;}
+
+  bool attribute_value(const std::string& a_atb,std::string& a_value) const {
+    tools_vforcit(atb,m_atbs,it) {
+      if((*it).first==a_atb) {
+        a_value = (*it).second;
+        return true;
+      }
+    }
+    a_value.clear();
+    return false;
+  }
+
+  template <class T>
+  bool attribute_value(const std::string& a_atb,T& a_value) const {
+    std::string sv;
+    if(!attribute_value(a_atb,sv)) {a_value=T();return false;}
+    return to<T>(sv,a_value);
+  }
+
+protected:
+  std::string m_name;
+  std::vector<atb> m_atbs;
+  std::string m_value;
+};
+
+}}
+
+#endif

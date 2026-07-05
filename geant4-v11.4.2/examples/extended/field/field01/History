@@ -1,0 +1,298 @@
+# Example field01 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2024-09-30 Gabriele Cosmo (fieldex01-V11-02-02)
+- Use GeometryHasBeenModified() in place of ReinitializeGeometry() in
+  DetectorCostruction UI commands implementation, for thread safety.
+
+## 2024-09-18 Gabriele Cosmo (fieldex01-V11-02-01)
+- Use default Tasking run-manager from G4RunManagerFactory.
+- Use default MixMax random generator.
+
+## 2024-04-29 Ivana Hrivnacova (fieldex01-V11-02-00)
+- Replaced FieldSetup and FieldMessenger classes with usage of new
+  field builder class (G4FieldBuilder)
+- Moved setting field value (ThreeVector) from FieldSetup (removed)
+  in DetectorConstruction and its messenger and removed
+  setting Z-value only
+
+## 2023-11-10 I. Hrivnacova (fieldex01-V11-01-01)
+- Coding guidelines: split long lines
+
+## 2023-07-05 I. Hrivnacova (fieldex01-V11-01-00)
+- Clang-tidy, new coding guidelines
+- Clean-up trailing white-spaces
+
+## 2022-11-05 J. Apostolakis (fieldex01-V11-00-03)
+- field01.cc: Demonstrate using G4TransporationParameters to set looper values for Transportation.
+- F01FieldSetup:
+  * Show how to control Epsilon Min/Max
+  * Boris method is now available only by modifying the source code (search for 'Boris')
+
+## 2022-11-05 J. Apostolakis (fieldex01-V11-00-02)
+- Added Boris integration method (temporarily as default) as an option.
+
+## 2022-10-24 I. Hrivnacova fieldex01-V11-00-01)
+- Coding guidelines: start data member with 'f' (RunAction)
+  function members with a capital letter (DetectorConstruction);
+  use G4int, G4double
+
+## 2021-12-10 Ben Morgan (fieldex01-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+Nov  28, 2019 I. Hrivnacova   - fieldex01-V10-05-00
+- Fixed formatting in .README.txt
+
+Dec   4, 2018 J.Apostolakis   - fieldex01-V10-04-06
+- Corrections to use arguments of methods in F01RunAction.
+  Fixes compilation warnings.
+- Added information to README, .README.txt about new choice of
+   FSAL drivers and choices to control killing of particles looping
+   in low density medium with strong field.
+
+Dec   3, 2018 J.Apostolakis   - fieldex01-V10-04-05
+- field01.cc: Added code to demonstrate use of G4PhysicsListHelper's
+  UseLowLooperThresholds / UseHighLooperThresholds method
+- Added F01RunAction class to demonstrate fine grained control
+  of G4(Coupled)Transportation's parameters for (killing) looping
+  tracks.  ( Tracks which take too many iterations to finish
+  integration - typically due to electrons in vacuum, but also
+  can affect other charged particles. )
+- field01.cc, F01FieldSetup and F01DetectorConstruction:
+  enable use of FSAL stepper and driver. ( To use it uncomment line
+  in field01.cc )
+
+Nov  12, 2018 J.Apostolakis   - fieldex01-V10-04-04
+- Improved README, .README.txt and field01.in updating information
+  on steppers.  Noted that DoPri5 (Dormand Prince 7 4/5) is now
+  the default stepper, and proposed G4NystromRK4 as a fast alternative.
+
+July 27, 2018 I.Hrivnacova - fieldex01-V10-04-02,03
+- Added command:
+   /field/setField  Bx By Bz unit
+- Macro review and code clean-up:
+  - Removed EventAction, RunAction, RunActionMessenger
+    used only for storing random numbers, already available in kernel
+  - Separated other than visualization settings from vis.mac in a
+    new init_vis.mac
+  - Added test for commands defined in the example at the end
+    of field01.in macro
+  - Improved visualization of geometry
+  - Added "beamOn 10" button in gui.mac
+  - Updated README files
+
+May 15, 2018 J.Allison - fieldex01-V10-04-01
+- Remove G4UI_USE and G4VIS_USE.
+- Move instantiation of G4UIExecutive to start of main.
+- vis.mac, gui.mac: Clean up.
+- F01RunAction.cc: Remove vis commands.
+
+May 09, 2018 B.Morgan - fieldex01-V10-04-00
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+May 24, 2017 J.Apostolakis   - fieldex01-V10-03-00
+- Fixed valgrind error in F01FieldSetup CreateStepperAndChordFinder() method.
+    first delete all dependent objects, then create new ones.
+
+November 19,2016 A.Dotti   - fieldex01-V10-02-05
+- explicit set of SD to manager
+
+November 2, 2016 L.Garnier - fieldex01-V10-02-04
+- remove icons.mac. Automatically include since interfaces-V10-02-07
+
+October 24, 2016 - I. Hrivnacova - fieldex01-V10-02-03
+- Inactivated use of the new Runge Kutta Stepper in field01.in,
+  not yet working.
+
+October 14, 2016 - I. Hrivnacova - fieldex01-V10-02-02
+July 1, 2016 - I. Hrivnacova - fieldex01-V10-02-01
+- Replaced F01PhysicsList with FTFP_BERT with G4StepLimiterPhyiscs
+- Propagated last update of README in .README.txt and fixed text format
+
+June 8, 2016 - J. Apostolakis - fieldex01-V10-02-00
+- Added option to use new Runge Kutta Steppers
+
+September 01, 2015 - I. Hrivnacova - fieldex01-V10-01-02
+- Removed F01EventActionMessenger classes, now obsolete, and
+  replaced /event/printModulo commands in macros with /run/printProgress
+- Code cleanup
+
+May 22, 2015 - P. Gumplinger - fieldex01-V10-01-00
+- apply coding guideline 3.3
+
+December 02, 2013
+- More fixes in gui.mac:
+  Let execute vis.mac first to make the command in added menus available;
+  corrected wireframe parameter
+
+November 29, 2013 - I. Hrivnacova
+- Fixed gui.mac (commented out command specific to B2 example)
+
+November 28, 2013 - P.Gumplinger - fieldex01-V09-06-10
+- fixed typo in F01PrimaryGeneratorAction.cc and added icons.mac
+  and run.png to svn
+
+November 28, 2013 - M.Asai - fieldex01-V09-06-09
+- Fix F01PrimaryGeneratorAction to avoid race condition problem.
+
+November 28, 2013 - M.Asai - fieldex01-V09-06-08
+- Fix F01PhysicsList to avoid race condition problem.
+
+November 26, 2013 - I.Hrivnacova - fieldex01-V09-06-07
+- Fixed ConstructSDandField():
+  Moved setting the SD to logical volume outside the test
+- Do not test (fAbsorberThickness > 0.) in ConstructCalorimeter()
+  as setting 0 is not allowed in set command
+
+November 25, 2013 - I.Hrivnacova - fieldex01-V09-06-06
+- Put back cleaning volumes and solid stores in ConstructGeometry()
+
+November 22, 2013 - P.Gumplinger - fieldex01-V09-06-05
+- add gui.mac and avoid long line
+
+November 21, 2013 - I.Hrivnacova - fieldex01-V09-06-04
+- Use new G4RunManager::ReinitializeGeometry to trigger geometry rebuild
+  when geometry changes
+- Remove DetectorConstruction::Update and corresponding UI command that
+  is not needed anymore
+- Set "ToBeBroadcasted == false" for UI commands that modify detector
+  since these should be executed only by master
+- Fixed main (do not call gui.mac which does not exist)
+- Code cleanup in F01FieldSetup.*
+
+November 7, 2013 - P.Gumplinger - fieldex01-V09-06-02 and -03
+- migration to MT and code cleanup
+
+July 28/31, 2013 - P.Gumplinger - fieldex01-V09-06-00 and -01
+- fix clang32 compilation error
+
+February 14, 2013 - I.Hrivnacova
+-----------------------------
+- Applied coding guidelines (data members initialization);
+  tagged in examples/field
+
+November 15, 2012 - I.Hrivnacova - fieldex01-V09-05-01
+-----------------------------
+- Fixed F01DetectorMessenger.hh file description
+
+October 15, 2012 - I.Hrivnacova - fieldex01-V09-05-00
+-----------------------------
+- Applied coding guidelines, code clean-up
+
+August 16, 2010 - H.Kurashige - fieldex01-V09-03-04
+-----------------------------
+- Removed inclusion of G4ParticleWithCuts header.
+
+June 2, 2010 J.Perl - fieldex01-V09-03-03
+-------------------
+- Updated vis usage
+
+May 12, 2010 John Allison - fieldex01-V09-03-02
+-------------------------
+- Introduced G4UIExecutive.
+
+Apr 8th, 2010 Gabriele Cosmo - fieldex01-V09-03-01
+----------------------------
+- Removed unused pointers to G4MultipleScattering left...
+
+Mar 25th, 2010 Gabriele Cosmo - fieldex01-V09-03-00
+-----------------------------
+- Migrated physics list to use particle-based multiple-scattering processes.
+
+Nov 4th,  2009  Peter Gumplinger - fieldex01-V09-02-00
+--------------------------------
+- fix the density of STP Carbon Dioxide in DetectorConstruction
+
+May 23rd, 2007  John Apostolakis  -  fieldex01-V08-03-00
+--------------------------------
+- Taken out FastSimulationManagerProcess, which is not needed.
+
+Dec 6th, 2005  Gabriele Cosmo
+-----------------------------
+- Trivial changes for support of CLHEP-2.0.X series.
+
+May 3rd, 2005  John Allison  (examples-V07-00-03)
+------------------------------------------------
+- Replaced vis manager with G4VisExecutive.
+
+Dec 3rd, 2004 Gabriele Cosmo
+----------------------------
+- Implemented migration to <cmath>.
+
+Dec 3rd, 2004 Vladimir Grichine
+-------------------------------
+- Removed dependency on old PAI and XTR models in PhysicsList.
+
+Dec 2nd, 2004 John Apostolakis (fieldex01-V06-02-01)
+-------------------------------------------------
+- Took out un-needed inclusion of G4PAIclusterModel in Detector-Construction
+
+Sep 15rd, 2004 V.Ivanchenko (fieldex01-V06-02-00)
+-------------------------------------------------
+- Minor cleanup of PhysicsList
+
+Mar 23rd, 2003 John Apostolakis (fieldex01-V06-00-00)
+-----------------------------------------------------
+- F01FieldSetup corrections
+   o fixed SetFieldValue(double) method (along Z) to update field mgr & eq
+   o fixed SetFieldValue(vector) method to update equation as well
+
+Dec  1st, 2003 John Apostolakis (fieldex01-V05-02-01)
+-----------------------------------------------------
+- F01FieldSetup corrections
+   o deleting forgotten inheritance from G4MagneticField
+   o fixing SetFieldValue(vector) method to update field manager
+- F01SteppingVerbose: New output format.
+- Fully deleted F01ElectroMagneticField.
+- field01.in: different energies, 1 track each in place of 100 events of 1 energy.
+    --> updated output file, using output from run on pcgeant2 / gcc 3.2
+
+Nov 25th, 2003 John Apostolakis (fieldex01-V05-02-00)
+-----------------------------------------------------
+- Renamed F01ElectroMagneticField into F01FieldSetup (as it is a creator,
+   not a field).
+- FieldSetup is now called in Detector Construction, not main.
+
+Nov 25th, 2003 Gabriele Cosmo
+-----------------------------
+- Open geometry before clearing stores in DetectorConstruction class.
+
+Nov 13th, 2003 - John Allison
+-----------------------------
+- Removed OPACS from Vis Manager.
+
+Nov 12th, 2003 - G.Cosmo (fieldex-V05-02-01)
+--------------------------------------------
+- Cleared compilation warnings in F01ElectroMagneticField.hh.
+
+Aug 27th, 2003 - V.Ivantchenko (fieldex-V05-02-00)
+--------------------------------------------------
+- Removed obsolete interfaces.
+
+Jun 25th, 2003 - G.Cosmo (fieldex-V05-01-00)
+--------------------------------------------
+- Fixed mechanism for update of geometry in detector-construction.
+- Fixed pedantic warnings ...
+
+Feb 20th, 2003 - V.Ivanchenko
+-----------------------------
+- Cut per region
+
+Nov 7th, 2001 - G.Cosmo
+-----------------------
+- More cleanup and fixes to primary generator gun (V.Grichine).
+
+Oct 15th, 2001 - G.Cosmo
+------------------------
+- Cleaned from test code.

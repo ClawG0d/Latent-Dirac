@@ -1,0 +1,109 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_array
+#define tools_array
+
+#include <vector>
+#include <string>
+
+namespace tools {
+
+// array handles an hyperparallelepiped of cells of class T.
+
+template <class T>
+class array {
+public:
+  static const std::string& s_class() {
+    static const std::string s_v("tools::array");
+    return s_v;
+  }
+public:
+  typedef typename std::vector<unsigned int> uints_t;
+public:
+  array() {
+  }
+  array(const uints_t& a_orders) {
+    configure(a_orders);
+  }
+  array(unsigned int a_dimension,unsigned int a_order) {
+    // A hypercube of dimension "a_dimension" and size "a_order".
+    uints_t _orders(a_dimension);
+    for(unsigned int index=0;index<a_dimension;index++)
+      _orders[index] = a_order;
+    configure(_orders);
+  }
+  virtual ~array() {
+  }
+public:
+  array(const array& a_from)
+  :m_orders(a_from.m_orders)
+  ,m_offsets(a_from.m_offsets)
+  ,m_vector(a_from.m_vector)
+  ,m_is(a_from.m_is){
+  }
+  array& operator=(const array& a_from) {
+    m_orders = a_from.m_orders;
+    m_offsets = a_from.m_offsets;
+    m_vector = a_from.m_vector;
+    m_is = a_from.m_is;
+    return *this;
+  }
+public:
+  void clear() {
+    m_orders.clear();
+    m_offsets.clear();
+    m_vector.clear();
+    m_is.clear();
+  }
+  bool configure(const uints_t& a_orders) {
+    m_orders = a_orders;
+    size_t dim = m_orders.size();
+    if(dim==0) {
+      clear();
+      return false;
+    }
+    unsigned int _size = 1;
+    for(size_t index=0;index<dim;index++) {
+      _size *= m_orders[index];
+    }
+    m_vector.resize(_size);
+    m_vector.assign(_size,zero());
+    m_offsets.resize(dim,0);
+    m_offsets[0] = 1;
+    for(size_t iaxis=1;iaxis<dim;iaxis++)
+      m_offsets[iaxis] = m_offsets[iaxis-1] * m_orders[iaxis-1];
+    m_is.resize(dim);
+    m_is.assign(dim,0);
+    return true;
+  }
+  size_t dimension() const { return m_orders.size();}
+  const uints_t& orders() const { return m_orders;}
+  size_t size() const {return m_vector.size();}
+  const std::vector<T>& vector() const { return m_vector;}
+  std::vector<T>& vector() { return m_vector;}
+  bool fill(const std::vector<T>& a_values) {
+    size_t dsize = a_values.size();
+    size_t di = 0;
+
+    for(auto it=m_vector.begin();it!=m_vector.end();++it) {
+      if(di>=dsize) return false; //a_values exhausted too early
+      *it = a_values[di];
+      di++;
+      }
+    return true;
+  } 
+public:
+  static T zero() {
+    return T();
+  }
+protected:
+  uints_t m_orders;
+  uints_t m_offsets;
+  std::vector<T> m_vector;
+  uints_t m_is;
+};
+
+}
+
+#endif

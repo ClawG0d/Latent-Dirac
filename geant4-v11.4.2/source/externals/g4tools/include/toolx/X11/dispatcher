@@ -1,0 +1,36 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef toolx_X11_dispatcher
+#define toolx_X11_dispatcher
+
+#include <X11/Xlib.h>
+
+namespace toolx {
+namespace X11 {
+
+class dispatcher {
+public:
+  virtual bool dispatch(XEvent&) = 0;
+  virtual Window window() const = 0;
+  virtual dispatcher* copy() const = 0;
+public:
+  dispatcher():m_is_valid(true){
+  }
+  virtual ~dispatcher(){
+  }
+public:
+  dispatcher(const dispatcher& a_from):m_is_valid(a_from.m_is_valid){
+  }
+  dispatcher& operator=(const dispatcher& a_from) { m_is_valid = a_from.m_is_valid;return *this;}
+public:
+  bool is_valid() const {return m_is_valid;}
+  void invalidate() {m_is_valid = false;}
+protected:
+  bool m_is_valid;
+};
+
+}}
+
+
+#endif

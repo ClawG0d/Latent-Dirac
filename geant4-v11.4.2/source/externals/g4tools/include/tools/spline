@@ -1,0 +1,374 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_spline
+#define tools_spline
+
+// From Federico Carminati code found in root-6.08.06/TSpline.h, TSpline.cxx.
+
+#include "mnmx"
+#include <cstddef>
+#include <vector>
+#include <ostream>
+#include <cmath>
+
+namespace tools {
+namespace spline {
+
+class base_poly {
+public:
+  base_poly():fX(0),fY(0) {}
+  base_poly(double x,double y):fX(x),fY(y) {}
+  virtual ~base_poly(){}
+public:
+  base_poly(base_poly const &a_from):fX(a_from.fX),fY(a_from.fY) {}
+  base_poly& operator=(base_poly const &a_from) {
+    if(this==&a_from) return *this;
+    fX = a_from.fX;
+    fY = a_from.fY;
+    return *this;
+  }
+public:
+  const double& X() const {return fX;}
+  const double& Y() const {return fY;}
+  double &X() {return fX;}
+  double &Y() {return fY;}
+protected:
+  double fX;     // abscissa
+  double fY;     // constant term
+};
+
+class cubic_poly : public base_poly {
+public:
+  cubic_poly():fB(0), fC(0), fD(0) {}
+  cubic_poly(double x, double y, double b, double c, double d):base_poly(x,y), fB(b), fC(c), fD(d) {}
+public:
+  cubic_poly(cubic_poly const &a_from)
+  :base_poly(a_from), fB(a_from.fB), fC(a_from.fC), fD(a_from.fD) {}
+  cubic_poly& operator=(cubic_poly const &a_from) {
+    if(this==&a_from) return *this;
+    base_poly::operator=(a_from);
+    fB = a_from.fB;
+    fC = a_from.fC;
+    fD = a_from.fD;
+    return *this;
+  }
+public:
+  double &B() {return fB;}
+  double &C() {return fC;}
+  double &D() {return fD;}
+  double eval(double x) const {double dx=x-fX;return (fY+dx*(fB+dx*(fC+dx*fD)));}
+protected:
+  double fB; // first order expansion coefficient :  fB*1! is the first derivative at x
+  double fC; // second order expansion coefficient : fC*2! is the second derivative at x
+  double fD; // third order expansion coefficient :  fD*3! is the third derivative at x
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+class base_spline {
+protected:
+  base_spline(std::ostream& a_out):m_out(a_out), fDelta(-1), fXmin(0), fXmax(0), fNp(0), fKstep(false) {}
+public:
+  base_spline(std::ostream& a_out,double delta, double xmin, double xmax, size_t np, bool step)
+  :m_out(a_out),fDelta(delta), fXmin(xmin),fXmax(xmax), fNp(np), fKstep(step)
+  {}
+  virtual ~base_spline() {}
+protected:
+  base_spline(const base_spline& a_from)
+  :m_out(a_from.m_out)
+  ,fDelta(a_from.fDelta),fXmin(a_from.fXmin),fXmax(a_from.fXmax),fNp(a_from.fNp),fKstep(a_from.fKstep) {}
+  base_spline& operator=(const base_spline& a_from) {
+    if(this==&a_from) return *this;
+    fDelta=a_from.fDelta;
+    fXmin=a_from.fXmin;
+    fXmax=a_from.fXmax;
+    fNp=a_from.fNp;
+    fKstep=a_from.fKstep;
+    return *this;
+  }
+protected:
+  std::ostream& m_out;
+  double  fDelta;     // Distance between equidistant knots
+  double  fXmin;      // Minimum value of abscissa
+  double  fXmax;      // Maximum value of abscissa
+  size_t  fNp;        // Number of knots
+  bool    fKstep;     // True of equidistant knots
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// cubic                                                                //
+//                                                                      //
+// Class to create third splines to interpolate knots                   //
+// Arbitrary conditions can be introduced for first and second          //
+// derivatives at beginning and ending points                           //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+class cubic : public base_spline {
+protected:
+  cubic(std::ostream& a_out) : base_spline(a_out) , fPoly(0), fValBeg(0), fValEnd(0), fBegCond(-1), fEndCond(-1) {}
+public:
+  cubic(std::ostream& a_out,size_t a_n,double a_x[], double a_y[], double a_valbeg = 0, double a_valend = 0)
+  :base_spline(a_out,-1,0,0,a_n,false)
+  ,fValBeg(a_valbeg), fValEnd(a_valend), fBegCond(0), fEndCond(0)
+  {
+    if(!a_n) {
+      m_out << "tools::spline::cubic : a_np is null." << std::endl;
+      return;
+    }
+    fXmin = a_x[0];
+    fXmax = a_x[a_n-1];
+    fPoly.resize(a_n);
+    for (size_t i=0; i<a_n; ++i) {
+       fPoly[i].X() = a_x[i];
+       fPoly[i].Y() = a_y[i];
+    }
+    build_coeff(); // Build the spline coefficients
+  }
+public:
+  cubic(const cubic& a_from)
+  :base_spline(a_from)
+  ,fPoly(a_from.fPoly),fValBeg(a_from.fValBeg),fValEnd(a_from.fValEnd),fBegCond(a_from.fBegCond),fEndCond(a_from.fEndCond)
+  {}
+  cubic& operator=(const cubic& a_from) {
+    if(this==&a_from) return *this;
+    base_spline::operator=(a_from);
+    fPoly = a_from.fPoly;
+    fValBeg=a_from.fValBeg;
+    fValEnd=a_from.fValEnd;
+    fBegCond=a_from.fBegCond;
+    fEndCond=a_from.fEndCond;
+    return *this;
+  }
+public:
+  double eval(double x) const {
+    if(!fNp) return 0;
+    // Eval this spline at x
+    size_t klow = find_x(x);
+    if ( (fNp > 1) && (klow >= (fNp-1))) klow = fNp-2; //see: https://savannah.cern.ch/bugs/?71651
+    return fPoly[klow].eval(x);
+  }
+protected:
+  template<typename T>
+  static int TMath_Nint(T x) {
+    // Round to nearest integer. Rounds half integers to the nearest even integer.
+    int i;
+    if (x >= 0) {
+      i = int(x + 0.5);
+      if ( i & 1 && x + 0.5 == T(i) ) i--;
+    } else {
+      i = int(x - 0.5);
+      if ( i & 1 && x - 0.5 == T(i) ) i++;
+    }
+    return i;
+  }
+  static int TMath_FloorNint(double x) { return TMath_Nint(::floor(x)); }
+
+  size_t find_x(double x) const {
+    int klow=0, khig=int(fNp-1);
+    //
+    // If out of boundaries, extrapolate
+    // It may be badly wrong
+    if(x<=fXmin) klow=0;
+    else if(x>=fXmax) klow=khig;
+    else {
+      if(fKstep) { // Equidistant knots, use histogramming :
+         klow = TMath_FloorNint((x-fXmin)/fDelta);
+         // Correction for rounding errors
+         if (x < fPoly[klow].X())
+           klow = max_of<int>(klow-1,0);
+         else if (klow < khig) {
+           if (x > fPoly[klow+1].X()) ++klow;
+         }
+      } else {
+         int khalf;
+         //
+         // Non equidistant knots, binary search
+         while((khig-klow)>1) {
+           khalf = (klow+khig)/2;
+           if(x>fPoly[khalf].X()) klow=khalf;
+           else                   khig=khalf;
+         }
+         //
+         // This could be removed, sanity check
+         if( (x<fPoly[klow].X()) || (fPoly[klow+1].X()<x) ) {
+            m_out << "tools::spline::cubic::find_x : Binary search failed"
+                  << " x(" << klow << ") = " << fPoly[klow].X() << " < x= " << x
+                  << " < x(" << klow+1 << ") = " << fPoly[klow+1].X() << "."
+		  << "." << std::endl;
+         }     
+      }
+    }
+    return klow;
+  }
+
+  void build_coeff() {
+    ///      subroutine cubspl ( tau, c, n, ibcbeg, ibcend )
+    ///  from  * a practical guide to splines *  by c. de boor
+    ///     ************************  input  ***************************
+    ///     n = number of data points. assumed to be .ge. 2.
+    ///     (tau(i), c(1,i), i=1,...,n) = abscissae and ordinates of the
+    ///        data points. tau is assumed to be strictly increasing.
+    ///     ibcbeg, ibcend = boundary condition indicators, and
+    ///     c(2,1), c(2,n) = boundary condition information. specifically,
+    ///        ibcbeg = 0  means no boundary condition at tau(1) is given.
+    ///           in this case, the not-a-knot condition is used, i.e. the
+    ///           jump in the third derivative across tau(2) is forced to
+    ///           zero, thus the first and the second cubic polynomial pieces
+    ///           are made to coincide.)
+    ///        ibcbeg = 1  means that the slope at tau(1) is made to equal
+    ///           c(2,1), supplied by input.
+    ///        ibcbeg = 2  means that the second derivative at tau(1) is
+    ///           made to equal c(2,1), supplied by input.
+    ///        ibcend = 0, 1, or 2 has analogous meaning concerning the
+    ///           boundary condition at tau(n), with the additional infor-
+    ///           mation taken from c(2,n).
+    ///     ***********************  output  **************************
+    ///     c(j,i), j=1,...,4; i=1,...,l (= n-1) = the polynomial coefficients
+    ///        of the cubic interpolating spline with interior knots (or
+    ///        joints) tau(2), ..., tau(n-1). precisely, in the interval
+    ///        (tau(i), tau(i+1)), the spline f is given by
+    ///           f(x) = c(1,i)+h*(c(2,i)+h*(c(3,i)+h*c(4,i)/3.)/2.)
+    ///        where h = x - tau(i). the function program *ppvalu* may be
+    ///        used to evaluate f or its derivatives from tau,c, l = n-1,
+    ///        and k=4.
+
+    int j, l;
+    double   divdf1,divdf3,dtau,g=0;
+    // ***** a tridiagonal linear system for the unknown slopes s(i) of
+    //  f  at tau(i), i=1,...,n, is generated and then solved by gauss elim-
+    //  ination, with s(i) ending up in c(2,i), all i.
+    //     c(3,.) and c(4,.) are used initially for temporary storage.
+    l = int(fNp-1);
+    // compute first differences of x sequence and store in C also,
+    // compute first divided difference of data and store in D.
+   {for (size_t m=1; m<fNp ; ++m) {
+       fPoly[m].C() = fPoly[m].X() - fPoly[m-1].X();
+       fPoly[m].D() = (fPoly[m].Y() - fPoly[m-1].Y())/fPoly[m].C();
+    }}
+    // construct first equation from the boundary condition, of the form
+    //             D[0]*s[0] + C[0]*s[1] = B[0]
+    if(fBegCond==0) {
+       if(fNp == 2) {
+         //     no condition at left end and n = 2.
+         fPoly[0].D() = 1.;
+         fPoly[0].C() = 1.;
+         fPoly[0].B() = 2.*fPoly[1].D();
+      } else {
+         //     not-a-knot condition at left end and n .gt. 2.
+         fPoly[0].D() = fPoly[2].C();
+         fPoly[0].C() = fPoly[1].C() + fPoly[2].C();
+         fPoly[0].B() = ((fPoly[1].C()+2.*fPoly[0].C())*fPoly[1].D()*fPoly[2].C()+
+	                fPoly[1].C()*fPoly[1].C()*fPoly[2].D())/fPoly[0].C();
+      }
+    } else if (fBegCond==1) {
+      //     slope prescribed at left end.
+      fPoly[0].B() = fValBeg;
+      fPoly[0].D() = 1.;
+      fPoly[0].C() = 0.;
+    } else if (fBegCond==2) {
+      //     second derivative prescribed at left end.
+      fPoly[0].D() = 2.;
+      fPoly[0].C() = 1.;
+      fPoly[0].B() = 3.*fPoly[1].D() - fPoly[1].C()/2.*fValBeg;
+    }
+    bool forward_gauss_elimination = true;
+    if(fNp > 2) {
+      //  if there are interior knots, generate the corresp. equations and car-
+      //  ry out the forward pass of gauss elimination, after which the m-th
+      //  equation reads    D[m]*s[m] + C[m]*s[m+1] = B[m].
+     {for (int m=1; m<l; ++m) {
+         g = -fPoly[m+1].C()/fPoly[m-1].D();
+         fPoly[m].B() = g*fPoly[m-1].B() + 3.*(fPoly[m].C()*fPoly[m+1].D()+fPoly[m+1].C()*fPoly[m].D());
+         fPoly[m].D() = g*fPoly[m-1].C() + 2.*(fPoly[m].C() + fPoly[m+1].C());
+      }}
+      // construct last equation from the second boundary condition, of the form
+      //           (-g*D[n-2])*s[n-2] + D[n-1]*s[n-1] = B[n-1]
+      //     if slope is prescribed at right end, one can go directly to back-
+      //     substitution, since c array happens to be set up just right for it
+      //     at this point.
+      if(fEndCond == 0) {
+         if (fNp > 3 || fBegCond != 0) {
+            //     not-a-knot and n .ge. 3, and either n.gt.3 or  also not-a-knot at
+            //     left end point.
+            g = fPoly[fNp-2].C() + fPoly[fNp-1].C();
+            fPoly[fNp-1].B() = ((fPoly[fNp-1].C()+2.*g)*fPoly[fNp-1].D()*fPoly[fNp-2].C()
+                         + fPoly[fNp-1].C()*fPoly[fNp-1].C()*(fPoly[fNp-2].Y()-fPoly[fNp-3].Y())/fPoly[fNp-2].C())/g;
+            g = -g/fPoly[fNp-2].D();
+            fPoly[fNp-1].D() = fPoly[fNp-2].C();
+         } else {
+            //     either (n=3 and not-a-knot also at left) or (n=2 and not not-a-
+            //     knot at left end point).
+            fPoly[fNp-1].B() = 2.*fPoly[fNp-1].D();
+            fPoly[fNp-1].D() = 1.;
+            g = -1./fPoly[fNp-2].D();
+         }
+      } else if (fEndCond == 1) {
+         fPoly[fNp-1].B() = fValEnd;
+         forward_gauss_elimination = false;
+      } else if (fEndCond == 2) {
+         //     second derivative prescribed at right endpoint.
+         fPoly[fNp-1].B() = 3.*fPoly[fNp-1].D() + fPoly[fNp-1].C()/2.*fValEnd;
+         fPoly[fNp-1].D() = 2.;
+         g = -1./fPoly[fNp-2].D();
+      }
+    } else {
+      if(fEndCond == 0) {
+         if (fBegCond > 0) {
+            //     either (n=3 and not-a-knot also at left) or (n=2 and not not-a-
+            //     knot at left end point).
+            fPoly[fNp-1].B() = 2.*fPoly[fNp-1].D();
+            fPoly[fNp-1].D() = 1.;
+            g = -1./fPoly[fNp-2].D();
+         } else {
+            //     not-a-knot at right endpoint and at left endpoint and n = 2.
+            fPoly[fNp-1].B() = fPoly[fNp-1].D();
+            forward_gauss_elimination = false;
+         }
+      } else if(fEndCond == 1) {
+         fPoly[fNp-1].B() = fValEnd;
+         forward_gauss_elimination = false;
+      } else if(fEndCond == 2) {
+         //     second derivative prescribed at right endpoint.
+         fPoly[fNp-1].B() = 3.*fPoly[fNp-1].D() + fPoly[fNp-1].C()/2.*fValEnd;
+         fPoly[fNp-1].D() = 2.;
+         g = -1./fPoly[fNp-2].D();
+      }
+    }
+    // complete forward pass of gauss elimination.
+    if(forward_gauss_elimination) {
+      fPoly[fNp-1].D() = g*fPoly[fNp-2].C() + fPoly[fNp-1].D();
+      fPoly[fNp-1].B() = (g*fPoly[fNp-2].B() + fPoly[fNp-1].B())/fPoly[fNp-1].D();
+    }
+    // carry out back substitution
+    j = l-1;
+    do {
+       fPoly[j].B() = (fPoly[j].B() - fPoly[j].C()*fPoly[j+1].B())/fPoly[j].D();
+       --j;
+    }  while (j>=0);
+    // ****** generate cubic coefficients in each interval, i.e., the deriv.s
+    //  at its left endpoint, from value and slope at its endpoints.
+    for (size_t i=1; i<fNp; ++i) {
+       dtau = fPoly[i].C();
+       divdf1 = (fPoly[i].Y() - fPoly[i-1].Y())/dtau;
+       divdf3 = fPoly[i-1].B() + fPoly[i].B() - 2.*divdf1;
+       fPoly[i-1].C() = (divdf1 - fPoly[i-1].B() - divdf3)/dtau;
+       fPoly[i-1].D() = (divdf3/dtau)/dtau;
+    }
+  }
+
+protected:
+  std::vector<cubic_poly> fPoly; //[fNp] Array of polynomial terms
+  double        fValBeg;     // Initial value of first or second derivative
+  double        fValEnd;     // End value of first or second derivative
+  int           fBegCond;    // 0=no beg cond, 1=first derivative, 2=second derivative
+  int           fEndCond;    // 0=no end cond, 1=first derivative, 2=second derivative
+};
+
+}}
+
+#endif

@@ -1,0 +1,10 @@
+#
+# Macro file for "TestEm4.cc"
+#
+/process/em/verbose 0
+#
+/tracking/verbose 2
+/run/beamOn 1
+#
+/tracking/verbose 6
+/run/beamOn 1

@@ -1,0 +1,72 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_colorf
+#define tools_colorf
+
+#include "lina/vec4f"
+
+namespace tools {
+
+class colorf : public vec4f {
+  typedef vec4f parent;
+public: //for SWIG
+  typedef unsigned char uchar;
+public:
+  TOOLS_SCLASS(tools::colorf) //for stype()
+public:
+  colorf():parent(0,0,0,1){}
+  colorf(float a_r,float a_g,float a_b,float a_a = 1):parent(a_r,a_g,a_b,a_a){}
+  virtual ~colorf() {}
+public:
+  colorf(const colorf& a_from):parent(a_from){}
+  colorf& operator=(const colorf& a_from){
+    parent::operator=(a_from);
+    return *this;
+  }
+public:
+  colorf& operator*=(const colorf& a_v) {
+    m_data[0] *= a_v.m_data[0];
+    m_data[1] *= a_v.m_data[1];
+    m_data[2] *= a_v.m_data[2];
+    m_data[3] *= a_v.m_data[3];
+    return *this;
+  }
+  colorf& operator*=(float a_v) {
+    m_data[0] *= a_v;
+    m_data[1] *= a_v;
+    m_data[2] *= a_v;
+    m_data[3] *= a_v;
+    return *this;
+  }
+public:
+  void clamp(float a_min = 0,float a_max = 1) {
+    if(m_data[0]<a_min) m_data[0] = a_min;
+    if(m_data[1]<a_min) m_data[1] = a_min;
+    if(m_data[2]<a_min) m_data[2] = a_min;
+    if(m_data[3]<a_min) m_data[3] = a_min;
+
+    if(a_max<m_data[0]) m_data[0] = a_max;
+    if(a_max<m_data[1]) m_data[1] = a_max;
+    if(a_max<m_data[2]) m_data[2] = a_max;
+    if(a_max<m_data[3]) m_data[3] = a_max;
+  }
+  float r() const {return v0();}
+  float g() const {return v1();}
+  float b() const {return v2();}
+  float a() const {return v3();}
+
+  void set_r(float a_v) {m_data[0] = a_v;}
+  void set_g(float a_v) {m_data[1] = a_v;}
+  void set_b(float a_v) {m_data[2] = a_v;}
+  void set_a(float a_v) {m_data[3] = a_v;}
+
+  uchar ruchar() const {return uchar(255.0f*m_data[0]);}
+  uchar guchar() const {return uchar(255.0f*m_data[1]);}
+  uchar buchar() const {return uchar(255.0f*m_data[2]);}
+  uchar auchar() const {return uchar(255.0f*m_data[3]);}
+};
+
+}
+
+#endif

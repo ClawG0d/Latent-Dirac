@@ -1,0 +1,106 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//****************************************************************************
+
+template<class ParticipantType>
+G4QGSModel<ParticipantType>::G4QGSModel() 
+{
+  SetEnergyMomentumCheckLevels(2*CLHEP::perCent, 150*CLHEP::MeV);
+}
+
+template<class ParticipantType>
+G4QGSModel<ParticipantType>::~G4QGSModel()
+{}
+
+template<class ParticipantType>
+void G4QGSModel<ParticipantType>::Init(const G4Nucleus & aNucleus, 
+                                       const G4DynamicParticle & aProjectile)
+{
+  // It is assumed that target nucleus is at rest.
+  theParticipants.Init(aNucleus.GetA_asInt(),aNucleus.GetZ_asInt());
+
+  G4LorentzVector Mom = aProjectile.Get4Momentum();
+
+  G4ReactionProduct theProjectile;   
+  theProjectile.SetDefinition(aProjectile.GetDefinition());
+  theProjectile.SetTotalEnergy(Mom.e());
+  theProjectile.SetMomentum(Mom.vect());
+
+  // Creation of strings and nuclear remnant
+  theParticipants.BuildInteractions(theProjectile);
+}
+
+template<class ParticipantType>
+G4ExcitedStringVector * G4QGSModel<ParticipantType>::GetStrings()
+{ 
+  // The strings are produced at theParticipants.BuildInteractions(theProjectile) 
+
+  G4PartonPair* aPair;
+  G4ExcitedStringVector* theStrings = new G4ExcitedStringVector;
+  G4ExcitedString * aString;
+  while( (aPair = theParticipants.GetNextPartonPair()) )  /* Loop checking, 07.08.2015, A.Ribon */
+  {
+    if (aPair->GetCollisionType() == G4PartonPair::DIFFRACTIVE)
+    {
+      aString = theDiffractiveStringBuilder.BuildString(aPair);
+    }
+    else
+    {
+      aString = theSoftStringBuilder.BuildString(aPair);
+    }
+
+    //    aString->Boost(theCurrentVelocity);  
+    theStrings->push_back(aString);
+    delete aPair;
+  }
+
+  return theStrings;
+}
+
+template<class ParticipantType>
+G4V3DNucleus* G4QGSModel<ParticipantType>::GetWoundedNucleus() const
+{
+  return theParticipants.GetWoundedNucleus();
+}
+
+template<class ParticipantType>
+G4V3DNucleus* G4QGSModel<ParticipantType>::GetProjectileNucleus() const
+{
+  return nullptr;
+}
+
+template<class ParticipantType>
+void G4QGSModel<ParticipantType>::ModelDescription(std::ostream& outFile) const
+{
+  outFile << "The Quark-Gluon String (QGS) model simulates the interaction\n"
+          << "of protons, neutrons, pions and kaons with nuclei in the\n"
+          << "approximate energy range 20 GeV to 50 TeV. The model handles\n"
+          << "the selection of collision partners, splitting of the nucleons\n"
+          << "into quarks and di-quarks, the formation and excitation of\n"
+          << "quark-gluon strings, string hadronization and diffractive dissociation.\n";
+}
+//****************************************************************************
+

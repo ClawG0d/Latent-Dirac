@@ -1,0 +1,55 @@
+# Example electromagnetic History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2025-07-28 I. Hrivnacova (electromagnetic-V11-03-00)
+- Migration of README pages to Markdown:
+  - .README.txt replaced with README.md and removed README 
+  - Reviewed and fixed external links, references to code,
+    removed references to non existing claseses or files,
+    improved formatting
+
+## 2023-11-15 I. Hrivnacova (electromagnetic-V11-01-01)
+- Updated vis*.mac macros:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2022-12-15 Igor Semeniouk (electromagnetic-V11-01-00)
+ - README, .README.txt
+   - Update TestEm15 short description add GC entry to table
+
+## 2021-12-10 Ben Morgan (electromagnetic-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+29-11-21  I. Hrivnacova (electromagnetic-V10-07-01)
+- Removed obsolete references to AIDA analysis tools
+
+24-05-21  B. Morgan (electromagnetic-V10-07-00)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+13-11-20 B. Morgan (electromagnetic-V10-06-01)
+- Enforce use of Serial RunManager for serial-only examples.
+
+03-11-20 B. Morgan (electromagnetic-V10-06-00)
+- Support same CMake version range as core Geant4
+
+01-04-13 A.Dotti (electromagnetic-V09-06-00,electromagnetic-V09-06-01)
+- Collect tags needed for new physics list APIs needed for MT
+
+16-11-12 I. Hrivnacova (electromagnetic-V09-05-00)
+- Updated documentation:
+  - Fixed .README files for artefacts from Markdown support
+  - Removed obsolete instructions (how to compile & link)
+
+02-11-08 mma (electromagnetic-V09-01-01)
+- all PhysListEmStandard: update EM options (~option_3)
+
+27-08-08 mma (electromagnetic-V09-01-00)
+- create README

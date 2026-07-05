@@ -1,0 +1,729 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// Author:      Alexei Sytov
+// Co-author:   Gianfranco Paternò (modifications & testing)
+// On the base of the CRYSTALRAD realization of scattering model:
+// A. I. Sytov, V. V. Tikhomirov, and L. Bandiera PRAB 22, 064601 (2019)
+
+#include "G4VChannelingFastSimCrystalData.hh"
+#include "G4Log.hh"
+
+G4VChannelingFastSimCrystalData::G4VChannelingFastSimCrystalData(){}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+G4VChannelingFastSimCrystalData::~G4VChannelingFastSimCrystalData(){}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void G4VChannelingFastSimCrystalData::SetGeometryParameters
+                                     (const G4LogicalVolume *crystallogic)
+{
+    G4int crystalID = crystallogic->GetInstanceID();
+
+    //set bending angle if the it exists in the list, otherwise default = 0
+    (fMapBendingAngle.count(crystalID) > 0)
+    ? SetBendingAngle(fMapBendingAngle[crystalID],crystallogic)
+    : SetBendingAngle(0.,crystallogic);
+
+    //set miscut angle if the it exists in the list, otherwise default = 0
+    (fMapMiscutAngle.count(crystalID) > 0)
+    ? SetMiscutAngle(fMapMiscutAngle[crystalID],crystallogic)
+    : SetMiscutAngle(0.,crystallogic);
+
+    //set crystalline undulator parameters if they exist in the list,
+    //otherwise default = G4ThreeVector(0,0,0).
+    (fMapCUAmplitudePeriodPhase.count(crystalID) > 0)
+    ? SetCUParameters(fMapCUAmplitudePeriodPhase[crystalID],crystallogic)
+    : SetCUParameters(G4ThreeVector(0.,0.,0.),crystallogic);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void G4VChannelingFastSimCrystalData::SetBendingAngle(G4double tetab,
+						      const G4LogicalVolume* crystallogic)
+{
+    G4int crystalID = crystallogic->GetInstanceID();
+
+    //set the bending angle for this logical volume
+    fMapBendingAngle[crystalID]=tetab;
+
+    G4ThreeVector limboxmin;//minimal limits of the box bounding the logical volume
+    G4ThreeVector limboxmax;//maximal limits of the box bounding the logical volume
+    //save the limits of the box bounding the logical volume
+    crystallogic->GetSolid()->BoundingLimits(limboxmin,limboxmax);
+
+    //bounding box half dimensions
+    fHalfDimBoundingBox = (limboxmax-limboxmin)/2.;
+
+    G4double lcr = limboxmax.getZ()-limboxmin.getZ();//crystal thickness
+
+    fBendingAngle=std::abs(tetab);
+    if (fBendingAngle<0.000001)//no bending less then 1 urad
+    {
+        if(fBendingAngle>DBL_EPSILON)
+        {
+            G4cout << "Channeling model: volume " << crystallogic->GetName() << G4endl;
+            G4cout << "Warning: bending angle is lower than 1 urad => set to 0" << G4endl;
+        }
+
+       fBent=0;
+       fBendingAngle=0.;
+       fBendingR=0.;//just for convenience (infinity in reality)
+       fBending2R=0.;
+       fBendingRsquare=0.;
+       fCurv=0.;
+
+       fCorrectionZ = 1.;
+    }
+    else
+    {
+       fBent=1;
+       fBendingR=lcr/fBendingAngle;
+       fBending2R=2.*fBendingR;
+       fBendingRsquare=fBendingR*fBendingR;
+       fCurv=1./fBendingR;
+
+       if (tetab<0.)
+       {
+           G4cout << "Channeling model: volume " << crystallogic->GetName() << G4endl;
+           G4cout << "Warning: bending angle is negative => set to be positive" << G4endl;
+       }
+    }
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void G4VChannelingFastSimCrystalData::SetMiscutAngle(G4double tetam,
+						     const G4LogicalVolume *crystallogic)
+{
+    G4int crystalID = crystallogic->GetInstanceID();
+
+    //set the bending angle for this logical volume
+    fMapMiscutAngle[crystalID]=tetam;
+
+    // fMiscutAngle>0: rotation of xz coordinate planes clockwise in the xz plane
+    fMiscutAngle=tetam;
+    if (std::abs(tetam)>1.*CLHEP::mrad)
+    {
+        G4cout << "Channeling model: volume " << crystallogic->GetName() << G4endl;
+        G4cout << "Warning: miscut angle is higher than 1 mrad => " << G4endl;
+        G4cout << "coordinate transformation routines may be unstable" << G4endl;
+    }
+    fCosMiscutAngle=std::cos(fMiscutAngle);
+    fSinMiscutAngle=std::sin(fMiscutAngle);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void G4VChannelingFastSimCrystalData::SetCrystallineUndulatorParameters(
+                                       G4double amplitude,
+                                       G4double period,
+                                       G4double phase,
+                                       const G4LogicalVolume *crystallogic)
+{
+    if (amplitude<DBL_EPSILON||period<DBL_EPSILON)
+    {
+        amplitude = 0.;
+        period=0.;
+        phase=0.;
+        G4cout << "Channeling model: volume " << crystallogic->GetName() << G4endl;
+        G4cout << "Warning: The crystalline undulator parameters are out of range "
+                  "=> the crystalline undulator mode switched off" << G4endl;
+    }
+
+    SetCUParameters(G4ThreeVector(amplitude,period,phase),crystallogic);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void G4VChannelingFastSimCrystalData::SetCrystallineUndulatorParameters(
+                                       const G4LogicalVolume *crystallogic,
+                                       const G4String &filename)
+{
+    G4int crystalID = crystallogic->GetInstanceID();
+    fMapImportCrystalGeometry[crystalID] = true;
+
+    G4PhysicsLinearVector vec(true);  //CU geometry data x=f(z) - transverse coordinate vs longitudinal
+    G4PhysicsLinearVector vecD(true); // = first derivative of vec
+    G4PhysicsLinearVector vecDD(true);// = second derivative of vec
+
+    //open input file for CU data
+    std::ifstream vfilein;
+    vfilein.open(filename);
+
+    if (!vfilein) {
+        G4String message = "Input file " +
+                           filename +
+                           " is not found!";
+        G4Exception("SetCrystallineUndulatorParameters",// Origin of the exception
+                    "001",                   // Unique error code
+                    FatalException,          // Terminate the program
+                    message);
+    }
+
+    G4cout << "Importing the Crystal geometry from the file: "
+           << filename << G4endl;
+
+    //reading from file
+    //CAUTION: all the values in the file in mm!!!
+    vec.Retrieve(vfilein,true);
+
+    vfilein.close();
+
+    //check the start coordinate (10.*DBL_EPSILON to add more flexibility, if not equal, no problem)
+    if(std::abs(vec.GetMinEnergy()) > 10.*DBL_EPSILON)
+    {
+        G4Exception("SetCrystallineUndulatorParameters",// Origin of the exception
+                    "001",                   // Unique error code
+                    FatalException,          // Terminate the program
+                    "The interpolation of the crystalline undulator does not start from 0.! "
+                    "The program will terminate.");
+
+    }
+
+    //check the end coordinate (1.e8*DBL_EPSILON - single precision check)
+    if(std::abs(vec.GetMaxEnergy() - 2.*fHalfDimBoundingBox.z()) > 100000000.*DBL_EPSILON)
+    {
+        G4Exception("SetCrystallineUndulatorParameters",// Origin of the exception
+                    "001",                   // Unique error code
+                    FatalException,          // Terminate the program
+                    "The interpolation of the crystalline undulator does not end with at"
+                    "the boundary of the volume => check the crystal thickness in z! "
+                    "The program will terminate.");
+    }
+
+    // Get the total length of vectors
+    std::size_t inodes = vec.GetVectorLength();
+
+    //check if the interpolation nodes are equidistant (otherwise )
+    for(std::size_t i=1; i<inodes-1; i++)
+    {
+        if(std::abs((vec.Energy(i+1)-vec.Energy(i))-
+                    (vec.Energy(i)  -vec.Energy(i-1)))>100000000.*DBL_EPSILON)//single precision
+        {
+            G4String message = "The interpolation nodes in the file " + filename +
+                               " are not equidistant! The program will terminate.";
+            G4Exception("SetCrystallineUndulatorParameters",// Origin of the exception
+                        "001",                   // Unique error code
+                        FatalException,          // Terminate the program
+                        message);
+        }
+    }
+
+    //necessary to use spline interpolation
+    vec.FillSecondDerivatives(G4SplineType::Base);
+
+    //setting up the vectors (to have the same arguments)
+    vecD = vec;
+    vecDD = vec;
+
+    //calculating the derivatives
+    for(std::size_t i=1; i<inodes-1; i++)
+    {
+        vecD.PutValue(i,(vec[i+1]-vec[i-1])/(vec.Energy(i+1)-vec.Energy(i-1)));
+        vecDD.PutValue(i,((vec[i+1]-vec[i])/(vec.Energy(i+1)-vec.Energy(i)) -
+                          (vec[i]-vec[i-1])/(vec.Energy(i)-vec.Energy(i-1)))*
+                          2./(vec.Energy(i+1)-vec.Energy(i-1)));
+    }
+
+    //end points have the same values as neighbouring
+    vecD.PutValue(0,vecD[1]);
+    vecD.PutValue(inodes-1,vecD[inodes-2]);
+    vecDD.PutValue(0,vecDD[1]);
+    vecDD.PutValue(inodes-1,vecDD[inodes-2]);
+
+    //necessary to use spline interpolation
+    vecD.FillSecondDerivatives(G4SplineType::Base);
+    vecDD.FillSecondDerivatives(G4SplineType::Base);
+
+    fVecCUx.push_back(vec);
+    fVecCUtetax.push_back(vecD);
+    fVecCUCurv.push_back(vecDD);
+
+    //check if the fVecCUx was already set up for this logical volume
+    if(fMapCUID.count(crystalID) > 0)
+    {
+        G4Exception("SetCrystallineUndulatorParameters",// Origin of the exception
+                    "001",                   // Unique error code
+                    FatalException,          // Terminate the program
+                    "It is not allowed to set up the crystalline undulator geometry "
+                    "the second time for the same logical volume! The program will terminate.");
+    }
+
+    //save the number of current element in fVecCUx, fVecCUtetax, fVecCUCurv
+    //to call them later using crystalID
+    fMapCUID[crystalID] = (G4int)fVecCUx.size()-1;
+
+    SetCUParameters(G4ThreeVector(1.,1.,0.),crystallogic);// input G4ThreeVector(1.,1.,0.)
+                                                          // is needed just to setup
+                                                          // the undulator in a normal way =>
+                                                          // first 2 arguments > 0.
+                                                          // values do not matter
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void G4VChannelingFastSimCrystalData::SetCUParameters(
+                                      const G4ThreeVector &amplitudePeriodPhase,
+                                      const G4LogicalVolume *crystallogic)
+{
+    G4int crystalID = crystallogic->GetInstanceID();
+
+    //set the crystalline undulator parameters for this logical volume
+    fMapCUAmplitudePeriodPhase[crystalID]=amplitudePeriodPhase;
+    fCUAmplitude=amplitudePeriodPhase.x();
+    G4double period = amplitudePeriodPhase.y();
+    fCUPhase = amplitudePeriodPhase.z();
+
+    // flag of custom crystal geometry uploaded from a file
+    fImportCrystalGeometry = (fMapImportCrystalGeometry.count(crystalID) > 0) ?
+                              fMapImportCrystalGeometry[crystalID] :
+                              false;
+
+    //if the amplidude of the crystalline undulator is 0 => no undulator
+    if(fCUAmplitude>DBL_EPSILON&&period>DBL_EPSILON)
+    {
+        //crystalline undulator flag
+        fCU = true;
+
+        fCUK = CLHEP::twopi/period;
+
+        if(fBendingAngle>DBL_EPSILON)
+        {
+            //bent and periodically bent crystal are not compatible
+            SetBendingAngle(0,crystallogic);
+
+            G4cout << "Channeling model: volume " << crystallogic->GetName() << G4endl;
+            G4cout << "Warning: crystalline undulator is not compatible with "
+                      "a bent crystal mode => setting bending angle to 0." << G4endl;
+        }
+
+        //setup crystal internal geometry data to access the correct elements of
+        //fVecCUx, fVecCUtetax, fVecCUCurv
+        if(fImportCrystalGeometry)
+        {
+            fCUID = fMapCUID[crystalID];
+        }
+    }
+    else
+    {
+        fCU = false;
+        fCUAmplitude = 0.;
+        fCUK = 0.;
+        fCUPhase = 0.;
+        fMapCUAmplitudePeriodPhase[crystalID] = G4ThreeVector(0.,0.,0.);
+    }
+
+    fCUK2 = fCUK*fCUK;
+    fCUAmplitudeK = fCUAmplitude*fCUK;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void G4VChannelingFastSimCrystalData::SetParticleProperties(G4double etotal,
+                                                         G4double mass,
+                                                         G4double charge,
+                                                         const G4String& particleName)
+{
+    G4double teta1;
+    fZ2=charge;
+    G4double zz22=fZ2*fZ2;
+    fParticleName=particleName;
+
+//     particle momentum and energy
+       G4double t=etotal*etotal-mass*mass; //  economy of operations
+       fPz=std::sqrt(t); //  momentum of particle
+       fPV=t/etotal;    //  pv
+       fBeta=fPz/etotal;   //  velocity/c
+       fTetaL = std::sqrt(std::abs(fZ2)*fVmax2/fPV); //Lindhard angle
+       fChannelingStep = fChangeStep/fTetaL; //standard simulation step
+
+//     Energy losses
+       fV2 = fBeta*fBeta; // particle (velocity/c)^2
+       fGamma = etotal/mass; //  Lorentz factor
+       fMe2Gamma = 2*CLHEP::electron_mass_c2*fGamma;
+//     max ionization losses
+       fTmax = fMe2Gamma*fGamma*fV2/
+               (CLHEP::electron_mass_c2/mass*CLHEP::electron_mass_c2/mass +
+                1. + fMe2Gamma/mass);
+//     max ionization losses for electrons
+       if(fParticleName=="e-"){fTmax/=2;}
+
+       for(G4int i=0; i<fNelements; i++)
+       {
+
+//       minimal scattering angle by coulomb scattering on nuclei
+//       defining by shielding by electrons
+//       teta1=hdc/(fPz*fRF)*DSQRT(1.13D0+3.76D0*(alpha*fZ1*fZ2/fBeta)**2){ev*cm/(eV*cm)}
+         teta1=fTeta10[i]*std::sqrt(1.13+fK40[i]*zz22/fV2); // /fPz later to speed up
+                                                            //  the calculations
+
+//       the coefficient for multiple scattering
+         fBB[i]=teta1*teta1*fPu11[i];
+         fE1XBbb[i]=expint(fBB[i]);
+         fBBDEXP[i]=(1.+fBB[i])*std::exp(fBB[i]);
+//       necessary for suppression of incoherent scattering
+//       by the atomic correlations in crystals for single scattering on nucleus
+//       (screened atomic potential): EXP(-(fPz*teta*fU1)**2)=EXP(-fPzu11*teta**2).GE.ksi
+//         =>no scattering
+         fPzu11[i]=fPu11[i]*fPz*fPz;
+
+         teta1=teta1/fPz; //
+         fTeta12[i]=teta1*teta1;
+//       maximal scattering angle by coulomb scattering on nuclei
+//       defining by nucleus radius
+//       tetamax=hc/(fPz*1.D-6*fR0*fAN**(1.D0/3.D0))//  {Mev*fermi/(MeV*fermi)}
+         G4double tetamax=fTetamax0[i]/fPz;
+         fTetamax2[i]=tetamax*tetamax;
+         fTetamax12[i]=fTeta12[i]+fTetamax2[i];
+
+//       a coefficient in a formula for scattering (for high speed of simulation)
+//       fK2=(fZ2)**2*alphahbarc2*4.*pi*fN0*(fZ1/fPV)**2
+         fK2[i]=fK20[i]*zz22/fPV/fPV;
+       }
+
+//     fK3=(fZ2)**2*alphahbarc2*pi/electron_mass_c2/(fV2)**2
+       fK3=fK30*zz22/fV2;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+G4double G4VChannelingFastSimCrystalData::GetLindhardAngle(G4double etotal,
+                                                           G4double mass,
+                                                           G4double charge)
+{
+    G4double pv0 = etotal-mass*mass/etotal;
+       return std::sqrt(2*std::abs(charge)*fVmax/pv0); //Calculate the value of the Lindhard angle
+                                   //(!!! the value for a straight crystal)
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+G4double G4VChannelingFastSimCrystalData::GetLindhardAngle()
+{
+    return fTetaL; //return the Lindhard angle value calculated in SetParticleProperties
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+G4double G4VChannelingFastSimCrystalData::GetSimulationStep(G4double tx,G4double ty)
+{
+    G4double simulationstep;
+    //find angle of particle w.r.t. the plane or axis
+    G4double angle=0.;
+    if (iModel==1)//1D model
+    {
+        angle = std::abs(tx);
+    }
+    else if  (iModel==2)//2D model
+    {
+        angle = std::sqrt(tx*tx+ty*ty);
+    }
+
+    //compare this angle with the Lindhard angle
+    if (angle<fTetaL)
+    {
+        simulationstep = fChannelingStep;
+    }
+    else
+    {
+      simulationstep = fChangeStep;
+      if (angle > 0.0) { simulationstep /= angle; }
+    }
+
+    return simulationstep;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+G4double G4VChannelingFastSimCrystalData::GetMaxSimulationStep(G4double etotal,
+                                                               G4double mass,
+                                                               G4double charge)
+{
+    //standard value of step for channeling particles which is the maximal possible step
+    return fChangeStep/GetLindhardAngle(etotal, mass, charge);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+G4ThreeVector G4VChannelingFastSimCrystalData::CoulombAtomicScattering(
+                                                           G4double effectiveStep,
+                                                           G4double step,
+                                                           G4int ielement)
+{
+        G4double tx = 0.;//horizontal scattering angle
+        G4double ty = 0.;//vertical scattering angle
+
+        G4double ksi=0.1;
+
+//      calculation of the teta2-minimal possible angle of a single scattering
+        G4double e1=fK2[ielement]*effectiveStep; //for high speed of a program
+//      (real formula is (4*pi*fN0*wpl(x)*dz*fZ1*zz2*alpha*hdc/fPV)**2)
+        G4double teta122=fTetamax12[ielement]/(ksi*fTetamax12[ielement]/e1+1.);
+        // teta122=fTeta12+teta22=teta1^2+teta2^2
+
+        G4double teta22;
+        G4double t;
+//      if the angle of a single scattering is less teta1 - minimal possible
+//      angle of coulomb scattering defining by the electron shielding than
+//      multiple scattering by both nuclei and electrons and electrons will not
+//      occur => minimal possible angle of a single scattering is equal to teta1
+        if (teta122<=fTeta12[ielement]*1.000125)
+        {
+          teta22=0.;
+          teta122=fTeta12[ielement];
+        }
+        else
+        {
+          teta22=teta122-fTeta12[ielement];
+          G4double aa=teta22/fTeta12[ielement];
+          G4double aa1=1.+aa;
+
+//        crystal, with scattering suppression
+          G4double tetamsi=e1*(G4Log(aa1)+
+                           (1.-std::exp(-aa*fBB[ielement]))/aa1+
+                           fBBDEXP[ielement]*
+                           (expint(fBB[ielement]*aa1)-fE1XBbb[ielement]));
+
+//        sumilation of multiple coulomb scattering by nuclei and electrons
+//        for high speed of a program, real formula is
+//        4*pi*fN0*wpl(x)*dz*(fZ1*zz2*alpha*hdc/fPV)**2*
+//         *(ln(1+a)+(1-exp(-a*b))/(1+a)+(1+b)*exp(b)*(E1XB(b*(1+a))-E1XB(b)))
+
+          ksi=G4UniformRand();
+          t=std::sqrt(-tetamsi*G4Log(ksi));
+
+          ksi=G4UniformRand();
+
+          tx+=t*std::cos(CLHEP::twopi*ksi);
+          ty+=t*std::sin(CLHEP::twopi*ksi);
+
+        }
+//      simulation of single coulomb scattering by nuclei (with screened potential)
+        G4double zss=0.;
+        G4double dzss=step;
+
+//      (calculation of a distance, at which another single scattering can happen)
+        ksi=G4UniformRand();
+
+        zss=-G4Log(ksi)*step/(e1*(1./teta122-1./fTetamax12[ielement]));
+        G4double tt;
+
+//      At some step several single scattering can occur.
+//      So,if the distance of the next scattering is less than the step,
+//      another scattering can occur. If the distance of the next scattering
+//      is less than the difference between the step and the distance of
+//      the previous scattering, another scattering can occur. And so on, and so on.
+//      In the cycle we simulate each of them. The cycle is finished, when
+//      the remaining part of step is less than a distance of the next single scattering.
+//********************************************
+//      if at a step a single scattering occurs
+        while (zss<dzss)
+        {
+
+//        simulation by Monte-Carlo of angles of single scattering
+          ksi=G4UniformRand();
+
+          tt=fTetamax12[ielement]/(1.+ksi*(fTetamax2[ielement]-teta22)/teta122)-
+                  fTeta12[ielement];
+
+          ksi=G4UniformRand();
+
+//        suppression of incoherent scattering by the atomic correlations in crystals
+          t=fPzu11[ielement]*tt;
+          t=std::exp(-t);
+
+          if (t<ksi) //if scattering takes place
+          {
+            //scattering angle
+            t=std::sqrt(tt);
+            ksi=G4UniformRand();
+
+            tx+=t*std::cos(CLHEP::twopi*ksi);
+            ty+=t*std::sin(CLHEP::twopi*ksi);
+          }
+
+          dzss-=zss;
+//        (calculation of a distance, at which another single scattering can happen)
+          ksi=G4UniformRand();
+
+          zss=-G4Log(ksi)*step/(e1*(1./teta122-1./fTetamax12[ielement]));
+        }
+//********************************************
+        return G4ThreeVector(tx,ty,0.);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+G4ThreeVector G4VChannelingFastSimCrystalData::CoulombElectronScattering(
+                                                             G4double eMinIonization,
+                                                             G4double electronDensity,
+                                                             G4double step)
+{
+
+    G4double zss=0.;
+    G4double dzss=step;
+    G4double ksi = 0.;
+
+    G4double tx = 0.;//horizontal scattering angle
+    G4double ty = 0.;//vertical scattering angle
+    G4double eloss = 0.;//energy loss
+
+    // eMinIonization - minimal energy transfered to electron
+    // a cut to reduce the number of calls of electron scattering
+    // is needed only at low density regions, in many cases does not do anything at all
+    if (eMinIonization<0.5*CLHEP::eV){eMinIonization=0.5*CLHEP::eV;}
+
+    //  single scattering on electrons routine
+    if ((eMinIonization<fTmax)&&(electronDensity>DBL_EPSILON))
+    {
+
+//    (calculation of a distance, at which another single scattering can happen)
+//    simulation of scattering length (by the same way single scattering by nucleus
+      ksi=G4UniformRand();
+
+      zss=-1.0*G4Log(ksi)/(fK3*electronDensity)/(1./eMinIonization-1./fTmax);
+
+//********************************************
+//    if at a step a single scattering occur
+      while (zss<dzss)
+      {
+//      simulation by Monte-Carlo of angles of single scattering
+        ksi=G4UniformRand();
+
+//      energy transfered to electron
+        G4double e1=eMinIonization/(1.-ksi*(1.-eMinIonization/fTmax));
+
+//      scattering angle
+        G4double t=0;
+        if(fTmax-e1>DBL_EPSILON) //to be sure e1<fTmax
+        {
+            t=std::sqrt(2.*CLHEP::electron_mass_c2*e1*(1-e1/fTmax))/fPz;
+        }
+
+        // energy losses
+        eloss=e1;
+        ksi=G4UniformRand();
+
+        tx+=t*std::cos(CLHEP::twopi*ksi);
+        ty+=t*std::sin(CLHEP::twopi*ksi);
+
+        dzss-=zss;
+//      (calculation of a distance, at which another single scattering can happen)
+//      simulation of scattering length
+//      (by the same way single scattering by nucleus
+        ksi=G4UniformRand();
+
+        zss=-1.0*G4Log(ksi)/(fK3*electronDensity)/(1./eMinIonization-1./fTmax);
+      }
+//********************************************
+    }
+    return G4ThreeVector(tx,ty,eloss);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+G4double G4VChannelingFastSimCrystalData::IonizationLosses(G4double dz,
+                                                    G4int ielement)
+{
+    //amorphous part of ionization losses
+
+    G4double elosses = 0.;
+    // 1/2 already taken into account in fKD
+
+    G4double loge = G4Log(fMe2Gamma*fGamma*fV2/fI0[ielement]);
+    G4double delta= 2.*(G4Log(fBeta*fGamma)+fLogPlasmaEdI0[ielement]-0.5);
+    if(delta<0.){delta=0.;}
+    loge-=delta;
+    if(fParticleName=="e-")
+    {
+       loge+=(-G4Log(2.) + 1.
+              -(2.*fGamma - 1.)/fGamma/fGamma*G4Log(2.) +
+               1./8.*((fGamma - 1.)/fGamma)*((fGamma - 1.)/fGamma));
+    }
+    else if(fParticleName=="e+")
+    {
+       loge+=(-fV2/12.*(11. + 14./(fGamma + 1.) + 10./(fGamma + 1.)/(fGamma + 1.) +
+                      4./(fGamma + 1.)/(fGamma + 1.)/(fGamma + 1.)));
+    }
+    else
+    {
+        loge-=fV2;
+    }
+    elosses=fZ2*fZ2*fKD[ielement]/fV2*loge*dz;
+
+    return elosses;}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+G4double G4VChannelingFastSimCrystalData::expint(G4double X)
+{
+//      ============================================
+//      Purpose: Compute exponential integral E1(x)
+//      Input :  x  --- Argument of E1(x)
+//      Output:  E1 --- E1(x)
+//      ============================================
+
+G4double E1, R, T, T0;
+G4int M;
+
+if (X==0)
+{
+    E1=1.e300;
+}
+else if (X<=1.)
+{
+   E1=1.;
+   R=1.;
+
+
+   for(int K=1; K<=25; K++)
+   {
+       R=-R*K*X/std::pow(K+1.,2.);
+       E1=E1+R;
+       if (std::abs(R)<=std::abs(E1)*1.0e-15) {break;}
+   }
+
+   E1=-0.5772156649015328-G4Log(X)+X*E1;
+}
+else
+{
+   M=20+std::trunc(80.0/X);
+   T0=0.;
+
+   for(int K=M; K>=1; K--)
+   {
+      T0=K/(1.0+K/(X+T0));
+   }
+
+   T=1.0/(X+T0);
+   E1=std::exp(-X)*T;
+}
+
+return E1;
+}

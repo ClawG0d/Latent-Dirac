@@ -1,0 +1,88 @@
+# Example range History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2024-05-21 Sebastien Incerti (range-V11-03-00)
+- Added beta option8 physics list
+
+## 2024-04-15 Sebastien Incerti (range-V11-02-01)
+- Updated README
+- Added auto to plot.C
+
+## 2024-04-15 Sebastien Incerti (range-V11-02-00)
+- Cleaned example
+
+## 2023-06-03 Vladimir Ivanchenko (range-V11-01-01)
+- PhysicsList - simplified
+- range.cc - use G4RunManagerFactory
+
+## 2023-05-23 Hoang Tran (range-V11-01-00)
+- Change to add DNA materials
+
+## 2021-12-10 Ben Morgan (range-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+07-10-21 I. Hrivnacova (range-V10-07-01)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+19-07-21 I. Hrivnacova (range-V10-07-00)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+22-07-18 S. Incerti (range-V10-04-01)
+- removed obsolete RanecuEngine
+
+09-05-18 B. Morgan (range-V10-04-00)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+08-09-17 SI (range-V10-03-03)
+- updated README
+
+26-07-17 SI (range-V10-03-02)
+- applied coding guidelines
+
+04-07-17 SI (range-V10-03-01)
+- reduced energy range in range.in (for STT)
+
+31-12-16 SI (range-V10-03-00)
+- cleanup
+
+15-10-16 SI (range-V10-02-05)
+- updated README (bis)
+
+14-10-16 G.Folger (range-V10-02-04)
+- remove direct use of theParticleIterator, use GetParticleTableIterator().
+    fix required by clang39 on Linux and MAC
+
+14-10-16 SI (range-V10-02-03)
+- updated README
+
+09-07-16 SI (range-V10-02-02)
+- added positron test in TrackingAction
+- updated README
+
+28-05-16 MK (range-V10-02-01)
+- PhysicsList.cc: add other DNA constructors
+- range.cc: range.cc: some code cleanup
+
+14-03-16 SI (range-V10-02-00)
+- changed physics constructor selection
+
+22-10-15 SI (range-V10-01-02)
+- updated plot.C to ROOT 6
+
+17-09-15 SI (range-V10-01-01)
+- applied coding guidelines
+
+26-08-15 SI (range-V10-01-00)
+- created and adapted from svalue

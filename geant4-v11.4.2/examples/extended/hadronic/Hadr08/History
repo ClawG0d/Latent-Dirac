@@ -1,0 +1,55 @@
+# Example Hadr08 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2023-10-26 Alberto Ribon (exhadr08-V11-01-01)
+- BiasingOperation::ApplyFinalStateBiasing : fixed line with more than 100
+  characters.
+
+## 2023-07-26 Ivana Hrivnacova (exhadr08-V11-01-00)
+- Fix in BiasingOperation::ApplyFinalStateBiasing():
+  Added calls to biased processes CrossSectionDataStore::ComputeCrossSection.
+  This fixes a break observed in the ALICE simulation, that can be reproduced
+  in this example by changing "G4_Si" with "G4_SILICON_DIOXIDE".
+
+## 2022-09-07 Vladimir Ivanchenko (exhadr08-V11-00-02)
+- BiasingOperation - used the Bertini cascade instead of pre-compound 
+    model, the last was not applicable for pion interactions. The Bertini
+    cascade is applied from 0 to 41 MeV, INCLXX from 40 MeV to 12 GeV
+
+## 2022-09-05 Vladimir Ivanchenko (exhadr08-V11-00-01)
+- BiasingOperation - transition from pre-compound model to INCL++
+    is changed from 1-2 MeV to 20-21 MeV in order to fix infinite
+    loops happens in nightly tests
+- Hadr08.cc - run initialisation is moved to macro files
+
+## 2021-12-10 Ben Morgan (exhadr08-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+10-03-21 A. Ribon (exhadr08-V10-07-02)
+- BiasingOperation : added (forgotten) calls to BuildPhysicsTable.
+
+08-03-21 A. Ribon (exhadr08-V10-07-01)
+- BiasingOperation : replaced Gheisha inelastic cross section (that
+  has been deleted) with better cross sections.
+
+04-03-21 A. Ribon (exhadr08-V10-07-00)
+- BiasingOperation : replaced particle-specific inelastic processes
+  (that have been deleted) with G4HadronInelasticProcess.
+
+10-11-20 B. Morgan (exhadr08-V10-06-00)
+- Migration to G4RunManagerFactory.
+
+26-11-19 I. Hrivnacova (exhadr08-V10-05-01)
+- Fixed formatting in .README.txt
+
+25-10-19 Alberto Ribon (exhadr08-V10-05-00)
+- Created this example.
+

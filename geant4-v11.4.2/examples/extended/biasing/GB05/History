@@ -1,0 +1,44 @@
+# Example GB05 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-03-14 Igor Semeniouk (GB05-V11-03-01)
+- The  explicit call of base class constructor
+in GB05DetectorConstruction removed
+
+## 2025-03-10 Igor Semeniouk (GB05-V11-03-00)
+- Remove unused WITH_GEANT4_UIVIS cmake option
+- Propagate biasing on/off to detector construction to initialization of biasing classes only if biasing requested.
+
+## 2021-12-10 Ben Morgan (GB05-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+November 10th, 2020 Ben Morgan - GB05-V10-06-00
+- Migration to G4RunManagerFactory.
+
+May 20, 2018 J. Allison - GB05-V10-04-01
+- Remove G4UI_USE and G4VIS_USE.
+- Move instantiation of G4UIExecutive nearer to start of main.
+
+May 8, 2018 B. Morgan - GB05-V10-04-00
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+Nov 18, 2016 G. Folger  - biasingGB05-V10-02-02
+- correct name in GNUmakefile
+
+Nov 02, 2016 M. Verderi - biasingGB05-V10-02-01
+- Remove a dummy file
+
+Nov 02, 2016 M. Verderi - biasingGB05-V10-02-00
+- Creation
+

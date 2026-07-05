@@ -1,0 +1,309 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_valop
+#define tools_valop
+
+#include "ival_func"
+
+namespace tools {
+
+class valop {
+  static const std::string& s_class() {
+    static const std::string s_v("tools::valop");
+    return s_v;
+  }
+public:
+  enum e_type {
+    CMP_GT = 1,
+    CMP_GE = 2,
+    CMP_LT = 3,
+    CMP_LE = 4,
+    CMP_EQ = 5,
+    CMP_NE = 6,
+    CMP_AND = 7,
+    CMP_OR = 8,
+
+    ADD = 9,
+    MUL = 10,
+    SUB = 11,
+    DIV = 12,
+
+    ASSIGN = 13,
+    MINUS = 14,
+    UNSIGNED_INTEGER = 15,
+    REAL = 16,
+    NAME = 17,
+    STRING = 18,
+    //PI = 19,
+    FUNC = 20,
+    BOOL_TRUE = 21,
+    BOOL_FALSE = 22,
+    NOT = 23,
+    // math edition :
+    SYMBOL = 100,
+    ASIDE = 101,
+    NVMUL = 102, //not visible mul
+    EQUAL = 103,
+    SUPS = 104,  //super script
+    SUBS = 105   //sub script
+  };
+
+public:
+  valop(e_type a_type)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(0),m_B(0),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+  }
+
+  valop(e_type a_type,valop* a_A)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(a_A),m_B(0),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+  }
+
+  valop(e_type a_type,valop* a_A,valop* a_B)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(a_A),m_B(a_B),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+  }
+
+  valop(e_type a_type,ival_func* a_function,valop* a_A)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(a_A),m_B(0),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+    m_function = a_function?a_function->copy():0;
+  }
+
+  valop(e_type a_type,ival_func* a_function,valop* a_A,valop* a_B)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(a_A),m_B(a_B),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+    m_function = a_function?a_function->copy():0;
+  }
+
+  valop(e_type a_type,ival_func* a_function,valop* a_A,valop* a_B,valop* a_C)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(a_A),m_B(a_B),m_C(a_C),m_D(0),m_E(0),m_F(0),m_tag(0){
+    m_function = a_function?a_function->copy():0;
+  }
+
+  valop(e_type a_type,ival_func* a_function,valop* a_A,valop* a_B,valop* a_C,valop* a_D)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(a_A),m_B(a_B),m_C(a_C),m_D(a_D),m_E(0),m_F(0),m_tag(0){
+    m_function = a_function?a_function->copy():0;
+  }
+
+  valop(e_type a_type,ival_func* a_function,valop* a_A,valop* a_B,valop* a_C,valop* a_D,valop* a_E)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(a_A),m_B(a_B),m_C(a_C),m_D(a_D),m_E(a_E),m_F(0),m_tag(0){
+    m_function = a_function?a_function->copy():0;
+  }
+
+  valop(e_type a_type,ival_func* a_function,
+             valop* a_A,valop* a_B,valop* a_C,
+             valop* a_D,valop* a_E,valop* a_F)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(a_A),m_B(a_B),m_C(a_C),m_D(a_D),m_E(a_E),m_F(a_F),m_tag(0){
+    m_function = a_function?a_function->copy():0;
+  }
+
+  valop(e_type a_type,bool a_v)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(0),m_B(0),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+    m_variable.set(a_v);
+  }
+
+  valop(e_type a_type,unsigned int a_number)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(0),m_B(0),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+    m_variable.set(a_number);
+  }
+
+  valop(e_type a_type,double a_number)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(0),m_B(0),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+    m_variable.set(a_number);
+  }
+
+  valop(e_type a_type,const std::string& a_string)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(0),m_B(0),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+    m_variable.set(a_string);
+  }
+
+  //NOTE : the below is needed so that valop("t") not put on valop(bool).
+  valop(e_type a_type,const char* a_cstr)
+  :m_type(a_type),m_function(0),m_index(not_found())
+  ,m_A(0),m_B(0),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+    m_variable.set(a_cstr);
+  }
+
+  valop(e_type a_type,const std::string& a_name,int a_index)
+  :m_type(a_type),m_function(0),m_name(a_name),m_index(a_index)
+  ,m_A(0),m_B(0),m_C(0),m_D(0),m_E(0),m_F(0),m_tag(0){
+    // a_name needed to not confuse with the constructor (e_type,unsigned int).
+  }
+
+  virtual ~valop() {
+    delete m_function;
+    delete m_A;
+    delete m_B;
+    delete m_C;
+    delete m_D;
+    delete m_E;
+    delete m_F;
+  }
+public:
+  valop(const valop& a_from)
+  :m_type(a_from.m_type)
+  ,m_function(a_from.m_function?a_from.m_function->copy():0)
+  ,m_variable(a_from.m_variable)
+  ,m_name(a_from.m_name)
+  ,m_index(a_from.m_index)
+
+  ,m_A(a_from.m_A?new valop(*a_from.m_A):0)
+  ,m_B(a_from.m_B?new valop(*a_from.m_B):0)
+  ,m_C(a_from.m_C?new valop(*a_from.m_C):0)
+  ,m_D(a_from.m_D?new valop(*a_from.m_D):0)
+  ,m_E(a_from.m_E?new valop(*a_from.m_E):0)
+  ,m_F(a_from.m_F?new valop(*a_from.m_F):0)
+
+  ,m_tag(a_from.m_tag)
+  {
+  }
+  valop& operator=(const valop& a_from) {
+    if(&a_from==this) return *this;
+
+    m_type = a_from.m_type;
+
+    delete m_function;
+    m_function = a_from.m_function?a_from.m_function->copy():0;
+
+    m_variable = a_from.m_variable;
+    m_name = a_from.m_name;
+    m_index = a_from.m_index;
+
+    delete m_A;
+    delete m_B;
+    delete m_C;
+    delete m_D;
+    delete m_E;
+    delete m_F;
+    m_A = a_from.m_A?new valop(*a_from.m_A):0;
+    m_B = a_from.m_B?new valop(*a_from.m_B):0;
+    m_C = a_from.m_C?new valop(*a_from.m_C):0;
+    m_D = a_from.m_D?new valop(*a_from.m_D):0;
+    m_E = a_from.m_E?new valop(*a_from.m_E):0;
+    m_F = a_from.m_F?new valop(*a_from.m_F):0;
+
+    m_tag = a_from.m_tag;
+    return *this;
+  }
+
+protected:
+  static int not_found() {return -1;}
+public:
+  e_type m_type;
+  ival_func* m_function; //owner
+  value m_variable;
+  std::string m_name;
+  int m_index;
+  valop* m_A;
+  valop* m_B;
+  valop* m_C;
+  valop* m_D;
+  valop* m_E;
+  valop* m_F;
+public:
+  int m_tag;
+};
+
+class valop_visitor {
+public:
+  virtual ~valop_visitor() {}
+public:
+  virtual bool binary(unsigned int,const valop&,const valop&) = 0;
+  virtual bool unary(unsigned int,const valop&) = 0;
+  virtual bool variable(unsigned int,const value&) = 0;
+  virtual bool option(const valop&) = 0;
+  virtual bool func_1(const valop&,const valop&) = 0;
+  virtual bool func_2(const valop&,const valop&,const valop&) = 0;
+  virtual bool func_3(const valop&,const valop&,const valop&,const valop&) = 0;
+  virtual bool func_4(const valop&,const valop&,const valop&,
+                                   const valop&,const valop&) = 0;
+  virtual bool func_5(const valop&,const valop&,const valop&,
+                                   const valop&,const valop&,const valop&) = 0;
+  virtual bool func_6(const valop&,const valop&,const valop&,
+                                   const valop&,const valop&,
+                                   const valop&,const valop&) = 0;
+public:
+  bool visit(const valop& a_valop) {
+    switch(a_valop.m_type) {
+    case valop::CMP_GT:
+    case valop::CMP_GE:
+    case valop::CMP_LT:
+    case valop::CMP_LE:
+    case valop::CMP_EQ:
+    case valop::CMP_NE:
+    case valop::CMP_AND:
+    case valop::CMP_OR:
+
+    case valop::ADD:
+    case valop::MUL:
+    case valop::SUB:
+    case valop::DIV:
+
+    case valop::ASIDE:
+    case valop::NVMUL:
+    case valop::EQUAL:
+    case valop::SUPS:
+    case valop::SUBS:
+      if(!a_valop.m_A || !a_valop.m_B) break;
+      return binary(a_valop.m_type,*a_valop.m_A,*a_valop.m_B);
+
+    case valop::BOOL_TRUE:
+    case valop::BOOL_FALSE:
+    case valop::UNSIGNED_INTEGER:
+    case valop::REAL:
+    case valop::STRING:
+    case valop::SYMBOL:
+      return variable(a_valop.m_type,a_valop.m_variable);
+    case valop::NAME:
+      return option(a_valop);
+    case valop::MINUS:
+    case valop::NOT:
+    case valop::ASSIGN:
+      if(!a_valop.m_A) break;
+      return unary(a_valop.m_type,*a_valop.m_A);
+    case valop::FUNC:{
+      if(!a_valop.m_A) break;
+      if(!a_valop.m_function) {
+        return false;
+      }
+      size_t argn = a_valop.m_function->number_of_arguments();
+      if(argn==1) {
+        return func_1(a_valop,*a_valop.m_A);
+      } else if(argn==2) {
+        if(!a_valop.m_B) break;
+        return func_2(a_valop,*a_valop.m_A,*a_valop.m_B);
+      } else if(argn==3) {
+        if(!a_valop.m_B || !a_valop.m_C) break;
+        return func_3(a_valop,*a_valop.m_A,*a_valop.m_B,*a_valop.m_C);
+      } else if(argn==4) {
+        if(!a_valop.m_B || !a_valop.m_C || !a_valop.m_D) break;
+        return func_4(a_valop,*a_valop.m_A,*a_valop.m_B,*a_valop.m_C,*a_valop.m_D);
+      } else if(argn==5) {
+        if(!a_valop.m_B || !a_valop.m_C || !a_valop.m_D || !a_valop.m_E) break;
+        return func_5(a_valop,*a_valop.m_A,*a_valop.m_B,*a_valop.m_C,*a_valop.m_D,*a_valop.m_E);
+      } else if(argn==6) {
+        if(!a_valop.m_B || !a_valop.m_C || !a_valop.m_D || !a_valop.m_E || !a_valop.m_F) break;
+        return func_6(a_valop,*a_valop.m_A,*a_valop.m_B,*a_valop.m_C,*a_valop.m_D,*a_valop.m_E,*a_valop.m_F);
+      } else {
+        return false;
+      }}
+    default:
+      break;
+    }
+    return false;
+  }
+};
+
+}
+
+#endif

@@ -1,0 +1,71 @@
+# Example Par02 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2022-11-04  I. Hrivnacova (expar02-V11-00-01)
+- Fixed Doxygen file descriptions
+
+## 2021-12-10 Ben Morgan (expar02-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+06-10-21 I. Hrivnacova (expar02-V10-07-01)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+19-07-21 I. Hrivnacova (expar02-V10-07-00)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+10-11-20 B. Morgan (expar02-V10-06-00)
+- Migration to G4RunManagerFactory.
+
+28-11-19 I. Hrivnacova (expar02-V10-05-00)
+- Fixed Doxygen warning
+
+17-05-18 J.Allison (expar02-V10-04-00)
+- Add #include "G4Types.hh"
+- Remove G4UI_USE and G4VIS_USE.
+- Move instantiation of G4UIExecutive to start of main.
+
+14-10-16 G.Folger                                 (expar02-V10-02-01)
+- remove direct use of theParticleIterator, use GetParticleTableIterator().
+    fix required by clang39 on Linux and MAC
+
+04-Mar-2016 A. Ribon                        (expar02-V10-02-00)
+- Added magnetic field, and corrected the way to create a G4FieldTrack
+  object in Par02FastSimModelTracker.
+
+14-Oct-2015 J. Apostolakis                        (expar02-V10-01-07)
+- Simplified code to set Primary Particle Information (Par02FastSimModelHCal)
+
+14-Sep-2015 I. Hrivnacova                         (expar02-V10-01-06)
+- Fixed deleting of fast simulation models in multi-threaded mode
+
+11-Sep-2015  A. Ribon                             (expar02-V10-01-05)
+- Migrated to multi-threaded mode (thanks to Ivana help).
+
+27-Apr-2015  I. Hrivnacova                        (expar02-V10-01-04)
+- Fixed .README to get generated documentation correct.
+
+21-Apr-2015  A. Ribon                             (expar02-V10-01-03)
+- Fixed another two warnings in Windows platform.
+
+21-Apr-2015  A. Ribon                             (expar02-V10-01-02)
+- Fixed a problem in Windows platform.
+
+20-Apr-2015  A. Ribon                             (expar02-V10-01-01)
+- Fixed a few compilation warnings.
+
+17-Apr-2015  A. Ribon                             (expar02-V10-01-00)
+- Created and first commit.
+  Based on the Future Circular Collider (FCC) fast simulation application
+  developed by Anna Zaborowska.
+

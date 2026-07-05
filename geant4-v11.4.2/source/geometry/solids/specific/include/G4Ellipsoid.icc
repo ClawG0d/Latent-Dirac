@@ -1,0 +1,88 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4Ellipsoid
+//
+// Implementation of inline methods of G4Ellipsoid
+// --------------------------------------------------------------------
+
+inline
+G4double G4Ellipsoid::GetDx() const
+{
+  return fDx;
+}
+
+inline
+G4double G4Ellipsoid::GetDy() const
+{
+  return fDy;
+}
+
+inline
+G4double G4Ellipsoid::GetDz() const
+{
+  return fDz;
+}
+
+inline
+G4double G4Ellipsoid::GetSemiAxisMax (G4int i) const
+{
+  return (i==0) ? fDx : ((i==1) ? fDy : fDz);
+}
+
+inline
+G4double G4Ellipsoid::GetZBottomCut() const
+{
+  return fZBottomCut;
+}
+
+inline
+G4double G4Ellipsoid::GetZTopCut() const
+{
+  return fZTopCut;
+}
+
+inline
+void G4Ellipsoid::SetSemiAxis(G4double newxSemiAxis,
+                              G4double newySemiAxis,
+                              G4double newzSemiAxis)
+{
+  fDx = newxSemiAxis;
+  fDy = newySemiAxis;
+  fDz = newzSemiAxis;
+
+  CheckParameters();
+  fRebuildPolyhedron = true;
+}
+
+inline
+void G4Ellipsoid::SetZCuts (G4double newzBottomCut, G4double newzTopCut)
+{
+  fZBottomCut = newzBottomCut;
+  fZTopCut = newzTopCut;
+
+  CheckParameters();
+  fRebuildPolyhedron = true;
+}

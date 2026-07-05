@@ -1,0 +1,122 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// Authors: Lucio Santi, Rodrigo Castro (Univ. Buenos Aires), 2018-2021
+// --------------------------------------------------------------------
+
+template <class T>
+G4QSSDriver<T>::G4QSSDriver(T* pStepper) : G4InterpolationDriver<T, true>(0, pStepper)
+{
+  // TODO: Remove additional stepper instances - should be a separate Driver class
+  this->fSteppers.resize(1);
+}
+
+template <class T>
+void G4QSSDriver<T>::OnStartTracking()
+{
+  Base::OnStartTracking();
+  if (! initializedOnFirstRun)
+  {
+    G4double dqRel = G4QSSMessenger::instance()->Get_dQRel();
+    G4double dQMin = G4QSSMessenger::instance()->Get_dQMin();
+    if (dqRel == 0) { dqRel = 0.001; }
+    if (dQMin == 0) { dQMin = 0.0001; }
+    this->SetPrecision(dqRel, dQMin);
+
+    initializedOnFirstRun = true;
+  }
+}
+
+template <class T>
+void G4QSSDriver<T>::OnComputeStep(const G4FieldTrack* track)
+{
+  Base::OnComputeStep(track);
+}
+
+template <class T>
+void G4QSSDriver<T>::SetPrecision(G4double dq_rel, G4double dq_min)
+{
+  G4cout << "Setting QSS precision parameters: "
+         << "dQRel = " << dq_rel << " - "
+         << "dQMin = " << dq_min << G4endl;
+
+  for (const auto& item : this->fSteppers)
+  {
+    item.stepper->SetPrecision(dq_rel, dq_min);
+  }
+}
+
+template <class T>
+G4double G4QSSDriver<T>::AdvanceChordLimited(
+  G4FieldTrack& track, G4double hstep, G4double epsStep, G4double chordDistance)
+{
+  // For now, just extract functionality that we don't use from G4InterpolationDriver
+  // We should probably end up making  a custom G4QSSDriver separated from it
+  ++this->fTotalStepsForTrack;
+  this->fLastStepper = this->fSteppers.begin();
+
+  const G4double preCurveLength = track.GetCurveLength();
+  G4double postCurveLength = preCurveLength;
+  auto it = this->fSteppers.begin();
+
+  it->stepper->reset(const_cast<const G4FieldTrack*>(&track));
+
+  field_utils::State yBegin, y;
+  track.DumpToArray(yBegin);
+  track.DumpToArray(y);
+
+  G4double hdid = OneGoodStep(it, y, this->fdydx, hstep, epsStep, preCurveLength, &track);
+  postCurveLength += hdid;
+
+  G4double dChordStep = this->DistChord(yBegin, preCurveLength, y, postCurveLength);
+
+  // update chord step estimate
+  hdid = this->FindNextChord(
+    yBegin, preCurveLength, y, postCurveLength, dChordStep, chordDistance);
+
+  track.LoadFromArray(y, this->fSteppers[0].stepper->GetNumberOfVariables());
+  track.SetCurveLength(preCurveLength + hdid);
+
+  return hdid;
+}
+
+template <class T>
+G4double G4QSSDriver<T>::OneGoodStep(typename G4InterpolationDriver<T, true>::StepperIterator it,
+  field_utils::State& y, field_utils::State& dydx, G4double& hstep, G4double /*epsStep*/,
+  G4double curveLength, G4FieldTrack* /*track*/)
+{
+  G4double yerr[G4FieldTrack::ncompSVEC], ytemp[G4FieldTrack::ncompSVEC];
+  it->stepper->Stepper(y, dydx, hstep, ytemp, yerr);
+  G4double h = it->stepper->GetLastStepLength();
+
+  // set interpolation interval
+  it->begin = curveLength;
+  it->end = curveLength + h;
+  it->inverseLength = 1. / h;
+
+  field_utils::copy(y, ytemp);
+
+  return h;
+}

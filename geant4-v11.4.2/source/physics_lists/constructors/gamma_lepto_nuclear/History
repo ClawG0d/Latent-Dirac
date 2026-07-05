@@ -1,0 +1,256 @@
+# Category phys-ctor-glnuclear History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2024-12-10 Douglas M Wright (phys-ctor-glnuclear-V11-03-00)
+- G4EmExtraPhysics removed LEND photonuclear, is now done in G4HadronPhysicsLEND
+
+## 2024-10-28 Alexei Sytov (phys-ctor-glnuclear-V11-02-01)
+- Added new physics G4CoherentPairProductionPhysics related to the process
+  G4CoherentPairProduction of coherent pair production by
+  high energy gamma in an oriented crystal.
+- source.cmake updated correspondingly
+
+## 2024-02-13 Vladimir Ivanchenko (phys-ctor-glnuclear-V11-02-00)
+- G4NeutrinoPhysics - fixed neutrino physics instantiation (problem #2594)
+
+## 2023-11-10 Vladimir Ivanchenko (phys-ctor-glnuclear-V11-01-04)
+- G4EmMessenger, G4NeutrinoPhysicsMessenger - fixed typos
+
+## 2023-11-06 Vladimir Ivanchenko (phys-ctor-glnuclear-V11-01-03)
+- G4EmExtraPhysics - fixed instantiation of e+- nuclear processes
+- G4NeutrinoPhysics - improved neutrino physics
+
+## 2023-10-30 Vladimir Ivanchenko (phys-ctor-glnuclear-V11-01-02)
+- G4EmExtraPhysics, G4EmMessenger - removed neutrino physics
+- G4NeutrinoPhysics, G4NeutrinoPhysicsMessenger - added new physics constructor
+    for neutrino physics and its messenger
+- Clean-up all classes of sub-library
+
+## 2023-10-09 Vladimir Grichine (phys-ctor-glnuclear-V11-01-01)
+- G4EmExtraPhysics, G4EmMessenger - activation of neutrino oscillation
+               and oscillation distance biasing 
+
+## 2023-02-12 Vladimir Grichine (phys-ctor-glnuclear-V11-01-00)
+- G4EmExtraPhysics - biasing is activated in processes, not XS
+
+## 2022-11-03 Vladimir Grichine (phys-ctor-glnuclear-V11-00-07)
+- G4EmExtraPhysics - update for tau-neutrino nucleus processes
+
+## 2022-09-05 Ben Morgan (phys-ctor-glnuclear-V11-00-06)
+- Update public/private dependencies for consistency
+
+## 2022-08-24 Gabriele Cosmo (phys-ctor-glnuclear-V11-00-05)
+- Added missing dependency on G4muons in GNUmakefile and CMake script.
+
+## 2022-08-21 Vladimir Ivanchenko (phys-ctor-glnuclear-V11-00-04)
+- G4EmExtraPhysics, G4EmMessenger - added muon to muon pair process,
+    move initialisation class members to the header
+
+## 2022-06-22 Guilherme Amadio (phys-ctor-glnuclear-V11-00-03)
+- Replace std::getenv with G4FindDataDir
+
+## 2022-05-19 Vladimir Ivanchenko (phys-ctor-glnuclear-V11-00-02)
+- GNUmakefile, source.cmake - updated list of sub-libraries and includes
+
+## 2022-03-28 Vladimir Ivanchenko (phys-ctor-glnuclear-V11-00-01)
+- G4EmExtraPhysics, G4EmMessenger - use C++11 keywords, suppressed 
+    broadcasting UI commands
+
+## 2021-12-10 Ben Morgan (phys-ctor-glnuclear-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+10 November 2021  Vladimir Ivanchenko (phys-ctor-glnuclear-V10-07-06)
+- G4EmExtraPhysics - added an option for positron annihilation to tau pair 
+
+20 August 2021  Vladimir Ivanchenko (phys-ctor-glnuclear-V10-07-05)
+- G4EmExtraPhysics - enable synkrotron radiation only for really stable 
+    particles
+
+16 August 2021  Jonas Hahnfeld (phys-ctor-glnuclear-V10-07-04)
+- G4EmExtraPhysics - fix typo to register positron-nuclear process,
+  register model for e-/e+-nuclear in case of general processes,
+  avoid registering synchroton radiation twice for e-/e+
+
+13 August 2021  Vladimir Ivanchenko (phys-ctor-glnuclear-V10-07-03)
+- G4EmExtraPhysics - enable updated G4GammaNuclearXS by default 
+    for more detailed tests
+
+16 April 2021 Ben Morgan (phys-ctor-glnuclear-V10-07-02)
+- Migrate build to modular CMake API
+
+13 April 2021  Alberto Ribon (phys-ctor-glnuclear-V10-07-01)
+-  GNUmakefile, sources.cmake : removed dependency on hadronic/model/util
+   and hadronic/model/management (that have been now deleted, with their
+   classes moved to hadronic/util and hadronic/management).
+
+04 March 2021  Alberto Ribon (phys-ctor-glnuclear-V10-07-00)
+- G4EmExtraPhysics, G4BertiniElectroNuclearBuilder,
+  G4LENDBertiniGammaElectroNuclearBuilder : replaced G4PhotoNuclearProcess
+  (now deleted) with G4HadronInelasticProcess.
+
+04 November 2020  Vladimir Ivanchenko (phys-ctor-glnuclear-V10-06-04)
+- G4EmExtraPhysics, G4EmMessenger - added a flag to enable G4GammaNuclearXS
+    cross section and possibility to use general process for electron and
+    positron; fixed several UI commands
+
+28 May 2020 Ben Morgan           (phys-ctor-glnuclear-V10-06-03)
+- Remove obsolete GRANULAR_DEPENDENCIES entries
+
+29 April 2020 V. Grichine  (phys-ctor-glnuclear-V10-06-02)
+ - G4EmExtraPhysics - extension to anti_nu_mu, nu_e and anti_nu_e processes-models
+
+21 April 2020  Vladimir Ivanchenko (phys-ctor-glnuclear-V10-06-01)
+- G4EmExtraPhysics, G4EmMessenger - added low-energy limit, set method, and UI
+  command defining low-energy gamma-nuclear model, which are using de-excitation
+  module and providing isomere production and gamma transitions
+
+13 January 2020  Dennis Wright (phys-ctor-glnuclear-V10-06-00)
+- remove double delete in destructor of G4LENDBertiniGammaElectroNuclearBuilder
+  (Coverity errors 101609 and 101727)
+
+29 November 2019, A.Ribon (phys-ctor-glnuclear-V10-05-03)
+- Update of the only README file.
+
+19 November 2019, V.Ivanchenko (phys-ctor-glnuclear-V10-05-02)
+- G4EmExtraPhysics - simplified and clean-up model creation;
+    do not use extra builder classes; used std::getenv; use
+    transition from the cascade to string model 3 - 6 GeV (according
+    to values in G4HadronicParameters class), before there were
+    3 - 3.5 GeV transition; should reduce memory leak at destruction
+- G4BertiniElectroNuclearBuilder - used std::getenv
+
+07 May 2019, V. Grichine (phys-ctor-glnuclear-V10-05-01)
+- G4EmExtraPhysics - add muon-neutrino nucleus interactions
+
+03 April 2019, V.Ivanchenko (phys-ctor-glnuclear-V10-05-00)
+- G4EmExtraPhysics - removed extra static members
+
+26 November 2018, V.Ivanchenko (phys-ctor-glnuclear-V10-04-08)
+- G4EmMessenger - fixed destructor
+
+04 October 2018, V.Ivanchenko (phys-ctor-glnuclear-V10-04-07)
+- G4EmExtraPhysics, G4EmMessenger - V.Grichine added possibility
+    of x-section biasing for neutrino-nuclear process
+
+26 September 2018, V.Ivanchenko (phys-ctor-glnuclear-V10-04-06)
+- G4EmExtraPhysics, G4BertiniElectroNuclearBuilder - renamed
+    gamma general process class
+
+22 August 2018, V.Ivanchenko (phys-ctor-glnuclear-V10-04-05)
+- fixed GNUmakefile
+
+21 August 2018, V.Ivanchenko (phys-ctor-glnuclear-V10-04-04)
+- G4EmExtraPhysics, G4BertiniElectroNuclearBuilder - added enable of
+    super process
+
+06 August 2018 Alberto Ribon (phys-ctor-glnuclear-V10-04-03)
+- G4BertiniElectroNuclearBuilder : replaced the explicit high-energy limit
+  of hadronic physics with the one from G4HadronicParameters .
+
+12 February 2018 Jonathan Madsen (phys-ctor-glnuclear-V10-04-02)
+- Removed G4MUTEX_INITIALIZER from constructor in G4EmExtraPhysics
+
+02-Feb-2018, V.Ivanchenko (phys-ctor-glnuclear-V10-04-01)
+- G4EmExtraPhysics, G4EmMessenger - added extra UI commands and Set
+    methods for neutrino-electron interactions (V.Grichine)
+
+30-Jan-2017, V.Ivanchenko (phys-ctor-glnuclear-V10-04-00)
+- G4EmExtraPhysics, G4EmMessenger - added extra UI commands and Set
+    methods to define flags for neutrinos
+
+10-November-2017, T.Koi (phys-ctor-glnuclear-V10-03-04)
+-Dumpping LEND target information in G4LENDBertiniGammaElectroNuclearBuilder
+
+30-October-2017, T.Koi (phys-ctor-glnuclear-V10-03-03)
+- Fix problem on GNUMake system
+
+27-October-2017, T.Koi (phys-ctor-glnuclear-V10-03-02)
+- Add G4LENDBertiniGammaElectroNuclearBuilder, which uses LEND
+for low energy gamma-nuclear interaction
+- Add option and UI command to use G4LENDBertiniGammaElectroNuclearBuilder
+in the physics constructor of EmExtraPhysics
+
+06-June-2017, V.Ivanchenko (phys-ctor-glnuclear-V10-03-01)
+- G4EmExtraPhysics, G4EmMessenger - added extra UI commands to define
+    cross section factors for rare processes (requirement of ShiP
+    experiment for dark matter search)
+
+04-May-2017, V.Ivanchenko (phys-ctor-glnuclear-V10-03-00)
+- G4EmExtraPhysics, G4EmMessenger, G4BertiniElectroNuclearBuilder
+    added option and UI command to enable/disable e+- nuclear process
+
+12-Nov-2016, V.Ivanchenko (phys-ctor-glnuclear-V10-02-04)
+- G4EmExtraPhysics, G4EmMessenger - added rare high energy EM processes,
+    disabled by default
+
+03-Nov-2016 A.Ribon      (phys-ctor-glnuclear-V10-02-03)
+- Written first draft of the README.
+
+16-October-2016 M.Maire  (phys-ctor-glnuclear-V10-02-02)
+- cosmetic in README
+
+15-October-2016 M.Maire  (phys-ctor-glnuclear-V10-02-01)
+- add README
+
+12-October-2016 G.Folger  (phys-ctor-glnuclear-V10-02-00)
+- replace direct use of aParticleIterator by GetParticleIterator().
+  fix required by clang39 on Windows and MAC
+
+12-November-2015, V.Ivanchenko          (phys-ctor-glnuclear-V10-01-03)
+- G4EmExtraPhysics - do not use AutoDelete
+
+07-October-2015, V.Ivanchenko           (phys-ctor-glnuclear-V10-01-02)
+- fixed History - problem #1788
+
+08-June-2015, V.Ivanchenko              (phys-ctor-glnuclear-V10-01-01)
+- G4EmExtraPhysics, G4EmMessenger - fixed problem #1752; clean up
+    messenger and add new UI commands; instead of old UI commands
+    "/physics_lists/tailor/SyncRadiation on" and similar now one
+    should use another syntax:
+    /physics_lists/em/SyncRadiation true    (for e+-)
+    /physics_lists/em/SyncRadiationAll true (for all charged particles)
+    /physics_lists/em/GammaNuclear true     (for gamma, e+- nuclear)
+    /physics_lists/em/MuonNuclear true      (for mu+- nuclear)
+
+06-April-2015, A. Dotti 	   	(phys-ctro-glnuclear-V10-01-00)
+- Coverity fixes
+
+27-May-2013, V.Ivanchenko               (phys-ctor-glnuclear-V10-00-05)
+- G4BertiniElectroNuclearBuilder - removed double deletion
+
+27-May-2013, V.Ivanchenko               (phys-ctor-glnuclear-V10-00-04)
+- G4EmExtraPhysics - fixed bug in previous tag
+
+27-May-2013, V.Ivanchenko               (phys-ctor-glnuclear-V10-00-03)
+- G4EmExtraPhysics - fixed memory leak reported by Coverity
+
+24-Apr-2014, Alberto Ribon              (phys-ctro-glnuclear-V10-00-02)
+- Switched on muon-nuclear by default.
+
+10-Apr-2014, Andrea Dotti               (phys-ctro-glnuclear-V10-00-01)
+- Implement thread safe UI messenger. Addressing bug #1606
+
+29-Jan-2014, Gunter Folger              (phys-ctor-glnuclear-V10-00-00)
+- Removed photolepton_hadron/muon_nuclear from sources.cmake
+
+08-Jun-2013, A.Dotti (phys-ctor-glnuclear-V09-06-03)
+- Fix for MT: make data members TLS
+
+27-Feb-2013, V.Ivanchenko (phys-ctor-glnuclear-V09-06-02)
+- G4EmExtraPhysics - fixed warning from the clang compiler on MacOS
+
+01-Feb-2013, V.Ivanchenko (phys-ctor-glnuclear-V09-06-01)
+-  G4EmExtraPhysics and G4EmMessenger are added
+
+10-Jan-2013, Gunter Folger              (phys-ctor-glnuclear-V09-06-00)
+- new directory structure introduced.
+   constructors/gamma_lepto_nuclear classes

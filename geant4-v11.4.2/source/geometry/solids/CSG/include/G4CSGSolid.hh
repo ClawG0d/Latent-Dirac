@@ -1,0 +1,98 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4CSGSolid
+//
+// Class description:
+//
+// An abstract class inherited from G4VSolid for Constructed Solids.
+// Used primarily to structure inheritance tree.
+
+// Author: John Apostolakis (CERN), 27.03.1998 - Created first version
+// --------------------------------------------------------------------
+
+#ifndef G4CSGSOLID_HH
+#define G4CSGSOLID_HH 1
+
+#include "G4VSolid.hh"
+
+/**
+ * @brief G4CSGSolid is an abstract class inherited from G4VSolid for
+ * Constructed Solids. Used primarily to structure inheritance tree.
+ */
+
+class G4CSGSolid : public G4VSolid
+{
+  public:
+
+    /**
+     * Constructor with a name.
+     */
+    G4CSGSolid(const G4String& pName);
+
+    /**
+     * Destructor.
+     */
+    ~G4CSGSolid() override;
+
+    /**
+     * Streams the object contents to an output stream.
+     */
+    std::ostream& StreamInfo(std::ostream& os) const override;
+
+    /**
+     * Returns a pointer to the generated polyhedron for visualisation.
+     */
+    G4Polyhedron* GetPolyhedron () const override;
+
+    /**
+     * Fake default constructor for usage restricted to direct object
+     * persistency for clients requiring preallocation of memory for
+     * persistifiable objects.
+     */
+    G4CSGSolid(__void__&);
+
+    /**
+     * Copy constructor and assignment operator.
+     */
+    G4CSGSolid(const G4CSGSolid& rhs);
+    G4CSGSolid& operator=(const G4CSGSolid& rhs); 
+
+  protected:
+
+    /**
+     * Utility function for subclasses to generate proper circular areas.
+     */
+    G4double GetRadiusInRing(G4double rmin, G4double rmax) const;
+
+  protected:
+
+    G4double fCubicVolume = 0.0;
+    G4double fSurfaceArea = 0.0;
+    mutable G4bool fRebuildPolyhedron = false;
+    mutable G4Polyhedron* fpPolyhedron = nullptr;
+};
+
+#endif

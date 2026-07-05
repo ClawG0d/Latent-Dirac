@@ -1,0 +1,69 @@
+# Example py8decayer History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2024-05-30 Julia Yarba (p8decayer-V11-03-00)
+- Test vs Pythia8.3.15 which is the latest as of May 2025
+- Update documentation README and .README.txt
+
+## 2024-03-26 Ben Morgan (p8decayer-V11-02-01)
+- Use new FindPythia8 module and imported target
+
+## 2023-12-27 Julia Yarba (p8decayer-V11-02-00)
+- Test vs Pythia8.3.10 which is the latest as of December 2023
+- Add Py8DecayerEngine to override Pythia8 native engine with
+  the one of Geant4 (CLHEP); this is important to properly run
+  in the MT/Tasking mode
+- Update Py8Decayer to use Py8DecayerEngine
+- update pythia8_decayer.cc to use G4RunManagerType::Default with 5 threads,
+  instead of G4RunManagerType::SerialOnly; several more minor cleans
+- Update documentation README and .README.txt 
+
+## 2023-04-22 Julia Yarba (p8decayer-V11-01-00)
+- Test vs Pythia8.3.0.9 which is the latest as of April 2023
+- Update README and .README.txt
+
+## 2022-10-20 Julia Yarba (p8decayer-V11-00-05)
+- Minor cleanups in .README.txt
+
+## 2022-10-19 Julia Yarba (p8decayer-V11-00-04)
+- Update README and .README.txt to include information on comparing
+  contents of Geant4 and Pythia8 Particle Data Tables
+
+## 2022-08-26 Julia Yarba (p8decayer-V11-00-03)
+- Replace ActionInit class with ActionInitialization class
+- Update pythia8_decayer.cc 
+- Cleanup typos
+- Cleanup README
+- Properly update .README.txt 
+
+## 2022-08-25 Julia Yarba (p8decayer-V11-00-02)
+- Add ActionInit class
+- Update pythia8_decayer.cc to use ActionInit
+- Update README to reflect use of Pythia8.3.0.7 
+
+## 2022-07-15 Makoto Asai (p8decayer-V11-00-01)
+- Py8DecayerPhysics.cc: 
+  Code cleanup to avoid potential misleading.
+
+## 2021-12-10 Ben Morgan (p8decayer-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+21 June 2021 J. Yarba (p8decayer-V10-07-02)
+- Add GNUmakefile as required
+
+18 June 2021 J. Yarba (p8decayer-V10-07-01)
+- In CmakeLists.txt, use newly added Pythia8 finder module
+- Minor code cleanup
+
+16 June 2021 J. Yarba (p8decayer-V10-07-00)
+- First version of the example showing how to interface Pythia8 
+  as an "external decayer", to decay desired resonances in Geant4 
+
+

@@ -1,0 +1,58 @@
+# Category gpara History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2023-05-25 Luciano Pandola (gpara-V11-01-01)
+- Add new submodule G4channeling
+
+## 2022-12-12 Ben Morgan (gpara-V11-01-00)
+- Remove obsolete GNUmakefile scripts
+
+## 2022-01-28 Ben Morgan (gpara-V11-00-01)
+- Replace `geant4_global_library_target` with direct file inclusion and
+  call to `geant4_add_category` to define library build from source modules.
+
+## 2021-12-10 Ben Morgan (gpara-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+April 1st 2021, B. Morgan (gpara-V10-07-00)
+-------------------------
+- Migrate build to modular CMake API
+
+July 5th 2012 G.Cosmo (gpara-V09-05-00)
+---------------------
+- Explicitly use inclusion of headers for system of units and physical
+  constants, in plan to remove implicit inclusion from globals.hh.
+
+November 4th 2005 J.Weng (gpara-V07-01-01)
+------------------------
+- Porting to new scheme for G4Region as envelope.
+  Coworks with: run-V07-01-03, geommng-V07-01-02, procuts-V07-01-00,
+                param-V07-01-01, raytracer-V07-01-05.
+
+Oct 4th, 2004 G.Cosmo (gpara-V07-01-00)
+---------------------
+- Archived old TRD parameterised models.
+  Functionality now included in standard EM.
+- Includes tag "gflash-V07-01-00".
+
+Dec 15th, 2004 G.Cosmo (gpara-V06-02-02)
+----------------------
+- Corrected library names (global library and trd_models library)
+  to allow DLL build on Windows.
+
+Dec 7th, 2004 G.Cosmo (gpara-V06-02-01)
+---------------------
+- Implemented migration to <cmath>.
+
+Nov 26th, 2004 H.P.Wellisch (gpara-V06-02-00)
+---------------------------
+- New 'gflash' submodule, contribution of CMS and ATLAS.
+- Moved original TRD classes to 'trd_models' submodule.
+- Created History file

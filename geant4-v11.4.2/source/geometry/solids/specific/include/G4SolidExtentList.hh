@@ -1,0 +1,100 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4SolidExtentList
+//
+// Class description:
+//
+// Defines a list of (voxel) extents along one axis.
+//
+// This utility class is designed for one specific purpose:
+// to calculate the extent of a CSG-like solid for a voxel
+// (G4VSolid::CalculateExtent). 
+
+// Author: David C. Williams (UCSC), 1998
+// --------------------------------------------------------------------
+#ifndef G4SOLIDEXTENTLIST_HH
+#define G4SOLIDEXTENTLIST_HH
+
+#include "G4Types.hh"
+
+#include "G4ClippablePolygon.hh"
+
+/**
+ * @brief G4SolidExtentList is utility class designed for calculating
+ * the extent of a CSG-like solid for a voxel.
+ */
+
+class G4SolidExtentList
+{
+  public:
+  
+    /**
+     * Default Constructor.
+     */
+    G4SolidExtentList();
+
+    /**
+     * Constructor provided axis and limits.
+     *  @param[in] targetAxis Axis along which compute the extent.
+     *  @param[in] voxelLimits The limiting space dictated by voxels.
+     */
+    G4SolidExtentList( const EAxis targetAxis,
+                       const G4VoxelLimits& voxelLimits );
+
+    /**
+     * Default Destructor.
+     */
+    ~G4SolidExtentList() = default;
+
+    /**
+     * Categorises polygon surfaces.
+     */
+    void AddSurface( const G4ClippablePolygon& surface );
+
+    /**
+     * Returns extent after processing all surfaces.
+     *  @param[out] min The minimum extent
+     *  @param[out] max The maximum extent
+     *  @returns false if no surfaces within limits or facing inwards.
+     */
+    G4bool GetExtent( G4double& min, G4double& max ) const;
+
+  private:
+ 
+    /** Axis and limits... */
+    EAxis axis;     // Target axis
+    G4bool limited = false;  // True if limited
+    G4double minLimit; // ... min limit
+    G4double maxLimit; // ... max limit
+
+    /** Surfaces within the limits... */
+    G4ClippablePolygon minSurface,  // Minimum surface within limits
+                       maxSurface,  // Maximum surface within limits
+                       minAbove,    // Minimum surface totally above max limit
+                       maxBelow;    // Maximum surface totally below min limit
+};
+
+#endif

@@ -1,0 +1,82 @@
+#######################################################################
+#  MACRO FILE NAME: exN03Vis13.mac                                    #
+#                                                                     #
+#  AUTHOR(S): John Allison                                            #
+#                                                                     #
+#  DATE: 18th August 2006                                             #
+#                                                                     #
+#  CONTENTS: Time development of an electromagnetic shower.           #
+#                                                                     #
+#  USAGE:                                                             #
+#     cp -pr <install-dir>/geant4/examples/basic/B4/macros/visTutor . #
+#     <place-of-binary>/exampleB4a -m visTutor/exN03Vis13.mac         #
+#                                                                     #
+#  REQUIRED PLATFORMS & SOFTWARES: Mac/Unix with X-Windows, OpenGL    #
+#                                                                     #
+#######################################################################
+
+/control/verbose 2
+/vis/verbose confirmations
+/run/initialize
+
+/vis/open OGL 600x600-0+0
+/vis/drawVolume
+
+# Disable auto refresh and quieten vis messages whilst scene and
+# trajectories are established:
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors
+
+/vis/viewer/set/viewpointThetaPhi 90. 180.
+/vis/scene/add/eventID
+/vis/scene/add/trajectories rich
+
+# Set up drawByParticleID with time slicing
+/vis/modeling/trajectories/create/drawByParticleID EmShowerByParticleID
+/vis/modeling/trajectories/EmShowerByParticleID/set e- red
+/vis/modeling/trajectories/EmShowerByParticleID/set e+ blue
+/vis/modeling/trajectories/EmShowerByParticleID/set pi- cyan
+/vis/modeling/trajectories/EmShowerByParticleID/set pi+ magenta
+#/vis/modeling/trajectories/EmShowerByParticleID/default/setDrawStepPts true
+/vis/modeling/trajectories/EmShowerByParticleID/default/setStepPtsSize 5
+#/vis/modeling/trajectories/EmShowerByParticleID/default/setDrawAuxPts true
+/vis/modeling/trajectories/EmShowerByParticleID/default/setAuxPtsSize 5
+/control/alias interval 0.01
+/control/alias halfInterval 0.005
+/vis/modeling/trajectories/EmShowerByParticleID/default/setTimeSliceInterval {interval} ns
+/vis/modeling/trajectories/list
+
+# Remove gammas
+/vis/filtering/trajectories/create/particleFilter EmShowerFilter
+/vis/filtering/trajectories/EmShowerFilter/add gamma
+/vis/filtering/trajectories/EmShowerFilter/invert true
+
+# Re-establish auto refreshing and verbosity:
+/vis/viewer/set/autoRefresh true
+/vis/verbose warnings
+
+# Create trajectories
+/gun/energy 10 GeV
+/vis/viewer/set/globalLineWidthScale 2
+/run/beamOn
+
+# Run time sequence
+/vis/viewer/set/timeWindow/fadeFactor 1
+/vis/viewer/set/timeWindow/displayHeadTime true
+# The trajectories can appear of jump ahead of the light front because
+# their time range overlaps the viewer's time range.  To mitigate this
+# effect of discrete time intervals, advance the light front by half the
+# trajectories interval...
+/vis/viewer/set/timeWindow/displayLightFront true 0 0 -90 mm -{halfInterval} ns
+/vis/viewer/panTo -9 0 cm
+/vis/viewer/zoomTo 2
+/control/alias timeRange 0.1
+/control/alias dz 0.3
+# Switch off auto-refresh to avoid refresh on /vis/viewer/pan in loop.
+# (Then force refresh in loop.)
+/vis/viewer/set/autoRefresh 0
+/vis/verbose errors
+/control/verbose 0
+/control/loop visTutor/exN03Vis13.loop endTime 0 0.7 0.001
+/control/verbose 2
+/vis/verbose confirmations

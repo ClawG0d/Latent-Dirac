@@ -1,0 +1,97 @@
+# Example B03 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2021-12-10 Ben Morgan (B03-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+March 18th, 2021 Alberto Ribon - B03-V10-07-02
+- B03PhysicsList : replaced G4HadronCaptureProcess with
+  G4NeutronCaptureProcess, and G4HadronFissionProcess with
+  G4NeutronFissionProcess.
+
+March 8th, 2021 Alberto Ribon - B03-V10-07-01
+- B03PhysicsList : replaced old ion cross sections (that have been deleted)
+  with better ones.
+
+March 4th, 2021 Alberto Ribon - B03-V10-07-00
+- B03PhysicsList : use G4HadronInelasticProcess for inelastic processes
+  (the particle-specific inelastic processes have been deleted).
+
+November 10th, 2020 Ben Morgan - B03-V10-06-00
+- Migration to G4RunManagerFactory.
+
+May 29th, 2019 V. Ivanchenko  - B03-V10-05-01
+- B03PhysicsList : use G4NeutronInelasticXS cross section
+
+May 10th, 2019 V. Ivanchenko  - B03-V10-05-00
+- B03PhysicsList : explicitly defined hadronic x-sections
+
+Aug 9th, 2018 A. Ribon  - B03-V10-04-02
+- B03PhysicsList : replaced the explicit high-energy limit of hadronic
+  physics with the one from G4HadronicParameters .
+
+May 8th, 2018 B. Morgan - B03-V10-04-01
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+Feb 15th, 2018 A. Howard - B03-V10-04-00
+- Removed parallel geometry setting directly from main - created a data-race
+  in MT mode. Now everything is handled with B03PhysicsList.cc
+
+Mar 8th, 2017 A. Howard - B03-V10-03-01
+- B03PhysicsList - removed obsolete unnececssary instantiation of
+  de-excitation sub-models
+
+Mar 7th, 2017 A. Howard - B03-V10-03-00
+- Removed unnecessary clear sampling from B03
+
+October 14th, 2016 G.Folger   - B03-V10-02-01
+- remove direct use of theParticleIterator, use GetParticleTableIterator().
+  fix required by clang39 on Linux and MAC
+
+Jul 20th, 2016 I. Hrivnacova
+- Coding guidelines (redundant empty lines)
+
+Jan 27th, 2016 M. Asai - B03-V10-02-00
+- B03PhysicsList.cc : change process order index of G4ParallelWorldProcess
+  to 9900 to make sure it is registered prior to G4OpBoundaryProcess.
+
+Jan 21st, 2015 M. Asai - B03-V10-01-00
+- B03PhysicsList.cc : properly use SetProcessOrderingToSecond()
+  method for G4ParallelWorldProcess.
+
+Nov 20th, 2014 M. Asai - B03-V10-00-00
+- B03PhysicsList.cc : replace obsolete G4ParallelWorldScoringProcess
+  with G4ParallelWorldProcess.
+
+Nov 24th, 2013 A. Howard - B03-V09-06-04
+- Set default number of MT cores back to two
+
+Nov 24th, 2013 A. Howard - B03-V09-06-03
+- Synchronised geometry with B01 and B02
+- Corrected english mistakes in variable names
+
+Nov 23rd, 2013 A. Howard - B03-V09-06-02
+- Prevented case of double biasing process in single threaded mode
+- Removed unsused scoring classes B03ScoringDetectorConstruction,
+  B03PSScoringDetectorConstruction
+
+Nov 22nd, 2013 A. Howard - B03-V09-06-01
+- Fixed typos and removed unused variables
+
+Nov 22nd, 2013 A. Howard - B03-V09-06-00
+- Created new example. This is taken from the previous B02 which was migrated
+  to the new MT compliant interface using modular physicslists.
+- Contains standalone physicslist implementation to demonstrate new MT
+  compliance
+
+

@@ -1,0 +1,16 @@
+#
+/control/verbose 1
+/control/cout/ignoreThreadsExcept 0
+/run/verbose 1
+#
+###/testem/det/wallMater Water
+###/testem/det/cavityMater Water_gas
+#
+/testem/phys/addPhysics standard_opt3
+#
+/process/eLoss/StepFunction 0.2 10 um
+#
+/run/initialize
+#
+/run/printProgress 1000
+/run/beamOn 4000

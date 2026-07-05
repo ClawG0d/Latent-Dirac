@@ -1,0 +1,60 @@
+# Example geometry History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2025-07-29 I. Hrivnacova (exGeometry-V11-03-00)
+- Migration of README pages to Markdown:
+  - .README.txt replaced with README.md and removed README
+
+## 2023-11-15 I. Hrivnacova (exGeometry-V11-01-00)
+- Updated vis.mac macros:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2021-12-10 Ben Morgan (exGeometry-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+17/11/21,  I. Hrivnacova (exGeometry-V10-07-03)
+- Updated documentation
+
+25/01/21,  B. Morgan (exGeometry-V10-07-02)
+- Only add vecGeomNavigation if VecGeom is present
+
+25/06/21,  G. Cosmo (exGeometry-V10-07-01)
+- Fix in CMakeLists.txt for wrong parenthesis.
+
+24/05/21,  B. Morgan (exGeometry-V10-07-00)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+03/11/2020 B. Morgan (exGeometry-V10-06-00)
+- Support same CMake version range as core Geant4
+
+24/02/2018 I. Hrivnacova (exGeometry-V10-04-01)
+- Removed example rotations
+  (its new features will be integrated in the transforms example)
+
+24/02/2018 M. Maire (exGeometry-V10-04-00)
+- added example rotations
+
+14/02/2013 I. Hrivnacova (exGeometry-V09-06-00)
+- Removed olap example (now obsolete)
+- Applied coding guidelines (data member initialization) in transforms
+
+26/11/2012 I. Hrivnacova (exGeometry-V09-05-02)
+- Fixed .README files (the transforms example page name)
+
+17/11/2012 I. Hrivnacova (exGeometry-V09-05-01)
+  - Removed obsolete instructions (how to compile & link)
+  - Fixed .README file in olap
+
+06/09/2012 I. Hrivnacova (exGeometry-V09-05-00)
+- Adding explicit includes of G4SystemOfUnits.hh and G4PhysicalConstants.hh
+  where needed
+- Replaced tabulators with space characters

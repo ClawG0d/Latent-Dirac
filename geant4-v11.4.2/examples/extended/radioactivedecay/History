@@ -1,0 +1,57 @@
+# Example radioactivedecay History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2025-07-30 I. Hrivnacova (exRadioactiveDecay-V11-03-00)
+- Migration of README pages to Markdown:
+  - .README.txt replaced with README.md and removed README
+- Improved formatting
+
+## 2023-11-15 I. Hrivnacova (exRadioactiveDecay-V11-01-00)
+- Updated vis.mac macros:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2021-12-10 Ben Morgan (exRadioactiveDecay-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+May 24, 2021,  B. Morgan (exRadioactiveDecay-V10-07-00)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+November 03, 2020 B. Morgan - exRadioactivedecay-V10-06-00
+- Support same CMake version range as core Geant4
+
+April 14, 2017      M. Maire
+- Add example Activation
+
+July 04, 2016      I. Hrivnacova - exRadioactivedecay-V10-02-00
+- Fixes for Doxygen documentation
+
+February 19, 2012  I. Hrivnacova - exRadioactivedecay-V09-06-00
+- Applied coding guidelines (data members names and initialization)
+
+November 25, 2012  I. Hrivnacova - exRadioactivedecay-V09-05-01
+- Updated documentation:
+  - Fixed .README files for artefacts from Markdown support
+  - Removed/updated obsolete instructions (how to compile & link)
+
+September 25, 2012  I. Hrivnacova - exRadioactivedecay-V09-05-00
+- Updated CMakeLists.txt files:
+  adding visualization, optional external packages (rdecay02 ), copying macros,
+  install target and comment lines
+- Added explicit includes of G4SystemOfUnits.hh and G4PhysicalConstants.hh
+- Replaced tabulators with space characters
+
+November 4, 2011  L. Desorgher - exradioactive-V09-04-00
+- Create this History file
+- Add macro files and user data files in rdecay02  to illustrate the possibility for a user to define its own
+  radioactive decay data and evaporation data. An example No252.g4mac shows also how to treat
+  nuclei with Z>100.
+

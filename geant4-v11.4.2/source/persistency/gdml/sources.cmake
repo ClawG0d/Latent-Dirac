@@ -1,0 +1,70 @@
+# - G4gdml module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4gdml
+  PUBLIC_HEADERS
+    G4GDMLAuxStructType.hh
+    G4GDMLEvaluator.hh
+    G4GDMLMessenger.hh
+    G4GDMLParameterisation.hh
+    G4GDMLParser.hh
+    G4GDMLParser.icc
+    G4GDMLRead.hh
+    G4GDMLReadDefine.hh
+    G4GDMLReadMaterials.hh
+    G4GDMLReadParamvol.hh
+    G4GDMLReadSetup.hh
+    G4GDMLReadSolids.hh
+    G4GDMLReadStructure.hh
+    G4GDMLWrite.hh
+    G4GDMLWriteDefine.hh
+    G4GDMLWriteMaterials.hh
+    G4GDMLWriteParamvol.hh
+    G4GDMLWriteSetup.hh
+    G4GDMLWriteSolids.hh
+    G4GDMLWriteStructure.hh
+    G4STRead.hh
+  SOURCES
+    G4GDMLEvaluator.cc
+    G4GDMLMessenger.cc
+    G4GDMLParameterisation.cc
+    G4GDMLParser.cc
+    G4GDMLRead.cc
+    G4GDMLReadDefine.cc
+    G4GDMLReadMaterials.cc
+    G4GDMLReadParamvol.cc
+    G4GDMLReadSetup.cc
+    G4GDMLReadSolids.cc
+    G4GDMLReadStructure.cc
+    G4GDMLWrite.cc
+    G4GDMLWriteDefine.cc
+    G4GDMLWriteMaterials.cc
+    G4GDMLWriteParamvol.cc
+    G4GDMLWriteSetup.cc
+    G4GDMLWriteSolids.cc
+    G4GDMLWriteStructure.cc
+    G4STRead.cc)
+
+geant4_module_link_libraries(G4gdml
+  PUBLIC
+    G4csg
+    G4specsolids
+    G4geomBoolean
+    G4navigation
+    G4geometrymng
+    G4materials
+    G4intercoms
+    G4hepgeometry
+    G4globman
+    XercesC::XercesC
+  PRIVATE
+    G4run
+    G4cuts
+    G4bosons
+    G4leptons
+    G4baryons
+    G4track
+    G4detector
+    G4geomdivision
+    G4volumes
+    G4graphics_reps)

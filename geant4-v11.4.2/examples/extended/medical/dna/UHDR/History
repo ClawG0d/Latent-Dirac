@@ -1,0 +1,72 @@
+# Example UHDR History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-11-10 Gabriele Cosmo (UHDR-V11-03-07)
+- Fixed coding conventions for long lines in source.
+
+## 2025-11-04 Hoang Tran (UHDR-V11-03-06)
+- Added user notices
+
+## 2025-09-09 Le Tuan Anh (UHDR-V11-03-05)
+- Fix bug in plotG_time.C: calling nullpointer gTab
+
+## 2025-05-15 Hoang Tran (UHDR-V11-03-04)
+- corrected reading file
+- updated macro files
+
+## 2025-05-15 Hoang Tran (UHDR-V11-03-03)
+- added pulse structure and interpulse feature
+- fixed partially diffused-control reactions
+
+## 2025-05-14 Le Tuan Anh (UHDR-V11-03-02)
+- Fix crash due to typo in UHDR.in
+- Avoid dependence of PrimaryGeneratorAction/Physlist/ChemList/ActionIni 
+  classes on DetectorConstruction class
+
+## 2025-04-23 Hoang Tran (UHDR-V11-03-01)
+- used new G4MoleculeCounterManager to manage the G4MoleculeCounter
+
+## 2025-04-04 Hoang Tran (UHDR-V11-03-00)
+- updated pulseAction for larger pulse size
+- temporarily used molecule counter form EventScheduler
+- updated reaction table for scavengers
+
+## 2024-10-22 Hoang Tran (UHDR-V11-02-04)
+- updated visu mode for physical stage and corrected README files
+
+## 2024-10-03 Hoang Tran (UHDR-V11-02-03)
+- Modified the molecule names of OH, HO2, O in MoleculeDefinition.
+  Each molecule configuration has a molecule definition.
+
+## 2024-05-08 G. Cosmo (UHDR-V11-02-02)
+- Fixed compilation errors on macOS/clang with C++23 enabled, for incomplete
+  types of smart-pointers through defaulted destructors.
+
+## 2024-04-26 H. Tran (UHDR-V11-02-01)
+- Implemented PBC based on https://github.com/amentumspace/g4pbc
+  to calculate microdosimetry
+- Added a maximum dose (2 times of cut-off dose) to abort the event.
+
+## 2024-04-18 H. Tran (UHDR-V11-02-00)
+- Updated bounce off condition based on Karamitros M.
+  et al.2020,arXiv:2006.14225 (2020) https://doi.org/10.48550/arXiv.2006.14225
+
+## 2023-11-10 H. Tran (UHDR-V11-01-04)
+- Added info in .README.txt and README files
+
+## 2023-11-07 I. Hrivnacova (UHDR-V11-01-03)
+- Fixed formatting, links in .README.txt
+
+## 2023-10-12  H Tran (UHDR-V11-01-02)
+- correct scavenger counter
+
+## 2023-10-10  H Tran (UHDR-V11-01-01)
+- Updated equilibrium processes
+
+## 2023-05-04  H Tran (UHDR-V11-01-00)
+- first commit, example is created on base of chem6

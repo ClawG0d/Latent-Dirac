@@ -1,0 +1,77 @@
+# Example GB03 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-08-29 Igor Semeniouk (GB03-V11-03-02)
+ - add histograms and counters for particles penetrated the shield volume
+ - replace GB03DetectorMessenger with GenericMessenger
+
+## 2025-03-10 Igor Semeniouk (GB03-V11-03-01)
+- Remove unused WITH_GEANT4_UIVIS cmake option
+- Propagate biasing on/off to detector construction to initialization of biasing classes only if biasing requested.
+
+## 2025-01-30 Igor Semeniouk (GB03-V11-03-00)
+- The option -b (bising on/off)
+- Default splitting probability set to 0.2
+- Instantiate G4GenericBiasingPhysics only if biasing selected
+
+## 2021-12-10 Ben Morgan (GB03-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+November 10th, 2020 Ben Morgan - GB03-V10-06-00
+- Migration to G4RunManagerFactory.
+
+Sep 11th, 2018, M. Verderi - GB03-V10-04-02
+- Bug fix in GB03BOptnSplitOrKillOnBoundary.cc in
+  the computation of the killing probability.
+
+May 20th, 2018 J. Allison - GB03-V10-04-01
+- Remove G4UI_USE and G4VIS_USE.
+- Move instantiation of G4UIExecutive nearer to start of main.
+
+May 8th, 2018 B. Morgan - GB03-V10-04-00
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+Nov 19, 2016 A. Dotti
+- explicit set of SD to manager
+- tag GB03-V10-02-00
+
+Jul 20, 2016 I. Hrivnacova
+- Coding guidelines(redundant empty lines)
+
+Nov 29, 2014, I. Hrivnacova
+- Fixed .README
+- tag GB03-V10-00-05
+
+Nov 10, 2014, M. Verderi
+- update exampleGB03.out
+- tag GB03-V10-00-04
+
+Nov 10, 2014, M. Verderi
+- Typo in GB03BOptnSplitOrKillOnBoundary: GetApplyProbabilty()
+  (missing "i" : Probability())
+- tag GB03-V10-00-03
+
+Nov 9, 2014, I. Hrivnacova
+- Added GNUmakefile
+- tag GB03-V10-00-02
+
+Nov 8, 2014, I. Hrivnacova
+- Added .README, files descriptions and separators
+- tag GB03-V10-00-01
+
+Nov 7, 2014, M. Verderi
+- Creation
+- tag GB03-V10-00-00
+
+

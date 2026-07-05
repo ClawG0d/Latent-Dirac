@@ -1,0 +1,73 @@
+# - G4emadjoint module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4emadjoint
+  PUBLIC_HEADERS
+    G4AdjointAlongStepWeightCorrection.hh
+    G4AdjointBremsstrahlungModel.hh
+    G4AdjointCSManager.hh
+    G4AdjointCSMatrix.hh
+    G4AdjointComptonModel.hh
+    G4AdjointInterpolator.hh
+    G4AdjointIonIonisationModel.hh
+    G4AdjointPhotoElectricModel.hh
+    G4AdjointProcessEquivalentToDirectProcess.hh
+    G4AdjointeIonisationModel.hh
+    G4AdjointhIonisationModel.hh
+    G4AdjointhMultipleScattering.hh
+    G4ContinuousGainOfEnergy.hh
+    G4InversePEEffect.hh
+    G4IonInverseIonisation.hh
+    G4VAdjointReverseReaction.hh
+    G4AdjointForcedInteractionForGamma.hh
+    G4VEmAdjointModel.hh
+    G4eInverseBremsstrahlung.hh
+    G4eInverseCompton.hh
+    G4eInverseIonisation.hh
+    G4hInverseIonisation.hh
+    G4UrbanAdjointMscModel.hh
+    G4eAdjointMultipleScattering.hh
+  SOURCES
+    G4AdjointAlongStepWeightCorrection.cc
+    G4AdjointBremsstrahlungModel.cc
+    G4AdjointCSManager.cc
+    G4AdjointCSMatrix.cc
+    G4AdjointComptonModel.cc
+    G4AdjointInterpolator.cc
+    G4AdjointIonIonisationModel.cc
+    G4AdjointPhotoElectricModel.cc
+    G4AdjointProcessEquivalentToDirectProcess.cc
+    G4AdjointeIonisationModel.cc
+    G4AdjointhIonisationModel.cc
+    G4AdjointhMultipleScattering.cc
+    G4ContinuousGainOfEnergy.cc
+    G4InversePEEffect.cc
+    G4IonInverseIonisation.cc
+    G4VAdjointReverseReaction.cc
+    G4AdjointForcedInteractionForGamma.cc
+    G4VEmAdjointModel.cc
+    G4eInverseBremsstrahlung.cc
+    G4eInverseCompton.cc
+    G4eInverseIonisation.cc
+    G4hInverseIonisation.cc
+    G4UrbanAdjointMscModel.cc
+    G4eAdjointMultipleScattering.cc)
+
+geant4_module_link_libraries(G4emadjoint
+  PUBLIC
+    G4cuts
+    G4emutils
+    G4globman
+    G4leptons
+    G4partman
+    G4procman
+  PRIVATE
+    G4baryons
+    G4bosons
+    G4emstandard
+    G4hepnumerics
+    G4heprandom
+    G4ions
+    G4materials
+    G4partadj
+    G4track)

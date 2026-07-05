@@ -1,0 +1,145 @@
+# Example gflash History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2024-10-02   I. Semeniouk  (exgflash-V11-02-00)
+ - Add dedicated History files to all exaples
+
+## 2023-06-13   I. Semeniouk  (exgflash-V11-01-01)
+- gflash1,2,3,a - replaces static with inline static and moveinitialization into .hh files
+- gflasha - Use G4PhysListFactory for physics list initialization
+- gflash2 - remove unused statics from Detector Construction class
+- Update History and gflasha README files
+
+## 2023-04-19   I. Semeniouk  (exgflash-V11-01-00)
+- gflash1,2,3,a  clang-tidy and clang format
+- gflasha add cmpE.C macro
+- gfalsh1,2,3 comment /run/beamOn commands
+- Add History entry
+
+## 2022-11-04  I. Hrivnacova (exgflash-V11-00-01)
+- Fixed Doxygen file descriptions in glash2 and gflash3
+
+## 2021-12-10 Ben Morgan (exgflash-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+18-Oct-2021
+  - clang-tidy and clang-format on code
+  - remove local History file and power-off.png
+  - test.mac run twice with and without gflash
+  
+06-Oct-2021 I. Hrivnacova  (exgflash-V10-07-01)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+19-Jul-2021 I. Hrivnacova (exgflash-V10-07-00)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+10-Nov-2020 B. Morgan (exgflash-V10-06-00)
+- Migration to G4RunManagerFactory.
+
+28-Nov-2019 I. Hrivnacova (exgflash-V10-05-02)
+- Updated README files:
+  changed text to correspond to a description of a set of examples;
+  fixed formatting in .README.txt
+- Fixed Doxygen warnings
+
+25-Nov-2019 I. Semeniouk (exgflash-V10-05-01)
+- Add gflasha example with histogramming
+
+01-Nov-2019 A.Zaborowska (exgflash-V10-05-00)
+- Extend GFlash example moving existing one to gflash1
+- Add gflash2 with envelope in parallel world
+- Add gflash3 with SD in parallel world
+
+17-May-2018 J.Allison (exgflash-V10-04-00)
+- Add #include "G4Types.hh"
+- Remove G4UI_USE and G4VIS_USE.
+- Move instantiation of G4UIExecutive to start of main.
+
+03-Nov-2016 M. Verderi (exgflash-V10-02-02)
+- Use G4FastSimulationPhysics constructor to configure the
+  physics list. Remove ExGflashPhysics one.
+
+14-Oct-2016 G.Folger (exgflash-V10-02-01)
+- remove direct use of aParticleIterator, use GetParticleTableIterator().
+    fix required by clang39 on Linux and MAC
+
+04-Jul-2016, Ivana Hrivnacova (exgflash-V10-02-00)
+- Fixes for Doxygen documentation
+
+13-Nov-2015, Ivana Hrivnacova (exgflash-V10-01-01)
+- ExGflashPhysicsList replaced with ExGflashPhysics builder
+- Code clean-up, coding guidelines
+
+06-Mar-2015, Andrea Dotti (exgflash-V10-01-00)
+- Remove unnecessary GPS in master
+
+04-Jun-2014, Andrea Dotti (exgflash-V10-00-00)
+- New GPS MT compliant system
+
+06-Nov-2013, Marc Verderi (exgflash-V09-06-03)
+- Fix event action destructor in case fNevent == 0
+- change /gps/centre 0 0 0 to /gps/pos/centre 0 0 0 to
+  clear gps deprecating command message in test.mac .
+
+30-Jul-2013, Peter Gumplinger (exgflash-V09-06-02)
+- fix MAC/clang32 compilation warnings
+
+16-Jul-2013, Marc Verderi (exgflash-V09-06-01)
+- Migration to MT
+
+7-June-2013, Marc Verderi  (exgflash-V09-06-00)
+- Adopt coding guidelines
+- Remove ExGflashMaterialManager class, as using NIST manager
+
+17-November 2012, Ivana Hrivnacova  (exgflash-V09-05-01)
+- Fixed .README file for artefacts from Markdown support
+
+15-November 2012, Ivana Hrivnacova  (exgflash-V09-05-00)
+- Minor fix in .README
+
+24-November 2010, Gunter Folger  (exgflash-V09-04-01)
+-  Fix bug in ExGflashSensitiveDetector::Initialize():
+    create/new Collection before adding it to HCE
+
+26-January 2010, Gunter Folger   (exgflash-V09-04-00)
+-  Finnish correcting namepsace problems on Windows,
+    removed using namespace, use G4cout,.. and few std::
+
+03-December 2010, Gunter Folger  (exgflash-V09-03-04)
+-  Correct use of "using namespace std", needed for Windows VC
+
+07-November 2010, John Allison   (exgflash-V09-03-03)
+- Introduced G4UIExecutive.
+
+27-October 2010, Gunter Folger   (exgflash-V09-03-02)
+- Fix gcc4.x compilation warnings
+- Add default production cut to region crystals to shut down warning on stderr
+
+27-October 2010, Gunter Folger   (exgflash-V09-03-01)
+- Migrate to new MultipleScattering classes
+- fix compilation warning in ExGflashHit.hh on unused variable
+
+June 4, 2010, J.Perl (exgflash-V09-03-00)
+- Update vis usage
+
+May 18, 2007, M. Verderi (exgflash-V08-03-00)
+- ExGflashPhysicsList.cc : the fast simulation process is now a discrete process
+
+Dec 1st, 2005 G.Cosmo (exgflash-V07-01-00)
+---------------------
+- Adapted to new gflash redesign. Coworks with "gflash-V07-01-02".
+
+Nov 4th, 2005 J.Weng
+--------------------
+- New example demonstrating usage 'gflash' shower parameterisation.
+

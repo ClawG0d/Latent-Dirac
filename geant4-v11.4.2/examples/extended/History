@@ -1,0 +1,25 @@
+# Example extended History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-11-06 Ivana Hrivnacova (exextended-V11-03-01)
+- Updated examples macros and READMEs for removal of HepRep[File] 
+  vis drivers (thanks to John Allison) 
+
+## 2025-05-16 Ben Morgan (exextended-V11-03-00)
+- Replace the URL root.cern.ch with canonical root.cern
+  - Fixes [GitHub PR 87](https://github.com/Geant4/geant4/pull/87)
+
+## 2024-06-10 Gabriele Cosmo (exextended-V11-02-01)
+- Updated GDML files to use short URL for schema validation.
+
+## 2024-06-04 Ben Morgan (exextended-V11-02-00)
+- Initial overall History file for extended examples.
+  Used for global changes affecting all examples under here.
+- Apply clang-format to all extended examples.
+- Address coding style warnings.
+

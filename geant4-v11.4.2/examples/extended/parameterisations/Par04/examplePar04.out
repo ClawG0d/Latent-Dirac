@@ -1,0 +1,94 @@
+Environment variable "G4FORCE_RUN_MANAGER_TYPE" enabled with value == Serial. Forcing G4RunManager type...
+
+        ############################################
+        !!! WARNING - FPE detection is activated !!!
+        ############################################
+
+
+          ################################
+          !!! G4Backtrace is activated !!!
+          ################################
+
+
+**************************************************************
+ Geant4 version Name: geant4-11-04-patch-02    (12-June-2026)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+<<< Geant4 Physics List simulation engine: FTFP_BERT
+
+
+------------------------------------------------------
+--- Detector length:	2 m  
+--- Detector inner radius:	80 cm 
+--- Number of layers:	90
+
+--- 1st layer: 	1.4 mm  of passive G4_W
+--- 2nd layer: 	300 um  of active G4_Si
+-----------------------------------------------------
+
+------------------------------------------------------
+ Readout geometry with physics layout is set in parallel geometry:	
+ Cylindrical detector is divided along radius (layers), phi (slices), and z (rows).
+ Number of layers is determined by number of layers set in detector construction. 
+- Number of layers: 90
+------- Number of slices: 320
+- Number of rows: 100
+ Readout will collect energy for full simulation.
+------- Therefore thickness is only a thickness of sensitive absorbers = 300 um 
+-----------------------------------------------------
+Checking overlaps for volume Detector:9999 (G4Tubs) ... OK! 
+
+------------------------------------------------------
+ Readout geometry with physics layout is set in parallel geometry:	
+ Cylindrical detector is divided along radius (layers), phi (slices), and z (rows).
+ Number of layers is determined by number of layers set in detector construction. 
+- Number of layers: 90
+------- Number of slices: 320
+- Number of rows: 100
+ Readout will collect energy for full simulation.
+------- Therefore thickness is only a thickness of sensitive absorbers = 300 um 
+-----------------------------------------------------
+
+------------------------------------------------------
+ Readout geometry with physics layout is set in parallel geometry:	
+ Cylindrical detector is divided along radius (layers), phi (slices), and z (rows).
+ Number of layers is determined by number of layers set in detector construction. 
+- Number of layers: 90
+------- Number of slices: 320
+- Number of rows: 100
+ Readout will collect energy from fast simulation.
+------- Thickness is a sum of all absorbers = 1.7 mm 
+-----------------------------------------------------
+Checking overlaps for volume Detector:9999 (G4Tubs) ... OK! 
+
+------------------------------------------------------
+ Readout geometry with physics layout is set in parallel geometry:	
+ Cylindrical detector is divided along radius (layers), phi (slices), and z (rows).
+ Number of layers is determined by number of layers set in detector construction. 
+- Number of layers: 90
+------- Number of slices: 320
+- Number of rows: 100
+ Readout will collect energy from fast simulation.
+------- Thickness is a sum of all absorbers = 1.7 mm 
+-----------------------------------------------------
+--- G4CoupledTransportation is used 
+### Adding tracking cuts for neutron  TimeCut(ns)= 10000  KinEnergyCut(MeV)= 0
+            e+ : fastSimProcess_massGeom[geom:World] 
+            e- : fastSimProcess_massGeom[geom:World] 
+         gamma : fastSimProcess_massGeom[geom:World] 
+Model defineMesh activated.
+Model inferenceModel not found.
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : Analysis_W001
+      issued by : G4RootNtupleFileManager::SetNtupleMergingMode
+Merging ntuples is not applicable in sequential application.
+Setting was ignored.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+

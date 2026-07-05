@@ -1,0 +1,136 @@
+# Example ThreadsafeScorers History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2024-05-03 Ben Morgan (ThreadsafeScorers-V11-02-00)
+- Remove use of no longer supported TiMemory
+
+## 2022-11-09 I. Hrivnacova (ThreadsafeScorers-V11-00-01)
+- Fixed Doxygen documentation
+
+## 2021-12-10 Ben Morgan (ThreadsafeScorers-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+13/02/2021 V. Ivantchenko (ThreadsafeScorers-V10-07-00)
+- TSPhysicsList - removed obsolete header G4EmProcessOptions; removed
+  method SetCuts(..) to avoid data race - use the one from the base class; 
+  removed singletone pattern from this class - it is not used and not needed. 
+
+12/11/2020 Jonathan Madsen (ThreadsafeScorers-V10-06-03)
+- Replaced TIMEMORY_AUTO_TIMER usage with G4USER_SCOPED_PROFILE usage
+
+23/6/2020 Jonathan Madsen (ThreadsafeScores-V10-06-02)
+- Added example of user code leveraging tasking in TSRunAction.cc
+- This example leverages tasks on the master thread at the end
+  of the run to generate some strings of output via a nested
+  hierarchy of tasks and uses the features of the
+  G4TaskGroup to combine the strings in the order that
+  they were submitted to the task-group (thus producing the
+  same output result as the serial version)
+
+23/6/2020 Gabriele Cosmo (ThreadsafeScorers-V10-06-01)
+- Properly include G4RunManagerFactory.hh in main().
+
+28/5/2020 Jonathan Madsen (ThreadsafeScorers-V10-06-00)
+- Updated to use tasking system
+
+22/11/2019 Jonathan Madsen (ThreadsafeScorers-V10-05-01)
+- Updated CMakeLists.txt to support enabling timemory even without
+  support at the Geant4 level
+
+19/11/2019 Gabriele Cosmo (ThreadsafeScorers-V10-05-00)
+- Fixed compilation warning on Windows for calling TIMEMORY_AUTO_TIMER
+  with no arguments in TSPrimaryGeneratorAction::GeneratePrimaries().
+
+13/11/2018 Jonathan Madsen (ThreadsafeScorers-V10-04-06)
+- Fixed shadowing warnings in G4atomic.hh header (recommit of ThreadsafeScorers-V10-04-03)
+
+11/11/2018 Jonathan Madsen (ThreadsafeScorers-V10-04-05)
+- Replaced TIMEMORY_AUTO_TIMER_BASIC with TIMEMORY_BASIC_AUTO_TIMER as the
+  latter is defined in G4TiMemory.hh and the former is deprecated by TiMemory
+- Included plot generation in main
+- Added plots/ts_scorers_{timing,memory}.jpeg
+- Updated threadsafe_scorers.out
+- Updated documentation
+
+09/11/2018 Jonathan Madsen (ThreadsafeScorers-V10-04-04)
+- Added scorers with G4StatAnalysis and G4ConvergenceTester
+- Improved scheme for using TiMemory to time how long the
+  scoring takes w.r.t. storage container and PS
+
+15/6/2018 Gabriele Cosmo (ThreadsafeScorers-V10-04-03)
+- Fixed shadowing warnings in G4atomic.hh header.
+
+6/6/2018 Jonathan Madsen (ThreadsafeScorers-V10-04-02)
+- TSPhysicsLists no longer declares G4VPhysicsConstructors in header
+- Added TiMemory timing to TSPrimaryGeneratorAction and G4Run
+- Added TiMemory ASCII output and serialization to ts_scorers.cc
+
+10/05/2018 Ben Morban (ThreadsafeScorers-V10-04-01)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+12/2/2018 Jonathan Madsen (ThreadsafeScorers-V10-04-00)
+- Removed G4MUTEX_INITIALIZER from constructors of G4TAtomicHits{Collection,Map}
+
+12/8/17 Hisaya Kurashige              (ThreadsafeScorers-V10-03-02)
+- Add inclusion of <deque> in TSPhysicsList.hh
+
+20/4/17 Jonathan Madsen               (ThreadsafeScorers-V10-03-00)
+- Fixes to deletion/clearing of static maps between runs
+- Removed some unnecessary typedefs
+- Set the number of threads to the number of cores
+
+19/11/16 Andrea Dotti		      (ThreadsafeScorers-V10-02-05)
+- Explicit set of SD to manager
+
+14/10/16 Gunter Folger                (ThreadsafeScorers-V10-02-04)
+- remove direct use of theParticleIterator, use GetParticleTableIterator().
+
+04/07/16 Ivana Hrivnacova             (ThreadsafeScorers-V10-02-03)
+- Fixes for Doxygen documentation
+
+15/06/16 Gunter Folger                (ThreadsafeScorers-V10-02-02)
+- Correct GNUmakefile, remove setting of WORKDIR=.
+
+15/06/16 Gunter Folger                (ThreadsafeScorers-V10-02-01)
+- Correct GNUmakefile,i.e. replace spaces by tab
+
+17/11/15 J. Madsen
+- Removed preprocessor checks for C++11
+- Removed _HAS_ATOMICS_ preprocessor definition/conditions
+- Changed G4atomic to only be defined if G4MULTITHREADED,
+  otherwise, G4atomic<_Tp> is aliased to _Tp
+- Included *.in files in macros to be copied to build directory
+
+05/11/15 J. Madsen
+- Prefixed classes with "TS" for "Thread-safe"
+- Renamed all data members with f + uppercase
+- Redeclared all virtual functions
+- Removed empty messenger classes
+- Removed custom separators with G4 separators
+- Added license and description for all classes
+- Cleaned up code
+- Removed deprecated folder in atomics/
+- Moved remaining classes in atomics/ to include/
+- Renamed project "ThreadsafeScorers"
+- Added .README.txt
+
+09/10/15 J. Madsen
+- Updated problem following Geant4's full commitment to using
+  C++11.
+- Removed SteppingAction
+- Simplified atomic class and renamed to G4atomic
+- Moved files pertaining to pre-C++11 to deprecated folder
+- Removed "Atom" prefix from all file names
+- Created G4TAtomicHitsMap and G4TAtomicHitsCollection
+
+29/01/15 J. Madsen
+- Created.

@@ -1,0 +1,93 @@
+# Example neuron History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+
+## 2025-10-16 Batmunkh Munkhbaatar (neuron-V11-03-00)
+- Added UI commands to calculate water radiolysis products in specific regions
+- Commented out the initialization in main to allow G4DNAPhysicsActivator to 
+  register DNA regions in the macro input file
+- updated README 
+
+## 2023-12-27 Vladimir Ivanchenko (neuron-V11-02-00)
+- Clean-up to reduce number of Valgrind warnings, applied code style,
+  removed commented lines, removed unused methods, substitute C-arrays by vectors,
+  improved algorithm of reading of data file.
+
+## 2023-10-20 John Allison (neuron-V11-01-01)
+- vis.mac: Remove defunct command /vis/ogl/set/displayListLimit.
+  - This command no longer operates. There is now no display list limit.
+    (The only limit is available memory.)
+  - The command is deprecated and, anyway, causes a crash if the app is built
+    without an OpenGL driver.
+
+## 2023-10-10 Hoang Tran (neuron-V11-01-00)
+- Fixed the valgrind/memcheck errors in neuron example (by M. Batmunkh).
+
+## 2022-10-04 Gabriele Cosmo (neuron-V11-00-01)
+- Fixed compilation warning on Intel-icx compiler for set but unused variable
+  in Run::EndOfRun().
+
+## 2021-12-10 Ben Morgan (neuron-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+06 Oct 2021 I. Hrivnacova - tag neuron-V10-07-03
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root),
+  removed Analysis.hh.
+
+19 Jul 2021 I. Hrivnacova - tag neuron-V10-07-02
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+14 Jul 2021 J. Allison - tag neuron-V10-07-01
+- Replace /vis/ogl/printEPS with /vis/ogl/export in vis.mac.
+
+31 Dec 2020 J. Allison - tag neuron-V10-07-00
+- Change /vis/ogl/set/ to /vis/viewer/set/timeWindow/.
+
+26 Nov 2020 B. Morgan - tag neuron-V10-06-00
+- Migration to G4RunManagerFactory.
+
+26 Nov 2019 I. Hrivnacova - tag neuron-V10-05-00
+- Fixed Doxygen warnings
+
+27 Nov 2018 V. Ivanchenko - tag neuron-V10-04-03
+- Fixed nightly problem in PhysicsList
+
+22 Jul 18 S. Incerti - tag neuron-V10-04-02
+- removed obsolete RanecuEngine
+
+09 May 2018 - B. Morgan - tag neuron-V10-04-01
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+26 February 2018 - R. Hatcher - tag neuron-V10-04-00
+- Use G4RegisterPhysicsConstructors.icc to ensure G4PhysicsConstructorRegisty
+  is filled when using static libraries
+
+28 November 2017 - I. Hrivnacova - tag neuron-V10-03-05
+- Fixed Doxygen warnings
+
+09 November 2017 - S. Incerti - tag neuron-V10-03-04
+- Removed warning
+
+07 November 2017 - S. Incerti - tag neuron-V10-03-03
+- Messaging update by Oleg and Batmunkh
+
+20 April 2017 - S. Incerti - tag neuron-V10-03-01
+- Windows fix by Oleg and Batmunkh
+
+10 February 2017 - M. Batmunkh, O.V. Belov - tag neuron-V10-03-00
+- Package created
+

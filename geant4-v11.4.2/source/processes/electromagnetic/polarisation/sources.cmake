@@ -1,0 +1,69 @@
+# - G4empolar module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4empolar
+  PUBLIC_HEADERS
+    G4PolarizationHelper.hh
+    G4PolarizationManager.hh
+    G4PolarizationMessenger.hh
+    G4PolarizedAnnihilation.hh
+    G4PolarizedAnnihilationXS.hh
+    G4PolarizedAnnihilationModel.hh
+    G4PolarizedBremsstrahlung.hh
+    G4PolarizedBremsstrahlungModel.hh
+    G4PolarizedBremsstrahlungXS.hh
+    G4PolarizedCompton.hh
+    G4PolarizedComptonXS.hh
+    G4PolarizedComptonModel.hh
+    G4PolarizedGammaConversion.hh
+    G4PolarizedGammaConversionModel.hh
+    G4PolarizedGammaConversionXS.hh
+    G4PolarizedIonisation.hh
+    G4PolarizedIonisationBhabhaXS.hh
+    G4PolarizedIonisationModel.hh
+    G4PolarizedIonisationMollerXS.hh
+    G4PolarizedPhotoElectricXS.hh
+    G4PolarizedPhotoElectricModel.hh
+    G4PolarizedPhotoElectric.hh
+    G4StokesVector.hh
+    G4VPolarizedXS.hh
+  SOURCES
+    G4PolarizationHelper.cc
+    G4PolarizationManager.cc
+    G4PolarizationMessenger.cc
+    G4PolarizedAnnihilation.cc
+    G4PolarizedAnnihilationXS.cc
+    G4PolarizedAnnihilationModel.cc
+    G4PolarizedBremsstrahlung.cc
+    G4PolarizedBremsstrahlungModel.cc
+    G4PolarizedBremsstrahlungXS.cc
+    G4PolarizedCompton.cc
+    G4PolarizedComptonXS.cc
+    G4PolarizedComptonModel.cc
+    G4PolarizedGammaConversion.cc
+    G4PolarizedGammaConversionModel.cc
+    G4PolarizedGammaConversionXS.cc
+    G4PolarizedIonisation.cc
+    G4PolarizedIonisationBhabhaXS.cc
+    G4PolarizedIonisationModel.cc
+    G4PolarizedIonisationMollerXS.cc
+    G4PolarizedPhotoElectricXS.cc
+    G4PolarizedPhotoElectricModel.cc
+    G4PolarizedPhotoElectric.cc
+    G4StokesVector.cc
+    G4VPolarizedXS.cc)
+
+geant4_module_link_libraries(G4empolar
+  PUBLIC
+    G4bosons
+    G4emstandard
+    G4emutils
+    G4globman
+    G4intercoms
+  PRIVATE
+    G4cuts
+    G4geometrymng
+    G4heprandom
+    G4leptons
+    G4partman
+    G4track)

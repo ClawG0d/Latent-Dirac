@@ -1,0 +1,37 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_path
+#define tools_path
+
+#include <string>
+#include <utility>
+
+namespace tools {
+
+inline void nosuffix(const std::string& a_string,std::string& a_value,bool a_back = true){
+  // If a_string = dir0/dir1/dir2/dir3/name.xxx
+  //   a_value = name
+  // Start searching after the last / (or last \ for Windows).
+  std::string::size_type pos = a_string.rfind('/');
+  if(pos==std::string::npos) pos = a_string.rfind('\\');
+  if(pos==std::string::npos) pos = 0;
+  else pos++;
+  std::string _s = a_string.substr(pos,a_string.size()-pos);
+  std::string::size_type dot_pos = a_back?_s.rfind('.'):_s.find('.');
+  if(dot_pos==std::string::npos) {
+    a_value = std::move(_s);
+  } else {
+    a_value = _s.substr(0,dot_pos);
+  }
+}
+
+inline std::string nosuffix(const std::string& a_string,bool a_back = true){
+  std::string value;
+  nosuffix(a_string,value,a_back);
+  return value;
+}
+
+}
+
+#endif

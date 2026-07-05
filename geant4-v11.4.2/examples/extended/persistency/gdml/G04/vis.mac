@@ -1,0 +1,15 @@
+###################################################
+# Visualization of detector geometry and events  
+###################################################
+
+# Open a viewer
+/vis/open
+# This opens the default viewer - see examples/basic/B1/vis.mac for a
+# more comprehensive overview of options. Also the documentation.
+
+# draw scene
+/vis/viewer/zoom 1.4
+/vis/viewer/flush
+
+# (if you prefer not refreshing each event, uncomment next line)
+# /vis/scene/endOfEventAction accumulate

@@ -1,0 +1,74 @@
+# Category detscorer History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2024-07-09 Gabriele Cosmo (detscorer-V11-02-00)
+- Fixed reported Coverity defects, use "const G4String&" as argument in
+  a consistent way across all classes.
+
+## 2022-10-03 Ben Morgan (detscorer-V11-00-01)
+- Apply standard clang-tidy plus range-based for and boolean simplification fixes
+- General code tidy and modernization
+  - Use consistent, grouped ordering of public-protected-private members
+  - Do not override virtual members when no difference to base class implementation
+  - Use delegating constructors to remove duplicated code
+  - Use C++ boolean true/false keywords
+
+## 2021-12-10 Ben Morgan (detscorer-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+September 27th, 2021 M. Asai (detscorer-V10-07-01)
+- Fix indexing of cylindrical scoring mesh commands.
+  Co-working with detutil-V10-07-05. Addressing to bug report #2418.
+
+April 1, 2021 B. Morgan (detscorer-V10-07-00)
+- Migrate build to modular CMake API
+
+October 6, 2020  Makoto Asai (detscorer-V10-06-01)
+- Migrate following scorers to use G4PrimitivePlotter to directly fill histograms.
+   G4PSCellFlux G4PSCylinderSurfaceCurrent G4PSCylinderSurfaceFlux G4PSDoseDeposit
+   G4PSEnergyDeposit G4PSFlatSurfaceCurrent G4PSFlatSurfaceFlux G4PSMinKinEAtGeneration
+   G4PSNofSecondary G4PSNofStep G4PSPassageCellCurrent G4PSPassageCellFlux
+   G4PSPassageTrackLength G4PSTrackCounter
+
+September 3, 2020  Makoto Asai (detscorer-V10-06-00)
+- Introduing a new scorer G4PSVolumeFlux
+- Use G4VPrimitivePlotter base class to allow scorers to directly fill histograms
+
+February 2 2015  Gabriele Cosmo  (detscorer-V10-01-00)
+- Fix to sources.cmake script to include missing dependency on external library.
+
+November 7 2013  Gabriele Cosmo  (detscorer-V09-06-00)
+- Replaced deprecated calls to G4Sphere accessor methods.
+
+July 11, 2007  M.Asai (detscorer-V09-00-00)
+- Moved from digits_hits/utilis.
+
+June 06, 2007  A.Howard (detutils-V08-03-02)
+- Added modified G4PSPopulation removing event (circular) dependency
+  (file form T.Aso).
+
+June 05, 2007  M.Asai (detutils-V08-03-01)
+- Drop G4PSPopulation from the release.
+
+May 17, 2007  M.Asai (detutils-V08-03-00)
+- New scorers for event biasing.
+- kCarTolerance now becomes a local data member obtained from G4GeometryTolerance class.
+
+November 17, 2006  M.Asai (detutils-V08-01-00)
+- G4PSCellCharge is introduced.
+
+November 18, 2005  M.Asai (detutils-V07-01-01)
+- Introducing concrete primitive scorer and filter classes.
+
+November 16, 2005  M.Asai (detutils-V07-01-00)
+- Created.
+

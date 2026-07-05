@@ -1,0 +1,57 @@
+
+        ############################################
+        !!! WARNING - FPE detection is activated !!!
+        ############################################
+
+
+          ################################
+          !!! G4Backtrace is activated !!!
+          ################################
+
+
+**************************************************************
+ Geant4 version Name: geant4-11-04-patch-02    (12-June-2026)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+
+ --> phi = 30 deg  direct rotation matrix : 
+   [ (           0          -0.5      0.866025)
+     (           0      0.866025           0.5)
+     (          -1             0             0) ]
+/run/verbose 0
+/tracking/verbose 1
+/gun/direction 1.732 1. 0.
+/run/beamOn 1
+
+*********************************************************************************************************
+* G4Track Information:   Particle = geantino,   Track ID = 1,   Parent ID = 0
+*********************************************************************************************************
+
+Step#       X          Y          Z         KineE         dEStep    StepLeng   TrakLeng    Volume     Process
+    0       0 fm       0 fm       0 fm       1 eV           0 eV       0 fm       0 fm      World   initStep
+    1   1.299 cm     7.5 mm       0 fm       1 eV           0 eV     1.5 cm     1.5 cm      World   Transportation
+    2   3.897 cm    2.25 cm       0 fm       1 eV           0 eV       3 cm     4.5 cm        Trd   Transportation
+    3    4.33 cm     2.5 cm       0 fm       1 eV           0 eV       5 mm       5 cm      World   OutOfWorld
+/placement/setMethod WithInverseMatrix
+
+ --> phi = 30 deg  inverse rotation matrix : 
+   [ (           0             0            -1)
+     (        -0.5      0.866025             0)
+     (    0.866025           0.5             0) ]
+/gun/direction -1. 1.732 0.
+/run/beamOn 1
+
+*********************************************************************************************************
+* G4Track Information:   Particle = geantino,   Track ID = 1,   Parent ID = 0
+*********************************************************************************************************
+
+Step#       X          Y          Z         KineE         dEStep    StepLeng   TrakLeng    Volume     Process
+    0       0 fm       0 fm       0 fm       1 eV           0 eV       0 fm       0 fm      World   initStep
+    1    -7.5 mm   1.299 cm       0 fm       1 eV           0 eV     1.5 cm     1.5 cm      World   Transportation
+    2   -2.25 cm   3.897 cm       0 fm       1 eV           0 eV       3 cm     4.5 cm        Trd   Transportation
+    3    -2.5 cm    4.33 cm       0 fm       1 eV           0 eV       5 mm       5 cm      World   OutOfWorld

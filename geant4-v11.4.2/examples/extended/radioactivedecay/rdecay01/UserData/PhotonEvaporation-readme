@@ -1,0 +1,63 @@
+
+The photo-evaporation database contains nuclear deexcitation data starting 
+from a given nuclear level including information on spin of a state and
+angular moment of a transition in a directory
+
+correlated_gamma of this dataset 
+ 
+**************************************************
+
+A file is divided into sublock, each representing a level of the isotope.
+All levels included the ground state are listed.
+Each sublock level start by a line defining the characteristic of the level.
+Followed by lines defining the gamma transition from this level to lower levels.
+
+The line defining an energy level of the isotope contains 6 columns:
+1) An integer defining the order index of the level starting by 0  for the ground state
+
+2) A string  defining floating level  (-,+X,+Y,+Z,+U,+V,+W,+R,+S,+T,+A,+B,+C)
+   - string means that it is a non floating level.
+       
+3) Excitation energy of the level (keV)
+
+4) Level half-life (s). A -1 half-life means a stable ground state.
+
+5) JPi information of the level. The sign gives the parity. A value of 99 is used when the Jpi is 
+   missing in the the ENSDF files.
+        
+6) n_gammas= Number of possible gammas deexcitation channel from the level.
+    n_gammas=O means that no gamma deexcitation is given in ENSDF data for this level.
+
+After the line defining a level, a serie of n_gammas lines defined the different
+n_gammas gamma deexcitation.The information contains in a gamma line is the following:
+
+1) The order number of the daughter level.
+
+2) The energy of the gamma transition.
+
+3) The relative gamma emission intensity. 
+
+4) The multipolarity number with 1,2,3,4,5,6,7 representing E1,M1,E2,M2,E3,M3  monopole transition
+   and  100*Nx+Ny representing multipolarity transition with Ny and Ny taking the value 1,2,3,4,5,6,7 
+   referring to   E1,M1,E2,M2,E3,M3,.. For example a M1+E2 transition would be written 203.
+  
+ 
+5) The multipolarity mixing ratio. O means that either the transition is a E1,M1,E2,M2 transition 
+   or the multipolarity mixing ratio is not given in ENSDF.
+  
+6) Total internal conversion coefficient : alpha = Ic/Ig
+   Note1: total transition is the sum of gamma de-excitation and internal
+          conversion. Therefore total branching ratio is proportional to 
+          (1+alpha)*Ig
+   Note2: total branching ratios from a given level do not always sum up to 
+          100%. They are re-normalized internally.    
+   Note3: relative probabilities for gamma de-excitation and internal conversion
+          are 1/(1+alpha) and alpha/(1+alpha) respectively
+7-16) Given only if total internal conversion coefficient alpha is not 0 
+        Partial conversion probabilities for
+                K-shell
+                L1-3 shells
+                M1-5 shells
+                Outer shells (shellID = 9 is used, when applicable)
+   
+

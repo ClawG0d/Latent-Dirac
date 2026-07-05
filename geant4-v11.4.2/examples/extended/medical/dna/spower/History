@@ -1,0 +1,79 @@
+# Example spower History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-07-10 Sebastien Incerti (spower-V11-03-03)
+- spower.in : added inactivation of nuclearStopping (for ions)
+
+## 2025-06-15 Sebastien Incerti (spower-V11-03-02)
+- plot.C : add selection of electrons by default
+- spower.in : changed physics constructors
+
+## 2025-05-20 Vladimir Ivanchenko (spower-V11-03-01)
+- PhysicsList - add all DNA Physics Lists and add usage of G4EmParameters
+
+## 2025-03-15 Sebastien Incerti (spower-V11-03-00)
+- added scoring of secondary electrons
+
+## 2024-04-20 Sebastien Incerti (spower-V11-02-02)
+- updated README
+
+## 2024-04-20 Sebastien Incerti (spower-V11-02-01)
+- cleaned example
+
+## 2024-02-27 Sebastien Incerti (spower-V11-02-00)
+- SteppingAction.cc : extended use for ions heavier than helium
+- spower.in : added extra commandes to show how to shoot ions heavier than helium
+
+## 2023-06-03 Vladimir Ivanchenko (spower-V11-01-01)
+- PhysicsList - simplified
+- alpha.in - added extra macro
+- spower.cc - clean-up the code to avoid warnings
+
+## 2022-05-23 Hoang Tran (spower-V11-01-00)
+- add DNA materials
+
+## 2022-02-28 Vladimir Ivanchenko (spower-V11-00-01)
+- dnaphysics.cc - enable visualisation only in interactive mode,
+    use G4RunManagerFactory
+
+## 2021-12-10 Ben Morgan (spower-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+26-11-19 I. Hrivnacova (spower-V10-05-00)
+- Fixed Doxygen warnings
+
+06-11-18 S. Incerti (spower-V10-04-05)
+- updated PhysicsList and spower.cc, replacing spower-V10-04-00
+
+04-11-18 S. Incerti (spower-V10-04-04)
+- rewrite of physics list and macro spower.in to avoid factory usage
+
+? ? (spower-V10-04-03)
+
+22-07-18 S. Incerti (spower-V10-04-02)
+- removed obsolete RanecuEngine
+
+09-05-18 B. Morgan (spower-V10-04-01)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+26-02-18  R. Hatcher (spower-V10-04-00)
+- Use G4RegisterPhysicsConstructors.icc to ensure G4PhysicsConstructorRegisty
+  is filled when using static libraries
+
+03-05-17 SI (spower-V10-03-02)
+- updated README
+
+30-04-17 SI (spower-V10-03-01)
+- moved stationary constructors to physics_lists
+
+16-03-17 SI (spower-V10-03-00)
+- created

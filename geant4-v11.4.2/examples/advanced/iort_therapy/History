@@ -1,0 +1,154 @@
+# Example iort_therapy History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2023-11-15 I. Hrivnacova (iort_therapy-V11-01-00)
+- Updated defaultMacro.mac:
+  - Added a commented line for calling 'vis/open' without parameter
+    for opening the default driver
+
+## 2022-09-09 Susanna Guatelli (iort_therapy-V11-00-02)
+- Ranecu engine removed.
+
+## 2022-06-20 Sergio Losilla (iort_therapy-V11-00-01)
+- Simplified calls to SetProductionCut.
+
+## 2021-12-10 Ben Morgan (iort_therapy-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+24.05.2021 - B. Morgan (iort_therapy-V10-07-01)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+12.02.2021 - S.Guatelli tag iort_therapy-V10-07-00
+            Dependence to G4EmProcessOptions removed.
+            SetCuts method removed from local physics list as
+            it is not thread-safe. Cuts per Region set in ConstructProcess.
+            RegionStore is not available when accessed from the constructor
+            of the Physics List.
+
+02.11.2020 - B.Morgan tag iort_therapy-V10-06-02
+             Support same CMake version range as core Geant4
+
+13.08.2020 - S. Guatelli tag iort_therapy-V10-06-01
+             Unnecessary in CMakeLists.tst dependance to ROOT removed.
+
+13.11.2018 - G. Cosmo tag iort_therapy-V10-04-06
+             IORTDetectorConstruction: fixed initialisation setting of inner
+             radius also for "DiscoIORT0" component.
+
+12.11.2018 - G. Cosmo tag iort_therapy-V10-04-05
+             IORTDetectorConstruction: fixed initialisation setting of inner
+             radius for "DiscoIORT1" component.
+
+09.11.2018 - G. Cosmo tag iort_therapy-V10-04-04
+             IORTDetectorConstruction: fixed typos in printout.
+
+18.09.2018 - S. Guatelli tag iort_therapy-V10-04-03
+             unused variable deleted
+
+17.09.2018 - S. Guatelli tag iort_therapy-V10-04-02
+             CMakeList.txt updated
+
+17.09.2018 - S. Guatelli tag iort_therapy-V10-04-01
+             delete macro directory.
+
+12.09.2018 - S. Guatelli tag iort_therapy-V10-04-00
+             removed RO geometry together with Hit class. Scoring mesh included.
+             G4_UI_USE and G4_VIS_USE removed.
+             How to delete the geometry of the disk has been changed (bug eliminated).
+             Analysis class deleted (no analysis directly connected with the IORT example)
+             G4Decay and IORTMatrix deleted as they are not needed.
+             Protontherapy removed as it is out of the scope.
+             G4SystemOfUnits.hh included
+             README updated accordingly to changes.
+
+28.11.2017 - B.Morgan tag iort_therapy-V10-03-01
+             Replace ROOT_INCLUDE_DIR with ROOT_INCLUDE_DIRS
+
+31.10.2017 - L.Pandola tag iort_therapy-V10-03-00
+             Clean up visualization from batch.mac
+
+28.11.2016 - G.Folger tag iort_therapy-V10-02-00
+            Remove direct use of theParticleIterator, use GetParticleTableIterator().
+             fix required by clang39 on Linux and MAC
+
+22.09.2015 - L.Pandola: tag iort_therapy-V10-01-00
+	     Migraeted to g4tools
+	     Left a minimal dependency to ROOT (due to TGraph)
+             The dependency is optional
+16.10.2014 - C.Casarino: tag iort_therapy-V10-00-00
+             Updated README
+30.07.2013 - A.Dotti: tag iort_therapy-V09-06-05
+               fix last compilation warning from clang32
+28/29.07.2013 - P.Gumplinger: tag iort_therapy-V09-06-03/iort_therapy-V09-06-04
+               fix new compilation warning
+26.07.2013 - P.Gumplinger: tag iort_therapy-V09-06-02
+               fix clang32 compilation warnings
+04.02.2013 - G.Folger; tag iort_therapy-V09-06-01
+               IORTPhysicsList.cc: Update for renamed physics builders
+	       GNUmakefile: correct G4INSTALL
+14.12.2012 - A.Ribon; tag iort_therapy-V09-06-00
+               Removed G4HadronQElasticPhysics, and replaced G4QStoppingPhysics
+29.11.2012 - G.Cosmo; tag iort_therapy-V09-05-14, iort_therapy-V09-05-13
+               More fixes for variable shadowing related to use of ROOT.
+28.11.2012 - G.Cosmo; tag iort_therapy-V09-05-12
+               Fixed cases of variable shadowing.
+07.11.2012 - F.Romano; Tag iort_therapy-V09-05-11
+               Included generic command for visualization vis/open OGL where needed
+07.11.2012 - F.Romano; Tag iort_therapy-V09-05-10
+               Fix SystemOfUnits and ROOT compilation errors
+06.11.2012 - L.Pandola; Tag iort_therapy-V09-05-09
+               Fix syntax in CMakeLists.txt
+01.11.2012 - F.Romano;  Tag: iort_therapy-V09-05-08
+               Warning in main solved
+01.11.2012 - G.Folger;  Tag: iort_therapy-V09-05-07
+               Updated iort_therapy to include <ctime> for use of time()
+26.10.2012 - F.Romano;  Tag: iort_therapy-V09-05-06
+               Updated some files: general review of the example
+26.10.2012 - L.Pandola;  Tag: iort_therapy-V09-05-05
+               Replace CMakeLists.txt to deal with UI/VIS
+24.10.2012 - A.Ribon;     Tag: iort_therapy-V09-05-04
+                Migrated to the new stopping physics.
+12.10.2012 - G.Cosmo;     Tag: iort_therapy-V09-05-03
+                Explicit inclusion of units and constants headers.
+13.06.2012 - G.Cosmo;     Tag: iort_therapy-V09-05-02
+                Use std::string::size_type for string length instead of int
+                in IORTMatrix::ion. Fixes compilation warning on gcc-4.7.
+15.12.2011 - P.Mato;      Tag: iort_therapy-V09-05-01
+                Tagged changes made by Gunter (windows line endings,
+                invalid header files, etc.)
+24.11.2011 - P.Mato;      Tag: iort_therapy-V09-05-00
+	        Added CMakeLists.txt file
+24.11.2011 - G.Folger;      Tag: iort_therapy-V09-04-08
+	        Use G4lrint() in place of lrint()
+17.11.2011 - G.A.P.Cirrone; Tag: iort_therapy-V09-04-07
+	        Warnings removed
+07.11.2011 - G.A.P.Cirrone; Tag: iort_therapy-V09-04-06
+	        Macro file corrected
+07.11.2011 - G.A.P.Cirrone; Tag: iort_therapy-V09-04-05
+	        Code revision and visualisation improved
+03.11.2011 - F.Romano; Tag: iort_therapy-V09-04-04
+	        Migration to new G4Exception scheme
+02.11.2011 - C.Casarino; Tag: iort_therapy-V09-04-03
+	        Main file improved
+02.11.2011 - C.Casarino; Tag: iort_therapy-V09-04-02
+	        Warings removed.
+30.10.2011 - G.A.P. Cirrone; Tag: iort_therapy-V09-04-01
+	        Main name changed.
+30.10.2011 - G.A.P. Cirrone; Tag: iort_therapy-V09-04-00
+	     	First tag proposed to the Geant4 repository
+08.09.2011 - G.Russo, C.Casarino, G.C. Candiano, G.A.P. Cirrone, F.Romano
+             	Created, first version.
+
+
+
+
+
+
+

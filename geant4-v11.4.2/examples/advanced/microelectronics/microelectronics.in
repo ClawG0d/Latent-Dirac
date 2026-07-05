@@ -1,0 +1,10 @@
+/tracking/verbose 0
+/run/verbose 2
+/process/em/verbose 1
+/run/initialize
+/gun/particle proton
+/gun/energy 50 MeV
+/run/beamOn 10
+
+
+

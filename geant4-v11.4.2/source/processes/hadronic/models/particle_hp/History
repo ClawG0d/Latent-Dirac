@@ -1,0 +1,1281 @@
+# Category hadr-hpp History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2026-05-18 Gabriele Cosmo (hadr-hpp-V11-03-07)
+- Fixed MT data race in G4ParticleHPFissionFS, by removing the shared mutable
+  'produceFissionFragments' member and making the decision local to each
+  ApplyYourself() call. The race was from every worker writing the same
+  G4ParticleHPFissionFS heap object. The fix preserves the UI-controlled
+  behavior while keeping the theFF.HasFSData() guard, and avoids serializing
+  the whole final-state sampling path.
+- Fixed MT data race in G4ParticleHPLabAngularEnergy, by moving the lazy
+  G4ParticleHPVector::Integrate() work out of the worker-thread sampling path.
+  The reported race is at GetIntegral() in G4ParticleHPLabAngularEnergy,
+  which lazily writes 'totalIntegral'; these 'theData' vectors are built
+  once in Init() and then shared across workers, so changed Init() to
+  precompute the integral immediately after each vector is loaded. This
+  makes later GetIntegral() calls read-only in event processing.
+  Also fixed a nearby latent race in the same class: 'currentMeanEnergy' was
+  a shared member written by Sample(); changed it to G4Cache<G4double> in
+  G4ParticleHPLabAngularEnergy, matching the pattern already used by related
+  HP classes.
+
+## 2026-05-15 Gabriele Cosmo
+- Fixed MT data race in G4ParticleHPElasticFS; moved initialization of
+  SVT/DBRC scattering-kernel parameters from GetBiasedThermalNucleus(), called
+  during event processing, to Init(), called during final-state setup. Worker
+  threads now only read these cached parameters.
+  This is better than adding a lock, as the values are global configuration
+  copied into the final-state object, so they should be setup-time state, not
+  per-collision mutable state.
+
+## 2026-05-04 Gabriele Cosmo
+- Fixed MT data race in G4ParticleHPChannel; patched UpdateData() so the elastic
+  final state registers its isotope-wise cross-section once in UpdateData(),
+  after the cross-section vector is created; then removed the racing write from
+  ApplyYourself() at tracking time. This fixes a data race reported by sanitizer
+  for threads both calling RegisterCrossSection() on the same shared
+  G4ParticleHPElasticFS object during event processing; now workers only read
+  the pointer and the write happens during channel initialization.
+
+## 2026-04-07 Alberto Ribon
+- G4ParticleHPLegendreTable : add protection in the inlined method Init
+  to protect against the possibility of negative input parameter (which
+  could cause writing on a zero-size allocated buffer).
+  This problem and its solution have been reported to the Computer.Security@cern.ch
+  by Sebastian Alba Vives of the Instituto Tecnologico de Costa Rica (TEC).
+
+## 2026-02-23 Dmitri Konstantinov (hadr-hpp-V11-03-06)
+- G4ParticleHPContAngularPar - reduced allocator fragmentation and memory
+  churn in BuildByInterpolation() by removing unconditional deep copies
+  of input angular distributions. Copies are now created only in case of
+  self-aliasing (this == &angparX), preserving correctness while avoiding
+  excessive per-call heap allocations. Also addressing problem report #2630.
+
+## 2025-12-23 Vladimir Ivanchenko (hadr-hpp-V11-03-05)
+- G4ParticleHPNBodyPhaseSpace, G4ParticleHPInelasticCompFS - added
+  G4HadronicException header.
+
+## 2025-09-27 Vladimir Ivanchenko (hadr-hpp-V11-03-04)
+- G4FissionFragmentGenerator, G4FissionFragmentGenerator, G4ParticleHPElementData,
+  G4ParticleHPKallbachMannSyst, G4ParticleHPThermalScattering,
+  G4ParticleHPFinalState - fixed Coverity warnings
+
+## 2025-06-12 Vladimir Ivanchenko (hadr-hpp-V11-03-03)
+- G4ParticleHPInelastic - fixed AllHP physics - proper initialisation of neutrons
+  and light ions (problem report #2591 and some other problems).
+
+## 2025-04-02 Vladimir Ivanchenko (hadr-hpp-V11-03-02)
+- G4ParticleHPThermalScattering, G4ParticleHPThermalScatteringData,
+  G4ParticleHPJENDLHEData - fixed Coverity warnings for unprotected access to maps
+
+## 2025-03-20 Vladimir Ivanchenko (hadr-hpp-V11-03-01)
+- G4ParticleHPThermalScatteringNames, G4ParticleHPVector, G4ParticleHPCaptureURR,
+  G4ParticleHPElasticURR, G4ParticleHPFissionURR, G4ParticleHPInelasticURR,
+  G4ParticleHPIsoProbabilityTable_CALENDF, G4ParticleHPIsoProbabilityTable_NJOY,
+  G4ParticleHPThermalScattering, G4ParticleHPThermalScatteringData,
+  G4ParticleHPThermalScatteringNames - fixed Coverity warnings, which are mainly
+    real problems of handling of maps and finding of isotopes.
+
+## 2024-12-07 Vladimir Ivanchenko (hadr-hpp-V11-03-00)
+- G4ParticleHPThermalScatteringData - attempt to fix Coverity warning on
+    wrong handling of map iterator; several calls to G4HadronicExceptions
+    are substituted by one G4Exception inside BuildPhysicsTable(..) method,
+    which provides FatalException if a particle is not the neutron; simplified
+    IsApplicable(... ) methods called at each step; directory path is taken
+    from G4ParticleHPManager to reduce number of calls to getenv function;
+    initialisation is performed only once in one instance of the class,
+    initilized data structures are saved to G4ParticleHPManager and are
+    accessed from all threads and instances; end of job destruction is
+    performed also only once; commented lines are removed; comments to code
+    are extended.
+
+## 2024-10-28 Vladimir Ivanchenko (hadr-hpp-V11-02-16)
+- G4ParticleHPElasticData, G4ParticleHPInelasticData, G4ParticleHPCaptureData,
+  G4ParticleHPFissionData, G4ParticleHPThermalScatteringData,
+  G4ParticleHPThermalScattering - use const pointer of G4ElementTable, remove
+  unnecessary thread local variables, dead code and commented code
+
+## 2024-10-22 Alberto Ribon (hadr-hpp-V11-02-15)
+- G4ParticleHPElasticURR : added boolean argument to the constructor to know
+  whether thermal scattering is activated (false by default).
+
+## 2024-09-26 Alberto Ribon (hadr-hpp-V11-02-14)
+- G4ParticleHPManager, G4ParticleHPProbabilityTablesStore,
+  G4ParticleHPInelasticDataPT, G4ParticleHPInelasticURR : update to use the
+  class G4HadronicParameters to select the type of PT table for the URR 
+  treatment.
+  Thanks to Marek Zmeskal for these changes.
+
+## 2024-09-18 Vladimir Ivanchenko (hadr-hpp-V11-02-13)
+- G4CrossSectionXP - fixed cross section computation with Doppler broading
+    effect due to media temperature.
+
+## 2024-08-26 Gabriele Cosmo (hadr-hpp-V11-02-12)
+- More fixes for reported Coverity defects on use of std::move() and
+  const G4String&.
+
+## 2024-08-21 Gabriele Cosmo (hadr-hpp-V11-02-11)
+- Fixed reported Coverity defects for use of std::move() and const G4String&.
+- Use const qualifier for methods where possible.
+
+## 2024-08-02 Alberto Ribon (hadr-hpp-V11-02-10)
+- G4ParticleHPMessenger : removed ther recently introduced UI command for
+  selecting the type of PT table (choice between  "calendf"  and  "njoy" )
+  for the URR treatment.
+  ( Note: this has been replaced with a C++ interface in G4HadronicParameters
+          that allows the selection to be made at initialization time. )
+
+## 2024-07-18 Alberto Ribon (hadr-hpp-V11-02-09)
+- G4ParticleHPInelastic : fixed missed call to
+  `G4ParticleHPManager::RegisterInelasticFinalStates` in the method
+  `G4ParticleHPInelastic::BuildPhysicsTable`.
+  Thanks to Marek Zmeskal for finding this issue.
+
+## 2024-07-04 Alberto Ribon (hadr-hpp-V11-02-08)
+- G4ParticleHPProbabilityTablesStore, G4ParticleHPIsoProbabilityTable_NJOY,
+  G4ParticleHPIsoProbabilityTable_CALENDF : fixed mistakes in the access to
+  the compressed dataset G4URRPTDATA.
+  Thanks to Marek Zmeskal for reporting this issue.
+
+## 2024-06-17 Gabriele Cosmo (hadr-hpp-V11-02-07)
+- Fixed compilation warnings for implicit type conversions on macOS/XCode.
+
+## 2024-06-09 Alberto Ribon (hadr-hpp-V11-02-06)
+- G4ParticleHPProbabilityTablesStore : replaced the environmental variable
+  G4NEUTRONHPDATA with the new one G4URRPTDATA.
+- G4ParticleHPProbabilityTablesStore, G4ParticleHPIsoProbabilityTable_NJOY,
+  G4ParticleHPIsoProbabilityTable_CALENDF : read in particle table files in
+  compressed format (i.e. `.z`, whereas before they were uncompressed).
+
+## 2024-06-04 Alberto Ribon (hadr-hpp-V11-02-05)
+- Introduced for neutron in ParticleHP the treatment of the
+  Unresolved Resonance Region (URR) via Particle Table (PT).
+  This is a major physics development made by Marek Zmeskal and Loic Thulliez
+  (CEA Saclay), relevant for more precise simulations of nuclear reactor
+  criticality and shielding applications.
+  The following existing classes have been modified:
+    G4ParticleHPChannel, G4ParticleHPChannelList, G4ParticleHPElementData,
+    G4ParticleHPManager, G4ParticleHPMessenger, G4ParticleHPVector.
+  The following new classes have been introduced:
+    G4ParticleHPCaptureDataPT, G4ParticleHPCaptureURR,
+    G4ParticleHPElasticDataPT, G4ParticleHPElasticURR,
+    G4ParticleHPFissionDataPT, G4ParticleHPFissionURR,
+    G4ParticleHPInelasticDataPT, G4ParticleHPInelasticURR,
+    G4ParticleHPProbabilityTablesStore, G4ParticleHPIsoProbabilityTable,
+    G4ParticleHPIsoProbabilityTable_CALENDF,
+    G4ParticleHPIsoProbabilityTable_NJOY.
+
+## 2024-04-21 Gabriele Cosmo (hadr-hpp-V11-02-04)
+- Fixed compilation error in G4ParticleHPManager and G4ParticleHPNames on
+  Windows VC++ with C++20 Standard enabled.
+  Based on [GitHub PR#69](https://github.com/Geant4/geant4/pull/69).
+
+## 2024-02-26 Vladimir Ivanchenko (hadr-hpp-V11-02-03)
+- G4CrossSectionHP - fixed method takeing into account temperatue effect
+  (the difference due to this fix is small), fixed elastic and capture
+  cross-sections in Argon by using only the main isotope Z=18, A=40 (there
+  was up to 50% overestimation of cross sections due to wrong data for
+  rare isotopes of argon); fixed cross sections for rare target atoms
+  Promethium, Astatine, Radon, Francium.
+
+## 2024-02-12 Gabriele Cosmo (hadr-hpp-V11-02-02)
+- Fixed remaining compilation warnings on gcc compiler when LTO settings
+  are enabled.
+
+## 2024-01-30 Vladimir Ivanchenko (hadr-hpp-V11-02-01)
+- G4ParticleHPFSFissionFS, G4ParticleHPFissionBaseFS - substitute
+  C-arrays with std::vector in order to reduce compilation warnings on gcc
+  with LTO settings.
+
+## 2024-01-26 Vladimir Ivanchenko (hadr-hpp-V11-02-00)
+- G4ParticleHPFissionFS, G4ParticleHPFFFissionFS - added extra protections 
+  against cases when fission data are not available for some isotopes 
+  (fixed problem #2590)
+
+## 2023-11-04 Vladimir Ivanchenko (hadr-hpp-V11-01-24)
+- G4ParticleHPManager - set default upper limit on Doppler broading
+  30 keV instead of 100 keV
+- G4ParticleHPInelasticXS - set upper limit of x-section 30 MeV
+  instead of 20 MeV
+- G4CrossSectionHP - removed not needed G4Exception
+
+## 2023-11-03 Ben Morgan (hadr-hpp-V11-01-23)
+- Use "G4" prefixed version of EXPAT/ZLIB CMake variables
+
+## 2023-10-24 Guilherme Amadio (hadr-hpp-V11-01-22)
+- Fix compilation when G4VERBOSE is not defined
+
+## 2023-10-20 Vladimir Ivanchenko (hadr-hpp-V11-01-21)
+- G4NeutronHPCaptureXS, G4NeutronHPElasticXS, G4NeutronHPInelasticXS,
+  G4NeutronHPFissionXS - improved comments to the code and description text
+- G4ParticleHPInelasticXS - fixed constructor
+
+## 2023-10-15 Vladimir Ivanchenko (hadr-hpp-V11-01-20)
+- G4NeutronHPInelasticVI, G4NeutronHPElasticVI - alternative model classes
+- G4NeutronHPCaptureXS, G4NeutronHPElasticXS, G4NeutronHPInelasticXS,
+  G4NeutronHPFissionXS, G4CrossSectionHP, G4NeutronFissionVI,
+  G4NeutronRadCaptureHP - updated models/cross sections for 
+    physics list QGSP_BERT_HP, which includes these models and cross sections
+
+## 2023-10-12 Gabriele Cosmo (hadr-hpp-V11-01-19)
+- In G4CrossSectionHP, fixed compilation warnings for implicit type conversions
+  on macOS/XCode.
+
+## 2023-10-02 Vladimir Ivanchenko (hadr-hpp-V11-01-18)
+- G4CrossSectionHP - removed debug printout
+- G4NeutronRadCaptureHP - new model using G4PhotonEvaporation
+- G4NeutronFissionVI - new model using G4CompetativeFission
+
+## 2023-09-23 Vladimir Ivanchenko (hadr-hpp-V11-01-17)
+- G4NeutronHPCaptureXS, G4NeutronHPElasticXS, G4NeutronHPInelasticXS,
+  G4NeutronHPFissionXS, G4ParticleHPInelasticXS, G4CrossSectionHP - new cross
+    section classes
+
+## 2023-08-16 Vladimir Ivanchenko (hadr-hpp-V11-01-16)
+- G4ParticleHPManager - added data member and Get/Set method for 
+    maximum energy above which no Doppler broading is applied
+- G4ParticleHPInelastic - improved info printout
+
+## 2023-07-18 Vladimir Ivanchenko (hadr-hpp-V11-01-15)
+- G4ParticleHPContAngularPar - fixed Coverity warning
+
+## 2023-07-13 Vladimir Ivanchenko (hadr-hpp-V11-01-14)
+- Use G4ParticleHPManager for directory names and various flags;
+  constinue code clean-up
+
+## 2023-07-06 Vladimir Ivanchenko (hadr-hpp-V11-01-13)
+- G4ParticleHPManager - check all environment variables once, provided new
+    methods to access path to data
+- G4ParticleHPContAngularPar, G4ParticleHPContEnergyAngular,
+  G4ParticleHPEnAngCorrelation, G4ParticleHPNames, G4ParticleHPProduct -
+    use new interfaces to G4ParticleHPManager, moved constructors, destrictors, 
+    and some other methods to source; removed unused commented lines
+
+## 2023-07-06 Vladimir Ivanchenko (hadr-hpp-V11-01-12)
+- source.cmake - use alphabetical order both for headers and for source files
+- classes for capture are renamed from G4ParticleHP to G4NeutronHP, because
+  capture process exists only for neutrons; removed old commented lines
+  in modified files
+
+## 2023-07-05 Gabriele Cosmo (hadr-hpp-V11-01-11)
+- G4ParticleHPEnAngCorrelation: minor code cleanup
+
+## 2023-06-30 Vladimir Ivanchenko (hadr-hpp-V11-01-10)
+- G4ParticleHPEnAngCorrelation - fixed Coverity report
+- removed unused G4NeutronHP*.hh headers for elastic and inelastic
+
+## 2023-06-17 Vladimir Ivanchenko (hadr-hpp-V11-01-09)
+- G4ParticleHPEnergyDistribution, G4ParticleHPContAngularPar,
+  G4ParticleHPEnAngCorrelation - fixed old Coverity reports
+
+## 2023-06-16 Vladimir Ivanchenko (hadr-hpp-V11-01-08)
+- G4ParticleHPInelasticBaseFS - real fix of memory leak reported by Coverity
+
+## 2023-06-07 Vladimir Ivanchenko (hadr-hpp-V11-01-07)
+- G4ParticleHPInelasticBaseFS - fix potential memory leak reported by Coverity
+
+## 2023-05-04 Ben Morgan (hadr-hpp-V11-01-06)
+- Apply clang-tidy fixes
+
+## 2023-05-02 Ben Morgan (hadr-hpp-V11-01-05)
+- Apply clang-format to headers/sources
+  - FastLegendre source files are marked to be ignored due to complexity/size
+
+## 2023-03-13 Vladimir Ivanchenko (hadr-hpp-V11-01-04)
+- G4ParticleHPGamma, G4ParticleHPLevel : are removed
+- G4ParticleHPNucLevel : added new data structure for nuclear levels
+- G4ParticleHPDeExGammas : rewitten in order to avoid usage of C-arrays,
+    which provokes a problem for CMS static build; code now fully based on
+    std::vector of G4ParticleHPNucLevel; public interfaces are not changed;
+    if in DB probability of decay for a give level is zero; it is substituted 
+    to 1.e-6
+- G4ParticleHPInelasticBaseFS, G4ParticleHPInelasticCompFS - gamma cascade
+    sampling is checked and simplified (removed unnecessary computations)
+
+## 2023-03-27 Alberto Ribon (hadr-hpp-V11-01-03)
+- G4ParticleHPManager : removed the neutron kinetic energy threshold for applying
+  the SVT (Sampling of the Velocity of the Target) algorithm, because this 
+  parameter is in G4HadronicParameters.
+- G4ParticleHPMessenger : when changing the neutron kinetic energy threshold
+  for applying the SVT algorithm - as part of the setting of the DBRC 
+  (Double Broadening Rejection Correction) algorithm - update the corresponding
+  value in G4HadronicParameters.
+- G4ParticleHPElasticFS : get the neutron kinetic energy threshold for applying
+  the SVT algorithm from G4HadronicParameters; 
+  in the method GetBiasedThermalNucleus, corrected mistake in the interval 
+  where the max neutron cross section is considered for rejection.
+
+## 2023-03-13 Vladimir Ivanchenko (hadr-hpp-V11-01-02)
+- G4ParticleHPGamma, G4ParticleHPLevel, G4ParticleHPDeExGammas - attempt to 
+    fix compilation warning in CMSSW, reported in Geant4 issue #158;
+    removed internal counter; delete only objects, which are created
+
+## 2023-03-04 Alberto Ribon (hadr-hpp-V11-01-01)
+Accurate modelling of elastic resonant scattering in heavy nuclei by
+Marek Zmeskal and Loic Thulliez by the use of DBRC (Doppler Broadening
+Rejection Correction) algorithm:
+- G4ParticleHPManager : added new member variables, and corresponding
+  Get and Set methods, related to the DBRC algorithm.
+- G4ParticleHPMessenger : added new UI commands to enable DBRC (which is off
+  by default) and to specify its parameters.
+- G4ParticleHPVector : added new method GetMaxY to provide the maximum
+  cross section in the interval between two kinetic energy values.
+- G4ParticleHPChannel : modified method ApplyYourself, with an extra argument,
+  for a special treatment of the elastic channel.
+- G4ParticleHPElastic : modified call to G4ParticleHPChannel::ApplyYourself,
+  with an extra parameter.
+- G4ParticleHPElasticFS : implemented the DBRC algorithm in the new method
+  GetBiasedThermalNucleus (in the case that DBRC algorithm should not be
+  applied, then this method calls G4Nucleus::GetBiasedThermalNucleus);
+  modified the method ApplyYourself to call the new method
+  GetBiasedThermalNucleus;
+  introduced two more new methods, InitializeScatterKernelParameters and
+  RegisterCrossSection, and corresponding new member variables.
+
+## 2023-02-06 Gabriele Cosmo (hadr-hpp-V11-01-00)
+- Minor cleanup in G4ParticleHPDeExGammas header for data initialisation.
+
+## 2022-11-26 Gabriele Cosmo (hadr-hpp-V11-00-19)
+- Fixed more compilation warnings for implicit type conversions.
+- Some code cleanup.
+
+## 2022-11-18 Gabriele Cosmo (hadr-hpp-V11-00-18)
+- Fixed compilation warnings for implicit type conversions on macOS/XCode 14.1.
+
+## 2022-10-07 Gabriele Cosmo (hadr-hpp-V11-00-17)
+- Fixed compilation warnings on Intel/icx compiler for variable set
+  but not used in G4ParticleHPInelasticCompFS and G4ParticleHPFFFissionFS.
+- Use auto for iterators in G4ParticleHPFFFissionFS::GetAFissionFragment().
+
+## 2022-10-05 Alberto Ribon (hadr-hpp-V11-00-16)
+- G4ParticleHPContAngularPar.cc : added protection against zero probability
+  for both discrete and continuous emission.
+
+## 2022-10-01 Dennis Wright (hadr-hpp-V11-00-15)
+- Remove environment variables G4PHPTEST, G4PHPTEST2 and NeutronHPCapture,
+  associated getenv() calls and associated debug code. They are no longer
+  used and found to slow down the code significantly.
+  This is a fix of bug report #2501.
+
+  Files modified: G4ParticleHPContAngularPar (removed G4PHPTEST, G4PHPTEST2)
+                  G4ParticleHPCapture.cc (removed NeutronHPCapture)
+                  G4ParticleHPEnAngCorrelation.cc (removed G4PHPTEST)
+                  G4ParticleHPContEnergyAngular.cc (  "        " )
+                  G4ParticleHPInelastic.cc         (  "        " )
+                  G4ParticleHPInelasticBaseFS.cc   (  "        " )                   
+                  G4ParticleHPProduct              (  "        " )
+                  G4ParticleHPDeExGammas.hh        (  "        " )
+
+## 2022-07-19 Alberto Ribon (hadr-hpp-V11-00-14)
+- G4ParticleHPThermalScattering.hh : fixed Coverity report (uninitialized
+  variable).
+
+## 2022-07-23 Ben Morgan (hadr-hpp-V11-00-13)
+- Remove unneeded include of `G4FastVector.hh`
+
+## 2022-07-01 Alberto Ribon (hadr-hpp-V11-00-12)
+- G4ParticleHPInelastic.cc, G4ParticleHPCapture.cc, G4ParticleHPFission.cc,
+  G4ParticleHPElastic.cc, G4ParticleHPThermalScattering.cc : replaced
+  the threshold used for checking the absolute energy non-conservation
+  from DLB_MAX (implying no checking at all) to 350 GeV (this value allows
+  for cases where the residual nucleus is not produced, even when super-heavy
+  nuclides are involved).
+- G4ParticleHPContAngularPar.cc : removed unneeded check, reported by Coverity.
+
+## 2022-06-23 Alberto Ribon (hadr-hpp-V11-00-11)
+- G4ParticleHPContAngularPar.cc : added protections against evaluations of
+  arrays at negative index (-1), fixing rare reproducibility problems.
+
+## 2022-06-22 Guilherme Amadio (hadr-hpp-V11-00-10)
+- Replace std::getenv with G4FindDataDir
+
+## 2022-06-20 Igor Semeniouk (hadr-hpp-V11-00-09)
+- G4ParticleHPIsoData.cc, G4ParticleHPInelasticData.cc,
+G4ParticleHPJENDLHEData.cc, G4ParticleHPThermalScatteringData.cc,
+G4ParticleHPThermalScattering.cc :
+quick fix, use G4FindDataDir for G4NEUTRONHPDATA and other dataDirVariable environment variables.
+
+## 2022-06-14 Igor Semeniouk (hadr-hpp-V11-00-08)
+- G4ParticleHPInelastic.cc : quick fix, use G4FindDataDir for G4NEUTRONHPDATA
+and other dataDirVariable environment variables.
+
+## 2022-06-10 Alberto Ribon (hadr-hpp-V11-00-07)
+- G4ParticleHPContEnergyAngular.hh : fixed Coverity report.
+  (Correction suggested by Dennis Wright; expected no effect).
+
+## 2022-05-11 Dennis Wright (hadr-hpp-V11-00-06)
+- code cleanup of G4ParticleHPContEnergyAngular.cc and 
+  G4ParticleHPContAngularPar.cc : remove debug code, remove commented out code,
+  fix indentation of loops and if branches   
+
+## 2022-04-27 Dennis Wright (hadr-hpp-V11-00-05)
+- fix of bug #2468: many or most photons generated from G4NDL/Capture/FSMF6 data
+  are too high in energy.  Bug reported and fixed by Sven Menke.
+- G4ParticleHPContEnergyAngular
+   ::Sample: do not call ClearHistories - needed in case of multiple photons
+   ::ClearHistories: check cache before clear
+- G4ParticleHPContAngularPar - much code replaced here
+   ::Sample: reduce remaining energy before sampling next photon
+   ::PrepareTableInterpolation: fix to handle table entries with identical energies
+                              : disable code that incorrectly assumes identical min
+                                and max energies for two different data sets
+   ::BuildByInterpolation: re-build interpolation table only if new interaction
+                         : re-write merge of two data sets to fix incorrect
+                           assignment of elements
+                         : disable and replace code with incorrect assignment of
+                           continuous energies
+   
+G4ParticleHPContEnergyAngular: 
+## 2022-04-27 Gunter Folger  (hadr-hpp-V11-00-04)
+-  G4ParticleHPThermalScatteringNames.cc updated to use new ThermalScattering        data. File provided by Loic Thulliez.
+
+## 2022-04-26 Alberto Ribon (hadr-hpp-V11-00-03)
+-  G4ParticleHPVector : fixed compilation warning for 'may be used uninitialized'
+   variable.
+
+## 2022-04-20 Alberto Ribon (hadr-hpp-V11-00-02)
+-  G4ParticleHPFissionSpectrum.hh, G4ParticleHPSimpleEvapSpectrum.hh,
+   G4FPYNormalFragmentDist.cc, G4FissionProductYieldDist.cc, 
+   G4ParticleHPInelasticCompFS.cc, G4ParticleHPKallbachMannSyst.cc,
+   G4ParticleHPLegendreStore.cc, G4ParticleHPNBodyPhaseSpace.cc,
+   G4ParticleHPVector.cc, G4ParticleHPWattSpectrum.cc : fixed compilation
+   warnings for 'may be used uninitialized' variables.
+
+## 2022-02-09 Gabriele Cosmo (hadr-hpp-V11-00-01)
+- Fixed compilation warnings on Intel compilers for deprecated use of
+  operator=() in G4ParticleHPDataPoint.
+
+## 2021-12-10 Ben Morgan (hadr-hpp-V11-00-00)
+- Change to new Markdown History format.
+
+---
+
+# History entries prior to 11.0
+
+05 November 2021 Alberto Ribon (hadr-hpp-V10-07-11)
+--------------------------------------------------
+Improvements made by Loic Thulliez and Eric Dumonteil (CEA Saclay):
+- G4ParticleHPThermalScattering, G4ParticleHPElastic : corrected the
+  original treatment of the temperature interpolation when computing
+  the neutron final state, with the temperature interpolation performed
+  stochastically now. 
+- G4ParticleHPThermalScatteringNames : extended the list of materials
+  which can have thermal data libraries.
+
+22 October 2021 Alberto Ribon (hadr-hpp-V10-07-10)
+-------------------------------------------------
+- G4ParticleHPLabAngularEnergy : bug-fix made by Emilio Mendoza.
+
+04 August 2021 Alberto Ribon (hadr-hpp-V10-07-09)
+-------------------------------------------------
+- (affecting nearly all classes) : set creator model ID for secondaries,
+  using the new version of G4PhysicsModelCatalog
+
+23 May 2021 Dennis Wright (hadr-hpp-V10-07-08)
+----------------------------------------------
+- G4ParticleHPInelasticCompFS:::CompositeApply():
+  in two places, replace line
+     if (eExcitation < 20*CLHEP::keV) {eExcitation=0;}
+   with  eExcitation = std::max(0.,QI[0] - QI[it]) 
+  in order to implement fix of bug #2333
+
+16 April 2021 Ben Morgan (hadr-hpp-V10-07-07)
+--------------------------------------------------
+- Migrate build to modular CMake API
+
+03 May 2021 Vladimir Ivanchenko (hadr-hpp-V10-07-06)
+--------------------------------------------------------
+- G4ParticleHPData, G4ParticleHPJENDLHEData - G4LPhysicsFreeVector
+    is substituted by G4PhysicsFreeVector
+
+08 April 2021 Alberto Ribon (hadr-hpp-V10-07-05)
+--------------------------------------------------------
+- GNUmakefile, sources.cmake : removed the subdirectories
+  hadronic/models/management and hadronic/models/util
+  (that have been now deleted, with their classes moved to
+   hadronic/util and hadronic/management).
+  Removed also the useless dependency to hadronic/process.
+  Clean-up of old directories no longer present.
+
+08 April 2021 Alberto Ribon (hadr-hpp-V10-07-04)
+--------------------------------------------------------
+-  G4ParticleHPCaptureData, G4ParticleHPElasticData,
+   G4ParticleHPFissionData, G4ParticleHPInelasticData,
+   G4ParticleHPCaptureFS, G4ParticleHPFinalState,
+   G4ParticleHPEnAngCorrelation, G4ParticleHPContAngularPar,
+   G4ParticleHPMessenger : improved handling of UI commands, in particular
+   between different runs, as well as in multi-threaded mode.
+
+22 March 2021 Alberto Ribon (hadr-hpp-V10-07-03)
+--------------------------------------------------------
+-  G4ParticleHPManager : removed deprecated environmental variables.
+
+18 March 2021 Alberto Ribon (hadr-hpp-V10-07-02)
+--------------------------------------------------------
+-  G4ParticleHPElementData : removed commented out header files.
+
+08 March 2021 Alberto Ribon (hadr-hpp-V10-07-01)
+--------------------------------------------------------
+-  G4ParticleHPElementData, G4ParticleHPBGGNucleonInelasticXS : removed
+   old and unused header files corresponding to Gheisha cross sections
+   (that have been deleted).
+
+05 January 2021 Vladimir Ivanchenko (hadr-hpp-V10-07-00)
+--------------------------------------------------------
+-  G4ParticleHPThermalScattering - add final state phi-rotation;
+     fixed problems #2290 and #1856
+
+05 November 2020 Alberto Ribon (hadr-hpp-V10-06-12)
+--------------------------------------------------
+-  G4ParticleHPInelastic, G4ParticleHPInelasticData : improved error message
+   in the case that both G4PARTICLEHPDATA and the related particle-specific
+   environmental variable (e.g. G4PROTONHPDATA) are not defined.
+   The recommandation is to define only G4PARTICLEHPDATA.
+
+27 October 2020 Alberto Ribon (hadr-hpp-V10-06-11)
+--------------------------------------------------
+-  G4ParticleHPInelastic, G4ParticleHPManager : enabled the print out of
+   the physics parameters (only once and with a format similar to
+   Precompound/de-excitation and RadioativeDecay; note that rather than
+   enabling the print out in G4ParticleHPInelastic::BuildPhysicsTable,
+   we could have used instead the analogous method BuildPhysicsTable of
+   one of the following classes: G4ParticleHPCapture, G4ParticleHPElastic
+   and G4ParticleHPFission).
+-  G4ParticleHPContAngularPar, G4ParticleHPInelasticBaseFS,
+   G4ParticleHPEnAngCorrelation, G4ParticleHPFinalState : replaced
+   the use of the environmental variable G4PHP_DO_NOT_ADJUST_FINAL_STATE
+   (the only one used outside the class G4ParticleHPManager - a part for
+   the one pointing to the data libraries) with the equivalent
+   G4ParticleHPManager::GetInstance()->GetDoNotAdjustFinalState().
+
+05 August 2020 Alberto Ribon (hadr-hpp-V10-06-10)
+-------------------------------------------------
+- G4ParticleHPMessenger : added new UI macro command
+  "use_Wendt_fission_model" related to the use of Wendt fission
+  model; make sure that not more than one fission fragment model
+  is active.
+- G4ParticleHPManager : added a new variable related to the use of
+  Wendt fission model; throw a "JustWarning" exception when the
+  environmental variables are used (to remind that they are still
+  valid but deprecated, and will be removed in Geant4 version 11.0);
+  added new method "DumpSetting()" which needs to be called somewhere
+  to print out once the values of its parameters.
+- G4ParticleHPChannel : moved environmental variable related to
+  the use of Wendt fission model from this class to
+  G4ParticleHPManager.
+
+21 July 2020 Ben Morgan (hadr-hpp-V10-06-09)
+--------------------------------------------
+- Use GEANT4_BUILD_PHP_AS_HP option to enable PHP_AS_HP,
+  retiring use of PHP_AS_HP environment variable.
+
+17 July 2020  Dennis Wright  (hadr-hpp-V10-06-08)
+-------------------------------------------------
+- Fix bug #2233: two fission fragment models can be active at the same time
+  If Wendt model is active in ctor of G4ParticleHPChannel, turn off standard
+  fragment production model
+
+30 June 2020  Dennis Wright  (hadr-hpp-V10-06-07)
+-------------------------------------------------
+- Fix bug #2234: thread competition in method
+  G4FissionProductYieldDist::G4GetFission(void).  Place auto lock
+  on this method.
+
+28 May 2020  Ben Morgan      (hadr-hpp-V10-06-06)
+---------------------------------------------------
+- Remove obsolete GRANULAR_DEPENDENCIES entries
+- Use add_definitions to set PHP_AS_HP when required
+
+19 May 2020  Alberto Ribon (hadr-hpp-V10-06-05)
+-----------------------------------------------
+- G4ParticleHPNames, G4ParticleHPProduct, G4ParticleHPInelastic,
+  G4ParticleHPInelasticData, G4ParticleHPElasticData,
+  G4ParticleHPCaptureData, G4ParticleHPFissionData : allowed the
+  printout only if the global hadronic verbosity level is not zero.
+
+05 May 2020   Gunter Folger  (hadr-hpp-V10-06-04)
+-------------------------------------------------
+- fix for clang10: Correct copy ctor in G4ParticleHPDataPoint.hh
+   using default implementation
+
+18 February 2020  Dennis Wright (hadr-hpp-V10-06-03)
+----------------------------------------------------
+- fix (from Artem Zontikov) bug 1838:
+  G4ParticleHPInelasticBaseFS.cc,
+    lines 412-413, 599-600: use QI[0]-QI[it] for excitation
+    line 442: add particle definition protection to iLevel calculation
+
+13 February 2020  Dennis Wright (hadr-hpp-V10-06-02)
+----------------------------------------------------
+- fix (from Artem Zontikov) bug 1824:
+  change line 166 of G4ParticleHPInelasticBaseFS.cc to
+  theFinalStatePhotons->InitPartials(theData, theXsection);
+
+  change line 182 of G4ParticleHPInelasticCompFS.cc to
+  theFinalStatePhotons[it]->InitPartials(theData, theXsection[50]);
+
+  remove line delete [] theReactionXsec; in ~G4ParticleHPPhotonDist() as memory
+  allocation does not take place in this class
+
+17 January 2020  Alberto Ribon (hadr-hpp-V10-06-01)
+----------------------------------------------------
+- G4ParticleHPHash, G4ParticleHPCaptureFS : taken into account the difference
+  between 'size_t' and 'G4int' to avoid warnings (seen on Windows).
+
+15 January 2020  Dennis Wright (hadr-hpp-V10-06-00)
+---------------------------------------------------
+- G4ParticleHPThermalScvattering::create_E_isoAng_from_energy :
+  add fatal exception for case when pointers panEPM_T_EL or panEPM_T_EH
+  are null.  This fixes Coverity bugs 82418 and 82419.
+
+ 4 December 2019  Alberto Ribon (hadr-hpp-V10-05-09)
+----------------------------------------------------
+- G4ParticleHPContAngularPar : set protection against unphysical interpolation
+  result in the method Sample.
+- G4ParticleHPKallbachMannSyst : added the possibility of tritium and He3
+  projectiles in the "A" method, taking in this case (arbitrarily) an
+  intermediate value between the two already considered cases
+  (proton-neutron-deuteron and alpha).
+Note: these two fixes are needed to avoid crashes seen only with the physics
+      list QGSP_BIC_AllHP. They should be checked and confirmed by experts.
+
+24 October 2019  Alberto Ribon (hadr-hpp-V10-05-08)
+---------------------------------------------------
+-  G4ParticleHPNames : remove restriction of using isotopes with Z > 92
+   (threfore removing the environmental variable AllowForHeavyElements).
+   This was proposed by Emilio Mendoza and approved.
+
+22 July 2019  Dennis Wright (hadr-hpp-V10-05-07)
+------------------------------------------------
+Two more corrections from Emilio:
+- G4ParticleHPInelasticBaseFS::BaseApply(): re-calculation of Q value when
+   no data in library
+- G4ParticleHPNBodyPhaseSpace::Sample(): protection against maxE < 0
+
+ 5 July 2019  Dennis Wright (hadr-hpp-V10-05-06)
+------------------------------------------------
+Add Emilio Mendoza's improvements and bug fixes:
+- G4ParticleHPChannel, G4ParticleHPNames: allow using an incomplete data
+    library name if the environment variable G4NEUTRONHP_SKIP_MISSING_ISOTOPES
+    is set.  The missing cross sections are then set to 0.
+- G4ParticleHPContAngularPar: redefine residual mass to consider incident
+    particles other than neutrons.
+- G4ParticleHPInelasticBaseFS: add protection against residual with Z<0 or A<Z,
+    do not apply adjust_final_state when data is in MF=6 format (no correlated
+    particle emission),
+    bug correction (add Q value info to G4ParticleHPNBodyPhaseSpace)
+- G4ParticleHPInelasticCompFS: re-build method two_body_reaction() to be used by
+    incident charged particles (now isotropic emission in the CMS).
+    Also restrict nresp use below 20 MeV.
+    Add photon emission when no data available.
+- G4ParticleHPEnAngCorrelation: delete part of code trying to preserve baryon
+    number - one has to assume that it is not preserved when using ENDF-6 data.
+- G4ParticleHPKallbachMannSyst: bug fixes
+
+25 June 2019  Dennis Wright (hadr-hpp-V10-05-05)
+------------------------------------------------
+- G4ParticleHPInelasticCompFS.cc : adopt fix of bug #2166 (A. Zontikov) to
+  avoid arbitrary number of target nuclei being generated and slowing down
+  multithreaded operation.
+
+24 June 2019  Alberto Ribon (hadr-hpp-V10-05-04)
+------------------------------------------------
+- G4ParticleHPChannelList : fixed bug in the momentum change (it has to be
+  a normalized 3-vector, but it was not) in the case that NeutronHP could
+  not find a proper reaction channel. The bug was there since a while, but
+  we started getting new warnings since G4 10.5.ref05, likely due to the
+  change made on 8 May.
+
+21 June 2019  Dennis Wright (hadr-hpp-V10-05-03)
+------------------------------------------------
+- fix of bug report 2167
+  Adopted fix of Artem Zontikov to deal with un-incremented index of photons
+  in G4ParticleHPPhotonDist::GetPhotons.  Also clean up dead code in that class.
+
+8 May 2019  Dennis Wright (hadr-hpp-V10-05-02)
+----------------------------------------------
+- fix of bug report 1838
+  Adopted fix of Artem Zontikov to deal with incorrect excitation energy
+  when charged particles are emitted during neutron reaction
+    G4ParticleHPInelasticCompFS.cc : method CompositeApply(), for very small
+    excitation, change level index from -1 to 0 only if incident and outgoing
+    particles are the same.
+
+
+11 April 2019  Dennis Wright (hadr-hpp-V10-05-01)
+-------------------------------------------------
+- fix of bug report #1824
+  Adopoted fix of Artem Zontikov to make sure production cross section is
+  not ignored when sampling discrete gamma emission.
+    G4ParticleHPPhotonDist.hh : added reaction cross section data member
+    G4ParticleHPPhotonDist::GetPhotons() modified to statistically suppress
+    gammas when reaction cross section is non-zero.
+    G4ParticleHPPhotonDist::InitPartials() modified to take cross section
+      argument
+    G4ParticleHPInelasticBaseFS.cc and G4ParticleHPInelasticCompFS.cc
+      modified to change calls to InitPartials to take cross section argument
+
+6 February 2019  Alberto Ribon (hadr-hpp-V10-05-00)
+---------------------------------------------------
+- G4ParticleHPKallbachMannSyst::Kallbach : replaced G4Exp with std::exp in order
+  to avoid underflow/overflow crashes observed with the physics list
+  QGSP_BIC_AllHP in the version G4 10.5 .
+
+26 November 2018  Gabriele Cosmo (hadr-hpp-V10-04-11)
+-----------------------------------------------------
+- Fixed potential leaks in G4ParticleHPPhotonDist, G4ParticleHPContAngularPar
+  and G4ParticleHPFinalState for use of pointers cached in G4Cache.
+- Minor code cleanup and formatting. Modified:
+  G4VParticleHPEnergyAngular.hh, G4ParticleHPContAngularPar.hh.cc,
+  G4ParticleHPAngular.hh, G4ParticleHPFinalState.hh.cc,
+  G4ParticleHPFSFissionFS.hh, G4ParticleHPContEnergyAngular.hh,
+  G4ParticleHPPhotonDist.hh, G4ParticleHPFissionBaseFS.hh,
+  G4ParticleHPProduct.hh, G4ParticleHPEnAngCorrelation.hh.
+
+9 November 2018  Gabriele Cosmo (hadr-hpp-V10-04-10)
+----------------------------------------------------
+- G4ParticleHPThermalScattering: fixed printout typo.
+
+4 November 2018  Dennis Wright (hadr-hpp-V10-04-09)
+---------------------------------------------------
+- G4ParticleHPElasticFS::ApplyYourself(): use correct reference frames for
+  calculation of projectile and target momenta.  Correction made for cases
+  when cos(Theta) is given in lab frame and in center of momentum frame.
+  Partial fix of momentum non-conservation bug report #1918.
+
+22 October 2018  Dennis Wright (hadr-hpp-V10-04-08)
+---------------------------------------------------
+- G4ParticleHPCaptureFS::ApplyYourself(): Lorentz boost of neutron into target
+  frane was backwards - reverse it.  Also replace SetDefinition() with
+  SetDefinitionAndUpdateE() in line 75.  Fixes bug report #1919.
+
+11 October 2018  Gabriele Cosmo (hadr-hpp-V10-04-07)
+----------------------------------------------------
+- Fixed definition of singletons for G4ParticleHPManager and
+  G4ParticleHPThreadLocalManager and some code cleanup.
+  Made G4ParticleHPThreadLocalManager a G4ThreadlLocalSingleton to avoid
+  memory leaks generated each time a thread creates the instance.
+- Fixed bug for double allocation of G4ParticleHPReactionWhiteBoard in
+  G4ParticleHPThreadLocalManager::OpenReactionWhiteBoard().
+
+4 September 2018  Dennis Wright (hadr-hpp-V10-04-06)
+----------------------------------------------------
+- Bug 2026:  Fix provided by Artem Zontikov.
+  Solves memory leaks in G4ParticleHPContEnergyAngular::Sample() and
+  G4ParticleHPContAngularPar::cacheInit()
+
+24 August 2018  Dennis Wright (hadr-hpp-V10-04-05)
+--------------------------------------------------
+- Fix bug 1789: gamma level mismatch in G4ParticleHPInelasticCompFS.cc
+  Not a complete fix because gamma data comes from ENSDF and does not
+  necessarily match excitations in ENDF.
+
+24 August 2018  Dennis Wright (hadr-hpp-V10-04-04)
+--------------------------------------------------
+- Fix bug 1745: incorrect sampling of isotropic distribution in
+   G4ParticleHPPhotonDist.cc
+   G4ParticleHPCaptureFS.cc
+   G4ParticleHPFissionFS.cc
+   G4ParticleHPIsotropic.cc
+
+27 July 2018 Vladimir Ivantchenko (hadr-hpp-V10-04-03)
+-----------------------------------------------------
+- G4ParticleHPElementData - removed unnecessary inheritance from
+    GHEISHA data class G4HadronicCrossSection
+
+9 May 2018 Alberto Ribon (hadr-hpp-V10-04-02)
+---------------------------------------------------
+- G4ENDFTapeRead, G4FissionProductYieldDist : fixed warnings in gcc 8
+    regarding catching polymorphic type by value, instead of by reference.
+
+
+24 April 2018 Alberto Ribon (hadr-hpp-V10-04-01)
+---------------------------------------------------
+- G4ParticleHPFissionFS : protect against very rare cases of division by zero.
+
+
+19 December 2017 Gabriele Cosmo (hadr-hpp-V10-04-00)
+---------------------------------------------------
+- Fixed self-consistency in headers (missing #include) in G4FFGEnumerations,
+  G4FPYNubarValues, G4ParticleHPAngularP and G4ParticleHPHash.
+  Thanks to Raphael Isemann for reporting these.
+
+
+29 November 2017 Tatsumi Koi (hadr-hpp-V10-03-09)
+---------------------------------------------------
+- Change tolerance value and implementation in calculation of KallbachZero.
+  FPE errors occurred on several platforms in previous implementations
+-Apply some codes cleanup
+
+
+3 November 2017 Tatsumi Koi (hadr-hpp-V10-03-08)
+---------------------------------------------------
+- Add NRESP71 model for n on C reaction
+
+
+5 Oct 2017 Tatsumi Koi (hadr-hpp-V10-03-07)
+---------------------------------------------------
+- Fix bug in coherent elastic scattering
+  Contribution from  N. H. TRAN@CEA
+
+
+16 Aug 2017 Tatsumi Koi (hadr-hpp-V10-03-06)
+---------------------------------------------------
+- Remove test codes for the problem mac1011
+
+
+11 Aug 2017 Tatsumi Koi (hadr-hpp-V10-03-05)
+---------------------------------------------------
+- A test for mac1011 problem on CDash
+
+
+18 July 2017 Tatsumi Koi (hadr-hpp-V10-03-04)
+---------------------------------------------------
+- Fix Bugzilla #1971
+
+
+1 May 2017 Tatsumi Koi (hadr-hpp-V10-03-03)
+---------------------------------------------------
+- Bug fix and improve stability: G4ParticleHPFinalState
+- Suppress unnecessary warning messages: G4ParticleHPEnAngCorrelation
+
+
+27 April 2017 Andrea Dotti (hadr-hpp-V10-03-02)
+--------------------------------------------------
+- Fix in destructor of processes to protect agains concurrent
+  deletion
+
+
+24 April 2017 Tatsumi Koi (hadr-hpp-V10-03-01)
+---------------------------------------------------
+- Adding check for He3 projectile; Bugzilla #1907
+
+
+6 March 2017 Tatsumi Koi (hadr-hpp-V10-03-00)
+---------------------------------------------------
+- Fix minor inconsistency between documentation and code
+
+
+15 November 2016 Tatsumi Koi (hadr-hpp-V10-02-35)
+---------------------------------------------------
+-Fix Coverity 82426
+-Fix Coverity 58745
+
+
+14 November 2016 Tatsumi Koi (hadr-hpp-V10-02-34)
+---------------------------------------------------
+-Fix run-time memory errors reported by valgrind on top of hadr-hpp-V10-02-32
+
+
+14 November 2016 Tatsumi Koi (hadr-hpp-V10-02-33)
+---------------------------------------------------
+-Fix run-time memory errors reported by valgrind on top of hadr-hpp-V10-02-31
+
+
+9 November 2016 Tatsumi Koi (hadr-hpp-V10-02-32)
+---------------------------------------------------
+-Change default behavior to DO_NOT_SET_PHP_AS_HP
+-You can specify old behavior by setting environment variable of PHP_AS_HP
+
+
+9 November 2016 Tatsumi Koi (hadr-hpp-V10-02-31)
+---------------------------------------------------
+-Fix entering infinite loop in "DO_NOT_SET_PHP_AS_HP" environment
+-Fix problem on divide by zero error in G4ParticleHPVector::ThinOut, which happens in "Release + G4FPE_DEBUG"
+
+
+4 November 2016 Tatsumi Koi (hadr-hpp-V10-02-30)
+---------------------------------------------------
+-Fix problem of uninitilaization of cache in "G4ParticleHPContAngularPar",  which happens in "DO_NOT_SET_PHP_AS_HP" enviroment
+-Fix problem of divide by zero error in "G4ParticleHPContAngularPar::BuildByInterpolation", which happens in "DO_NOT_SET_PHP_AS_HP" enviroment
+-Fix wrong residual in case of He3 projectile Bugzilla #1906
+
+
+4 November 2016 Pedro Arce (hadr-hpp-V10-02-29)
+---------------------------------------------------
+Add protection with G4PHP_DO_NOT_ADJUST_FINAL_STATE to G4ParticleHPInelasticBaseFS.cc
+
+
+31 October 2016 Tatsumi Koi (hadr-hpp-V10-02-28)
+---------------------------------------------------
+-Re-introduce cache of cross section in GetIsoCrossSection
+ Since current CrossSectionDataStore does not call elementwise cross sections
+and GetIsoCrossSection is called multiple time in calculation of element which is made from more than one isotope
+
+
+21 October 2016 Tatsumi Koi (hadr-hpp-V10-02-27)
+---------------------------------------------------
+- Introduce an environment variable of G4PARTICLEHPDATA as default base name of data directories of ParticleHP
+
+
+30 September 2016 Tatsumi Koi (hadr-hpp-V10-02-26)
+---------------------------------------------------
+- Fix coverity issues 58738 58739 58743 and 62507
+
+
+29 September 2016 Tatsumi Koi (hadr-hpp-V10-02-25)
+---------------------------------------------------
+- Fix coverity issues 58734 58735 and 58745
+
+
+28 September 2016 Tatsumi Koi (hadr-hpp-V10-02-24)
+---------------------------------------------------
+- Fix warning messages from clang 3.8
+
+
+12 August 2016 Alberto Ribon (hadr-hpp-V10-02-23)
+---------------------------------------------------
+- G4ParticleHPPhotonDist : added missing protection against null pointer;
+- G4ParticleHPLabAngularEnergy : removed redundant if-statement;
+- G4ParticleHPThermalScattering : added missing  throw  statements;
+(fixes suggested by the PVS-Studio static code analyzer: see bug #1876)
+
+
+29 July 2016 Tatsumi Koi (hadr-hpp-V10-02-22)
+---------------------------------------------------
+- Fix coverity issues 58719, 58724, 58725, 58726, 58729, 58730, 58731 and 58733
+
+
+20 July 2016 Tatsumi Koi (hadr-hpp-V10-02-21)
+---------------------------------------------------
+- Fix coverity issues 58715, 58717, 58718 and 58728
+
+
+19 July 2016 Tatsumi Koi (hadr-hpp-V10-02-20)
+---------------------------------------------------
+- Fix coverity issues 58708, 58712, 58713, 58714 and 58716
+
+
+13 July 2016 Tatsumi Koi (hadr-hpp-V10-02-19)
+---------------------------------------------------
+- Fix coverity issues 58706 and 58707
+
+
+12 July 2016 Tatsumi Koi (hadr-hpp-V10-02-18)
+---------------------------------------------------
+- Fix coverity issues 58698 and 58705
+
+
+8 June 2016 Tatsumi Koi (hadr-hpp-V10-02-17)
+---------------------------------------------------
+- Change default option of GNUmake system "G4PHPDEBUG" was unintentionally activated.
+
+
+2 June 2016 Tatsumi Koi (hadr-hpp-V10-02-16)
+---------------------------------------------------
+- Bug fix usage of G4Nucleus::GetBiassedThermalNucleus
+- Bug fix for calculation residual A and Z (Bugzilla 1815)
+- Both of them effects results only in charged particle projectiles
+- Bug fix in sampling of kinematic energy of scattered particle in DiscreteTwoBody (Bugzilla 1815)
+
+
+31 May 2016 Tatsumi Koi (hadr-hpp-V10-02-15)
+---------------------------------------------------
+- Bug fix in thermal scattering (Coverity 58647)
+- Fix coverity issues 61922
+- Fix compilation error in GNUmake system in previous tag
+
+
+30 May 2016 Tatsumi Koi (hadr-hpp-V10-02-14)
+---------------------------------------------------
+- Fix coverity issues 58644
+- Round2 Fix coverity issues 58648
+- Fix warning message in previous tag
+
+
+27 May 2016 Tatsumi Koi (hadr-hpp-V10-02-13)
+---------------------------------------------------
+- Fix coverity issues 58622
+
+
+06 May 2016 Tatsumi Koi (hadr-hpp-V10-02-12)
+---------------------------------------------------
+- Fix problem in deletion of models in multithreading mode
+
+
+05 May 2016 V.Ivanchenko (hadr-hpp-V10-02-11)
+29 April 2016 Tatsumi Koi (hadr-hpp-V10-02-10)
+---------------------------------------------------
+- Fix a warning message from gcc 6.1
+
+
+30 March 2016 Tatsumi Koi (hadr-hpp-V10-02-09)
+---------------------------------------------------
+-A message about a behavior under the activation of fission fragment production
+was modified reflecting hyper news comment.
+
+
+4 March 2016 Tatsumi Koi (hadr-hpp-V10-02-08)
+---------------------------------------------------
+- Fix coverity issues 58701, 58702, 58703 and 58704
+
+
+1 March 2016 Tatsumi Koi (hadr-hpp-V10-02-07)
+---------------------------------------------------
+- Fix coverity issues 58699 and 58700
+
+
+18 February 2016 Tatsumi Koi (hadr-hpp-V10-02-06)
+---------------------------------------------------
+- Fix on problem on MT library
+
+
+16 February 2016 Tatsumi Koi (hadr-hpp-V10-02-05)
+---------------------------------------------------
+- Fixes for problem on materials which have hydrogen or helium in
+charged particle hp
+
+
+2 February 2016 Tatsumi Koi (hadr-hpp-V10-02-04)
+---------------------------------------------------
+- Fix problem in deletion of cross section data set in multithreading mode
+
+
+25 January 2016 Tatsumi Koi (hadr-hpp-V10-02-03)
+---------------------------------------------------
+- Fix coverity issues 58648 and 61705
+
+
+15 January 2016 Tatsumi Koi (hadr-hpp-V10-02-02)
+---------------------------------------------------
+- Fix coverity issues 58693, 58694 and 58695
+
+
+12 January 2016 Tatsumi Koi (hadr-hpp-V10-02-01)
+---------------------------------------------------
+- Fix coverity issues 53477 and 53481
+
+
+7 January 2016 Tatsumi Koi (hadr-hpp-V10-02-00)
+---------------------------------------------------
+- Fix coverity issues 58696, 58697, 58723 and 58729
+
+
+20 November 2015 Tatsumi Koi (hadr-hpp-V10-01-31)
+---------------------------------------------------
+- Fix for solving reproducibility problem
+
+
+11 November 2015 Tatsumi Koi (hadr-hpp-V10-01-30)
+---------------------------------------------------
+- Fix bug which was introduced at hadr-hpp-V10-01-23
+
+
+5 November 2015 Tatsumi Koi (hadr-hpp-V10-01-29)
+---------------------------------------------------
+- Loop check
+
+
+5 November 2015 Gabriele Cosmo (hadr-hpp-V10-01-28)
+---------------------------------------------------
+- Replaced use of variable 'L' in G4ParticleHPThermalScattering.cc and
+  G4PolarizationTransition to avoid shadowing of new volumetric units.
+
+
+4 November 2015 Tatsumi Koi (hadr-hpp-V10-01-27)
+---------------------------------------------------
+- Fix problem on previous tag
+
+
+4 November 2015 Tatsumi Koi (hadr-hpp-V10-01-26)
+---------------------------------------------------
+- Migration to fast-math functions
+
+
+3 November 2015 Tatsumi Koi (hadr-hpp-V10-01-25)
+---------------------------------------------------
+Fix problem on include/G4InterpolationIterator.hh
+
+
+3 November 2015 Tatsumi Koi (hadr-hpp-V10-01-24)
+---------------------------------------------------
+Move header files from NeutronHP for keeping backward compatibility
+Add NeutronHP.History which is a copy of History in neutron_hp
+Add FissFragGen.History which is a copy of FissFragHistory in neutron_hp
+
+
+28 October 2015 Pedro Arce (hadr-hpp-V10-01-23)
+---------------------------------------------------
+Make particle_hp behave the same as neutron_hp when PHP_AS_HP and DO_NOT_ADJUST_FINAL_STATE are selected (neutron_hp keeps on applying the adjusting in some places)
+
+
+8 October 2015 Tatsumi Koi (hadr-hpp-V10-01-22)
+---------------------------------------------------
+Fix circular dependency, co-working with hadr-hpn-V10-01-20
+
+
+28 July 2015 Tatsumi Koi (hadr-hpp-V10-01-21)
+---------------------------------------------------
+Changing to use G4Threading::IsMasterThread() instera of !G4Threading::IsWorkerThread()
+
+
+21 July 2015 Tatsumi Koi (hadr-hpp-V10-01-20)
+---------------------------------------------------
+Improve memory consumption
+
+
+15 July 2015 Tatsumi Koi (hadr-hpp-V10-01-19)
+---------------------------------------------------
+Code clean up
+
+
+10 July 2015 Tatsumi Koi (hadr-hpp-V10-01-18)
+---------------------------------------------------
+Enable to use dynamically generated materials
+
+
+1 July 2015 Tatsumi Koi (hadr-hpp-V10-01-17)
+---------------------------------------------------
+Fix problem on UI commands defined in ParticleHPMessenger
+Add UI command for changing verbose level
+
+
+29 June 2015 Tatsumi Koi (hadr-hpp-V10-01-16)
+---------------------------------------------------
+Fix problem at deletion in multithreading mode
+Fix reproducibility problem on multithreading mode
+
+
+16 June 2015 Tatsumi Koi (hadr-hpp-V10-01-15)
+---------------------------------------------------
+Fix out of bound array error
+
+
+11 June 2015 Tatsumi Koi (hadr-hpp-V10-01-14)
+---------------------------------------------------
+Fix coverity issue #60878, 60879, 60880, 60886 and 60887
+Fix coverity issue #58746
+
+
+8 June 2015 Tatsumi Koi (hadr-hpp-V10-01-13)
+---------------------------------------------------
+Fix problem on photon distribution Bugzilla #1745
+
+
+4 June 2015 Tatsumi Koi (hadr-hpp-V10-01-12)
+---------------------------------------------------
+-Add model and cross section descriptions
+
+
+4 June 2015 Tatsumi Koi (hadr-hpp-V10-01-11)
+---------------------------------------------------
+-Fix warning in previous tag
+
+
+3 June 2015 Tatsumi Koi (hadr-hpp-V10-01-10)
+---------------------------------------------------
+- Sharing static data among worker threads
+
+
+27 May 2015 Gabriele Cosmo (hadr-hpp-V10-01-09)
+---------------------------------------------------
+-Corrected GNUmakefile for inclusion of internal zlib.
+
+
+24 May 2015 Tatsumi Koi (hadr-hpp-V10-01-08)
+---------------------------------------------------
+-Making not to use the cache of cross section
+ Since the same feature is offered in CrossSectionDataStore
+
+
+21 May 2015 Tatsumi Koi (hadr-hpp-V10-01-07)
+---------------------------------------------------
+-Fix warning in previous tag
+
+
+12 May 2015 Tatsumi Koi (hadr-hpp-V10-01-06)
+---------------------------------------------------
+-Delete unnecessary issue of BuildPhysicTable
+-Introducing ThreadLocalManager
+for storing information related to each individual reactions
+hadr-hpn-V10-00-18
+
+
+10 May 2015 Tatsumi Koi (hadr-hpp-V10-01-05)
+---------------------------------------------------
+-Fix rare core dump in ThermalScattering
+-Uncomment out para and ortho hydrogen and liquid and solid methane
+-Minor changes in ParticleHPManager
+Upto hadr-nhp-V10-00-16
+-Adjust A and Z in the case of miss much between selected data and target nucleus
+hadr-nhp-V10-00-25
+-Adding UI commands for controlling options of HP package
+-Adding G4ParticleHPMessenger
+hadr-hpn-V10-00-17
+
+
+8 May 2015 Tatsumi Koi (hadr-hpp-V10-01-04)
+---------------------------------------------------
+- Fixing problem on entering infinite loop
+	src/G4ParticleHPEnAngCorrelation.cc
+
+
+6 May 2015 Tatsumi Koi (hadr-hpp-V10-01-03)
+---------------------------------------------------
+-Fixed problem on previous tag
+
+
+6 May 2015 Tatsumi Koi (hadr-hpp-V10-01-02)
+---------------------------------------------------
+- Setting PHP_AS_HP is made a default for a while.
+  Setting environment variable of "DO_NOT_SET_PHP_AS_HP" overcomes the default.
+       sources.cmake
+       GNUmakefile
+
+
+28 January 2015 Tatsumi Koi (hadr-hpp-V10-01-01)
+---------------------------------------------------
+-Enable to read data file that has a signature of evaluation name.
+
+
+11 December 2014 Gabriele Cosmo (hadr-hpp-V10-01-00)
+---------------------------------------------------
+- Removed commented files in sources.cmake script to allow for proper
+  validation of sources in system testing.
+
+6 November 2014 Pedro Arce   (hadr-hpp-V10-00-05)
+---------------------------------------------------
+- Code cleanup
+- Compilation flag PHP_AS_HP for comparison with neutron_hp
+
+4 August 2014 Tatsumi Koi   (hadr-hpp-V10-00-03)
+---------------------------------------------------
+- G4ParticleHPElasticData, G4ParticleHPInelasticData, G4ParticleHPCaptureData,
+  G4ParticleHPFissionData, G4ParticleHPJENDLHEData: proper deletion of
+  physics vectors.
+
+
+25 July 2014  Tatsumi Koi (hadr-hpp-V10-00-02)
+---------------------------------------------------
+- Delete unused (and also uncompilable) header file.
+	G4ParticleHPPhotonXSection.hh
+
+
+1 July 2014  Tatsumi Koi (hadr-hpp-V10-00-01)
+---------------------------------------------------
+- Fix compilation warnings
+	include/G4ParticleHPInelasticData.hh
+	src/G4ParticleHPData.cc
+	src/G4ParticleHPInelasticData.cc
+
+
+10 June 2014  Tatsumi Koi
+for Pedro Arce and Emilio Mendoza of CIEMAT (hadr-hpp-V10-00-00)
+---------------------------------------------------
+- Regenerate particle_hp codes from hadr-hpn-V10-00-12
+- Deleteing files related FissionFragment model
+- Deleteing G4InterpolationManager and so on to avoid duplication
+
+
+22 October 2012  Dennis Wright (hadr-hpp-V09-05-00)
+---------------------------------------------------
+- create particle_hp module for treatment of low energy charged particles
+- code developed by Pedro Arce and Emilio Mendoza of CIEMAT and based on
+  neutronHP
+

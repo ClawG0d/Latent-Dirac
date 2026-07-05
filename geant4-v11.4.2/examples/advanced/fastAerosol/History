@@ -1,0 +1,39 @@
+# Example fastAerosol History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2024-08-12 I. Hrivnacova (fastAerosol-V11-02-00)
+- Updated for changes in accumulables:
+  use new "Register" method with shorter name
+
+## 2023-11-15 I. Hrivnacova (fastAerosol-V11-01-01)
+- Updated vis.mac:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2023-04-24 Susanna Guatelli (fastAerosol-V11-01-00)
+- General cleaning of the code, including run-clang-tidy
+
+## 2022-09-09 Susanna Guatelli (fastAerosol-V11-00-01)
+- Ranecu engine removed, default engine used now
+
+## 2021-12-10 Ben Morgan (fastAerosol-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+24.05.2021 - B. Morgan (fastAerosol-V10-07-00)
+             Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+14.11.2020 - S. Guatelli fastAerosol-V10-06-02
+             Migration to G4RunManagerFactory
+
+02.11.2020 - B.Morgan fastAerosol-V10-06-01
+             Support same CMake version range as core Geant4
+
+20.04.2020 - S. Guatelli; New Advanced Example: fastAerosol-V10-06-00.
+

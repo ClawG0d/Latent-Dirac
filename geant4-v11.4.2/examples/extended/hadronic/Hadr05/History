@@ -1,0 +1,67 @@
+# Example Hadr05 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-10-29 Michel Maire (exhadr05-V11-03-01)
+- GammaNuclearPhysics.cc: use G4GammaNuclearXS dataset
+
+## 2025-05-20 Michel Maire (exhadr05-V11-03-00)
+- Hadr05.cc - SetUseNRESP71Model(true)
+
+## 2024-03-07 Michel Maire (exhadr05-V11-02-00)
+- PrimaryGeneratorAction - added tiny shift of position of the
+    particle gun from the world volume boundary. This fix removes
+    a warning due to the new protection in G4ParticleGun
+- RadioactiveDecayPhysics: add Triton
+- update Readme
+- apply coding rules
+
+## 2023-06-30 Michel Maire (exhadr05-V11-01-01)
+- revision of all headers
+
+## 2023-01-03 Michel Maire (exhadr05-V11-01-00)
+- compute and plot Edep, Eleak, Etotal=Edep+Eleak
+
+## 2022-04-01 Michel Maire (exhadr05-V11-00-02)
+- PhysicsList: add G4NuclideTable::SetThresholdOfHalfLife(1ns*log2)
+
+## 2022-01-18 Jonas Hahnfeld (exhadr05-V11-00-01)
+- Prefer pointer to `const G4Material` if possible
+
+## 2021-12-10 Ben Morgan (exhadr05-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+25-10-21 B.Morgan (exhadr05-V10-07-07)
+- Use G4StrUtil functions replacing deprecated G4String member functions
+
+13-10-21 I. Hrivnacova (exhadr05-V10-07-06)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+11-10-21 mma (exhadr05-V10-07-05)
+- RadioactiveDecayPhysics : do not change ThresholdOfHalfLife
+     
+20-09-21 mma (exhadr05-V10-07-04)
+- Run.hh Run.cc : remove fEnergyLeakage2
+     
+05-08-21 mma (exhadr05-V10-07-03)
+- ElectromagneticPhysics : update EM parameters
+- RadioactiveDecayPhysics : new constructor, include G4Radioactivation process,
+                            inactivate atomic deexcitation
+			        
+27-07-21 mma (exhadr05-V10-07-02)
+- RunAction::CountProcesses() : add a protection if (process == nullptr)
+     
+19-07-21 I. Hrivnacova (exhadr05-V10-07-01)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+20-06-21 Michel Maire (exhadr05-V10-07-00) 
+- created from TestEm3 and Hadr06. Detector parameters from test68

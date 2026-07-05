@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd" >
+
+ <define>
+  <position name="R" unit="mm" x="0" y="0" z="0" />
+  <rotation name="V" unit="degree" x="10" y="20" z="30" />
+  <variable name="veloSD" value="4" />
+ </define>
+
+ <materials>
+  <material Z="7" formula=" " name="Nitrogen" >
+   <D value="0.00125" />
+   <atom value="14.01" />
+  </material>
+  <material Z="8" formula=" " name="Oxygen" >
+   <D value="0.00143" />
+   <atom value="16.0" />
+  </material>
+  <material formula=" " name="Air" >
+   <D value="0.0012" />
+   <fraction n="0.7" ref="Nitrogen" />
+   <fraction n="0.3" ref="Oxygen" />
+  </material>
+ </materials>
+
+ <solids>
+  <box lunit="mm" name="Box" x="1000" y="1000" z="1000" />
+  <box lunit="mm" name="WorldBox" x="10000" y="10000" z="10000" />
+ </solids>
+
+ <structure>
+  <volume name="Boxvol" >
+   <materialref ref="Air" />
+   <solidref ref="Box" />
+   <auxiliary auxtype="SensDet" auxvalue="veloSD"/>
+   <auxiliary auxtype="sometype" auxvalue="somevalue">
+     <auxiliary auxtype="somesubtype" auxvalue="somesubvalue"/>
+   </auxiliary>
+   </volume>
+  <volume name="World" >
+   <materialref ref="Air" />
+   <solidref ref="WorldBox" />
+   <physvol>
+    <volumeref ref="Boxvol" />
+    <positionref ref="R"  />
+    <rotationref ref="V" />
+   </physvol>
+  </volume>
+ </structure>
+
+  <userinfo>
+    <auxiliary auxtype="Region" auxvalue="myregion1">
+      <auxiliary auxtype="volume" auxvalue="Boxvol"/>
+      <auxiliary auxtype="pcut" auxvalue="2" auxunit="mm"/>
+      <auxiliary auxtype="ecut" auxvalue="1" auxunit="mm"/>
+      <auxiliary auxtype="poscut" auxvalue="0.2" auxunit="mm"/>
+      <auxiliary auxtype="gamcut" auxvalue="0.8" auxunit="mm"/>
+      <auxiliary auxtype="ulimits" auxvalue="electron">
+        <auxiliary auxtype="ustepMax" auxvalue="5" auxunit="mm"/>
+        <auxiliary auxtype="utrakMax" auxvalue="5" auxunit="cm"/>
+        <auxiliary auxtype="uekinMin" auxvalue="900" auxunit="keV"/>
+      </auxiliary>
+    </auxiliary>
+
+    <auxiliary auxtype="Region" auxvalue="myregion2">
+      <auxiliary auxtype="RootLogicalVolume" auxvalue="myvol"/>
+      <auxiliary auxtype="pcut" auxvalue="2.2" auxunit="mm"/>
+      <auxiliary auxtype="ecut" auxvalue="1.5" auxunit="mm"/>
+    </auxiliary>
+ </userinfo>
+ 
+
+ <setup name="Default" version="1.0" >
+  <world ref="World" />
+ </setup>
+</gdml>

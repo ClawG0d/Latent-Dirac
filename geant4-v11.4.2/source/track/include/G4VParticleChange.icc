@@ -1,0 +1,256 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4VParticleChange inline methods implementation
+//
+// Author: Hisaya Kurashige, 23 March 1998
+// --------------------------------------------------------------------
+
+inline G4Track* G4VParticleChange::GetSecondary(G4int anIndex) const
+{
+  return theListOfSecondaries[anIndex];
+}
+
+inline G4int G4VParticleChange::GetNumberOfSecondaries() const
+{
+  return theNumberOfSecondaries;
+}
+
+inline void G4VParticleChange::ProposeTrackStatus(G4TrackStatus aStatus)
+{
+  theStatusChange = aStatus;
+}
+
+inline const G4Track* G4VParticleChange::GetCurrentTrack() const
+{
+  return theCurrentTrack;
+}
+
+inline G4TrackStatus G4VParticleChange::GetTrackStatus() const
+{
+  return theStatusChange;
+}
+
+inline G4SteppingControl G4VParticleChange::GetSteppingControl() const
+{
+  return theSteppingControlFlag;
+}
+
+inline void
+G4VParticleChange::ProposeSteppingControl(G4SteppingControl StepControlFlag)
+{
+  theSteppingControlFlag = StepControlFlag;
+}
+
+inline G4bool G4VParticleChange::GetFirstStepInVolume() const
+{
+  return theFirstStepInVolume;
+}
+
+inline G4bool G4VParticleChange::GetLastStepInVolume() const
+{
+  return theLastStepInVolume;
+}
+
+inline void G4VParticleChange::ProposeFirstStepInVolume(G4bool flag)
+{
+  theFirstStepInVolume = flag;
+}
+
+inline void G4VParticleChange::ProposeLastStepInVolume(G4bool flag)
+{
+  theLastStepInVolume = flag;
+}
+
+inline G4double G4VParticleChange::GetLocalEnergyDeposit() const
+{
+  return theLocalEnergyDeposit;
+}
+
+inline void G4VParticleChange::ProposeLocalEnergyDeposit(G4double anEnergyPart)
+{
+  theLocalEnergyDeposit = anEnergyPart;
+}
+
+inline G4double G4VParticleChange::GetNonIonizingEnergyDeposit() const
+{
+  return theNonIonizingEnergyDeposit;
+}
+
+inline void
+G4VParticleChange::ProposeNonIonizingEnergyDeposit(G4double anEnergyPart)
+{
+  theNonIonizingEnergyDeposit = anEnergyPart;
+}
+
+inline G4double G4VParticleChange::GetTrueStepLength() const
+{
+  return theTrueStepLength;
+}
+
+inline void G4VParticleChange::ProposeTrueStepLength(G4double aLength)
+{
+  theTrueStepLength = aLength;
+}
+
+inline void G4VParticleChange::SetVerboseLevel(G4int vLevel)
+{
+  verboseLevel = vLevel;
+}
+
+inline G4int G4VParticleChange::GetVerboseLevel() const
+{
+  return verboseLevel;
+}
+
+inline G4double G4VParticleChange::GetParentWeight() const
+{
+  return theParentWeight;
+}
+
+inline G4double G4VParticleChange::GetWeight() const
+{
+  return theParentWeight;
+}
+
+// ----------------------------------------------------------------
+// inline functions for Initialization
+//
+inline void G4VParticleChange::InitializeLocalEnergyDeposit()
+{
+  // clear theLocalEnergyDeposited
+  theLocalEnergyDeposit       = 0.0;
+  theNonIonizingEnergyDeposit = 0.0;
+}
+
+inline void G4VParticleChange::InitializeSteppingControl()
+{
+  // SteppingControlFlag
+  theSteppingControlFlag = NormalCondition;
+}
+
+inline void G4VParticleChange::Clear()
+{
+  theNumberOfSecondaries = 0;
+  theFirstStepInVolume   = false;
+  theLastStepInVolume    = false;
+}
+
+inline void G4VParticleChange::InitializeStatusChange(const G4Track& track)
+{
+  // set TrackStatus equal to the parent track's one
+  theStatusChange = track.GetTrackStatus();
+  theCurrentTrack = &track;
+}
+
+inline void G4VParticleChange::InitializeParentWeight(const G4Track& track)
+{
+  // set the parent track's weight
+  theParentWeight        = track.GetWeight();
+  isParentWeightProposed = false;
+}
+
+inline void G4VParticleChange::InitializeFromStep(const G4Step* step)
+{
+  // set the parent track's global time at the pre-step point
+  theParentGlobalTime = step->GetPreStepPoint()->GetGlobalTime();
+
+  theTrueStepLength = step->GetStepLength();
+  theFirstStepInVolume = step->IsFirstStepInVolume();
+  theLastStepInVolume = step->IsLastStepInVolume();
+}
+
+// ----------------------------------------------------------------
+// methods for handling secondaries
+//
+inline void G4VParticleChange::InitializeSecondaries()
+{
+  theNumberOfSecondaries = 0;
+}
+
+inline void G4VParticleChange::SetNumberOfSecondaries(G4int totSecondaries)
+{
+  if(totSecondaries > theSizeOftheListOfSecondaries)
+  {
+    theListOfSecondaries.resize(totSecondaries, nullptr);
+    theSizeOftheListOfSecondaries = totSecondaries;
+  }
+  theNumberOfSecondaries = 0;
+}
+
+// ----------------------------------------------------------------
+// total 
+//
+inline void G4VParticleChange::Initialize(const G4Track& track)
+{
+  InitializeStatusChange(track);
+  InitializeLocalEnergyDeposit();
+  InitializeSteppingControl();
+  InitializeSecondaries();
+  InitializeParentWeight(track);
+  InitializeFromStep(track.GetStep());
+}
+
+inline void G4VParticleChange::ClearDebugFlag()
+{
+  debugFlag = false;
+}
+
+inline void G4VParticleChange::SetDebugFlag()
+{
+  debugFlag = true;
+}
+
+inline G4bool G4VParticleChange::GetDebugFlag() const
+{
+  return debugFlag;
+}
+
+inline void G4VParticleChange::SetSecondaryWeightByProcess(G4bool flag)
+{
+  fSetSecondaryWeightByProcess = flag;
+}
+
+inline G4bool G4VParticleChange::IsSecondaryWeightSetByProcess() const
+{
+  return fSetSecondaryWeightByProcess;
+}
+
+inline void G4VParticleChange::ProposeWeight(G4double w)
+{
+  theParentWeight        = w;
+  isParentWeightProposed = true;
+}
+
+inline void G4VParticleChange::ProposeParentWeight(G4double w)
+{
+  ProposeWeight(w);
+}
+
+inline G4double G4VParticleChange::ComputeBeta(G4double ekin)
+{
+  G4double mass = theCurrentTrack->GetDefinition()->GetPDGMass();
+  return std::sqrt(ekin*(ekin + 2*mass))/(ekin + mass);
+} 

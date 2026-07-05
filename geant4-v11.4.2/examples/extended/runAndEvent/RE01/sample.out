@@ -1,0 +1,1665 @@
+Environment variable "G4FORCE_RUN_MANAGER_TYPE" enabled with value == Serial. Forcing G4RunManager type...
+
+        ############################################
+        !!! WARNING - FPE detection is activated !!!
+        ############################################
+
+
+          ################################
+          !!! G4Backtrace is activated !!!
+          ################################
+
+
+**************************************************************
+ Geant4 version Name: geant4-11-04-patch-02    (12-June-2026)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+Visualization Manager instantiating with verbosity "warnings (3)"...
+Visualization Manager initialising...
+Registering graphics systems...
+
+You have successfully registered the following graphics systems.
+Registered graphics systems are:
+  ASCIITree (ATree)
+  DAWNFILE (DAWNFILE)
+  RayTracer (RT)
+  VRML2FILE (VRML2FILE)
+  gMocrenFile (gMocrenFile)
+  TOOLSSG_OFFSCREEN (TSG_OFFSCREEN, TSG_FILE)
+  OpenGLImmediateQt (OGLIQt, OGLI)
+  OpenGLStoredQt (OGLSQt, OGLS)
+  OpenGLImmediateXm (OGLIXm, OGLIQt_FALLBACK)
+  OpenGLStoredXm (OGLSXm, OGLSQt_FALLBACK)
+  OpenGLImmediateX (OGLIX, OGLIQt_FALLBACK, OGLIXm_FALLBACK)
+  OpenGLStoredX (OGLSX, OGLSQt_FALLBACK, OGLSXm_FALLBACK)
+  RayTracerX (RTX)
+  RayTracerQt (RTQt)
+  TOOLSSG_X11_GLES (TSG_X11_GLES, TSGX11, TSG_XT_GLES_FALLBACK)
+  TOOLSSG_X11_ZB (TSG_X11_ZB, TSGX11ZB)
+  TOOLSSG_XT_GLES (TSG_XT_GLES, TSGXt, TSG_QT_GLES_FALLBACK)
+  TOOLSSG_XT_ZB (TSG_XT_ZB, TSGXtZB)
+  TOOLSSG_QT_GLES (TSG_QT_GLES, TSGQt, TSG, OGL)
+  TOOLSSG_QT_ZB (TSG_QT_ZB, TSGQtZB, TSGZB)
+You may choose a graphics system (driver) with a parameter of
+the command "/vis/open" or "/vis/sceneHandler/create",
+or you may omit the driver parameter and choose at run time:
+- by argument in the construction of G4VisExecutive
+- by environment variable "G4VIS_DEFAULT_DRIVER"
+- by entry in "~/.g4session"
+- by build flags.
+- Note: This feature is not allowed in batch mode.
+For further information see "examples/basic/B1/exampleB1.cc"
+and "vis.mac".
+
+Registering model factories...
+
+You have successfully registered the following model factories.
+Registered model factories:
+  generic
+  drawByAttribute
+  drawByCharge
+  drawByOriginVolume
+  drawByParticleID
+  drawByEncounteredVolume
+
+Registered models:
+  None
+
+Registered filter factories:
+  attributeFilter
+  chargeFilter
+  originVolumeFilter
+  particleFilter
+  encounteredVolumeFilter
+
+Registered filters:
+  None
+
+You have successfully registered the following user vis actions.
+Run Duration User Vis Actions: none
+End of Event User Vis Actions: none
+End of Run User Vis Actions: none
+
+Some /vis commands (optionally) take a string to specify colour.
+"/vis/list" to see available colours.
+<<< Geant4 Physics List simulation engine: QGSP_BERT
+
+I'm World.
+ G4ChordFinder: stepperDriverId: 2
+--- G4CoupledTransportation is used 
+
+ hInelastic QGSP_BERT  Thresholds: 
+    1) between BERT  and FTF/P over the interval 3 to 6 GeV. 
+    2) between FTF/P and QGS/P over the interval 12 to 25 GeV. 
+  -- quasiElastic: 1 for QGS  and 0 for FTF
+### Adding tracking cuts for neutron  TimeCut(ns)= 10000  KinEnergyCut(MeV)= 0
+/mydet/generator PYTHIA
+/run/beamOn 1
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                1
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      100 TeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Positron annihilation at rest model                SimplePositronium
+Enable 3 gamma annihilation on fly                 0
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Use RiGe 5D e+e- pair production model by muons    0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Urban
+Use built-in Birks saturation                      0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           1
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 100 TeV in 61 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  100 TeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 100 TeV in 56 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+       Klein-Nishina : Emin=    0 eV  Emax=  100 TeV
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 100 TeV, 18 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+     BetheHeitlerLPM : Emin=    0 eV  Emax=  100 TeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 100 TeV in 62 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  100 TeV  CullenGenerator
+
+msc:  for e-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 MeV Nbins=42 100 eV  - 100 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+        WentzelVIUni : Emin=  100 MeV Emax=  100 TeV Nbins=42 100 MeV - 100 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  100 TeV
+
+eBrem:  for e-  XStype:4  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 1 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=    1 GeV  ModifiedTsai
+            eBremLPM : Emin=    1 GeV Emax=  100 TeV  ModifiedTsai
+
+CoulombScat:  for e- XStype:1 SubType=1 BuildTable=1
+      Lambda table from 100 MeV to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=  100 MeV Emax=  100 TeV
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 MeV Nbins=42 100 eV  - 100 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+        WentzelVIUni : Emin=  100 MeV Emax=  100 TeV Nbins=42 100 MeV - 100 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  100 TeV
+
+eBrem:  for e+  XStype:4  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 1 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=    1 GeV  ModifiedTsai
+            eBremLPM : Emin=    1 GeV Emax=  100 TeV  ModifiedTsai
+
+annihil:  for e+ XStype:2 SubType=5 AtRestModel:Simple BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  100 TeV
+
+CoulombScat:  for e+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from 100 MeV to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=  100 MeV Emax=  100 TeV
+
+msc:  for proton  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for proton  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=    2 MeV
+          BetheBloch : Emin=    2 MeV Emax=  100 TeV
+
+hBrems:  for proton  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for proton  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      Sampling table 17x1001, from 7.50618 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for proton XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for GenericIon  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+ionIoni:  for GenericIon  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=    2 MeV
+          BetheBloch : Emin=    2 MeV Emax=  100 TeV
+
+msc:  for alpha  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+ionIoni:  for alpha  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            BraggIon : Emin=    0 eV  Emax=7.9452 MeV
+          BetheBloch : Emin=7.9452 MeV Emax=  100 TeV
+
+msc:  for anti_proton  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for anti_proton  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=    2 MeV
+          BetheBloch : Emin=    2 MeV Emax=  100 TeV
+
+hBrems:  for anti_proton  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for anti_proton  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      Sampling table 17x1001, from 7.50618 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for anti_proton XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for kaon+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for kaon+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=1.05231 MeV
+          BetheBloch : Emin=1.05231 MeV Emax=  100 TeV
+
+hBrems:  for kaon+  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for kaon+  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      Sampling table 18x1001, from 3.94942 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for kaon+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for kaon-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for kaon-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=1.05231 MeV
+          BetheBloch : Emin=1.05231 MeV Emax=  100 TeV
+
+hBrems:  for kaon-  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for kaon-  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      Sampling table 18x1001, from 3.94942 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for kaon- XStype:1 SubType=1 BuildTable=1
+      Used Lambda table of kaon+
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for mu+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+muIoni:  for mu+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=  200 keV
+        MuBetheBloch : Emin=  200 keV Emax=  100 TeV
+
+muBrems:  for mu+  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+              MuBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+muPairProd:  for mu+  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      Sampling table 21x1001, from 0.85 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          muPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for mu+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for mu-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+muIoni:  for mu-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=  200 keV
+        MuBetheBloch : Emin=  200 keV Emax=  100 TeV
+
+muBrems:  for mu-  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+              MuBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+muPairProd:  for mu-  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      Sampling table 21x1001, from 0.85 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          muPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for mu- XStype:1 SubType=1 BuildTable=1
+      Used Lambda table of mu+
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for pi+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for pi+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=297.505 keV
+          BetheBloch : Emin=297.505 keV Emax=  100 TeV
+
+hBrems:  for pi+  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for pi+  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      Sampling table 20x1001, from 1.11656 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for pi+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for pi-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for pi-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=297.505 keV
+          BetheBloch : Emin=297.505 keV Emax=  100 TeV
+
+hBrems:  for pi-  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for pi-  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      Sampling table 20x1001, from 1.11656 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for pi- XStype:1 SubType=1 BuildTable=1
+      Used Lambda table of pi+
+      ThetaMin(p) < Theta(degree) < 180, pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+====================================================================
+                  HADRONIC PROCESSES SUMMARY (verbose level 1)
+-----------------------------------------------------------------------
+                           Hadronic Processes for neutron
+  Process: hadElastic
+        Model:             hElasticCHIPS: 0 eV  ---> 100 TeV
+     Cr_sctns:        G4NeutronElasticXS: 0 eV  ---> 100 TeV
+  Process: neutronInelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 3 GeV ---> 25 GeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:      G4NeutronInelasticXS: 0 eV  ---> 100 TeV
+  Process: nCaptureXS
+        Model:               nRadCapture: 0 eV  ---> 100 TeV
+     Cr_sctns:        G4NeutronCaptureXS: 0 eV  ---> 100 TeV
+  Process: nKiller
+-----------------------------------------------------------------------
+                           Hadronic Processes for B-
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: B-Inelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 0 eV  ---> 25 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for D-
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: D-Inelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 0 eV  ---> 25 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for GenericIon
+  Process: ionInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for He3
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+  Process: He3Inelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for alpha
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+  Process: alphaInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for anti_He3
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_He3Inelastic
+        Model:                      FTFP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for anti_alpha
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_alphaInelastic
+        Model:                      FTFP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for anti_deuteron
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_deuteronInelastic
+        Model:                      FTFP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+-------------------------------------------------------------------------
+                           Hadronic Processes for anti_hypertriton
+  Process: hFritiofCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for anti_lambda
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: anti_lambdaInelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 0 eV  ---> 25 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: hFritiofCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for anti_neutron
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100.1 MeV
+        Model:              AntiAElastic: 100 MeV ---> 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_neutronInelastic
+        Model:                      FTFP: 0 eV  ---> 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for anti_proton
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100.1 MeV
+        Model:              AntiAElastic: 100 MeV ---> 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_protonInelastic
+        Model:                      FTFP: 0 eV  ---> 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for anti_triton
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: anti_tritonInelastic
+        Model:                      FTFP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---> 25.6 PeV
+  Process: hFritiofCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for deuteron
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+  Process: dInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for e+
+  Process: positronNuclear
+        Model:   G4ElectroVDNuclearModel: 0 eV  ---> 1 PeV
+     Cr_sctns:          ElectroNuclearXS: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for e-
+  Process: electronNuclear
+        Model:   G4ElectroVDNuclearModel: 0 eV  ---> 1 PeV
+     Cr_sctns:          ElectroNuclearXS: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for gamma
+  Process: photonNuclear
+        Model:               GammaNPreco: 0 eV  ---> 200 MeV
+        Model:            BertiniCascade: 199 MeV ---> 6 GeV
+        Model:           TheoFSGenerator: 3 GeV ---> 100 TeV
+     Cr_sctns:            GammaNuclearXS: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for kaon+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: kaon+Inelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 3 GeV ---> 25 GeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for kaon-
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: kaon-Inelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 3 GeV ---> 25 GeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: hBertiniCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for lambda
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: lambdaInelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 3 GeV ---> 25 GeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for mu+
+  Process: muonNuclear
+        Model:      G4MuonVDNuclearModel: 0 eV  ---> 1 PeV
+     Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for mu-
+  Process: muonNuclear
+        Model:      G4MuonVDNuclearModel: 0 eV  ---> 1 PeV
+     Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---> 100 TeV
+  Process: muMinusCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for pi+
+  Process: hadElastic
+        Model:           hElasticGlauber: 0 eV  ---> 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+  Process: pi+Inelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 3 GeV ---> 25 GeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for pi-
+  Process: hadElastic
+        Model:           hElasticGlauber: 0 eV  ---> 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+  Process: pi-Inelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 3 GeV ---> 25 GeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+  Process: hBertiniCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for proton
+  Process: hadElastic
+        Model:             hElasticCHIPS: 0 eV  ---> 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+  Process: protonInelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 3 GeV ---> 25 GeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---> 100 TeV
+-----------------------------------------------------------------------
+                           Hadronic Processes for sigma-
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---> 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: sigma-Inelastic
+        Model:                      QGSP: 12 GeV ---> 100 TeV
+        Model:                      FTFP: 3 GeV ---> 25 GeV
+        Model:            BertiniCascade: 0 eV  ---> 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---> 100 TeV
+  Process: hBertiniCaptureAtRest
+-----------------------------------------------------------------------
+                           Hadronic Processes for triton
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+  Process: tInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---> 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---> 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---> 25.6 PeV
+=======================================================================
+======       Geant4 Native Pre-compound Model Parameters       ========
+=======================================================================
+Type of pre-compound model                          0
+Type of pre-compound inverse x-section              1
+Pre-compound model active                           1
+Pre-compound excitation low energy                  0.1 MeV 
+Pre-compound excitation high energy                 15 MeV 
+Angular generator for pre-compound model            1
+Use NeverGoBack option for pre-compound model       0
+Use SoftCutOff option for pre-compound model        0
+Use CEM transitions for pre-compound model          1
+Use GNASH transitions for pre-compound model        0
+Use HETC submodel for pre-compound model            0
+=======================================================================
+======       Nuclear De-excitation Module Parameters           ========
+=======================================================================
+Type of de-excitation inverse x-section             3
+Type of de-excitation factory                       Evaporation+GEM
+Number of de-excitation channels                    68
+Type of Fermi BreakUp model                         ModelVI
+Min excitation energy                               0.01 keV 
+Min energy per nucleon for multifragmentation       2e+05 MeV
+Level density (1/MeV)                               0.075
+Use simple level density model                      1
+Use discrete excitation energy of the residual      0
+Time limit for long lived isomeres                  1 ns 
+Isomer production flag                              1
+Internal e- conversion flag                         1
+Store e- internal conversion data                   1
+Correlated gamma emission flag                      0
+Max 2J for sampling of angular correlations         10
+=======================================================================
+### Run 0 start.
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : part0005
+      issued by : G4PrimaryParticle::Set4Momentum
+Primary particle PDG=25 deltaMass(MeV)=303782 is larger than the tolerance(MeV)=1
+ Specified mass(MeV)=303782 while PDG mass(MEV)=0
+ To change the tolerance or the exception severity, use G4PrimaryTransformer::SetKETolerance() method.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : part0005
+      issued by : G4PrimaryParticle::Set4Momentum
+Primary particle PDG=-2 deltaMass(MeV)=5.6 is larger than the tolerance(MeV)=1
+ Specified mass(MeV)=5.6 while PDG mass(MEV)=0
+ To change the tolerance or the exception severity, use G4PrimaryTransformer::SetKETolerance() method.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : part0005
+      issued by : G4PrimaryParticle::Set4Momentum
+Primary particle PDG=2 deltaMass(MeV)=5.6 is larger than the tolerance(MeV)=1
+ Specified mass(MeV)=5.6 while PDG mass(MEV)=0
+ To change the tolerance or the exception severity, use G4PrimaryTransformer::SetKETolerance() method.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : part0005
+      issued by : G4PrimaryParticle::Set4Momentum
+Primary particle PDG=2 deltaMass(MeV)=5.6 is larger than the tolerance(MeV)=1
+ Specified mass(MeV)=5.6 while PDG mass(MEV)=0
+ To change the tolerance or the exception severity, use G4PrimaryTransformer::SetKETolerance() method.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : part0005
+      issued by : G4PrimaryParticle::Set4Momentum
+Primary particle PDG=-3 deltaMass(MeV)=199 is larger than the tolerance(MeV)=1
+ Specified mass(MeV)=199 while PDG mass(MEV)=0
+ To change the tolerance or the exception severity, use G4PrimaryTransformer::SetKETolerance() method.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : part0005
+      issued by : G4PrimaryParticle::Set4Momentum
+Primary particle PDG=3 deltaMass(MeV)=199 is larger than the tolerance(MeV)=1
+ Specified mass(MeV)=199 while PDG mass(MEV)=0
+ To change the tolerance or the exception severity, use G4PrimaryTransformer::SetKETolerance() method.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : part0005
+      issued by : G4PrimaryParticle::Set4Momentum
+Primary particle PDG=2101 deltaMass(MeV)=579.333 is larger than the tolerance(MeV)=1
+ Specified mass(MeV)=579.333 while PDG mass(MEV)=0
+ To change the tolerance or the exception severity, use G4PrimaryTransformer::SetKETolerance() method.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : part0005
+      issued by : G4PrimaryParticle::Set4Momentum
+Primary particle PDG=2103 deltaMass(MeV)=771.333 is larger than the tolerance(MeV)=1
+ Specified mass(MeV)=771.333 while PDG mass(MEV)=0
+ To change the tolerance or the exception severity, use G4PrimaryTransformer::SetKETolerance() method.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : part0005
+      issued by : G4PrimaryParticle::Set4Momentum
+Primary particle PDG=2 deltaMass(MeV)=5.6 is larger than the tolerance(MeV)=1
+ Specified mass(MeV)=5.6 while PDG mass(MEV)=0
+ To change the tolerance or the exception severity, use G4PrimaryTransformer::SetKETolerance() method.
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+
+Tracks in tracking region have been processed. -- Stage 0 over.
+
+Source track ID 1358 (gamma,2.1834516517837[GeV]) at (140.36743503412,479.89267881678,-280.93489363356)
+Original primary track ID 1 (unknown,305.48142430119[GeV])
+Cell[8,9]    2.0584745884226 [GeV]
+Cell[8,8]    0.0071800908553424 [GeV]
+Cell[8,10]    0.085311285850056 [GeV]
+Cell[8,12]    0.00037946196437191 [GeV]
+Cell[8,11]    0.00083920654742826 [GeV]
+Cell[11,30]    0.0013993533799223 [GeV]
+Cell[7,9]    0.013101024544272 [GeV]
+Cell[7,8]    0.0091476455978023 [GeV]
+Cell[7,12]    0.0011153096220719 [GeV]
+Cell[7,10]    0.00074328324220161 [GeV]
+Cell[8,7]    0.00075495129548637 [GeV]
+Cell[8,36]    0.0050054504622527 [GeV]
+###  Total energy deposition in calorimeter by a source track in 12 cells : 2.1834516517838 (GeV)
+
+Source track ID 1359 (gamma,2.6236888246096[GeV]) at (140.52666893237,479.84607461015,-280.93932872606)
+Original primary track ID 1 (unknown,305.48142430119[GeV])
+Cell[8,9]    2.3951692302824 [GeV]
+Cell[8,8]    0.015870789119892 [GeV]
+Cell[8,10]    0.17467378488771 [GeV]
+Cell[8,12]    0.0011193021332844 [GeV]
+Cell[8,11]    0.0071525479070712 [GeV]
+Cell[7,9]    0.0088727608142768 [GeV]
+Cell[7,8]    0.0013454179365758 [GeV]
+Cell[7,10]    0.00088276546822706 [GeV]
+Cell[8,7]    0.00048696751225874 [GeV]
+Cell[8,13]    0.00017229389987532 [GeV]
+Cell[9,10]    0.0002414065399362 [GeV]
+Cell[6,42]    0.00045412838622971 [GeV]
+Cell[13,31]    0.0010451017299365 [GeV]
+Cell[8,6]    0.00048044401591885 [GeV]
+Cell[6,43]    0.0022747122150939 [GeV]
+Cell[8,4]    0.00015663927195902 [GeV]
+Cell[7,35]    0.0028779884891232 [GeV]
+Cell[5,29]    0.0025181526589287 [GeV]
+Cell[8,0]    0.001986491737978 [GeV]
+Cell[8,2]    0.00012116994277897 [GeV]
+Cell[8,21]    0.0018198611358917 [GeV]
+###  Total energy deposition in calorimeter by a source track in 21 cells : 2.6197219560854 (GeV)
+
+Source track ID 1282 (e+,68.768542490865[GeV]) at (140.81257786382,479.76225144893,-280.92566176248)
+Original primary track ID 1 (unknown,305.48142430119[GeV])
+Cell[8,9]    63.13680228924 [GeV]
+Cell[8,8]    0.3025382047763 [GeV]
+Cell[8,10]    3.7830237721508 [GeV]
+Cell[8,12]    0.010989166137904 [GeV]
+Cell[8,11]    0.077891381146803 [GeV]
+Cell[7,9]    0.65785306887588 [GeV]
+Cell[7,8]    0.06125962365734 [GeV]
+Cell[7,12]    0.0030522440834354 [GeV]
+Cell[7,10]    0.27604030981099 [GeV]
+Cell[8,7]    0.019307085329355 [GeV]
+Cell[8,13]    0.00032830338543985 [GeV]
+Cell[9,10]    0.0088957978488422 [GeV]
+Cell[8,6]    0.0014673126464634 [GeV]
+Cell[7,47]    0.00023961769626035 [GeV]
+Cell[9,5]    0.0040918250454202 [GeV]
+Cell[0,33]    0.00094421534034626 [GeV]
+Cell[7,7]    0.010323751315159 [GeV]
+Cell[11,34]    0.00045519448630332 [GeV]
+Cell[1,28]    0.0013796507034991 [GeV]
+Cell[9,9]    0.014737491756245 [GeV]
+Cell[10,26]    0.0013577068040574 [GeV]
+Cell[10,25]    0.00055743651767309 [GeV]
+Cell[8,41]    0.0018235243637703 [GeV]
+Cell[9,6]    0.0034012557769437 [GeV]
+Cell[9,8]    0.015193560647758 [GeV]
+Cell[8,45]    0.0012117780740427 [GeV]
+Cell[9,45]    0.002926308638369 [GeV]
+Cell[7,36]    0.0013108989022816 [GeV]
+Cell[8,47]    0.0060141187071027 [GeV]
+Cell[4,31]    0.00050894037978008 [GeV]
+Cell[11,40]    0.0010202656246595 [GeV]
+Cell[10,29]    0.0016709192282322 [GeV]
+Cell[5,37]    0.00083403823202595 [GeV]
+Cell[4,30]    0.0022301157647013 [GeV]
+Cell[6,36]    0.0010833370541907 [GeV]
+Cell[5,47]    3.3678391686408e-05 [GeV]
+Cell[5,45]    0.00050948733753546 [GeV]
+Cell[4,45]    6.1679275240749e-06 [GeV]
+Cell[10,31]    0.00090845796913758 [GeV]
+Cell[7,42]    0.0014892181603112 [GeV]
+Cell[8,18]    0.0011673127661577 [GeV]
+Cell[7,11]    0.035721265555024 [GeV]
+Cell[6,9]    0.0033159915036661 [GeV]
+Cell[9,36]    0.00030312890709307 [GeV]
+Cell[9,32]    0.00051099891 [GeV]
+Cell[7,40]    0.001482777181458 [GeV]
+Cell[11,21]    0.00051099891 [GeV]
+Cell[9,1]    0.00039370743834424 [GeV]
+Cell[6,30]    0.0037589092475323 [GeV]
+Cell[9,7]    0.001449643440114 [GeV]
+Cell[6,22]    0.0010853590480963 [GeV]
+Cell[2,30]    0.0013772296017351 [GeV]
+Cell[13,28]    6.7031484430601e-05 [GeV]
+Cell[10,14]    0.00037254738782464 [GeV]
+Cell[9,11]    0.0016580814498209 [GeV]
+Cell[7,41]    0.0017167699768237 [GeV]
+Cell[12,34]    0.00096020364551251 [GeV]
+Cell[9,4]    2.1626055822708e-06 [GeV]
+Cell[9,20]    4.6689954569729e-05 [GeV]
+Cell[8,20]    2.7932899119833e-05 [GeV]
+Cell[9,19]    1.7439015209675e-10 [GeV]
+Cell[11,3]    0.00011444659522942 [GeV]
+Cell[11,4]    0.00015478229686312 [GeV]
+Cell[10,4]    1.8588414465057e-06 [GeV]
+Cell[10,3]    8.172742318493e-07 [GeV]
+Cell[6,20]    0.0006679036987158 [GeV]
+Cell[5,20]    0.0019616731131729 [GeV]
+Cell[5,21]    0.00028311479388435 [GeV]
+Cell[6,21]    0.00032335833434206 [GeV]
+Cell[5,22]    3.2974639907479e-11 [GeV]
+Cell[10,9]    1.2733034952021e-05 [GeV]
+Cell[10,7]    7.2081699116552e-05 [GeV]
+Cell[10,8]    2.3711808580629e-08 [GeV]
+Cell[9,27]    8.6190436559264e-06 [GeV]
+Cell[8,27]    4.9597793258727e-06 [GeV]
+Cell[8,24]    0.00072296903186839 [GeV]
+Cell[8,25]    4.8735176392256e-08 [GeV]
+Cell[2,18]    0.00084159587026764 [GeV]
+Cell[4,0]    0.0039384176541933 [GeV]
+Cell[3,0]    0.00060904066794978 [GeV]
+Cell[3,1]    3.0197337238178e-06 [GeV]
+Cell[4,1]    1.7962049014386e-08 [GeV]
+Cell[3,2]    7.0668909302185e-10 [GeV]
+Cell[17,24]    2.3728489963105e-05 [GeV]
+Cell[17,23]    9.9359896557871e-06 [GeV]
+Cell[16,7]    0.0010227049151806 [GeV]
+Cell[15,7]    0.00017940093672132 [GeV]
+Cell[15,16]    7.3391944169998e-08 [GeV]
+Cell[7,44]    0.00038123372762233 [GeV]
+Cell[8,42]    0.0020488906549717 [GeV]
+Cell[8,39]    0.0018265411899872 [GeV]
+Cell[8,38]    4.6566128730774e-13 [GeV]
+Cell[9,21]    0.0022221617695889 [GeV]
+Cell[6,8]    0.00032966062566412 [GeV]
+Cell[9,22]    0.00042659279551443 [GeV]
+Cell[10,20]    0.0013103314766476 [GeV]
+Cell[6,27]    0.0011870543084327 [GeV]
+Cell[14,40]    1.8692591260105e-06 [GeV]
+Cell[13,41]    8.9705223217607e-08 [GeV]
+Cell[13,40]    3.2251439512265e-06 [GeV]
+Cell[7,13]    0.00051099891 [GeV]
+Cell[8,22]    0.00014306629417181 [GeV]
+Cell[6,31]    0.00032261410462412 [GeV]
+Cell[6,10]    0.00031179640803692 [GeV]
+Cell[6,11]    0.0005180120830578 [GeV]
+Cell[6,25]    0.0009097703708113 [GeV]
+Cell[8,33]    0.00055739432619926 [GeV]
+Cell[9,25]    0.00075115873333749 [GeV]
+Cell[4,25]    0.0015771673904006 [GeV]
+Cell[5,25]    0.0004334409057789 [GeV]
+Cell[1,21]    0.00014853293630351 [GeV]
+Cell[1,45]    0.0001019804546576 [GeV]
+Cell[8,31]    0.000687911511081 [GeV]
+Cell[9,14]    0.00041846979139754 [GeV]
+Cell[9,12]    3.7857185299395e-05 [GeV]
+Cell[4,24]    0.0016167960387183 [GeV]
+Cell[6,29]    0.00091370292940175 [GeV]
+Cell[7,3]    0.00089233572398177 [GeV]
+Cell[7,38]    0.00089980422644948 [GeV]
+###  Total energy deposition in calorimeter by a source track in 119 cells : 68.504088049338 (GeV)
+
+Source track ID 1254 (mu+,97.44941385898[GeV]) at (421.34117450922,269.20552494923,1659.1265973404)
+Original primary track ID 1 (unknown,305.48142430119[GeV])
+Cell[18,4]    0.377236936823 [GeV]
+Cell[19,4]    0.41370408969839 [GeV]
+Cell[19,3]    0.010441663844848 [GeV]
+Cell[19,1]    0.0004008986735725 [GeV]
+Cell[19,2]    3.5027281965247e-05 [GeV]
+Cell[18,3]    0.013123622699028 [GeV]
+Cell[18,7]    0.00051099891 [GeV]
+Cell[18,17]    0.00063629041609034 [GeV]
+Cell[11,14]    0.0012393626169165 [GeV]
+Cell[16,30]    0.00051099891 [GeV]
+Cell[17,25]    0.0011055039146148 [GeV]
+###  Total energy deposition in calorimeter by a source track in 11 cells : 0.81894539378843 (GeV)
+
+Source track ID 1255 (mu-,49.167079992799[GeV]) at (-250.01069624685,-433.00652623507,234.23628055323)
+Original primary track ID 1 (unknown,305.48142430119[GeV])
+Cell[13,31]    0.0043743757589279 [GeV]
+Cell[16,30]    0.0084524221754242 [GeV]
+Cell[11,31]    0.0076807166001318 [GeV]
+Cell[11,32]    0.39419267716999 [GeV]
+Cell[12,32]    0.57429540206979 [GeV]
+Cell[13,32]    0.4392076018038 [GeV]
+Cell[14,32]    0.86693708901861 [GeV]
+Cell[15,32]    0.56053433603317 [GeV]
+Cell[16,32]    0.43770950277657 [GeV]
+Cell[17,32]    0.056685168200608 [GeV]
+Cell[16,31]    0.04086957536106 [GeV]
+Cell[15,31]    0.037800056815579 [GeV]
+Cell[14,31]    0.05730657801668 [GeV]
+Cell[14,33]    0.004361573268086 [GeV]
+Cell[14,30]    0.0046915963863354 [GeV]
+Cell[15,30]    0.022495377271956 [GeV]
+Cell[15,33]    0.0039712346523666 [GeV]
+Cell[14,34]    0.0027825055537978 [GeV]
+Cell[15,34]    0.01329193834712 [GeV]
+Cell[17,30]    0.00061611666060276 [GeV]
+Cell[17,31]    0.0011671186222947 [GeV]
+Cell[15,29]    0.00085963455444505 [GeV]
+Cell[16,29]    1.5338868252002e-05 [GeV]
+Cell[12,31]    0.070484735630055 [GeV]
+Cell[12,30]    0.0018319496784074 [GeV]
+###  Total energy deposition in calorimeter by a source track in 25 cells : 3.6126146212941 (GeV)
+
+Source track ID 1251 (gamma,0.17435926984906[GeV]) at (-435.61886373265,245.43065326131,445.72700190816)
+Original primary track ID 41 (unknown,2.6699951779791[GeV])
+Cell[12,20]    0.16580781247831 [GeV]
+Cell[12,19]    0.007980446638534 [GeV]
+Cell[12,17]    0.0005710107322123 [GeV]
+###  Total energy deposition in calorimeter by a source track in 3 cells : 0.17435926984906 (GeV)
+
+Source track ID 978 (pi+,0.27833373541665[GeV]) at (242.19300445326,437.4271923348,11.036468991664)
+Original primary track ID 41 (unknown,2.6699951779791[GeV])
+Cell[10,7]    0.159660260512 [GeV]
+Cell[10,8]    0.012349261714075 [GeV]
+Cell[10,6]    0.013366929076141 [GeV]
+###  Total energy deposition in calorimeter by a source track in 3 cells : 0.18537645130222 (GeV)
+
+Source track ID 1167 (gamma,0.12620965025075[GeV]) at (-487.28249080485,-112.0525508635,703.8898101186)
+Original primary track ID 41 (unknown,2.6699951779791[GeV])
+Cell[13,25]    0.12122211080939 [GeV]
+Cell[15,46]    0.00047818300560744 [GeV]
+Cell[14,45]    0.00038652938128 [GeV]
+Cell[13,1]    0.0033228094346462 [GeV]
+Cell[13,0]    0.00080001761982423 [GeV]
+###  Total energy deposition in calorimeter by a source track in 5 cells : 0.12620965025075 (GeV)
+
+Source track ID 1168 (gamma,0.088297327870564[GeV]) at (61.272111377026,-496.23152697849,76.525402521714)
+Original primary track ID 41 (unknown,2.6699951779791[GeV])
+Cell[10,36]    0.085658170460022 [GeV]
+Cell[10,35]    0.0021281585005428 [GeV]
+Cell[10,37]    0.00051099891 [GeV]
+###  Total energy deposition in calorimeter by a source track in 3 cells : 0.088297327870564 (GeV)
+
+Source track ID 983 (pi+,0.88675114109579[GeV]) at (3.9935535212572,499.98405127591,750.99897712308)
+Original primary track ID 41 (unknown,2.6699951779791[GeV])
+Cell[11,34]    3.5511912568609e-06 [GeV]
+Cell[13,11]    0.070457653427781 [GeV]
+Cell[14,11]    0.45326585716147 [GeV]
+Cell[14,10]    0.025917743127907 [GeV]
+Cell[15,12]    0.0051607645903069 [GeV]
+Cell[13,10]    0.0051183094463371 [GeV]
+Cell[15,11]    0.015749691013191 [GeV]
+Cell[15,10]    0.0074269715612582 [GeV]
+Cell[14,9]    9.3112993691989e-05 [GeV]
+Cell[15,9]    0.0034138542512893 [GeV]
+Cell[14,8]    3.4523928933368e-06 [GeV]
+Cell[13,8]    2.9657383038284e-10 [GeV]
+Cell[16,11]    0.0070151673591707 [GeV]
+Cell[15,8]    0.002277051627457 [GeV]
+Cell[16,12]    0.0086564274981414 [GeV]
+Cell[11,33]    0.00039911822574027 [GeV]
+Cell[12,33]    0.00015616101179535 [GeV]
+Cell[16,10]    0.0044708001871309 [GeV]
+Cell[17,12]    0.0011289790826437 [GeV]
+Cell[17,11]    0.0017615557625288 [GeV]
+Cell[16,9]    0.0081472561256453 [GeV]
+Cell[17,9]    3.680804735086e-05 [GeV]
+Cell[17,10]    5.4865702277198e-05 [GeV]
+Cell[16,13]    1.683032406163e-06 [GeV]
+Cell[16,14]    3.2101524993777e-11 [GeV]
+Cell[18,11]    1.8489850879178e-07 [GeV]
+Cell[16,8]    0.0026450749504918 [GeV]
+###  Total energy deposition in calorimeter by a source track in 27 cells : 0.62336209499735 (GeV)
+
+Source track ID 1060 (mu-,0.54171954749454[GeV]) at (-92.622454702108,-491.34619250072,1168.3858202745)
+Original primary track ID 41 (unknown,2.6699951779791[GeV])
+Cell[15,34]    0.038430138938289 [GeV]
+Cell[16,34]    0.094582975777197 [GeV]
+Cell[16,35]    0.15612743262641 [GeV]
+###  Total energy deposition in calorimeter by a source track in 3 cells : 0.28914054734189 (GeV)
+
+Source track ID 949 (gamma,0.23818895051853[GeV]) at (-24.111052240173,-499.41831880686,-17.911064377671)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,36]    0.0092825225639362 [GeV]
+Cell[10,35]    0.0015631614226224 [GeV]
+Cell[9,35]    0.22513122416878 [GeV]
+Cell[18,9]    0.0016037600734204 [GeV]
+Cell[9,13]    0.00060828228977071 [GeV]
+###  Total energy deposition in calorimeter by a source track in 5 cells : 0.23818895051853 (GeV)
+
+Source track ID 975 (gamma,0.026380955920972[GeV]) at (244.80731568907,435.96946932682,97.272496463756)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[10,7]    0.0018301997015936 [GeV]
+Cell[10,8]    0.024550756219379 [GeV]
+###  Total energy deposition in calorimeter by a source track in 2 cells : 0.026380955920972 (GeV)
+
+Source track ID 951 (e-,0.26584625079758[GeV]) at (241.34795514629,437.89401063123,97.887560476838)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,20]    0.00022668555517829 [GeV]
+Cell[10,9]    0.0072049539360566 [GeV]
+Cell[10,7]    0.025674435477238 [GeV]
+Cell[10,8]    0.21457910197384 [GeV]
+Cell[11,8]    0.0063499795820193 [GeV]
+Cell[11,7]    0.00302188670059 [GeV]
+Cell[7,20]    0.0018770994448855 [GeV]
+Cell[15,43]    0.0019617987803577 [GeV]
+Cell[11,39]    0.0035057827637045 [GeV]
+###  Total energy deposition in calorimeter by a source track in 9 cells : 0.26440172421387 (GeV)
+
+Source track ID 954 (gamma,0.0007023656933511[GeV]) at (179.65684304547,-466.60842121305,31.14686585149)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[10,38]    0.00031593918482267 [GeV]
+Cell[10,43]    0.00012217410896346 [GeV]
+###  Total energy deposition in calorimeter by a source track in 2 cells : 0.00043811329378612 (GeV)
+
+Source track ID 955 (gamma,0.0011928774369156[GeV]) at (-306.42261091243,-395.10148509163,-75.805528400102)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,30]    0.0011928774369156 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.0011928774369156 (GeV)
+
+Source track ID 961 (gamma,0.0009440976735025[GeV]) at (284.90906763951,410.88541368219,36.189409292169)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[10,7]    0.0009440976735025 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.0009440976735025 (GeV)
+
+Source track ID 962 (gamma,0.00011538949223998[GeV]) at (275.18715812633,417.45901355984,140.3299494706)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[10,7]    0.00011538949223998 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00011538949223998 (GeV)
+
+Source track ID 963 (gamma,0.00031564388054375[GeV]) at (-488.00743624672,-108.85192771792,-572.54335264871)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[7,25]    0.00031564388054375 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00031564388054375 (GeV)
+
+Source track ID 964 (gamma,0.00061430118130513[GeV]) at (-399.62881309227,-300.49427905779,-647.83848987204)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[6,28]    0.00061430118130513 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00061430118130513 (GeV)
+
+Source track ID 965 (gamma,0.0097463092484482[GeV]) at (275.55669147315,417.21518402902,-41.763526517343)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,7]    0.0097463092484482 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.0097463092484482 (GeV)
+
+Source track ID 966 (gamma,0.00013043619231534[GeV]) at (152.12913611242,476.29478891301,-96.590907006234)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,9]    0.00013043619231534 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00013043619231534 (GeV)
+
+Source track ID 967 (gamma,0.00051099891[GeV]) at (212.51474967103,452.58974930091,-183.69641891248)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,8]    0.00051099891 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00051099891 (GeV)
+
+Source track ID 968 (gamma,0.00051099891[GeV]) at (498.87849837914,-33.470044143591,751.77609879049)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[13,47]    0.00051099891 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00051099891 (GeV)
+
+Source track ID 827 (pi-,1.7949532168514[GeV]) at (442.56972084414,-232.66293686777,-1864.0872967441)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[0,44]    0.15752708896316 [GeV]
+Cell[0,43]    0.00073389705606258 [GeV]
+###  Total energy deposition in calorimeter by a source track in 2 cells : 0.15826098601922 (GeV)
+
+Source track ID 692 (gamma,0.59980090891317[GeV]) at (255.70125682303,-429.67064975295,-1133.3038386186)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[4,40]    0.4532098308022 [GeV]
+Cell[3,40]    0.013034412815088 [GeV]
+Cell[4,39]    0.11242741427577 [GeV]
+Cell[3,39]    0.0055432877469454 [GeV]
+Cell[1,31]    0.001092627807791 [GeV]
+Cell[4,29]    0.00050961535681239 [GeV]
+Cell[2,22]    0.00073259295318553 [GeV]
+Cell[4,10]    0.00091332798936034 [GeV]
+Cell[4,15]    0.00051099891 [GeV]
+Cell[6,14]    0.00089761540828252 [GeV]
+Cell[2,25]    0.0014735121883038 [GeV]
+Cell[3,19]    0.00048793286137338 [GeV]
+Cell[0,7]    0.0014677852114174 [GeV]
+Cell[0,6]    0.00051099891 [GeV]
+###  Total energy deposition in calorimeter by a source track in 14 cells : 0.59281195323652 (GeV)
+
+Source track ID 693 (gamma,0.053266099197347[GeV]) at (183.99450398366,464.91507020509,-1027.4558928295)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[4,9]    0.045493445185827 [GeV]
+Cell[7,29]    0.00029006940932913 [GeV]
+Cell[4,8]    0.00102199782 [GeV]
+Cell[6,15]    0.00047095955434028 [GeV]
+Cell[0,15]    0.0057207280795496 [GeV]
+Cell[7,26]    0.00026889914830144 [GeV]
+###  Total energy deposition in calorimeter by a source track in 6 cells : 0.053266099197347 (GeV)
+
+Source track ID 690 (gamma,0.39597382458922[GeV]) at (-372.59430012837,-333.42688480663,-1802.3851787588)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[1,21]    0.0004626214482361 [GeV]
+Cell[1,45]    0.0022748842414317 [GeV]
+Cell[4,10]    0.00021778805561944 [GeV]
+Cell[0,7]    0.00030901561770667 [GeV]
+Cell[0,29]    0.31559624266163 [GeV]
+Cell[0,30]    0.0043273537869325 [GeV]
+Cell[1,29]    0.0014288129305628 [GeV]
+Cell[0,4]    0.00051099891 [GeV]
+Cell[3,42]    0.00051099891 [GeV]
+Cell[0,20]    0.00093927613052637 [GeV]
+Cell[1,33]    0.0010198532674615 [GeV]
+Cell[0,1]    0.00044262309198432 [GeV]
+Cell[2,2]    0.00070107091534102 [GeV]
+Cell[1,39]    0.00051099891 [GeV]
+Cell[1,6]    0.00051099891 [GeV]
+Cell[0,28]    0.001135043249566 [GeV]
+###  Total energy deposition in calorimeter by a source track in 16 cells : 0.330898581037 (GeV)
+
+Source track ID 691 (gamma,0.02130681471934[GeV]) at (476.42903549195,151.70818745277,-84.417540034317)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,2]    0.016555887888334 [GeV]
+Cell[5,27]    0.00030796089926055 [GeV]
+Cell[9,3]    0.0042731567136096 [GeV]
+###  Total energy deposition in calorimeter by a source track in 3 cells : 0.021137005501204 (GeV)
+
+Source track ID 689 (gamma,0.19239638056034[GeV]) at (-414.65189179906,279.39901329006,-1130.2072663309)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[2,30]    0.00045399559297272 [GeV]
+Cell[3,19]    0.0060219017357115 [GeV]
+Cell[5,27]    0.0010054594224395 [GeV]
+Cell[4,19]    0.16817397920444 [GeV]
+Cell[4,47]    0.00051099891 [GeV]
+Cell[3,20]    0.00032380634947476 [GeV]
+Cell[8,35]    0.00051099891 [GeV]
+Cell[2,31]    0.00035712268925432 [GeV]
+Cell[3,23]    0.0064655677674572 [GeV]
+###  Total energy deposition in calorimeter by a source track in 9 cells : 0.18382383058175 (GeV)
+
+Source track ID 683 (gamma,0.25162621009879[GeV]) at (499.02634665386,-31.188224465416,957.00761078074)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[16,30]    0.00055462839541549 [GeV]
+Cell[17,25]    0.00080577206215247 [GeV]
+Cell[16,32]    0.00084547974975797 [GeV]
+Cell[15,31]    0.0010507334364589 [GeV]
+Cell[17,30]    0.011430211930197 [GeV]
+Cell[15,46]    0.018923903908223 [GeV]
+Cell[16,14]    0.00054612584173313 [GeV]
+Cell[14,47]    0.17398162479246 [GeV]
+Cell[14,1]    0.00051099891 [GeV]
+Cell[15,23]    0.00040354141603126 [GeV]
+Cell[15,4]    0.0017742451307058 [GeV]
+Cell[14,0]    0.001905494388898 [GeV]
+Cell[15,38]    0.0005759386541385 [GeV]
+Cell[17,13]    0.00051099891 [GeV]
+Cell[15,47]    0.0027652487733938 [GeV]
+Cell[18,32]    0.0014363494929863 [GeV]
+Cell[19,37]    0.00084543545215861 [GeV]
+Cell[19,30]    0.006651422925581 [GeV]
+Cell[19,31]    0.00051099891 [GeV]
+Cell[19,33]    0.0053794853351059 [GeV]
+Cell[13,12]    0.0010470888363065 [GeV]
+###  Total energy deposition in calorimeter by a source track in 21 cells : 0.2324557272517 (GeV)
+
+Source track ID 626 (gamma,0.23940053141976[GeV]) at (-378.30991304726,-326.92752972207,1067.9855851714)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[15,29]    0.20564899276343 [GeV]
+Cell[15,9]    0.00051099891 [GeV]
+Cell[16,8]    0.000350464770513 [GeV]
+Cell[15,28]    0.025897995385665 [GeV]
+Cell[19,15]    0.0014181626792113 [GeV]
+Cell[18,14]    0.00057462488656041 [GeV]
+Cell[18,8]    0.00080202668306559 [GeV]
+Cell[13,6]    0.00046203440534497 [GeV]
+Cell[18,25]    0.0011667288234251 [GeV]
+###  Total energy deposition in calorimeter by a source track in 9 cells : 0.23683202930721 (GeV)
+
+Source track ID 358 (gamma,0.41164872010706[GeV]) at (-456.42208397931,204.15406255077,168.67818602361)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[11,21]    0.0016791114922198 [GeV]
+Cell[10,20]    0.3868998029991 [GeV]
+Cell[12,20]    0.00065743756869493 [GeV]
+Cell[11,20]    0.01755059596584 [GeV]
+Cell[10,21]    0.0031701645684704 [GeV]
+Cell[10,19]    0.0016916075127353 [GeV]
+###  Total energy deposition in calorimeter by a source track in 6 cells : 0.41164872010706 (GeV)
+
+Source track ID 359 (gamma,0.17556583448629[GeV]) at (-370.26452143871,336.01217859441,-37.728261351246)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,19]    6.6208197982494e-05 [GeV]
+Cell[9,18]    0.17503773285928 [GeV]
+Cell[10,18]    0.00046189342903062 [GeV]
+###  Total energy deposition in calorimeter by a source track in 3 cells : 0.17556583448629 (GeV)
+
+Source track ID 357 (gamma,0.41324573943274[GeV]) at (303.44001238969,-397.39672731534,976.47730315274)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[14,40]    0.002769587579564 [GeV]
+Cell[15,10]    0.0011103009164767 [GeV]
+Cell[15,40]    0.29429399015772 [GeV]
+Cell[15,41]    0.098772918979607 [GeV]
+Cell[15,39]    0.0061410309904803 [GeV]
+Cell[14,41]    0.003809625105559 [GeV]
+Cell[18,13]    0.0012368089245009 [GeV]
+###  Total energy deposition in calorimeter by a source track in 7 cells : 0.4081342626539 (GeV)
+
+Source track ID 306 (gamma,0.00048969154015137[GeV]) at (-322.52983188736,382.06610362961,-252.65755529258)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[8,17]    0.00048969154015137 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00048969154015137 (GeV)
+
+Source track ID 307 (neutron,1.0143763312966[GeV]) at (-451.39383360382,215.04326770315,222.90888235516)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,10]    9.6100848168135e-10 [GeV]
+Cell[9,9]    5.6801285040819e-08 [GeV]
+Cell[11,21]    0.00042835812683601 [GeV]
+Cell[10,9]    4.1548428703209e-07 [GeV]
+Cell[10,20]    0.0038513012374851 [GeV]
+Cell[16,30]    6.1964776675683e-05 [GeV]
+Cell[11,20]    0.0048585433378454 [GeV]
+Cell[10,21]    0.002008722419372 [GeV]
+Cell[10,19]    0.00022731965494188 [GeV]
+Cell[10,18]    6.477175169789e-05 [GeV]
+Cell[10,47]    0.0012697507349372 [GeV]
+Cell[11,19]    0.0018703583359647 [GeV]
+Cell[10,33]    0.0018835175063603 [GeV]
+Cell[9,23]    1.4613108971389e-05 [GeV]
+Cell[4,41]    1.2113793083699e-05 [GeV]
+Cell[5,11]    0.00047001115130934 [GeV]
+Cell[5,12]    2.4780552507764e-07 [GeV]
+Cell[11,22]    7.6865109918003e-05 [GeV]
+Cell[10,10]    1.1584401363507e-08 [GeV]
+###  Total energy deposition in calorimeter by a source track in 19 cells : 0.017098943681906 (GeV)
+
+Source track ID 308 (neutron,0.95449841692733[GeV]) at (-487.73363969883,110.07223403808,-96.350976778912)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,22]    0.0023782308721712 [GeV]
+Cell[10,22]    0.0047246505608962 [GeV]
+Cell[10,23]    0.00045650490083835 [GeV]
+###  Total energy deposition in calorimeter by a source track in 3 cells : 0.0075593863339057 (GeV)
+
+Source track ID 310 (gamma,0.0036781810765127[GeV]) at (-449.87554943967,218.2017186375,-181.79609073164)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,20]    0.0036781810765127 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.0036781810765127 (GeV)
+
+Source track ID 311 (gamma,0.0011935886015807[GeV]) at (-499.29442492567,26.553290533246,-300.91182194265)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[8,23]    0.0011935886015807 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.0011935886015807 (GeV)
+
+Source track ID 312 (gamma,0.00059638310754378[GeV]) at (499.99803448338,-1.4019674580659,-436.28586731348)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[7,47]    0.00059638310754378 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00059638310754378 (GeV)
+
+Source track ID 313 (gamma,0.00038396296086521[GeV]) at (-195.95310817699,460.00258629249,327.95984795549)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[11,15]    0.00038396296086521 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00038396296086521 (GeV)
+
+Source track ID 251 (gamma,0.0056427967396733[GeV]) at (494.13049068219,76.38755250811,1188.4412261799)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[16,1]    0.0056427967396733 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.0056427967396733 (GeV)
+
+Source track ID 252 (gamma,0.0052219633887345[GeV]) at (-442.96417515312,231.91105952696,-491.2134629091)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[7,20]    0.0047109644787345 [GeV]
+Cell[6,45]    0.00024566680634999 [GeV]
+Cell[7,30]    0.00026533210365001 [GeV]
+###  Total energy deposition in calorimeter by a source track in 3 cells : 0.0052219633887345 (GeV)
+
+Source track ID 253 (gamma,0.0013327477574231[GeV]) at (-308.41678190003,393.54680616469,-407.02105335374)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[7,16]    0.0013327477574231 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.0013327477574231 (GeV)
+
+Source track ID 241 (gamma,0.0043968335052791[GeV]) at (-474.56634209732,157.43820041008,-287.52369011308)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[8,21]    0.0043968335052791 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.0043968335052791 (GeV)
+
+Source track ID 243 (gamma,0.0017508924093049[GeV]) at (-493.63572910471,-79.522116114068,-140.91877154223)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,25]    0.0017508924093049 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.0017508924093049 (GeV)
+
+Source track ID 215 (pi+,1.0808886954416[GeV]) at (389.82820998448,-313.10376347194,505.54462039611)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[11,40]    2.9871080187149e-06 [GeV]
+Cell[10,14]    2.1634357690345e-06 [GeV]
+Cell[10,4]    1.1117588655907e-08 [GeV]
+Cell[10,3]    7.4584271976619e-07 [GeV]
+Cell[10,8]    8.8765447726473e-06 [GeV]
+Cell[14,40]    0.00038645191910518 [GeV]
+Cell[13,41]    0.0074544114963413 [GeV]
+Cell[13,40]    0.0044307753721652 [GeV]
+Cell[6,31]    8.7379271863028e-06 [GeV]
+Cell[14,30]    1.495502947364e-06 [GeV]
+Cell[15,29]    0.0010408742691833 [GeV]
+Cell[14,45]    0.00080746802659337 [GeV]
+Cell[3,20]    2.3397423210554e-06 [GeV]
+Cell[15,4]    0.0013030139200715 [GeV]
+Cell[14,41]    1.9324943423271e-11 [GeV]
+Cell[12,42]    0.50613356535013 [GeV]
+Cell[12,41]    0.016189351219735 [GeV]
+Cell[12,43]    0.006237495143145 [GeV]
+Cell[13,43]    0.040998013240351 [GeV]
+Cell[13,44]    0.0040356333930734 [GeV]
+Cell[12,39]    0.00040615113187584 [GeV]
+Cell[12,38]    1.581924650236e-05 [GeV]
+Cell[12,37]    0.00010582922365302 [GeV]
+Cell[14,29]    1.6412663680967e-06 [GeV]
+Cell[14,6]    4.2448911155134e-05 [GeV]
+Cell[14,7]    7.75274267653e-07 [GeV]
+Cell[13,21]    5.755137859876e-05 [GeV]
+Cell[10,2]    3.7796158558194e-06 [GeV]
+Cell[10,1]    7.7732824336636e-05 [GeV]
+Cell[13,42]    0.0077314033716856 [GeV]
+Cell[15,6]    4.6745811443543e-05 [GeV]
+Cell[14,4]    1.7177850648295e-05 [GeV]
+Cell[15,3]    0.00011911841932224 [GeV]
+Cell[15,5]    1.4595512413962e-07 [GeV]
+Cell[14,3]    0.0012329099008444 [GeV]
+Cell[12,40]    0.0022894722650139 [GeV]
+Cell[11,42]    0.033831991725367 [GeV]
+Cell[11,43]    0.0041252063061839 [GeV]
+Cell[12,44]    0.0020165589789409 [GeV]
+Cell[12,45]    0.0029103704015736 [GeV]
+Cell[13,45]    0.056445937023069 [GeV]
+Cell[5,16]    1.7036520293914e-06 [GeV]
+Cell[1,32]    2.3573774087708e-06 [GeV]
+Cell[12,2]    1.6639313544147e-06 [GeV]
+Cell[13,22]    3.6261867624376e-05 [GeV]
+Cell[16,15]    2.0872634269153e-05 [GeV]
+Cell[14,39]    2.2798494683229e-09 [GeV]
+Cell[11,41]    1.3772565172985e-05 [GeV]
+Cell[15,20]    0.00095751601025039 [GeV]
+Cell[15,19]    0.00038301971091823 [GeV]
+Cell[16,20]    1.874905071179e-05 [GeV]
+Cell[16,19]    5.8164342772216e-07 [GeV]
+Cell[16,18]    1.2867822988483e-08 [GeV]
+Cell[16,17]    1.000496956749e-08 [GeV]
+Cell[13,46]    0.0027265447882001 [GeV]
+Cell[14,46]    0.00022972954949523 [GeV]
+###  Total energy deposition in calorimeter by a source track in 56 cells : 0.70491597540588 (GeV)
+
+Source track ID 212 (gamma,0.028595474656773[GeV]) at (328.1859462591,377.21874910722,-300.64113703351)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[8,7]    0.0026108281898964 [GeV]
+Cell[8,6]    0.025984646466877 [GeV]
+###  Total energy deposition in calorimeter by a source track in 2 cells : 0.028595474656773 (GeV)
+
+Source track ID 213 (gamma,0.46372847760985[GeV]) at (-465.99474696938,181.24264342847,-913.38295933636)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[5,20]    0.022514878071172 [GeV]
+Cell[5,21]    0.34024684090668 [GeV]
+Cell[4,6]    0.00085595622837974 [GeV]
+Cell[6,12]    0.00051099891 [GeV]
+Cell[4,20]    0.0096176338385128 [GeV]
+Cell[4,21]    0.075517802103906 [GeV]
+Cell[5,1]    0.0014667024210035 [GeV]
+Cell[4,32]    0.00051099891 [GeV]
+Cell[3,36]    0.0013043960805079 [GeV]
+Cell[3,37]    0.00081184209523825 [GeV]
+Cell[1,7]    0.0013691890423302 [GeV]
+###  Total energy deposition in calorimeter by a source track in 11 cells : 0.45472723860773 (GeV)
+
+Source track ID 210 (gamma,0.21067608644927[GeV]) at (-247.62061538533,-434.37775131352,-1046.3393876227)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[4,31]    0.062381755191343 [GeV]
+Cell[5,45]    0.0011421052735207 [GeV]
+Cell[3,2]    0.00072465368876935 [GeV]
+Cell[12,45]    0.00032905238816153 [GeV]
+Cell[4,32]    0.13795761596854 [GeV]
+Cell[5,39]    0.00051099891 [GeV]
+Cell[0,14]    0.00051099891 [GeV]
+Cell[13,5]    0.0012428602066115 [GeV]
+Cell[5,3]    0.00051099891 [GeV]
+Cell[1,3]    0.0026204143965911 [GeV]
+###  Total energy deposition in calorimeter by a source track in 10 cells : 0.20793145384353 (GeV)
+
+Source track ID 208 (gamma,0.06726801612498[GeV]) at (-461.11390251385,-193.32348255824,-562.35052722159)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[7,26]    0.00093578935899815 [GeV]
+Cell[7,27]    0.066332226765982 [GeV]
+###  Total energy deposition in calorimeter by a source track in 2 cells : 0.06726801612498 (GeV)
+
+Source track ID 209 (gamma,1.2213291054873[GeV]) at (-495.81010252032,64.593670268736,-1525.2871340715)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[9,1]    0.0011908516171849 [GeV]
+Cell[2,30]    0.00081278655513492 [GeV]
+Cell[3,0]    0.00028074330742318 [GeV]
+Cell[2,22]    0.46783886331272 [GeV]
+Cell[0,7]    0.00048742004663214 [GeV]
+Cell[0,29]    0.00051099891 [GeV]
+Cell[10,1]    0.0013563869717785 [GeV]
+Cell[2,23]    0.60988535673215 [GeV]
+Cell[0,35]    0.002418559184767 [GeV]
+Cell[2,7]    0.0010157077332483 [GeV]
+Cell[2,14]    0.00063444627416527 [GeV]
+Cell[3,32]    0.00051099891 [GeV]
+Cell[2,42]    0.00063755720947278 [GeV]
+Cell[3,29]    0.0014793687880506 [GeV]
+Cell[1,22]    0.049110636220328 [GeV]
+Cell[1,23]    0.032529386421013 [GeV]
+Cell[0,0]    0.00065850810699726 [GeV]
+Cell[9,41]    0.00074743615900634 [GeV]
+Cell[2,3]    0.00060936613586962 [GeV]
+Cell[0,37]    0.00042746973138147 [GeV]
+Cell[5,10]    0.00045656950962586 [GeV]
+Cell[1,0]    0.0013182454371449 [GeV]
+Cell[2,6]    0.0022940220885 [GeV]
+Cell[8,43]    0.00043954277888524 [GeV]
+Cell[6,6]    0.00073524867699679 [GeV]
+Cell[2,27]    0.00096203628803667 [GeV]
+Cell[2,24]    0.00020650404554182 [GeV]
+Cell[3,5]    0.00051099891 [GeV]
+Cell[1,36]    0.00061792207219605 [GeV]
+Cell[3,46]    0.00051099891 [GeV]
+Cell[2,47]    0.00077383139811963 [GeV]
+Cell[0,27]    0.0069682831397808 [GeV]
+Cell[1,35]    0.00097601291299783 [GeV]
+Cell[2,19]    0.0032912287860067 [GeV]
+Cell[1,16]    0.00049054926891294 [GeV]
+Cell[1,15]    0.0014777988415331 [GeV]
+Cell[1,2]    0.00030473332800589 [GeV]
+Cell[3,8]    0.00051099891 [GeV]
+Cell[6,40]    0.00075886632019068 [GeV]
+Cell[4,37]    0.00040469513059487 [GeV]
+###  Total energy deposition in calorimeter by a source track in 40 cells : 1.1971519350804 (GeV)
+
+Source track ID 93 (proton,1.0787784795135[GeV]) at (346.96497473307,-360.02125813412,-1899.6771592578)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[0,41]    0.14050646651355 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.14050646651355 (GeV)
+
+Source track ID 95 (gamma,0.00028999105909403[GeV]) at (433.86188770914,-248.52336387844,-1813.4551067916)
+Original primary track ID 43 (unknown,52.984237098069[GeV])
+Cell[0,44]    0.00028999105909403 [GeV]
+###  Total energy deposition in calorimeter by a source track in 1 cells : 0.00028999105909403 (GeV)
+
+>>> Summary of Event 0
+
+Tracker hits --------------------------------------------------------------
+323 hits are stored in RE01TrackerHitsCollection.
+
+Calorimeter hits --------------------------------------------------------------
+399 hits are stored in RE01CalorimeterHitsCollection.
+     Total energy deposition in calorimeter : 85.424624762548 (GeV)
+
+Trajectories in tracker --------------------------------------------------------------
+
+Primary particles --------------------------------------------------------------
+
+Primary vertex (0,0,0)   at t = 0 [ns]
+Graphics systems deleted.
+Visualization Manager deleting...

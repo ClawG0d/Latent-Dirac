@@ -1,0 +1,29 @@
+#
+# Macro file for "testEm3.cc"
+#
+# show how to store and retrieve Physics Tables
+#
+/control/verbose 2
+#
+/testem/phys/addPhysics  emstandard_opt0
+#
+/process/eLoss/verbose 0
+/process/eLoss/CSDARange true
+/run/initialize
+/random/setSavingFlag 1
+#
+/run/beamOn 3
+#
+/control/shell mkdir physdata
+/run/particle/storePhysicsTable physdata
+#
+/gun/particle e-
+/gun/energy 1 GeV
+#
+#/run/beamOn 3	
+#
+/run/particle/retrievePhysicsTable physdata
+#
+/random/resetEngineFrom currentRun.rndm
+/run/beamOn 3
+#

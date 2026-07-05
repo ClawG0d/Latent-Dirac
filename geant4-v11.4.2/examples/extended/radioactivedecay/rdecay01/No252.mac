@@ -1,0 +1,15 @@
+# macro for rdecay01
+#
+# to read user's data file
+#
+/control/cout/ignoreThreadsExcept 0
+#
+# Set a very high time threshold to allow all decays to happen
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+#
+/process/had/rdm/setPhotoEvaporationFile 102 252 ../UserData/UserEvapData_z102.a252
+#
+/gun/particle ion
+/gun/ion 102 252 0 3.2070e+02 
+#
+/run/beamOn 100000

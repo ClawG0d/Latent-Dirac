@@ -1,0 +1,252 @@
+# Example brachytherapy History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2023-11-15 I. Hrivnacova (brachy-V11-01-01)
+- Updated VisualisationMacro.mac:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2023-11-10 Alberto Ribon (brachy-V11-01-00)
+- In all macro files, introduced the UI command
+  '/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year'
+  to allow all radioactive decays (including the very long ones).
+  This is necessary since G4 11.2, being 1 year the default time
+  threshold above which the decays are ignored.
+
+## 2022-05-30 Susanna Guatelli (brachy-V11-00-01)
+- Migration to c++11/14/17 features
+
+## 2021-12-10 Ben Morgan (brachy-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+07.10.2021 - I. Hrivnacova; brachy-V10-07-04
+             Migration to new G4AnalysisManager.hh header;
+             define the default output file type (root),
+             removed BrachyAnalysisManager.hh
+
+02.09.2021 - D.H. Wright; brachy-V10-07-03
+             Replaced string RadioactiveDecayBase with RadioactiveDecay in
+             BrachySteppingAction::UserSteppingAction
+             (RadioactiveDecayBase soon to disappear)
+
+19.07.2021 - I. Hrivnacova; brachy-V10-07-02
+             Updated for changes in the analysis category:
+             removed deleting of the analysis manager,
+             as this is now done by the Geant4 kernel.
+
+24.05.2021 - B. Morgan; brachy-V10-07-01
+             Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+12.02.2021 - S. Guatelli; brachy-V10-07-00
+             Cleaning of the code. Use C++11 keywords and patterns.
+             Remove BrachyMaterial class. Materials implemented now
+             using NIST Material Manager of Geant4. Remove SetCuts from
+             the local PhysicsList as it is not thread-safe.
+
+12.11.2020 - S. Guatelli; brachy-V10-06-03
+             Migration to G4RunManagerFactory
+
+02.11.2020 - B.Morgan; brachy-V10-06-02
+             Support same CMake version range as core Geant4
+
+13.08.2020 - S. Guatelli; brachy-V10-06-01
+             Analysis done by means of G4Analysis. No more dependence on ROOT.
+             General cleaning of the code. RunAction implemented.
+
+14.07.2020 - A. Zaborowska;brachy-V10-06-00
+             Add missing /run/initialize to VisualisationMacro.mac
+
+20.09.2019 - M. Asai;brachy-V10-05-00
+             Add G4VScoringMesh:: scope identifier to BrachyUserScoreWriter.cc
+             Co-working with detutils-V10-05-01
+
+30.11.2018 - G. Cosmo;brachy-V10-04-07.
+             Fixed compilation warning for shadowing variables/parameters
+             in BrachyAnalysisManager, BrachyPrimaryGeneratorAction and
+             BrachyUserScoreWriter.
+
+29.11.2018 - G. Folger;brachy-V10-04-06.
+             Fix Visualisation.mac to leave verbosity at errors
+	      (warning is a 'magic' word failing a test
+
+29.11.2018 - G. Folger;brachy-V10-04-05.
+             Attempt to use Root optionally in CMakeLists.txt.
+
+28.11.2018 - S. Guatelli;brachy-V10-04-04.
+             Added directory test_macro and included more ROOT analysis files.
+
+25.10.2018 - S. Guatelli;brachy-V10-04-03. CMakeList updated
+
+24.10.2018 - S. Guatelli;brachy-V10-04-02.
+             Included macros for the regression testing of Geant4.
+             Option to switch EM physics list included
+
+04.09.2018 - S. Guatelli and A. Le;brachy-V10-04-01.
+             Included new brachy source (I-125 Oncura 6711 source).
+             G4_VIS_USE and G4_UI_USE deleted.
+
+10.05.2018 - B. Morgan; brachy-V10-04-00
+             Include G4Types before use of G4MULTITHREADED. For forward
+             compatibility with move to #defines over -D for G4 preprocessor
+             symbols.
+
+10.11.2017 - G. Cosmo; brachy-V10-03-01
+             Avoid setting the initial seed to zero.
+
+1.11.2016  - S. Guatelli; brachy-V10-02-02
+             Added comparison to reference data for the Flexisource
+             Added Flexisurce and TG186 reference source; added method to calculate relative dose rate to compare to reference data
+
+06.09.2016 -  M. Asai; brachy-V10-02-01
+
+04.09.2016 -  M. Asai; brachy-V10-02-00
+              Modify std::map<G4int, G4double*> to
+              std::map<G4int, G4StatDouble*>
+
+06.03.2015 -  A. Dotti; brachy-V10-01-00
+              Removing unnecessary instantiation of GPS in master
+
+09.10.2014 -  S. Guatelli; brachy-V10-00-00
+	      Compilation errors and warnings with cdash deleted
+              Analysis with ROOT introduced
+
+21.10.2013 -  L. Pandola; brachy-V09-06-02
+	      Fix bug in BrachySteppingAction.cc reported by John A.
+              (replace = with ==). Use G4ParticleDefinition instead
+              of string.
+
+19.09.2013 -  S. Guatelli; tag brachy-V09-06-01
+              Multithreading option introduced
+
+09.05.2013 -  S. Guatelli; tag brachy-V09-06-00
+              Modular Physics List introduced
+              Analysis class introduced using g4tools
+              GeneralParticleSource substitutes G4ParticleGun
+              Radioactive Decay introduced
+              Energy spectrum of gamma deriving from radioactive decay.
+              Now it is possible to switch among brachy sources with freedom.
+
+12.10.2012 -  L. Pandola; tag brachy-V09-05-01
+	      Added a CMakeLists.txt file
+
+11.10.2012 -  G. Cosmo; tag brachy-V09-05-00
+              Explicit inclusion of units and constants headers.
+
+16.09.2011 -  S. Guatelli; tag brachy-V09-04-01
+
+14.09.2011 -  S. Guatelli; G4 Analysis module substitutes the analysis
+              Done with PI-AIDA. macro.C added.
+
+02.09.2011 -  S. Guatelli; scoring mesh introduced.
+              Sensitive detector and ReadOutGeometry components deleted.
+
+29.11.2010 -  G.A.P. Cirrone; tag brachy-V09-03-05
+   	      Compilation warnigs removed.
+
+26.11.2010 -  G.A.P. Cirrone & S. Guatelli; tag brachy-V09-03-04
+   	      General code review.
+
+25.11.2010 -- J.Allison; tag brachy-V09-03-03
+              Cleaned up use of G4UIExecutive.
+
+24.11.2010 -- G.A.P.Cirrone; tag brachy-V09-03-02
+   	      Fixed compilation error for a missing obsolete include file
+
+03.06.2010 -- Joseph Perl; tag brachy-V09-03-01
+   	      Updated vis usage.
+
+01.06.2010 -- G.A.P. Cirrone; tag brachy-V09-03-00
+              G4UIExecutiveand minor revisions
+
+12.11.2009 -- L. Pandola; tag brachy-V09-02-02
+       	      Fixed AIDA
+
+12.11.2009 -- S. Guatelli; brachy-V09-02-01
+   	      Update of Physics List
+
+22.02 2009 -- G.Folger;  tag brachy-V09-02-00
+     	      Correct compilation  errors and warnings when G4ANALYSIS is NOT set
+
+24.11.2008 -- G.A.P.Cirrone; tag: brachy-V09-01-03
+              Updated macro files
+
+21.11.2008 -- G.A.P.Cirrone; Tag: brachy-V09-01-02
+              Corrected and updated macro files
+
+15.06.2008 -- G.A.P.Cirrone; Tag: brachy-V09-01-01
+              Removed no more necessary AIDA commands from GNUmakefile
+
+05th June 2008: G.A.P.Cirrone (cirrone@lns.infn.it). Tag version: brachy-V09-01-00
+- Compilation error corrected in the BrachyAnalysiManager
+- Bad type assignment in BrachyAnalysismanager
+- Activated the generation .root files for output
+
+15th November 2006 Susanna Guatelli (brachy-V08-01-01)
+- Physics list cleaned. The cut is fixed to a value lower than the
+  1 keV limit.
+
+14th November 2006  John Allison  (brachy-V08-01-00)
+- Removed /vis/scene/transientsAction none (no longer available).
+
+30th May 2006 Susanna Guatelli (brachy-V08-00-02)
+- Deleted a warning during compilation
+
+15th May 2006 Susanna Guatelli (brachy-V08-00-01)
+- Added comments, deleted a warning during compilation
+
+15th May 2006 Susanna Guatelli (brachy-V08-00-00)
+- Hit collection deleted. The energy deposit and position are stored directly
+  in histograms and ntuples in the BrachyPhantomSD
+- Iteration in the management of the primary particles
+- More comments explain the code
+- README updated
+
+22th November 2005 Susanna Guatelli (brachy-V07-01-00)
+- Deleted bug in the RunAction. The results of the simulation
+  (energy deposit, position) are stored in a hit collection.
+
+30th May 2005  Susanna Guatelli  (brachy-V07-00-01)
+- README updated; analysis with AIDA 3.2.1 and PI 1.3.3.
+
+3rd May 2005  John Allison  (examples-V07-00-03)
+- Replaced vis manager with G4VisExecutive.
+
+3.12.2004 -  Susanna Guatelli
+             Simulation seed changed
+
+24.11.2004 - Susanna Guatelli
+             Analysis management improved.
+
+13.5.2004 - Susanna Guatelli
+            Migration to AIDA 3.2.1 and PI 1.2.1
+
+11.3.2004  - Susanna Guatelli
+             Add a histogram, maintenance of the code
+
+12.11.2003 - John Allison
+             Updated Vis Manager.
+
+20.10.2003 - Vladimir Ivanchenko, tag brachy-V05-02-00
+             Migration to cut per region
+
+06.12.2002 - Gabriele Cosmo, tag brachy-V04-01-04
+             Migration to new G4ApplicationState.
+
+09.11.2000 - SA, tag brachy-V02-00-00
+             (dvnote) First submission of Brachytherapy advanced example.
+
+15.11.2000 - SA, tag brachy-V02-00-01
+             (minrev) Data fully compliant to Geant4 types.
+             (newfea) LowEnergy option available (see BRACHY_OPT_USELOWENERGY in BrachyPhysicsList.cc).
+
+10.12.2000 - Stephane Chauvie
+             (minrev) DOS -> Unix text conversion.
+             (newfea) Added Low Energy Electromagnetic physics. Removed switch to standard.
+

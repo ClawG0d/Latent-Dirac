@@ -1,0 +1,22 @@
+# Category partadjoint History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2021-12-10 Ben Morgan (partadjoint-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+-Dec 23 2016    Laurent Desorgher (partadjoint-V10-03-00)
+ -Add particle G4AdjointElectronFI, needed for reverse electron forced interaction.
+
+- Nov 20 2009     Laurent Desorgher (partadjoint-V09-02-00)
+- Add Geant4 disclaimer to  G4AdjointProton and Adjoint-light ions
+  Creation of History file for particles/adjoint.
+
+- Created.

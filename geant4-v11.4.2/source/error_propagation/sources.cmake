@@ -1,0 +1,65 @@
+# - G4error_propagation module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4error_propagation
+  PUBLIC_HEADERS
+    G4ErrorFreeTrajParam.hh
+    G4ErrorFreeTrajState.hh
+    G4ErrorGeomVolumeTarget.hh
+    G4ErrorMagFieldLimitProcess.hh
+    G4ErrorMatrix.hh
+    G4ErrorMatrix.icc
+    G4ErrorMessenger.hh
+    G4ErrorPhysicsList.hh
+    G4ErrorPropagator.hh
+    G4ErrorPropagatorManager.hh
+    G4ErrorRunManagerHelper.hh
+    G4ErrorStepLengthLimitProcess.hh
+    G4ErrorSurfaceTrajParam.hh
+    G4ErrorSurfaceTrajState.hh
+    G4ErrorSymMatrix.hh
+    G4ErrorSymMatrix.icc
+    G4ErrorTrackLengthTarget.hh
+    G4ErrorTrajErr.hh
+    G4ErrorTrajState.hh
+    G4VErrorLimitProcess.hh
+  SOURCES
+    G4ErrorFreeTrajParam.cc
+    G4ErrorFreeTrajState.cc
+    G4ErrorGeomVolumeTarget.cc
+    G4ErrorMagFieldLimitProcess.cc
+    G4ErrorMatrix.cc
+    G4ErrorMessenger.cc
+    G4ErrorPhysicsList.cc
+    G4ErrorPropagator.cc
+    G4ErrorPropagatorManager.cc
+    G4ErrorRunManagerHelper.cc
+    G4ErrorStepLengthLimitProcess.cc
+    G4ErrorSurfaceTrajParam.cc
+    G4ErrorSurfaceTrajState.cc
+    G4ErrorSymMatrix.cc
+    G4ErrorTrackLengthTarget.cc
+    G4ErrorTrajState.cc
+    G4VErrorLimitProcess.cc)
+
+geant4_module_link_libraries(G4error_propagation
+  PUBLIC
+    G4procman
+    G4leptons
+    G4bosons
+    G4track
+    G4tracking
+    G4run
+    G4geometrymng
+    G4materials
+    G4intercoms
+    G4hepgeometry
+    G4globman
+  PRIVATE
+    G4emstandard
+    G4transportation
+    G4muons
+    G4event
+    G4partman
+    G4navigation
+    G4magneticfield)

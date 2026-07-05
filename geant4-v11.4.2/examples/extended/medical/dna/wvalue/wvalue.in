@@ -1,0 +1,81 @@
+# MT mode
+/run/numberOfThreads 2
+#
+# Material
+/w/det/setMat G4_WATER
+#
+# Sphere radius
+/w/det/setRadius 1 m
+#
+# Tracking cut
+/w/det/setTrackingCut 9 eV
+#
+# Geant4-DNA physics constructor
+/w/phys/addPhysics dna_opt4
+#
+# Run initialization
+/run/initialize
+#
+# Incident particle type
+/gun/particle e-
+#
+# Incident particle energy and beam on
+/gun/energy 12 eV
+/run/beamOn 1000
+#
+/gun/energy 15 eV
+/run/beamOn 1000
+#
+/gun/energy 20 eV
+/run/beamOn 1000
+#
+/gun/energy 30 eV
+/run/beamOn 1000
+#
+/gun/energy 40 eV
+/run/beamOn 1000
+#
+/gun/energy 50 eV
+/run/beamOn 1000
+#
+/gun/energy 60 eV
+/run/beamOn 1000
+#
+/gun/energy 70 eV
+/run/beamOn 1000
+#
+/gun/energy 80 eV
+/run/beamOn 1000
+#
+/gun/energy 90 eV
+/run/beamOn 1000
+#
+/gun/energy 100 eV
+/run/beamOn 1000
+#
+/gun/energy 200 eV
+/run/beamOn 1000
+#
+/gun/energy 300 eV
+/run/beamOn 1000
+#
+/gun/energy 400 eV
+/run/beamOn 1000
+#
+/gun/energy 500 eV
+/run/beamOn 1000
+#
+/gun/energy 600 eV
+/run/beamOn 1000
+#
+/gun/energy 700 eV
+/run/beamOn 1000
+#
+/gun/energy 800 eV
+/run/beamOn 1000
+#
+/gun/energy 900 eV
+/run/beamOn 1000
+#
+/gun/energy 1 keV
+/run/beamOn 1000

@@ -1,0 +1,80 @@
+# Category phys-ctor-stopping History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2023-05-15 Alberto Ribon (phys-ctor-stopping-V11-01-00)
+- G4StoppingPhysicsWithINCLXX : new class, similar to G4StoppingPhysics,
+  with the only difference that the INCLXX model (instead of FTFP) is 
+  utilized for the antiproton annihilation at rest.
+
+## 2021-12-10 Ben Morgan (phys-ctor-stopping-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+16-April-2021 Ben Morgan             (phys-ctor-stopping-V10-07-01)
+- Migrate build to modular CMake API
+
+13-Apr-2021, Alberto Ribon              (phys-ctor-stopping-V10-07-00)
+-  GNUmakefile, sources.cmake : removed dependency on hadronic/model/util
+   and hadronic/model/management (that have been now deleted, with their
+   classes moved to hadronic/util and hadronic/management).
+
+30-Apr-2020, Ben Morgan                 (phys-ctor-stopping-V10-06-01)
+-  Remove obsolete GRANULAR_DEPENDENCIES entries
+
+21-Feb-2020, Vladimir Ivanchenko        (phys-ctor-stopping-V10-06-00)
+- cleanup of all constructors: fixed names; make all constructor
+  signatures universal, removed thread local members, added c++11
+  keywords
+
+22-Oct-2019, Alberto Ribon              (phys-ctor-stopping-V10-05-02)
+- REAMDE : updated.
+
+06-Aug-2019, Alberto Ribon              (phys-ctor-stopping-V10-05-01)
+- G4StoppingPhysicsFritiofWithBinaryCascade : new class to handle the
+  nuclear capture at rest of negatively charged particles. It is similar
+  to G4StoppingPhysics, with the only difference that Fritiof coupled with
+  Binary Cascade is used (instead of FTFP) for anti-proton and anti-neutron
+  annihilation at rest.
+
+22-May-2019, Alberto Ribon              (phys-ctor-stopping-V10-05-00)
+- Use FTFP also for the annihilation at rest of neutral anti-hadrons:
+  anti-neutron, anti-lambda, anti-sigma0 anti-xi0.
+  Note: this extension is for completeness and practical convenience,
+        although physically neutral hadrons should never be completely
+        at rest!
+
+03-Nov-2016, Alberto Ribon              (phys-ctor-stopping-V10-02-02)
+- Written first draft of the README
+
+16-October-2016, Michel Maire           (phys-ctor-stopping-V10-02-01)
+- add README
+
+11-Oct-2016, Gunter Folger              (phys-ctor-stopping-V10-02-00)
+- replace direct use of aParticleIterator by GetParticleIterator().
+
+05-Nov-2015, Alberto Ribon              (phys-ctor-stopping-V10-01-00)
+- Replaced neutron_hp/ with particle_hp/
+
+29-Jan-2014, Gunter Folger              (phys-ctor-stopping-V10-00-00)
+- Removed from photolepton_hadron/muon_nuclear from sources.cmake
+
+07-Nov-2013, Alberto Ribon 		(phys-ctor-stopping-V09-06-03)
+- Removed low_energy and high_energy from sources.cmake and GNUmakefile.
+
+08-Jun-2013, Andrea Dotti 		(phys-ctor-stopping-V09-06-02)
+- Bug fixing for MT: make wasActivated flag TLS and remove private
+  data member making them local variables in ConstructProcess
+
+29-Mar-2013, Andrea Dotti		(phys-ctor-stopping-V09-06-01)
+- Changes needed for MT: now G4VUserPhysicsList is a split class
+
+10-Jan-2013, Gunter Folger              (phys-ctor-stopping-V09-06-00)
+- new directory structure introduced.
+   constructors/stopping classes

@@ -1,0 +1,168 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_vmanip
+#define tools_vmanip
+
+#include "touplow"
+
+#include <vector>
+#include <string>
+
+namespace tools {
+
+//////////////////////////////////////////////////////////
+/// T* : /////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+
+template <class T>
+inline void safe_clear(std::vector<T*>& a_vec){
+  // the below takes into account the case in
+  // which "delete entry" could modify a_vec.
+  typedef typename std::vector<T*>::iterator it_t;
+  while(!a_vec.empty()) {
+    it_t it = a_vec.begin();
+    T* entry  = *it;
+    a_vec.erase(it);
+    delete entry;
+  }
+}
+
+template <class T>
+inline void safe_reverse_clear(std::vector<T*>& a_vec){ //used in sg/group.
+  // the below takes into account the case in
+  // which "delete entry" could modify a_vec.
+  typedef typename std::vector<T*>::iterator it_t;
+  while(!a_vec.empty()) {
+    it_t it = a_vec.end();
+    it--;
+    T* entry  = *it;
+    a_vec.erase(it);
+    delete entry;
+  }
+}
+
+template <class T>
+inline void raw_clear(std::vector<T*>& a_vec){
+  typedef typename std::vector<T*>::iterator it_t;
+  for(it_t it = a_vec.begin();it!=a_vec.end();++it) delete *it;
+  a_vec.clear();
+}
+
+template <class T>
+inline void append(std::vector<T>& a_vec,const std::vector<T>& a_from) {
+  typedef typename std::vector<T>::size_type sz_t;
+  sz_t number = a_from.size();
+  sz_t offset = a_vec.size();
+  a_vec.resize(offset+number);
+  for(sz_t index=0;index<number;index++,offset++) {
+    a_vec[offset] = a_from[index];
+  }
+}
+
+template <class T>
+inline void append(std::vector<T>& a_vec,typename std::vector<T>::size_type a_num,const T* a_from) {
+  typedef typename std::vector<T>::size_type sz_t;
+  sz_t vsize = a_vec.size();
+  a_vec.resize(vsize+a_num);
+  sz_t offset = vsize;
+  for(sz_t index=0;index<a_num;index++,offset++) {
+    a_vec[offset] = a_from[index];
+  }
+}
+
+template <class T>
+inline void removep(std::vector<T*>& a_vec,const T* a_elem) {
+  typedef typename std::vector<T*>::iterator it_t;
+  for(it_t it=a_vec.begin();it!=a_vec.end();) {
+    if(*it==a_elem) {
+      it = a_vec.erase(it);
+    } else {
+      ++it;
+    }
+  }
+}
+
+template <class T>
+inline bool is_inp(const std::vector<T*>& a_vec,const T* a_item){
+  typedef typename std::vector<T*>::const_iterator it_t;
+  for(it_t it=a_vec.begin();it!=a_vec.end();++it) {
+    if(*it==a_item) return true;
+  }
+  return false;
+}
+
+template <class T>
+inline T* find_named(const std::vector<T*>& a_vec,const std::string& a_name) {
+  typedef typename std::vector<T*>::const_iterator it_t;
+  it_t it;
+  for(it=a_vec.begin();it!=a_vec.end();++it) {
+    if((*it)->name()==a_name) return *it;
+  }
+  return 0;
+}
+
+template <class T>
+inline T* find_named_case_insensitive(const std::vector<T*>& a_vec,const std::string& a_name) {
+  std::string low_a_name = a_name;
+  tolowercase(low_a_name);
+  std::string low_name;
+  typedef typename std::vector<T*>::const_iterator it_t;
+  it_t it;
+  for(it=a_vec.begin();it!=a_vec.end();++it) {
+    low_name = (*it)->name();
+    tolowercase(low_name);
+    if(low_name==low_a_name) return *it;
+  }
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////
+/// T : ////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+template <class T>
+inline void vfilter(std::vector<T>& a_vals,bool(*a_filter_func)(const T& a_elem)){
+  std::vector<T> vs;
+  typedef typename std::vector<T>::iterator it_t;
+  for(it_t it=a_vals.begin();it!=a_vals.end();++it) {
+    if(a_filter_func(*it)) vs.push_back(*it);
+  }
+  a_vals = vs;
+}
+
+template <class T>
+inline bool minimum(const std::vector<T>& a_vec,T& a_value) {
+  if(a_vec.empty()) {a_value = T();return false;}
+  a_value = a_vec[0];
+  typedef typename std::vector<T>::const_iterator it_t;
+  for(it_t it = a_vec.begin();it!=a_vec.end();++it) {
+    a_value = (a_value<(*it)?a_value:(*it));
+  }
+  return true;
+}
+
+template <class T>
+inline bool maximum(const std::vector<T>& a_vec,T& a_value) {
+  if(a_vec.empty()) {a_value = T();return false;}
+  a_value = a_vec[0];
+  typedef typename std::vector<T>::const_iterator it_t;
+  for(it_t it = a_vec.begin();it!=a_vec.end();++it) {
+    a_value = (a_value>(*it)?a_value:(*it));
+  }
+  return true;
+}
+
+
+template <class FROM,class TO>
+inline void convert(const std::vector<FROM>& a_from,std::vector<TO>& a_to) {
+  typedef typename std::vector<FROM>::const_iterator const_it_t;
+  typedef typename std::vector<TO>::iterator it_t;
+  a_to.resize(a_from.size());
+  const_it_t ait = a_from.begin();
+  it_t toit = a_to.begin();
+  for(;ait!=a_from.end();++ait,++toit) {*toit = (TO)*ait;}
+}
+
+}
+
+#endif

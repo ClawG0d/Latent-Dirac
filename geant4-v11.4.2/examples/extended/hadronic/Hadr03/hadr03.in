@@ -1,0 +1,21 @@
+#
+# Macro file for "Hadr03.cc"
+#
+# proton 10 MeV; all processes
+#
+/control/verbose 2
+/control/cout/ignoreThreadsExcept 0
+/run/numberOfThreads 2
+/run/verbose 1
+#
+/testhadr/det/setMat Molybdenum98
+#
+/process/had/verbose 1
+#
+/run/initialize
+#
+/gun/particle proton
+/gun/energy 10 MeV
+#
+/run/printProgress 1000
+/run/beamOn 10000

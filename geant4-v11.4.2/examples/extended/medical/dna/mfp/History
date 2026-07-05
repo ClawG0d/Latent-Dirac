@@ -1,0 +1,55 @@
+# Example mfp History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-01-03 Sebastien Incerti (mfp-V11-03-00)
+- Added ntuple merging
+
+## 2024-10-05 Sebastien Incerti (mfp-V11-02-02)
+- Updated README
+- Added auto to plot.C
+
+## 2024-04-14 Sebastien Incerti (mfp-V11-02-01)
+- Cleaned mfp.cc
+
+## 2024-04-14 Sebastien Incerti (mfp-V11-02-00)
+- Cleaned example
+
+## 2021-12-10 Ben Morgan (mfp-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+06-10-2021 I. Hrivnacova - tag mfp-V10-07-01
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+19-07-21 I. Hrivnacova - tag mfp-V10-07-00
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+26-11-19 I. Hrivnacova - tag mfp-V10-05-00
+- Fixed Doxygen warnings
+
+04-11-18 S. Incerti - tag mfp-V10-04-03
+- rewrite of physics list and macro mfp.in to avoid factory usage
+
+22-07-18 S. Incerti - tag mfp-V10-04-02
+- removed obsolete RanecuEngine.
+
+09-05-18 B. Morgan - tag mfp-V10-04-01
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+26-02-18  R. Hatcher - tag mfp-V10-04-00
+- Use G4RegisterPhysicsConstructors.icc to ensure G4PhysicsConstructorRegisty
+  is filled when using static libraries
+
+15-06-17 SI - tag mfp-V10-03-00
+- created

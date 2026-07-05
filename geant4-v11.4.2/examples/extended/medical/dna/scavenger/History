@@ -1,0 +1,49 @@
+# Example scavenger History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-05-05 Hoang Tran (scavenger-V11-03-01)
+- Replaced the shared_ptr with unique_ptr and raw for manager counters.
+
+## 2025-04-22 Hoang Tran (scavenger-V11-03-00)
+- used new G4MoleculeCounterManager to manage the G4MoleculeCounter
+
+## 2024-10-03 Hoang Tran (scavenger-V11-02-00)
+- Modified the molecule names of OH, HO2, O in MoleculeDefinition.
+  Each molecule configuration has a molecule definition.
+
+## 2023-11-14 I. Hrivnacova (scavenger-V11-01-00)
+- Fixes for Doxygen:
+  Move class description comments after namespace
+
+## 2022-11-09  I. Hrivnacova (scavenger-V11-00-05)
+- Fixed Doxygen documentation
+
+## 2022-11-04  I. Hrivnacova (scavenger-V11-00-04)
+- Fixed Doxygen file descriptions:
+  when using namespaces the filenames must be provided with a path
+- Fixed .README.txt
+
+## 2022-09-08 Hoang Tran (scavenger-V11-00-03)
+- Fix ROOT macros for error running of ROOT in Windows
+
+## 2022-08-30 Vladimir Ivanchenko (scavenger-V11-00-02)
+- EmDNAChemistry - added forgotten header
+
+## 2022-05-02 Hoang Tran (scavenger-V11-00-01)
+- Add localthread for fUse of G4VMoleculeCounter
+
+## 2021-12-10 Ben Morgan (scavenger-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+08-11-2021: H. Tran  scavenger-V10-07-01
+- delete limit time step
+
+26 October 2021 - F. Chappuis, L. Desorgher, H. Tran - scavenger-V10-07-00
+- initial tag

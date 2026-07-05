@@ -1,0 +1,221 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_xml_tree
+#define tools_xml_tree
+
+#include "element"
+
+#include "../S_STRING"
+#include "../forit"
+
+#include <list>
+#include <ostream>
+
+namespace tools {
+namespace xml {
+
+//  A tree is :
+//    <tree atb1="" atb2="" ...>
+//      ...
+//      <tree...>
+//      </tree>
+//      ...
+//      <element atb1="" atb2="" ...> value </element>
+//      ...
+//    </tree>
+//
+//   tree.attribute_value(<name>,s)
+//     retrieve the value of atb <name> of a <tag>
+//   tree.attribute_value(<element>,<name>,s)
+//     retrieve the value of an atb <name> of a <element> of a <tree>
+//
+
+class tree;
+
+class factory {
+public:
+  virtual ~factory(){}
+public:
+  typedef std::pair<std::string,std::string> atb;
+public:
+  virtual tree* create(const std::string& a_tag_name,const std::vector<atb>& a_atbs,tree* a_parent) = 0;
+};
+
+class tree : public virtual ielem {
+public:
+  TOOLS_SCLASS(tools::xml::tree)
+public:
+  static cid id_class() {return 1;}
+  virtual void* cast(cid a_class) const {
+    if(void* p = cmp_cast<tree>(this,a_class)) {return p;}
+    else return 0;
+  }
+public:
+  typedef std::pair<std::string,std::string> atb;
+public:
+  tree(const std::string& a_tag_name,factory& a_factory,tree* a_parent)
+  :m_tag_name(a_tag_name)
+  ,m_factory(a_factory)
+  ,m_parent(a_parent)
+  ,m_depth(0)
+  {
+  }
+
+  virtual ~tree(){
+    clear();
+  }
+
+protected:
+  tree(const tree& a_from)
+  :ielem(a_from)
+  ,m_tag_name(a_from.m_tag_name)
+  ,m_factory(a_from.m_factory)
+  ,m_parent(0)
+  ,m_depth(0)
+  {
+  }
+
+  tree& operator=(const tree&){return *this;}
+
+public:
+  const std::list<ielem*>& childs() const {return m_childs;}
+
+  ///////////////////////////////////////////////////////
+  /// attributes ////////////////////////////////////////
+  ///////////////////////////////////////////////////////
+  void set_attributes(const std::vector<atb>& a_atbs) {
+    m_atbs = a_atbs;
+  }
+  const std::string& tag_name() const {return m_tag_name;}
+
+  bool attribute_value(const std::string& a_atb,std::string& a_value) const {
+    a_value.clear();
+    size_t linen = m_atbs.size();
+    for(size_t count=0;count<linen;count++) {
+      if(m_atbs[count].first==a_atb) {
+        a_value = m_atbs[count].second;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  template <class T>
+  bool attribute_value(const std::string& a_atb,T& a_value) const {
+    std::string sv;
+    if(!attribute_value(a_atb,sv)) {a_value=T();return false;}
+    return to<T>(sv,a_value);
+  }
+
+  ///////////////////////////////////////////////////////
+  /// elements //////////////////////////////////////////
+  ///////////////////////////////////////////////////////
+  void add_element(const std::string& a_name,const std::vector<atb>& a_atbs,const std::string& a_value){
+    m_childs.push_back(new element(a_name,a_atbs,a_value));
+  }
+
+  void add_child(tree* a_tree) {m_childs.push_back(a_tree);}
+
+  ///////////////////////////////////////////////////////
+  /// sub trees /////////////////////////////////////////
+  ///////////////////////////////////////////////////////
+
+  tree* parent() const {return m_parent;}
+
+  unsigned int number_of_trees() const {
+    unsigned int number = 0;
+    tools_lforcit(ielem*,m_childs,it) {
+      if(id_cast<ielem,tree>(*(*it))) number++;
+    }
+    return number;
+  }
+
+  void remove_child(tree*& a_tree,bool a_delete = true){
+    m_childs.remove(a_tree);
+    if(a_delete) {
+      delete a_tree;
+      a_tree = 0;
+    }
+  }
+  void set_depth(unsigned int a_depth) {m_depth = a_depth;}
+  unsigned int depth() const {return m_depth;}
+  void set_file(const std::string& a_file) {m_file = a_file;}
+  const std::string& file() const {return m_file;}
+
+protected:
+  void clear(){
+    m_atbs.clear();
+    while(!m_childs.empty()) {
+      ielem* item = m_childs.front();
+      m_childs.remove(item);
+      delete item;
+    }
+  }
+
+protected:
+  std::string m_tag_name;
+  factory& m_factory;
+  tree* m_parent;
+  std::list<ielem*> m_childs;
+  std::vector<atb> m_atbs;
+  std::string m_file;
+  int m_depth;
+};
+
+class looper {
+public:
+  looper(const tree& a_tree)
+  :m_it(a_tree.childs().begin())
+  ,m_end(a_tree.childs().end())
+  {}
+  virtual ~looper(){}
+protected:
+  looper(const looper& a_from)
+  :m_it(a_from.m_it)
+  ,m_end(a_from.m_end)
+  {}
+  looper& operator=(const looper&){return *this;}
+public:
+  tree* next_tree() {
+    for(;m_it!=m_end;++m_it) {
+      tree* _tree = id_cast<ielem,tree>(*(*m_it));
+      if(_tree) {m_it++;return _tree;}
+    }
+    return 0;
+  }
+  element* next_element() {
+    for(;m_it!=m_end;++m_it) {
+      element* _elem = id_cast<ielem,element>(*(*m_it));
+      if(_elem) {m_it++;return _elem;}
+    }
+    return 0;
+  }
+protected:
+  std::list<ielem*>::const_iterator m_it;
+  std::list<ielem*>::const_iterator m_end;
+};
+
+class default_factory : public virtual factory {
+public:
+  virtual tree* create(const std::string& a_tag_name,const std::vector<tree::atb>& a_atbs,tree* a_parent) {
+    // It does not add the new tree in parent.
+    tree* itemML = new tree(a_tag_name,*this,a_parent);
+    itemML->set_attributes(a_atbs);
+    return itemML;
+  }
+public:
+  default_factory(){
+  }
+  virtual ~default_factory(){
+  }
+public:
+  default_factory(const default_factory& a_from)
+  :factory(a_from){
+  }
+  default_factory& operator=(const default_factory&){return *this;}
+};
+
+}}
+
+#endif

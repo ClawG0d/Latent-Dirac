@@ -1,0 +1,47 @@
+# Example movies History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2023-11-15 I. Hrivnacova (exam-ext-vis-movies-V11-01-02)
+- Updated vis.mac macros:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2023-11-07 I. Hrivnacova (exam-ext-vis-movies-V11-01-01)
+- Fixed formatting in .README.txt
+
+## 2023-10-20 John Allison (exam-ext-vis-movies-V11-01-00)
+- vis.mac: Remove defunct command /vis/ogl/set/displayListLimit.
+  - This command no longer operates. There is now no display list limit.
+    (The only limit is available memory.)
+  - The command is deprecated and, anyway, causes a crash if the app is built
+    without an OpenGL driver.
+
+## 2022-11-04  I. Hrivnacova (exam-ext-vis-movies-V11-00-01)
+- Fixed Doxygen file descriptions (mostly missing)
+- Fixed formatting in .README.txt
+
+## 2021-12-10 Ben Morgan (exam-ext-vis-movies-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+14th July 2021  J. Allison  (exam-ext-vis-movies-V10-07-03)
+- Replace /vis/ogl/printEPS with /vis/ogl/export in relevant macros.
+
+22nd May 2021  J. Allison  (exam-ext-vis-movies-V10-07-02)
+- Minor improvements to README files.
+
+28th February 2021  J. Allison  (exam-ext-vis-movies-V10-07-01)
+- gui.mac: Remove obsolete buttons.
+
+15th February 2021  J. Allison  (exam-ext-vis-movies-V10-07-00)
+- This example illustrates how to make a movie with /vis/viewer/save
+  and /vis/viewer/interpolate. It also includes the "visTutor" macros
+  from the old "novice" example, N03, subsequently moved to "basic" B4.
+  See README for further information.

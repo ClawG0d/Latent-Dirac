@@ -1,0 +1,105 @@
+# Example B01 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2021-12-10 Ben Morgan (B01-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+November 10th, 2020 Ben Morgan - B01-V10-06-00
+- Migration to G4RunManagerFactory.
+
+May 8th, 2018 B. Morgan - B01-V10-04-00
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+Mar 7th, 2017 A. Howard - B01-V10-03-00
+- Removed unnecessary clear sampling from B01
+
+Jul 20th, 2016 I. Hrivnacova
+- Coding guidelines (redundant empty lines)
+
+Nov 22nd, 2013 A. Howard - B01-V09-06-12
+- Removed non-english variable names
+
+Nov 22nd, 2013 A. Howard - B01-V09-06-11
+- changed main() to standard number of threads
+- co-working with
+  	     	  geombias-V09-06-05
+  	     	  phys-ctor-limiters-V09-06-012
+  	     	  procbiasing-V09-06-09
+
+Nov 22nd, 2013 A. Howard - B01-V09-06-10
+- updated History file for the co-working tags
+- co-working with
+  	     	  geombias-V09-06-05
+  	     	  phys-ctor-limiters-V09-06-012
+  	     	  procbiasing-V09-06-09
+
+Nov 22nd, 2013 A. Howard - B01-V09-06-09
+- updated History file for the co-working tags
+- co-working with
+  	     	  geombias-V09-06-05
+  	     	  phys-ctor-limiters-V09-06-012
+  	     	  procbiasing-V09-06-09
+
+Nov 22nd, 2013 A. Howard - B01-V09-06-08
+- fixed erroneous pointer reference and cleaned code a little
+- co-working with
+  	     	  geombias-V09-06-05
+  	     	  phys-ctor-limiters-V09-06-012
+  	     	  procbiasing-V09-06-09
+
+Nov 22nd, 2013 A. Howard - B01-V09-06-07
+- migrated to MT (new modular physicslist based implementation)
+- co-working with
+  	     	  geombias-V09-06-05
+  	     	  phys-ctor-limiters-V09-06-012
+  	     	  procbiasing-V09-06-09
+
+Aug 5th, 2013 A. Howard - B01-V09-06-06
+- removed fFieldName in B01RunAction as it's redundant
+
+July 24th, 2013 P. Gumplinger - B01-V09-06-05
+- actually use private field fFieldName in B01RunAction.cc
+
+22 July 2013   Dennis Wright  B01-V09-06-04
+- replaced B01PhysicsList with FTFP_BERT as part of LHEP removal
+
+May 27th, 2013 I.hrivnacova - B01-V09-06-03
+- Applied coding guidelines (virtual keyword, base class initialization)
+
+May 22nd, 2013 A.Howard - B01-V09-06-02
+- Applied coding guidelines for extended examples more correctly
+
+May 22nd, 2013 A.Howard - B01-V09-06-01
+- Applied coding guidelines for extended examples
+
+Dec 17th, 2012 A.Howard - B01-V09-06-00
+- Removed reference to obsolete G4CellScorer classes
+
+Nov 28th, 2012 G.Cosmo - B01-V09-05-01
+- Fixed cases of variable shadowing.
+
+Oct 13th, 2012 A. Dotti - B01-V09-05-00
+- Adding Explicit use of system of units
+
+Nov 14th, 2011 A.Howard - B01-V09-04-00
+- migrated B01DetectorConstruction.cc to new G4Exception
+
+Mar 25th, 2010 G.Cosmo - B01-V09-03-00
+- Migrated physics list to use particle-based multiple-scattering processes.
+
+June 22nd, 2007 A.Howard - B01-V08-03-01
+- Removed B01PSScoringDetectorConstruction as part of clean-up.
+
+June 22nd, 2007 A.Howard - B01-V08-03-00
+- Cleaned up code ready for release
+- kept B01PSScoringDetectorConstruction - could be removed?

@@ -1,0 +1,394 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+
+// Author: Ivana Hrivnacova, 23/06/2015  (ivana@ipno.in2p3.fr)
+
+#include "G4AnalysisManagerState.hh"
+#include "G4HnManager.hh"
+#include "G4AnalysisUtilities.hh"
+#include "G4AutoLock.hh"
+
+#include <iomanip>
+
+using std::to_string;
+
+//_____________________________________________________________________________
+template <typename HT>
+G4THnManager<HT>::G4THnManager(const G4AnalysisManagerState& state)
+  : fState(state)
+{
+  fHnManager = std::make_shared<G4HnManager>(G4Analysis::GetHnType<HT>(), state);
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+G4THnManager<HT>::~G4THnManager()
+{
+  for ( auto t : fTVector ) {
+    delete t;
+  }
+}
+
+//
+// protected methods
+//
+
+//_____________________________________________________________________________
+template <typename HT>
+std::pair<HT*, G4HnInformation*>  G4THnManager<HT>::GetTHnInFunction(
+  G4int id, std::string_view functionName, G4bool warn, G4bool onlyIfActive) const
+{
+  G4int index = id - fHnManager->GetFirstId();
+  if ( index < 0 || index >= G4int(fTHnVector.size()) ) {
+    if ( warn) {
+      G4Analysis::Warn("Histogram " + to_string(id) + " does not exist.",
+        fkClass, functionName);
+    }
+    return {nullptr, nullptr};
+  }
+
+  // Do not return histogram if inactive
+  if ( fState.GetIsActivation() && onlyIfActive && ( ! fHnManager->GetActivation(id) ) ) {
+    return {nullptr, nullptr};
+  }
+
+  return fTHnVector[index];
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+HT* G4THnManager<HT>::GetTInFunction(
+  G4int id, std::string_view functionName, G4bool warn, G4bool onlyIfActive) const
+{
+  return GetTHnInFunction(id, functionName, warn, onlyIfActive).first;
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+G4int  G4THnManager<HT>::GetTId(const G4String& name, G4bool warn) const
+{
+  auto it = fNameIdMap.find(name);
+  if ( it ==  fNameIdMap.end() ) {
+    if ( warn) {
+      G4Analysis::Warn("histogram " + name + " does not exist.",
+        fkClass, "GetTId");
+    }
+    return G4Analysis::kInvalidId;
+  }
+  return it->second;
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+G4bool  G4THnManager<HT>::IsVerbose(G4int verboseLevel) const
+{
+  return fState.IsVerbose(verboseLevel);
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+void G4THnManager<HT>::Message(
+  G4int level, const G4String& action, const G4String& objectType,
+  const G4String& objectName, G4bool success) const
+{
+  fState.Message(level, action, objectType, objectName, success);
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+void G4THnManager<HT>::AddTVector(const std::vector<HT*>& tVector)
+{
+  Message(G4Analysis::kVL4, "merge", "all " + fHnManager->GetHnType());
+
+  // std::vector<tools::histo::h1d*>::const_iterator itw = h1Vector.begin();
+  // std::vector<tools::histo::h1d*>::iterator it;
+  // for (it = fH1Vector.begin(); it != fH1Vector.end(); it++ ) {
+  //   (*it)->add(*(*itw++));
+  // }
+  auto itw = tVector.begin();
+  for ( auto t : fTVector ) {
+    // skip deleted histograms
+    if (t == nullptr) {
+      itw++;
+      continue;
+    }
+    t->add(*(*itw));
+    (*itw++)->reset();
+  }
+
+  Message(G4Analysis::kVL2, "merge", "all " + fHnManager->GetHnType());
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+void  G4THnManager<HT>::Merge(
+  G4Mutex& mergeMutex, G4THnManager<HT>* masterInstance)
+{
+  G4AutoLock lH1(&mergeMutex);
+  masterInstance->AddTVector(fTVector);
+  lH1.unlock();
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+typename std::vector<HT*>::iterator G4THnManager<HT>::BeginT()
+{
+  return fTVector.begin();
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+typename std::vector<HT*>::iterator G4THnManager<HT>::EndT()
+{
+  return fTVector.end();
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+typename std::vector<HT*>::const_iterator G4THnManager<HT>::BeginConstT() const
+{
+  return fTVector.begin();
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+typename std::vector<HT*>::const_iterator G4THnManager<HT>::EndConstT() const
+{
+  return fTVector.end();
+}
+
+//
+// public methods
+//
+
+//_____________________________________________________________________________
+template <typename HT>
+G4int G4THnManager<HT>::RegisterT(const G4String& name, HT* ht, G4HnInformation* info)
+{
+  G4int index = 0;
+  if (fFreeIds.empty()) {
+    index = (G4int)fTVector.size();
+    fTVector.push_back(ht);
+    fTHnVector.push_back({ht, info});
+    fHnManager->AddHnInformation(info);
+  }
+  else {
+    // Get the first freed Id
+    index = *(fFreeIds.begin()) - fHnManager->GetFirstId();
+
+    // Update vectors at the first freed Id position
+    fTVector[index] = ht;
+
+    // Register new information at the freed Id position
+    fHnManager->AddHnInformation(info, index);
+
+    // Register new histo & inforrmation at the freed Id position
+    fTHnVector[index] = {ht, info};
+
+    // Remove the id from the set
+    fFreeIds.erase(fFreeIds.begin());
+  }
+
+  fHnManager->SetLockFirstId(true);
+  fNameIdMap[name] = index + fHnManager->GetFirstId();
+  return index + fHnManager->GetFirstId();
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+G4bool G4THnManager<HT>::Reset()
+{
+// Reset histograms
+
+  auto result = true;
+
+  for ( auto t : fTVector ) {
+    // skip deleted histograms
+    if ( t == nullptr) continue;
+    result &= t->reset();
+  }
+
+  return result;
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+void
+G4THnManager<HT>::ClearData()
+{
+  for ( auto t : fTVector ) {
+    delete t;
+  }
+
+  fTVector.clear();
+  fTHnVector.clear();
+  fNameIdMap.clear();
+
+  if ( fHnManager != nullptr ) {
+    fHnManager->ClearData();
+  }
+
+  Message(G4Analysis::kVL2, "clear", G4Analysis::GetHnType<HT>());
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+G4bool
+G4THnManager<HT>::DeleteT(G4int id, G4bool keepSetting)
+{
+  auto [ht, info] = GetTHnInFunction(id, "Delete", true, false);
+
+  if (ht == nullptr) return false;
+
+  // Delete histogram and update vectors
+  delete ht;
+  auto index = id - fHnManager->GetFirstId();
+  fTVector[index] = nullptr;
+  fTHnVector[index] = std::make_pair(nullptr, info);
+
+  // Update information
+  fHnManager->SetHnDeleted(info, keepSetting);
+
+  // Register freed Id
+  fFreeIds.insert(id);
+
+  return true;
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+G4bool G4THnManager<HT>::IsEmpty() const
+{
+  return ! fTVector.size();
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+HT* G4THnManager<HT>::GetT(G4int id, G4bool warn, G4bool onlyIfActive) const
+{
+  return GetTInFunction(id, "GetT", warn, onlyIfActive);
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+std::vector<HT*>* G4THnManager<HT>::GetTVector()
+{
+  return &fTVector;
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+const std::vector<HT*>& G4THnManager<HT>::GetTVectorRef() const
+{
+  return fTVector;
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+std::vector<std::pair<HT*, G4HnInformation*>>* G4THnManager<HT>::GetTHnVector()
+{
+  return &fTHnVector;
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+const std::vector<std::pair<HT*, G4HnInformation*>>& G4THnManager<HT>::GetTHnVectorRef() const
+{
+  return fTHnVector;
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+G4int G4THnManager<HT>::GetNofHns(G4bool onlyIfExist) const
+{
+
+  return (onlyIfExist) ? G4int(fTVector.size() - fFreeIds.size())
+                       : G4int(fTVector.size());
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+G4bool G4THnManager<HT>::List(std::ostream& output, G4bool onlyIfActive) const
+{
+  // Save current output stream formatting
+  std::ios_base::fmtflags outputFlags(output.flags() );
+
+  // List general info
+  output << fHnManager->GetHnType() << ": " << fHnManager->GetNofActiveHns() << " active ";
+  if (! onlyIfActive) {
+     output << " of " << GetNofHns(true) << " defined ";
+  }
+  output << G4endl;
+
+  // Define optimal field widths
+  size_t maxNameLength = 0;
+  size_t maxTitleLength = 0;
+  size_t maxEntries = 0;
+  for ( const auto& [ht, hnInfo] : fTHnVector) {
+    // skip deleletd objects
+    if (ht == nullptr) continue;
+    if (hnInfo->GetName().length() > maxNameLength) {
+      maxNameLength = hnInfo->GetName().length();
+    }
+    if (ht->title().length() > maxTitleLength) {
+      maxTitleLength = ht->title().length();
+    }
+    if (ht->entries() > maxEntries) {
+      maxEntries = ht->entries();
+    }
+  }
+  size_t maxIdWidth = std::to_string(fTVector.size() + fHnManager->GetFirstId()).length();
+  size_t maxEntriesWidth = std::to_string(maxEntries).length();
+  // update string width for adde double quotas
+  maxNameLength += 2;
+  maxTitleLength += 2;
+
+  // List objects
+  auto id = fHnManager->GetFirstId();
+  for (const auto& [ht, hnInfo] : fTHnVector) {
+    // skip deleted or inactivated objects
+    if ( (fState.GetIsActivation() && onlyIfActive && (! hnInfo->GetActivation())) ||
+         (hnInfo->GetDeleted()) ) {
+      id++;
+      continue;
+    }
+
+    // print selected info
+    output << "   id: " << std::setw((G4int)maxIdWidth) << id++
+      << " name: \"" << std::setw((G4int)maxNameLength) << std::left << hnInfo->GetName() + "\""
+      << " title: \"" << std::setw((G4int)maxTitleLength) << std::left << ht->title() + "\""
+      << " entries: " << std::setw((G4int)maxEntriesWidth) << ht->entries();
+    if (! onlyIfActive) {
+      output << " active: " << std::boolalpha << hnInfo->GetActivation();
+    }
+    output  << G4endl;
+  }
+
+  // Restore the output stream formatting
+  output.flags(outputFlags);
+
+  return output.good();
+}

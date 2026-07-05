@@ -1,0 +1,76 @@
+# Example ucn History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2022-11-16 John Apostolakis (ExUCN-V11-00-02)
+- DetectorConstruction: Corrected epsMax=0.001 .  Also epsMin is dimensionless!
+
+## 2022-11-04  I. Hrivnacova (ExUCN-V11-00-01)
+- Fixed Doxygen file descriptions
+
+## 2021-12-10 Ben Morgan (ExUCN-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+Nov 10, 2020 B. Morgan (ExUCN-V10-06-00)
+- Migration to G4RunManagerFactory.
+
+Nov  5, 2019 J.Apostolakis  (ExUCN-V10-05-00)
+- Enabled use of Gravity in physics list
+   ( setting flags in G4Transportation. )
+- Small fixes in README and .README.txt
+
+May 17, 2018 J.Allison (ExUCN-V10-04-00)
+- Add #include "G4Types.hh"
+- Remove G4UI_USE and G4VIS_USE.
+- Move instantiation of G4UIExecutive to start of main.
+
+September 12, 2017  Soon Yung Jun  (ExUCN-V10-03-01)
+- ExUCNDetectorConstruction: commented out a wrong use of AddConstProperty
+
+February 14th, 2016  Gunter Folger  (ExUCN-V10-03-00)
+- ExUCN.in: reduce verbosity.
+
+November 2, 2016 L.Garnier (ExUCN-V10-02-02)
+- remove icons.mac. Automatically include since interfaces-V10-02-07
+
+October 14, 2016 G.Folger   (ExUCN-V10-02-01)
+- remove direct use of aParticleIterator, use GetParticleTableIterator().
+    fix required by clang39 on Linux and MAC
+
+July 08, 2016 P. Gumplinger (ExUCN-V10-02-00)
+- update output with additional verbose and after
+  bug fix #1750 in G4Navigator::GetGlobalExitNormal
+
+June 26, 2015 P. Gumplinger (ExUCN-V10-01-03)
+- add NumberOfVariables in G4RepleteEofM constructor
+
+June 10, 2015 P. Gumplinger (ExUCN-V10-01-02)
+- remove AddBetaDecay method
+
+April 30, 2015 P. Gumplinger (ExUCN-V10-01-01)
+- use the correct way to access G4Transportation::EnableUseMagneticMoment()
+
+January 23, 2015 I. Hrivnacova (ExUCN-V10-01-00)
+- fixed files description for Doxygen
+
+September 16, 2014 I. Hrivnacova (ExUCN-V10-00-04)
+- improved formatting in .README
+
+June 26, 2014 P. Gumplinger (ExUCN-V10-00-03)
+- add missing .README file
+
+June 16, 2014 P. Gumplinger (ExUCN-V10-00-02)
+- retag to work with materials-V10-00-17
+
+June 13, 2014 P. Gumplinger (ExUCN-V10-00-01)
+- Remove G4PhysicsListHelper->GetTransportation in ExUCNExtraPhysics.cc
+- Remove run.png from CMakeLists.txt
+
+June 6, 2014 P. Gumplinger (ExUCN-V10-00-00)
+- First import

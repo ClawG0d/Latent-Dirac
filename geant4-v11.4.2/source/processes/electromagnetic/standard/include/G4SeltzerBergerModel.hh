@@ -1,0 +1,170 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//
+// -------------------------------------------------------------------
+//
+// GEANT4 Class header file
+//
+//
+// File name:     G4SeltzerBergerModel
+//
+// Author:        Andreas Schaelicke & Vladimir Ivantchenko
+//
+// Creation date: 04.10.2011
+//
+// Modifications:
+//
+// 24.07.2018 Introduced possibility to use sampling tables to sample the
+//            emitted photon energy (instead of using rejectio) from the 
+//            Seltzer-Berger scalled DCS for bremsstrahlung photon emission. 
+//            Using these sampling tables option gives faster(30-70%) final 
+//            state generation than the original rejection but takes some 
+//            extra memory (+ ~6MB in the case of the full CMS detector). 
+//            (M Novak)
+//
+// Class Description:
+//
+// Implementation of the bremssrahlung energy spectrum using
+// 1. S.M. Seltzer and M.J. Berger Nucl. Instr. Meth. B12 (1985) 95
+// 2. S.M. Seltzer and M.J. Berger Atomic data and Nuclear Data
+//    Tables 35 (1986) 345
+
+// -------------------------------------------------------------------
+//
+
+#ifndef G4SeltzerBergerModel_h
+#define G4SeltzerBergerModel_h 1
+
+#include "G4VEmModel.hh"
+#include "G4eBremsstrahlungRelModel.hh"
+#include "globals.hh"
+
+class G4Physics2DVector;
+class G4SBBremTable;
+class G4ParticleChangeForLoss;
+
+class G4SeltzerBergerModel : public G4VEmModel
+{
+
+public:
+
+  explicit G4SeltzerBergerModel(const G4ParticleDefinition* p = nullptr,
+                                const G4String& nam = "eBremSB");
+
+  ~G4SeltzerBergerModel() override;
+
+  void Initialise(const G4ParticleDefinition*, const G4DataVector&) override;
+
+  void InitialiseLocal(const G4ParticleDefinition*,
+                       G4VEmModel* masterModel) override;
+
+  G4double ComputeDEDXPerVolume(const G4Material*,
+                                const G4ParticleDefinition*,
+                                G4double ekin,
+                                G4double cutEnergy) override;
+
+  G4double ComputeCrossSectionPerAtom(const G4ParticleDefinition*,
+                                      G4double ekin,
+                                      G4double zet,
+                                      G4double,
+                                      G4double cutEnergy,
+                                      G4double maxEnergy = DBL_MAX) override;
+
+  void SampleSecondaries(std::vector<G4DynamicParticle*>*,
+                         const G4MaterialCutsCouple*,
+                         const G4DynamicParticle*,
+			 G4double cutEnergy,
+                         G4double maxEnergy) override;
+
+  void SetupForMaterial(const G4ParticleDefinition*,
+                        const G4Material*, G4double) override;
+
+  G4double MinPrimaryEnergy(const G4Material*,
+                            const G4ParticleDefinition*,
+                            G4double cutEnergy) override;
+
+  inline void SetBicubicInterpolationFlag(G4bool val) 
+  { fIsUseBicubicInterpolation = val; };
+
+  // hide assignment operator and cctr
+  G4SeltzerBergerModel & operator=(const G4SeltzerBergerModel &right) = delete;
+  G4SeltzerBergerModel(const G4SeltzerBergerModel&) = delete;
+
+private:
+
+  void SetParticle(const G4ParticleDefinition* p);
+
+  void ReadData(G4int Z);
+
+  G4double ComputeBremLoss(G4double cutEnergy);
+
+  G4double ComputeXSectionPerAtom(G4double cutEnergy);
+
+  G4double ComputeDXSectionPerAtom(G4double gammaEnergy);
+
+  G4double SampleEnergyTransfer(const G4double kineticEnergy, 
+                                const G4double logKineticEnergy, 
+                                const G4double cut,
+                                const G4double emax);
+
+protected:
+
+  G4ParticleChangeForLoss* fParticleChange{nullptr};
+
+private:
+
+  static constexpr G4int gMaxZet{101};
+  static constexpr G4double gExpNumLimit{-12.};
+  static G4double gYLimitData[gMaxZet];
+  static G4Physics2DVector* gSBDCSData[gMaxZet];
+  static G4SBBremTable* gSBSamplingTable;
+  static const G4double gBremFactor;
+  static const G4double gMigdalConstant;
+
+  G4bool fIsUseBicubicInterpolation{false};
+  G4bool fIsUseSamplingTables{true};
+  G4bool fIsElectron{true};
+  G4bool fIsScatOffElectron{false};
+  G4bool isInitializer{false};
+  //
+  G4int fCurrentIZ{0};
+  G4int fNumWarnings{0};
+
+  const G4ParticleDefinition* fPrimaryParticle{nullptr};
+  G4ParticleDefinition* fGammaParticle;
+
+  // cash
+  G4double fPrimaryKinEnergy{0.};
+  G4double fPrimaryTotalEnergy{0.};
+  G4double fDensityFactor{0.};
+  G4double fDensityCorr{0.};
+  G4double fLowestKinEnergy;
+
+  std::size_t fIndx{0};
+  std::size_t fIndy{0};
+};
+
+#endif

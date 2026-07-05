@@ -1,0 +1,343 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_xml_styles
+#define tools_xml_styles
+
+#include "../sg/style_colormap"
+#include "../sout"
+#include "../forit"
+
+#include <utility>
+#include <vector>
+
+namespace tools {
+namespace xml {
+
+class styles {
+public:
+  styles(std::ostream& a_out):m_out(a_out){}
+  virtual ~styles(){}
+public:
+  styles(const styles& a_from)
+  :m_out(a_from.m_out)
+  ,m_named_styles(a_from.m_named_styles)
+  ,m_aliases(a_from.m_aliases)
+  ,m_cmaps(a_from.m_cmaps)
+  {}
+  styles& operator=(const styles& a_from){
+    m_named_styles = a_from.m_named_styles;
+    m_aliases = a_from.m_aliases;
+    m_cmaps = a_from.m_cmaps;
+    return *this;
+  }
+public:
+  std::ostream& out() const {return m_out;}
+
+  const sg::cmaps_t& cmaps() const {return m_cmaps;}
+  sg::cmaps_t& cmaps() {return m_cmaps;}
+
+  typedef std::pair<std::string,std::string> style_item_t;
+  typedef std::vector<style_item_t> style_t;
+  typedef std::pair<std::string,style_t> named_style_t;
+
+  const std::vector<named_style_t>& named_styles() const {return m_named_styles;}
+  std::vector<named_style_t>& named_styles() {return m_named_styles;}
+
+  typedef std::pair<std::string,std::string> alias_t;
+  const std::vector<alias_t>& aliases() const {return m_aliases;}
+  std::vector<alias_t>& aliases() {return m_aliases;}
+
+  const style_t* find_style(const std::string& a_name) const {
+    tools_vforcit(named_style_t,m_named_styles,it){
+      if((*it).first==a_name) return &((*it).second);
+    }
+    return 0;
+  }
+
+  void add_style(const std::string& a_name,const style_t& a_style) {
+    tools_vforit(named_style_t,m_named_styles,it){
+      if((*it).first==a_name) { //override
+        (*it).second = a_style;
+        return;
+      }
+    }
+    m_named_styles.push_back(named_style_t(a_name,a_style));
+  }
+
+  void append(const styles& a_from) {
+    tools_vforcit(named_style_t,a_from.m_named_styles,it) {
+      m_named_styles.push_back(*it);
+    }
+  }
+
+  // for plotter :
+  template <class T> //T = [style,text_style,line_style]
+  bool res_sg_style(const std::string& a_style,T& a_sg_style) const {
+    //NOTE : a_sg_style is changed according to what is found.
+    //       Then it is not fully reset by this method.
+    const style_t* sty = find_style(a_style);
+    if(!sty) {
+      //could be ok to not find a plotter sub style.
+      return false;
+    }
+
+    std::string _s;
+    tools_vforcit(style_item_t,*sty,vit) {
+      if(vit!=(*sty).begin()) _s += "\n";
+      _s += (*vit).first;
+      _s += " ";
+      _s += (*vit).second;
+    }
+    return a_sg_style.from_string(m_out,m_cmaps,_s);
+  }
+
+  typedef sg::style_colormap cmap_t;
+
+  void add_colormap(const std::string& a_name,const cmap_t& a_cmap) {
+    m_cmaps[a_name] = a_cmap;
+  }
+
+protected:
+  std::ostream& m_out;
+  //styles :
+  std::vector<named_style_t> m_named_styles;
+  std::vector<alias_t> m_aliases;
+  //cmaps :
+  sg::cmaps_t m_cmaps;
+};
+
+}}
+
+#include "tree"
+#include "../vmanip"
+
+namespace tools {
+namespace xml {
+
+template <class K,class V>
+inline void add_alias(std::vector< std::pair<K,V> >& a_vec,const K& a_key,const V& a_value) {
+  for(auto it = a_vec.begin(); it != a_vec.end(); ++it) {
+    if((*it).first==a_key) {
+      (*it).second = a_value; //override.
+      return;
+    }
+  }
+  //not found, add a new pair:
+  a_vec.emplace_back(a_key, a_value);
+}
+
+inline bool is_plotter_style(const styles::style_t& a_sty) {
+  tools_vforcit(style_item_t,a_sty,it) {
+    const std::string& key = (*it).first;
+    const std::string& sv = (*it).second;
+    if((key=="tag")&&(sv=="plotter_style")) return true;
+  }
+  return false;
+}
+
+inline void load_style(styles& a_styles,const tree& a_tree) {
+  std::string name;
+  a_tree.attribute_value("name",name);
+  if(name.empty()) {
+    a_styles.out() << "tools::sg::gui_viewer::load_style :"
+          << " <style> without name."
+          << std::endl;
+    return;
+  }
+
+  styles::style_t sty;
+
+ {looper _for(a_tree);
+  while(element* _elem = _for.next_element()) {
+
+      if(_elem->name()=="copy") {
+
+        std::string from;
+        _elem->attribute_value("from",from); //expect another style name.
+        if(from.empty()) {
+          a_styles.out() << "tools::sg::gui_viewer::load_style :"
+                         << " <copy> without from."
+                         << std::endl;
+          return;
+        }
+
+        const styles::style_t* csty = a_styles.find_style(from);
+        if(!csty) {
+          a_styles.out() << "tools::sg::gui_viewer::load_style :"
+                     << " <copy> : from " << sout(from) << " not found."
+                     << std::endl;
+          return;
+        }
+
+        append(sty,*csty);
+
+      } else {
+        sty.push_back(styles::style_item_t(_elem->name(),_elem->value()));
+      }
+
+  }}
+
+  if(sty.size()) a_styles.add_style(name,sty);
+}
+
+inline void load_plotter_style(styles& a_styles,const tree& a_tree) {
+  std::string pname;
+  a_tree.attribute_value("name",pname);
+  if(pname.empty()) {
+    a_styles.out() << "tools::sg::gui_viewer::load_plotter_style :"
+          << " <plotter_style> without name."
+          << std::endl;
+    return;
+  }
+
+ {styles::style_t sty;
+  sty.push_back(styles::style_item_t("tag","plotter_style"));
+
+ {looper _for(a_tree);
+  while(element* _elem = _for.next_element()) {
+
+      if(_elem->name()=="copy") {
+
+        std::string from;
+        _elem->attribute_value("from",from); //expect a plotter_style name.
+        if(from.empty()) {
+          a_styles.out() << "tools::sg::gui_viewer::load_plotter_style :"
+                << " <copy> without from."
+                << std::endl;
+          return;
+        }
+
+        const styles::style_t* csty = a_styles.find_style(from);
+        if(!csty) {
+          a_styles.out() << "tools::sg::gui_viewer::load_plotter_style :"
+                << " <copy> : from " << sout(from) << " not found."
+                << std::endl;
+          return;
+        }
+        if(csty->size()) a_styles.add_style(pname,*csty);
+
+        if(is_plotter_style(*csty)) {
+          //search all <from>.<sub_style> styles :
+          std::string head = from+".";
+          std::string::size_type l = head.size();
+
+          styles sts(a_styles.out());
+
+          const std::vector<styles::named_style_t>& nss = a_styles.named_styles();
+          tools_vforcit(styles::named_style_t,nss,it){
+            const std::string& name = (*it).first;
+            if(name.substr(0,l)==head) {
+              std::string tail = name.substr(l,name.size()-l);
+              const styles::style_t& ssty = (*it).second;
+              if(ssty.size()) sts.add_style(pname+"."+tail,ssty);
+            }
+          }
+
+          a_styles.append(sts);
+
+        }
+
+
+      } else {
+        sty.push_back(styles::style_item_t(_elem->name(),_elem->value()));
+      }
+
+  }}
+
+  if(sty.size()) a_styles.add_style(pname,sty);}
+
+ {looper _for(a_tree);
+  while(tree* _tree = _for.next_tree()) {
+
+      const std::string& tag = _tree->tag_name();
+      if(tag=="style") {
+
+        std::string name;
+        _tree->attribute_value("name",name);
+        if(name.empty()) {
+          a_styles.out() << "tools::sg::gui_viewer::load_plotter_style :"
+                << " <style> without name."
+                << std::endl;
+          return;
+        }
+
+       {styles::style_t sty;
+
+       {looper _for2(*_tree);
+        while(element* _elem = _for2.next_element()) {
+          if(_elem->name()=="copy") {
+            std::string from;
+            _elem->attribute_value("from",from); //expect another style name.
+            if(from.empty()) {
+              a_styles.out() << "tools::sg::gui_viewer::load_plotter_style : (2) :"
+                             << " <copy> without from."
+                             << std::endl;
+              return;
+            }
+            const styles::style_t* csty = a_styles.find_style(from);
+            if(!csty) {
+              a_styles.out() << "tools::sg::gui_viewer::load_plotter_style : (2) :"
+                             << " <copy> : from " << sout(from) << " not found."
+                            << std::endl;
+              return;
+            }
+            append(sty,*csty);
+          } else {
+            sty.push_back(styles::style_item_t(_elem->name(),_elem->value()));
+          }
+        }}
+
+        if(sty.size()) {
+          std::string path = pname+"."+name;
+          a_styles.add_style(path,sty);
+        }}
+
+      } else {
+        a_styles.out() << "tools::sg::gui_viewer::load_plotter_style :"
+              << " unexpected tag " << sout(tag) << "."
+              << std::endl;
+      }
+
+  }}
+
+}
+
+inline bool scan_style_tree(styles& a_styles,const tree& a_tree) {
+
+  if(a_tree.tag_name()!="styles") return false;
+
+  // look for aliases :
+ {looper _for(a_tree);
+  while(element* _elem = _for.next_element()) {
+
+      std::string name;
+      _elem->attribute_value("name",name);
+      if(name.empty()) {
+        a_styles.out() << "tools::sg::gui_viewer::load_style :"
+              << " <alias> without name."
+              << std::endl;
+        continue;
+      }
+
+      add_alias<std::string,std::string>(a_styles.aliases(),name,_elem->value());
+  }}
+
+  // scan children :
+ {looper _for(a_tree);
+  while(tree* _tree = _for.next_tree()) {
+
+      const std::string& tag = _tree->tag_name();
+      if(tag=="style") {
+        load_style(a_styles,*_tree);
+      } else if(tag=="plotter_style") {
+        load_plotter_style(a_styles,*_tree);
+      }
+
+  }}
+
+  return true;
+}
+}}
+
+#endif

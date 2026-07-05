@@ -1,0 +1,378 @@
+# Category hadr-lepnuc History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2024-02-01 Vladimir Ivanchenko (hadr-lepnuc-V11-02-00)
+- Fixed Coverity warning on unused variable in neutrino models
+
+## 2023-09-04 Vladimir Ivanchenko (hadr-lepnuc-V11-01-00)
+- G4ElectroVDNuclearModel : updated initialisation of data tables
+
+## 2022-10-30 Vladimir Grichine(hadr-lepnuc-V11-00-06)
+- G4(A)NuTauMucleusNc(Cc)Models added for (anti)_nu_tau final state 
+
+## 2022-10-26 Alberto Ribon (hadr-lepnuc-V11-00-05)
+- G4ElectroVDNuclearModel : added protections against null pointers to 
+  gamma cross section and material (causing rare crashes).
+
+## 2022-06-20 Igor Semeniouk (hadr-lepnuc-V11-00-04)
+- G4ANuElNucleusCcModel.cc, G4ANuElNucleusNcModel.cc,
+  G4ANuMuNucleusCcModel.cc, G4ANuMuNucleusNcModel.cc,
+  G4NuElNucleusCcModel.cc, G4NuElNucleusNcModel.cc,
+  G4NuMuNucleusCcModel.cc,G4NuMuNucleusNcModel.cc :
+  use G4FindDataDir("G4PARTICLEXSDATA") on place of getenv.
+
+## 2022-04-20 Alberto Ribon (hadr-lepnuc-V11-00-03)
+- G4MuonVDNuclearModel.cc : fixed compilation warnings for
+  'may be used uninitialized' variables.
+
+## 2022-02-17 Vladimir Ivanchenko (hadr-lepnuc-V11-00-02)
+- G4NeutrinoNucleusModel - fixed memory leak reported by Coverity
+
+## 2022-02-09 Gabriele Cosmo (hadr-lepnuc-V11-00-01)
+- Fixed compilation warning on Intel compilers for unused variables.
+
+## 2021-12-10 Ben Morgan (hadr-lepnuc-V11-00-00)
+- Change to new Markdown History format.
+
+---
+
+# History entries prior to 11.0
+
+04 August 2021 A. Ribon (hadr-lepnuc-V10-07-05)
+--------------------------------------------------
+- G4ElectroVDNuclearModel, G4MuonVDNuclearModel,
+  G4NeutrinoElectronCcModel, G4NeutrinoNucleusModel,
+  G4ANuElNucleusCcModel, G4ANuElNucleusNcModel,
+  G4ANuMuNucleusCcModel, G4ANuMuNucleusNcModel,
+  G4NuElNucleusCcModel, G4NuElNucleusNcModel,
+  G4NuMuNucleusCcModel, G4NuMuNucleusNcModel :
+  set creator model ID for the secondaries, using the new version
+  of G4PhysicsModelCatalog
+
+12 May 2021 V. Grichine (hadr-lepnuc-V10-07-04)
+--------------------------------------------------
+- Bug fixed in G4NeutrinoNucleusModel.cc, calls for QE ratio of muon/electron (anti-)neutrino updated
+
+16 April 2021 Ben Morgan (hadr-lepnuc-V10-07-03)
+--------------------------------------------------
+- Migrate build to modular CMake API
+
+13 April 2021 A. Ribon (hadr-lepnuc-V10-07-02)
+---------------------------------------------------------------
+- GNUmakefile, sources.cmake : removed the subdirectories
+  hadronic/models/management and hadronic/models/util
+  (that have been now deleted, with their classes moved to
+   hadronic/util and hadronic/management).
+  Removed also the useless dependency to hadronic/process.
+  Clean-up of old directories no longer present.
+
+25 March 2021 V. Grichine (hadr-lepnuc-V10-07-01)
+----------------------------------------------
+- G4NeutrinoNucleusModel.cc - Calculation of fQEratioA(Z,A,Enu) depending of QE ratios for nucleons
+
+10 March 2021 V. Grichine (hadr-lepnuc-V10-07-00)
+----------------------------------------------
+- G4NeutrinoNucleusModel.cc - Set,  Get methods for XS_qe/XS_tot(A), fQEratioA class member
+
+26 May 2020 B. Morgan   (hadr-lepnuc-V10-06-08)
+---------------------------------------------------------------
+-  Remove obsolete GRANULAR_DEPENDENCIES entries
+
+11 May 2020 V. Grichine (hadr-lepnuc-V10-06-07)
+----------------------------------------------
+- G4NeutrinoNucleusModel.cc - K+, K- in final state were added
+
+02 May 2020 V. Grichine (hadr-lepnuc-V10-06-06)
+----------------------------------------------
+- coverity fixes in neutrino-nucleus models
+
+17 April 2020 V. Grichine (hadr-lepnuc-V10-06-05)
+----------------------------------------------
+- G4ANuElNucleusCcModel, G4ANuElNucleusNcModel, were added for anti_nu_e. Initialization: G4PARTICLEXS-dir/neutrino/anti_nu_e
+
+17 April 2020 V. Grichine (hadr-lepnuc-V10-06-04)
+----------------------------------------------
+- G4NuElNucleusCcModel, G4NuElNucleusNcModel, were added for nu_e. Initialization: G4PARTICLEXS-dir/neutrino/nu_e
+
+15 April 2020 V. Grichine (hadr-lepnuc-V10-06-03)
+----------------------------------------------
+- G4ANuMuNucleusCcModel, G4ANuMuNucleusNcModel, were added for anti_mu_nu. Initialization: G4PARTICLEXS/neutrino/anti_nu_mu
+
+12 April 2020 V. Grichine (hadr-lepnuc-V10-06-02)
+----------------------------------------------
+- G4NuMuNucleusCcModel, G4NuMuNucleusNcModel, G4NeutrinoNucleusModel, rearrangement of initialisation methods and arrays
+
+06 April 2020 V. Grichine (hadr-lepnuc-V10-06-01)
+----------------------------------------------
+- G4NuMuNucleusCcModel, G4NuMuNucleusNcModel, G4NeutrinoNucleusModel, fixes in CoherentPion method, clean-up of Cc and Nc
+
+30 November 2019 V. Grichine (hadr-lepnuc-V10-06-00)
+----------------------------------------------
+- G4NuMuNucleusCcModel, G4NeutrinoNucleusModel, new access methods and minor fixes in in nu-mu nucleus model
+
+19 November 2019 G. Folger   (hadr-lepnuc-V10-05-09)
+----------------------------------------------
+- remove using namespace std and using namespace CLHEP from header files:
+     G4NeutrinoNucleusModel.hh, G4NuMuNucleusCcModel.hh and G4NuMuNucleusNcModel.hh
+
+13 November 2019 V. Grichine (hadr-lepnuc-V10-05-08)
+----------------------------------------------
+- G4NuMuNucleusCcModel, G4NuMuNucleusNcModel, G4NeutrinoNucleusModel, G4NeutrinoElectronCcModel, re-arrangement and clean-up, s-channel in nu-e-cc model
+
+07 November 2019 V. Grichine (hadr-lepnuc-V10-05-07)
+----------------------------------------------
+- G4NuMuNucleusCcModel, G4NuMuNucleusNcModel, G4NeutrinoNucleusModel, coverity fixes and clean-up
+
+04 November 2019 V. Grichine (hadr-lepnuc-V10-05-06)
+----------------------------------------------
+- G4NuMuNucleusCcModel, off-shell kintmatics, fixes in ApplyYourself, SampleLVkr and CoherenPion, new method RecoilDeexcitation to deexcite recoin nucleus
+
+15 October 2019 V. Grichine (hadr-lepnuc-V10-05-05)
+----------------------------------------------
+- G4NuMuNucleusCcModel, 1p1h momentum sampling according to AS model, precompound interface was added
+
+11 October 2019 V. Grichine (hadr-lepnuc-V10-05-04)
+----------------------------------------------
+- G4NeutrinoNucleusModel, two methods added for excitation energy and nucleon momentum sampling
+
+25 August 2019 V. Grichine (hadr-lepnuc-V10-05-03)
+----------------------------------------------
+- bug fixed in G4NuMuNucelusCc(Nc)Model, m->e in nucleon 4-vectors, when nucleon move, iTeMax->100
+
+03 July 2019 V. Grichine (hadr-lepnuc-V10-05-02)
+----------------------------------------------
+- bug fixed in G4NuMuNucelusCc(Nc)Model, indexes of x-, Q- arrays out of boundaries
+
+20 June 2019 V. Grichine (hadr-lepnuc-V10-05-01)
+----------------------------------------------
+- bug fixed in G4NuMuNucelusCc(Nc)Model, kinematics of quasi-elastic neutrino scattering
+
+03 May 2019 V. Grichine (hadr-lepnuc-V10-05-00)
+----------------------------------------------
+- Neutrino-nucleus models and precalculated distribuitons in G4PARTICLEXSDAT2.0
+
+06 August 2018 Alberto Ribon (hadr-lepnuc-V10-04-02)
+---------------------------------------------------
+- G4NeutrinoElectronCcModel : replaced the explicit high-energy limit
+  of hadronic physics with the one from G4HadronicParameters .
+
+04 May 2018 Vladimir Ivanchenko (hadr-lepnuc-V10-04-01)
+---------------------------------------------------
+- G4NeutrinoElectronCcModel : fixed Coverity report
+
+15 February 2018 Vladimir Ivanchenko (hadr-lepnuc-V10-04-00)
+---------------------------------------------------
+- G4NeutrinoElectronCcModel : V.Grichine added extra interfaces
+
+28 April 2017 Alberto Ribon (hadr-lepnuc-V10-03-01)
+---------------------------------------------------
+- G4NeutrinoElectronCcModel : fixed a few warnings.
+
+28 April 2017 Alberto Ribon (hadr-lepnuc-V10-03-00)
+---------------------------------------------------
+- G4NeutrinoElectronCcModel : added new class by Vladimir Grichine
+  for the final-state model of neutrino-electron inelastic interaction
+  (charge current).
+
+11 November 2016 Vladimir Ivanchenko (hadr-lepnuc-V10-02-03)
+------------------------------------------------------
+- G4MuonVDNuclearModel: fixed Coverity report, reduce number of
+    bins for trasfer energy from 1000 to 800
+
+18 October 2016 Vladimir Ivanchenko (hadr-lepnuc-V10-02-02)
+------------------------------------------------------
+- G4MuonVDNuclearModel: added ModelDescription method, code cleanup
+    including removal not used headers
+
+18 October 2016 Vladimir Ivanchenko (hadr-lepnuc-V10-02-01)
+------------------------------------------------------
+- G4MuonVDNuclearModel: A.Bogdanov proposed modifications for EM part
+    of the code; increased the number of points in energy from 8 to 73;
+    G4ElementData is added instead of 3D array;
+    Data class is now static, shared between threads and mu+, mu-.
+
+11 August 2016  Gabriele Cosmo (hadr-lepnuc-V10-02-00)
+------------------------------------------------------
+- Added missing dependency to de_excitation/management in GNUmakefile.
+
+06 November 2015  D.H. Wright (hadr-lepnuc-V10-01-02)
+-----------------------------------------------------
+- Switch to fast math functions G4Exp and G4Log
+
+01 September 2015  D.H. Wright (hadr-lepnuc-V10-01-01)
+------------------------------------------------------
+- G4MuonVDNuclearModel.cc: add temporary while loop checks
+
+17 March 2015, Vladimir Ivanchenko        (hadr-lepnuc-V10-01-00)
+-----------------------------------------------------------------
+- G4MuonVDNuclearModel - defined G4KokoulinMuonNuclearXS via
+  factory interface allowing reuse already instantiated class;
+  keep pointer of G4KokoulinMuonNuclearXS instead of object
+  in order to avoid double deletion at exit
+
+05 May 2014, Vladimir Ivanchenko        (hadr-lepnuc-V10-00-01)
+---------------------------------------------------------------
+- Reuse PreCompoundModel and ExcitationHandler and not instantiate
+  locally as new; do not delete objects which following
+  G4HadronicInteraction interface to avoid double delition
+
+29 January 2014, Gunter Folger              (hadr-lepnuc-V10-00-00)
+-------------------------------------------------------------------
+- Removed cascade/{evaporation,utils}, high_energy, low_energy
+  from sources.cmake
+
+22 November 2013 W. Pokorski (hadr-lepnuc-V09-06-04)
+---------------------------------------------
+- Adding a dummy call to GetCrossSection, just to initialize the cache
+  in order to have reproducibility. To be properly fixed later.
+
+11 September 2013 W. Pokorski (hadr-lepnuc-V09-06-03)
+---------------------------------------------
+- Adaptation to use GetElementCrossSection of photonuclear XS
+
+04 September 2013 W. Pokorski (hadr-lepnuc-V09-06-02)
+---------------------------------------------
+- Removing unused variables
+
+04 September 2013 W. Pokorski (hadr-lepnuc-V09-06-01)
+---------------------------------------------
+- Removing redundant check for XS > 0
+
+16 July 2013 G. Cosmo (hadr-lepnuc-V09-06-00)
+---------------------------------------------
+- Correction to CMake scripts for granular build.
+
+4 October 2012 J. Apostolakis (hadr-lepnuc-V09-05-02)
+-----------------------------------------------------
+- Fixed GNUmakefile.
+
+4 October 2012  G. Cosmo  (hadr-lepnuc-V09-05-01)
+-------------------------------------------------
+- Explicit inclusion of headers for units and constants.
+- Corrected dependencies and sources.cmake script.
+
+24 September 2012  D.H. Wright  (hadr-lepnuc-V09-05-00)
+-------------------------------------------------------
+- create new lepto-nuclear directory containing only the
+  G4ElectroVDNuclearModel and G4MuonVDNuclearModel classes.  Begin new tag
+  name sequence as well.
+
+===========================================================================
+  Note:  history notes from old photolepton_hadron/muon_nuclear directory
+         are copied below
+===========================================================================
+
+27 June 2012  D.H. Wright    (hadr-munuclear-V09-05-07)
+-------------------------------------------------------
+- G4ElectroVDNuclearModel::CalculateHadronicVertex : fix nan value of
+  pion momentum at low gamma energies
+
+8 June 2012  D.H. Wright     (hadr-munuclear-V09-05-06)
+-------------------------------------------------------
+- G4ElectroVDNuclearModel.cc : replace variable "m2" which shadows
+  a CLHEP variable
+
+1 June 2012  D.H. Wright     (hadr-munuclear-V09-05-05)
+-------------------------------------------------------
+- G4MuonVDNuclearModel.cc : fix negative KE bug in CalculateHadronicVertex
+
+22 May 2012  D.H. Wright     (hadr-munuclear-V09-05-04)
+-------------------------------------------------------
+- fix bug in sources.cmake
+
+18 May 2012  D.H. Wright     (hadr-munuclear-V09-05-03)
+-------------------------------------------------------
+- added new model G4ElectroVDNuclearModel
+- remove classes G4LeptonHadronProcess and G4LeptonHadronInteractionModel
+- changed name of G4VDMuonNuclearModel to G4MuonVDNuclearModel to
+  avoid any confusion with virtual class names
+- sources.cmake: remove files and dependencies corresponding to above changes
+
+ 7 May 2012  D.H. Wright     (hadr-munuclear-V09-05-02)
+------------------------------------------------------
+- G4VDMuonNuclearModel: for gammas below 10 GeV use Bertini cascade to
+  interact gammas directly with nucleus.  Above 10 GeV, treat gamma as
+  pi0 and use FTFP model.
+
+1 May 2012, D.Wright        ( ..trunk.. )
+-------------------------------------------------------
+- revert changes by Mikhail ( rev. r58262)
+-    added to History 2-May 2012, G.Folger
+
+27 April 2012, M.Kosov      (hadr-munuclear-V09-05-01)
+-------------------------------------------------------
+- hadronic/models/chiral_inv_phase_space moved to hadronic/chips
+
+17 January 2012  D.H. Wright (hadr-munuclear-V09-05-00)
+-------------------------------------------------------
+- derive G4VDMuonNuclearModel from G4HadronicInteraction instead of
+  G4InelasticInteraction.
+
+03 October 2011  D.H. Wright (hadr-munuclear-V09-04-03)
+-------------------------------------------------------
+- G4VDMuonNuclearModel.cc: fix winxp compiler complaint by converting
+  G4int arg (GetZ_asInt) of std::log to G4double arg
+
+27 September 2011  D.H. Wright (hadr-munuclear-V09-04-02)
+---------------------------------------------------------
+- Migrate to integer Z and A.  File affected:
+    G4VDMuonNuclearModel.cc
+
+02 May 2011 D.H. Wright (hadr-munuclear-V09-04-01)
+--------------------------------------------------
+- remove G4MuonNucleusProcess and G4MuonNucleusInteractionModel.  These
+  were the old GHEISHA-style models and no longer used.
+
+16 February 2011 D.H. Wright (hadr-munuclear-V09-04-00)
+-------------------------------------------------------
+- create new model G4VDMuonNuclearModel to replace old-style
+  G4MuNuclearInteraction and G4ParametrizedHadronicVertex
+- add more libraries to list in GNUmakefile for above new model
+
+08 Sept 2010 V.Ivantchenko (hadr-munuclear-V09-03-00)
+----------------------------------------------------
+G4MuNuclearInteraction - clear hadronic tracks PostStepDoIt
+
+20 Nov 2009 V.Ivantchenko (hadr-munuclear-V09-02-03)
+----------------------------------------------------
+- Cleanup
+
+04 Mar 2009 V.Ivantchenko (hadr-munuclear-V09-02-02)
+----------------------------------------------------
+- move constructors, destructors and virtual methods to source
+
+06 Feb 2009 V.Ivantchenko (hadr-munuclear-V09-02-01)
+----------------------------------------------------
+
+24 Jan 2009 V.Ivantchenko (hadr-munuclear-V09-02-00)
+----------------------------------------------------
+- G4MuNuclearInteraction added deregistration of the process
+
+ 4 Oct 2008 Dennis Wright (hadr-munuclear-V09-01-01)
+----------------------------------------------------
+- G4MuNuclearInteraction - include process type enum and change type from
+  12 to fHadronInelastic
+
+ 2 Sep 2008 V.Ivanchenko (hadr-munuclear-V09-01-00)
+---------------------------------------------------
+- G4MuNuclearInteraction added SubType and registration in the
+                         G4HadronicProcessStore; added PreparePhysicsTable
+                         method and cleanup for readability
+
+ 4 Nov 2006 Dennis Wright for V.Ivanchenko (hadr-munuclear-V08-01-00)
+-----------------------------------------------------------------------
+- G4MuNuclearInteraction::ComputeMicroscopicCrossSection: prevent NaN
+  by checking that upper energy limit is not less than lower limit.
+
+
+30 Nov 2005 Gabriele Cosmo (hadr-munuclear-V07-01-00)
+----------------------------------------------------
+- Trivial fix in G4MuonNucleusInteractionModel and
+  G4ParametrizedHadronicVertex for support of CLHEP-2.0.X series.
+  NOTE: use of RandBit() can lead to event irreproducibility !
+- Created History file.

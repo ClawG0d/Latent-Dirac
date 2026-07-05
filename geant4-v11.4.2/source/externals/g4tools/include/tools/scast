@@ -1,0 +1,47 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_scast
+#define tools_scast
+
+// For implementations of cast methods.
+#include "cid"
+#include "rcmp"
+
+namespace tools {
+
+template <class FROM,class TO>
+inline TO* safe_cast(FROM& a_o) {
+  return (TO*)a_o.cast(TO::s_class());
+}
+
+template <class FROM,class TO>
+inline const TO* safe_cast(const FROM& a_o) {
+  return (const TO*)a_o.cast(TO::s_class());
+}
+
+template <class FROM,class TO>
+inline TO* id_cast(FROM& a_o) {
+  return (TO*)a_o.cast(TO::id_class());
+}
+
+template <class FROM,class TO>
+inline const TO* id_cast(const FROM& a_o) {
+  return (const TO*)a_o.cast(TO::id_class());
+}
+
+template <class TO>
+inline void* cmp_cast(const TO* a_this,const std::string& a_class) {
+  if(!rcmp(a_class,TO::s_class())) return 0;
+  return (void*)static_cast<const TO*>(a_this);
+}
+
+template <class TO>
+inline void* cmp_cast(const TO* a_this,cid a_id) {
+  if(TO::id_class()!=a_id) return 0;
+  return (void*)static_cast<const TO*>(a_this);
+}
+
+}
+
+#endif

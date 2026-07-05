@@ -1,0 +1,133 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4PDefManager class implementation
+//
+// Author: Xin Dong, 25.01.2009 - First implementation
+//                                from automatic MT conversion.
+// --------------------------------------------------------------------
+
+#include "G4PDefManager.hh"
+
+#include "G4AutoLock.hh"
+#include "globals.hh"
+
+#include "pwdefs.hh"
+
+#include <cstdlib>
+
+void G4PDefData::initialize()
+{
+  theProcessManager = nullptr;
+  theTrackingManager = nullptr;
+}
+
+G4int& G4PDefManager::slavetotalspace()
+{
+  G4ThreadLocalStatic G4int _instance = 0;
+  return _instance;
+}
+
+G4PDefData*& G4PDefManager::offset()
+{
+  G4ThreadLocalStatic G4PDefData* _instance = nullptr;
+  return _instance;
+}
+
+G4PDefManager::G4PDefManager()
+{
+  G4MUTEXINIT(mutex);
+}
+
+G4int G4PDefManager::CreateSubInstance()
+// Invoked by the master or work thread to create a new subinstance
+// whenever a new split class instance is created. For each worker
+// thread, ions are created dynamically.
+{
+  G4AutoLock l(&mutex);
+  ++totalobj;
+  if (totalobj > slavetotalspace()) {
+    l.unlock();
+    NewSubInstances();
+    l.lock();
+  }
+  return (totalobj - 1);
+}
+
+void G4PDefManager::NewSubInstances()
+// Invoked by each worker thread to grow the subinstance array and
+// initialize each new subinstance using a particular method defined
+// by the subclass.
+{
+  G4AutoLock l(&mutex);
+  if (slavetotalspace() >= totalobj) {
+    return;
+  }
+  G4int originaltotalspace = slavetotalspace();
+  slavetotalspace() = totalobj + 512;
+  offset() = (G4PDefData*)realloc(offset(), slavetotalspace() * sizeof(G4PDefData));
+  if (offset() == nullptr) {
+    G4Exception("G4PDefManager::NewSubInstances()", "OutOfMemory", FatalException,
+                "Cannot malloc space!");
+  }
+
+  for (G4int i = originaltotalspace; i < slavetotalspace(); ++i) {
+    offset()[i].initialize();
+  }
+}
+
+// Invoked by all threads to free the subinstance array.
+void G4PDefManager::FreeSlave()
+{
+  if (offset() == nullptr) {
+    return;
+  }
+  free(offset());
+  offset() = nullptr;
+}
+
+G4PDefData* G4PDefManager::GetOffset()
+{
+  return offset();
+}
+
+// Use recycled work area, which was created previously.
+void G4PDefManager::UseWorkArea(G4PDefData* newOffset)
+{
+  if ((offset() != nullptr) && (offset() != newOffset)) {
+    G4Exception("G4PDefManager::UseWorkspace()", "InvalidCondition", FatalException,
+                "Thread already has workspace - cannot use another.");
+  }
+  offset() = newOffset;
+}
+
+// Detach this thread from this Location
+// The object which calls this method is responsible for it.
+G4PDefData* G4PDefManager::FreeWorkArea()
+{
+  G4PDefData* offsetRet = offset();
+  offset() = nullptr;
+  return offsetRet;
+}

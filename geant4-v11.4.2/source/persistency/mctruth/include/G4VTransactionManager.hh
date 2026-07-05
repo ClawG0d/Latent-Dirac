@@ -1,0 +1,78 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4VTransactionManager
+//
+// Class Description:
+//
+// Abstract base class for starting and commiting or aborting data
+// transaction.
+
+// Author: Youhei Morita, 18.07.2001
+// --------------------------------------------------------------------
+#ifndef G4VTRANSACTIONMANAGER_HH
+#define G4VTRANSACTIONMANAGER_HH 1
+
+#include "G4Types.hh"
+
+class G4VTransactionManager
+{
+  public:
+
+    G4VTransactionManager() {}
+      // Constructor
+
+    virtual ~G4VTransactionManager() {}
+      // Destructor
+
+    void SetVerboseLevel(G4int v) { m_verbose = v; }
+      // Set verbose level
+
+    virtual G4bool SelectReadFile(const G4String& obj,
+                                  const G4String& file) = 0;
+      // Set the input file name and open it for the object type "obj"
+
+    virtual G4bool SelectWriteFile(const G4String& obj,
+                                   const G4String& file) = 0;
+      // Set the output file name and open it for the object type "obj"
+
+    virtual G4bool StartUpdate() = 0;
+      // Start an update transaction for event store and retrieve
+
+    virtual G4bool StartRead() = 0;
+      // Start a read-only transaction for event store and retrieve
+
+    virtual void Commit() = 0;
+      // commit the transaction for event store and retrieve
+
+    virtual void Abort() = 0;
+      // abort the transaction for event store and retrieve
+
+  protected:
+
+    G4int m_verbose = 0;
+};
+
+#endif

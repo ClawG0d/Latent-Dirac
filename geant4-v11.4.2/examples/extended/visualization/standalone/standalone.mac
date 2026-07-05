@@ -1,0 +1,20 @@
+/control/verbose 2
+/vis/verbose parameters
+/vis/open
+/vis/scene/create
+/vis/scene/add/userAction
+/vis/scene/add/axes
+/vis/scene/add/scale
+
+# To get nice view (some commands from example B1)
+# Make the "World" box invisible
+/vis/geometry/set/visibility World 0 false
+# "Envelope" is transparent blue to represent water
+/vis/geometry/set/colour Envelope 0 0 0 1 .3
+/vis/viewer/set/style surface
+/vis/viewer/set/viewpointThetaPhi 135 45
+
+/vis/sceneHandler/attach
+/vis/viewer/flush
+/vis/scene/list
+#/vis/scene/activateModel to turn models on and off (see command guidance)

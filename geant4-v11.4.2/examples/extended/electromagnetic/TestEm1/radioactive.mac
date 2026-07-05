@@ -1,0 +1,33 @@
+#
+# Macro file for "TestEm1.cc"
+#
+/control/verbose 2
+/run/verbose 2
+#
+/testem/det/setMat G4_SODIUM_IODINE
+/testem/det/setSize 1 m
+#
+/testem/phys/addPhysics  local
+#
+/run/initialize
+#
+# Set a very high time threshold to allow all decays to happen
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+#
+/process/em/fluo true
+/process/em/auger true
+#
+/testem/gun/setDefault
+/gun/particle ion
+/gun/ion 11 22
+/gun/energy 0 eV
+/gun/position 0 0 0 mm
+#
+###/process/had/rdm/nucleusLimits 210 210 82 82
+#
+/analysis/setFileName rdecay
+/analysis/h1/set 4 100 0 3 MeV	#total edep
+#	 
+/run/printProgress 10000
+#
+/run/beamOn 100000

@@ -1,0 +1,74 @@
+Environment variable "G4FORCE_RUN_MANAGER_TYPE" enabled with value == Serial. Forcing G4RunManager type...
+
+        ############################################
+        !!! WARNING - FPE detection is activated !!!
+        ############################################
+
+
+          ################################
+          !!! G4Backtrace is activated !!!
+          ################################
+
+
+**************************************************************
+ Geant4 version Name: geant4-11-04-patch-02    (12-June-2026)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+/run/verbose 1
+#
+/run/initialize
+#
+/gunExample/selectGunAction 4
+#
+/analysis/setFileName run4
+/analysis/h1/set 2 100 0. 10. mm
+/analysis/h1/set 3 110 -1.1 1.1 none
+/analysis/h1/set 4 130 -15. 375 deg
+/analysis/h1/set 5 110 -1.1 1.1 none
+/analysis/h1/set 6 130 -15. 375 deg
+#
+/run/printProgress 100000
+#
+/run/beamOn 1000000
+
+========= Table of registered couples ============================
+
+Index : 0     used in the geometry : Yes
+ Material : G4_AIR
+ Range cuts        :  gamma  1 mm     e-  1 mm     e+  1 mm  proton 1 mm 
+ Energy thresholds :  gamma  -1 MeV    e-  -1 MeV    e+  -1 MeV proton -1 MeV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+==================================================================
+
+### Run 0 starts.
+... set ntuple merging row mode : row-wise - done
+... create file : run4.root - done
+... open analysis file : run4.root - done
+... open analysis file : run4.root - done
+--> Event 0 starts.
+--> Event 100000 starts.
+--> Event 200000 starts.
+--> Event 300000 starts.
+--> Event 400000 starts.
+--> Event 500000 starts.
+--> Event 600000 starts.
+--> Event 700000 starts.
+--> Event 800000 starts.
+--> Event 900000 starts.
+ Run terminated.
+Run Summary
+  Number of events processed : 1000000
+  User=1.780000s Real=1.777637s Sys=0.000000s
+... write file : run4.root - done
+... close file : run4.root - done
+================== Deleting memory pools ===================
+Number of memory pools allocated: 9 of which, static: 0
+Dynamic pools deleted: 9 / Total memory freed: 0.013 MB
+============================================================

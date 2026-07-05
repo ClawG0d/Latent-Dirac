@@ -1,0 +1,50 @@
+# Example vecGeomNavigation History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-11-10 Gabriele Cosmo (VecGeomNavigation-V11-03-02)
+- Fixed coding conventions for long lines in VG01DetectorConstruction source.
+
+## 2025-03-21 Seth Johnson (VecGeomNavigation-V11-03-01)
+- Use G4cout for VecGeom logger output
+
+## 2023-11-10 Ivana Hrivnacova (VecGeomNavigation-V11-01-01)
+- Coding guidelines: split long lines, added separators in
+  VG01ActionInitialization.cc
+- Remove run-ntst.mac
+
+## 2023-01-09 Ben Morgan (VecGeomNavigation-V11-01-00)
+- Use PROJECT_ scoped _SOURCE/BINARY_DIR variables in place of CMAKE_ 
+  scope version to ease use of Geant4 as a CMake subproject. 
+  - Fixes [GitHub PR #52](https://github.com/Geant4/geant4/pull/52)
+
+## 2022-11-04  Ivana Hrivnacova (VecGeomNavigation-V11-00-03)
+- Fixed Doxygen file descriptions
+
+## 2022-04-07 Ben Morgan (VecGeomNavigation-V11-00-02)
+- Build g4vecgeomnav as a static library if only Geant4 static libs are available
+
+## 2022-03-25 Gabriele Cosmo (VecGeomNavigation-V11-00-01)
+- Removed unused setting of threads causing compilation warning.
+
+## 2021-12-10 Ben Morgan (VecGeomNavigation-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+09/07/2021 G.Cosmo (VecGeomNavigation-V10-07-02)
+- Switched to use "master" for G4VecGeomNav package (instead of hardcoded
+  hashed tag "1a002fbf2bccd81827b6100f86e2ad82433a75e9", used for 11.0-beta),
+  to constantly test development version.
+
+25/06/2021 B.Morgan (VecGeomNavigation-V10-07-01)
+- Fix build of builtin G4VecGeomNav
+
+24/06/2021 J.Apostolakis (VecGeomNavigation-V10-07-00)
+- First version of example interfacing VecGeom navigation with Geant4.

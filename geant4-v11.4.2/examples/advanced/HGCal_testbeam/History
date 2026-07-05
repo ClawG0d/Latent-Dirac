@@ -1,0 +1,58 @@
+# Example HGCal_testbeam History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-02-28 Soon Yung Jun (exhgcaltb-V11-03-00)
+- Restore the original beam energy after it is modified
+- Ensure non-negative beam energy
+
+## 2023-11-15 I. Hrivnacova (exhgcaltb-V11-01-01)
+- Updated vis.mac:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+  - Keep previous driver opening with an extra setting in commented lines
+
+## 2023-10-10 John Allison (exhgcaltb-V11-01-00)
+- vis.mac: Remove defunct command /vis/ogl/set/displayListLimit.
+  - This command no longer operates. There is now no display list limit.
+    (The only limit is available memory.)
+  - The command is deprecated and, anyway, causes a crash if the app is built
+    without an OpenGL driver.
+
+## 2021-12-10 Ben Morgan (exhgcaltb-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+14-November-2021 G. Cosmo (exhgcaltb-V10-07-05)
+- Fixed compilation warning for unused private member in PrimaryGeneratorAction.
+
+07-October-2021 I. Hrivnacova (exhgcaltb-V10-07-04)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+19-July-2021 I. Hrivnacova (exhgcaltb-V10-07-03)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+10-June-21  V. Ivanchenko (exhgcaltb-V10-07-02)
+- SiliconPixelHit, SiPMHit - fixed bug in handling of NIEL energy 
+  deposition
+- CMSHadronPhysicsFTFP_BERT - added class from CMS 
+- CMSEmStandardPhysicsHcal - removed obsolete
+- FTFPCMS_BERT_EMM - use correct combination of physics constructors   
+
+24-May-21  B. Morgan (exhgcaltb-V10-07-01)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+21-Mar-21  V. Ivanchenko (exhgcaltb-V10-07-00)
+- removed RanecuEngine
+- updated CMS EM physics to 11.0
+
+02-Nov-20  A. Zaborowska (exhgcaltb-V10-06-00)
+- Create HGCal_testbeam example based on Thorben Quast application

@@ -1,0 +1,18 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_forit
+#define tools_forit
+
+#define tools_vforcit(a__T,a__v,a__it) \
+  for(auto a__it = (a__v).cbegin(); (a__it) != (a__v).cend(); ++(a__it))
+
+#define tools_vforit(a__T,a__v,a__it) \
+  for(auto a__it = (a__v).begin(); (a__it) != (a__v).end(); ++(a__it))
+
+#define tools_lforcit(a__T,a__l,a__it) tools_vforcit(a__T,a__l,a__it)
+
+#define tools_lforit(a__T,a__l,a__it) tools_vforit(a__T,a__l,a__it)
+
+#endif
+

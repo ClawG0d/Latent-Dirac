@@ -1,0 +1,50 @@
+# Example G04 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2024-06-05 Gabriele Cosmo (G04-V11-02-00)
+- Updated GDML files to use short URL for schema validation.
+
+## 2021-12-10 Ben Morgan (G04-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+November 10th, 2020 Ben Morgan G04-V10-06-00
+- Migration to G4RunManagerFactory.
+
+November 28th, 2019 I. Hrivnacova G04-V10-05-00
+- Fixed Doxygen warning in .README.txt
+
+October 23, 2015 I. Hrivnacova  (G04-V10-01-01)
+- Finished MT migration
+
+October 16, 2015 W. Pokorski  (G04-V10-01-00)
+- MT migration
+
+June 11, 2014 W. Pokorski  (G04-V10-00-00)
+- changes to comply with coding conventions
+
+May 17st, 2013 W. Pokorski  (G04-V09-06-00)
+- changes for Coding Rule 2.1
+
+July 31st, 2012 W. Pokorski  (G04-V09-05-00)
+- adding CMake file + cosmetic changes
+
+November 9th, 2010  J.Allison (G04-V09-03-03)
+- Removed unnecessary #include "G4UIsession.hh".
+
+November 7th, 2010  J.Allison (G04-V09-03-02)
+- Introduced G4UIExecutive.
+
+October 21st, 2010  G.Cosmo (G04-V09-03-01)
+- Fixed compilation warning in SensitiveDetector.cc.
+
+October 11th, 2010  W.Pokorski (G04-V09-03-00)
+- Created.

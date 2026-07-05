@@ -1,0 +1,71 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_line
+#define tools_line
+
+namespace tools {
+
+// Parametric description:
+//  l(t) = pos + t * dir
+
+template <class VEC3>
+class line {
+protected:
+  typedef typename VEC3::elem_t T;
+public:
+  line(){}
+  line(const VEC3& a_p0,const VEC3& a_p1) {
+    // Construct a line from two points lying on the line.  If you
+    // want to construct a line from a position and a direction, use
+    // line(p, p + d).
+    // line is directed from p0 to p1.
+    m_pos = a_p0;
+    m_dir = a_p0;
+    m_dir.multiply(-1);
+    m_dir.add(a_p1);
+    m_dir.normalize();
+  }
+  line(const T& a_0_x,const T& a_0_y,const T& a_0_z,
+       const T& a_1_x,const T& a_1_y,const T& a_1_z) {
+    m_pos.set_value(a_0_x,a_0_y,a_0_z);
+    m_dir.set_value(a_1_x-a_0_x,a_1_y-a_0_y,a_1_z-a_0_z);
+    m_dir.normalize();
+  }
+  virtual ~line() {}
+public:
+  line(const line& a_from)
+  :m_pos(a_from.m_pos)
+  ,m_dir(a_from.m_dir)
+  {}
+  line& operator=(const line& a_from) {
+    m_pos = a_from.m_pos;
+    m_dir = a_from.m_dir;
+    return *this;
+  }
+public:
+  void set_value(const VEC3& a_p0,const VEC3& a_p1) {
+    m_pos = a_p0;
+    m_dir = a_p0;
+    m_dir.multiply(-1);
+    m_dir.add(a_p1);
+    m_dir.normalize();
+  }
+  void set_value(const T& a_0_x,const T& a_0_y,const T& a_0_z,
+                 const T& a_1_x,const T& a_1_y,const T& a_1_z) {
+    m_pos.set_value(a_0_x,a_0_y,a_0_z);
+    m_dir.set_value(a_1_x-a_0_x,a_1_y-a_0_y,a_1_z-a_0_z);
+    m_dir.normalize();
+  }
+
+  const VEC3& position() const {return m_pos;}
+  const VEC3& direction() const {return m_dir;}
+
+protected:
+  VEC3 m_pos;
+  VEC3 m_dir; //normalized.
+};
+
+}
+
+#endif

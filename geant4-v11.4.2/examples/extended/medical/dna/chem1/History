@@ -1,0 +1,87 @@
+# Example chem1 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2024-09-19 Ivana Hrivnacova (chem1-V11-02-00)
+- Added HOW TO START section in README with
+  the beam.in, gui.mac macros usage
+- Changed the world volume colour to make it different from the
+  white background
+
+## 2023-10-20 John Allison (chem1-V11-01-00)
+- vis.mac: Remove defunct command /vis/ogl/set/displayListLimit.
+  - This command no longer operates. There is now no display list limit.
+    (The only limit is available memory.)
+  - The command is deprecated and, anyway, causes a crash if the app is built
+    without an OpenGL driver.
+
+## 2021-12-10 Ben Morgan (chem1-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+10.11.2020 Ben Morgan           tag chem1-V10-06-00
+-----------------------------------------------------
+- Migration to G4RunManagerFactory.
+
+08.02.2019 VI, WGS, SI          tag chem1-V10-05-00
+-----------------------------------------------------
+- Fixed PhysicsList
+
+28.11.2018 V. Ivanchenko        tag chem1-V10-04-02
+-----------------------------------------------------
+- Fixed nightly problem by change initial parameters in beam.in and
+  minor clean-up in chem1.cc
+
+27.11.2018 V. Ivanchenko        tag chem1-V10-04-01
+-----------------------------------------------------
+- Fixed nightly problem in PhysicsList by removing G4PhysicsConstructorRegisty
+
+26.02.2018 R. Hatcher           tag chem1-V10-04-00
+-----------------------------------------------------
+- Use G4RegisterPhysicsConstructors.icc to ensure G4PhysicsConstructorRegisty
+  is filled when using static libraries
+
+09.07.2016 S.Incerti            tag chem1-V10-02-01
+-----------------------------------------------------
+-  Updated README
+
+04.07.2016 I.Hrivnacova         tag chem1-V10-02-00
+-----------------------------------------------------
+-  Fixes for Doxygen documentation
+
+28.12.2014 M.K                  tag chem1-V10-00-06
+-----------------------------------------------------
+- Remove useless comments
+
+28.12.2014 M.K                  tag chem1-V10-00-05
+-----------------------------------------------------
+- Update to last dna version
+
+24.12.2014 M.K                  tag chem1-V10-00-04
+-----------------------------------------------------
+- Retag before release
+
+06.11.2014 I.Hrivnacova
+-----------------------------------------------------
+- Fixes in .README
+
+06.11.2014 M.K                  tag chem1-V10-00-03
+-----------------------------------------------------
+- Select GUI+vis driver from command line
+
+24.10.2014 M.K                  tag chem1-V10-00-02
+-----------------------------------------------------
+- G4ITTimeStepper --> G4VScheduler
+
+24.10.2014 M.K                  tag chem1-V10-00-01
+-----------------------------------------------------
+- CommandLineParser added
+
+20.10.2014 M.K                  tag chem1-V10-00-00
+-----------------------------------------------------
+- chem1 added

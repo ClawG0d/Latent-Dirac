@@ -1,0 +1,161 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4Transportation inline functions implementation.
+
+// =======================================================================
+// Created:  9 June 1998, J. Apostolakis
+// =======================================================================
+
+inline void
+G4Transportation::SetPropagatorInField( G4PropagatorInField* pFieldPropagator)
+{
+   fFieldPropagator= pFieldPropagator;
+}
+
+inline G4PropagatorInField* G4Transportation::GetPropagatorInField()
+{
+   return fFieldPropagator;
+}
+
+inline G4bool G4Transportation::ConfigureFieldForTrack(const G4Track& track)
+{
+  // Configure the field before any AlongStep process can ask the shared
+  // PathFinder to compute the first step of this track
+
+  const G4DynamicParticle* particle = track.GetDynamicParticle();
+  const G4bool eligibleEM = (particle->GetCharge() != 0.0)
+        || (fUseMagneticMoment && (particle->GetMagneticMoment() != 0.0));
+  const G4bool eligibleGrav = fUseGravity && (particle->GetMass() != 0.0);
+  G4bool exForce = false;
+
+  if(eligibleEM || eligibleGrav)
+  {
+    if(auto fieldMgr = fFieldPropagator->FindAndSetFieldManager(track.GetVolume()))
+    {
+      fieldMgr->ConfigureForTrack(&track);
+
+      // If the field manager has no field ptr, the field is zero
+      // by definition ( = there is no field ! )
+      if(const G4Field* ptrField = fieldMgr->GetDetectorField())
+        exForce = eligibleEM || (eligibleGrav && ptrField->IsGravityActive());
+    }
+  }
+  return exForce;
+}
+
+inline G4double G4Transportation::GetThresholdWarningEnergy() const
+{
+  return fThreshold_Warning_Energy;
+}
+ 
+inline G4double G4Transportation::GetThresholdImportantEnergy() const
+{ 
+  return fThreshold_Important_Energy;
+} 
+
+inline G4int G4Transportation::GetThresholdTrials() const
+{
+  return fThresholdTrials;
+}
+
+inline void G4Transportation::SetThresholdWarningEnergy( G4double newEnWarn )
+{
+  fThreshold_Warning_Energy= newEnWarn;
+  if( fpLogger ) {
+     fpLogger->SetThresholdWarningEnergy( newEnWarn );
+  } else {
+     ReportMissingLogger("SetThresholdWarningEnergy");
+  }
+  // Update the information for correct reporting  
+}
+
+inline void G4Transportation::SetThresholdImportantEnergy( G4double newEnImp )
+{
+  fThreshold_Important_Energy = newEnImp;
+  if( fpLogger ) { 
+     fpLogger->SetThresholdImportantEnergy( newEnImp );
+    // Update the information for correct reporting
+  } else {
+     ReportMissingLogger("SetThresholdImportantEnergy");
+  }
+}
+
+inline void G4Transportation::SetThresholdTrials(G4int newMaxTrials )
+{
+  fThresholdTrials = newMaxTrials;
+  if( fpLogger ) {   
+     fpLogger->SetThresholdTrials(newMaxTrials );
+     // Update the information for correct reporting
+  } else {
+     ReportMissingLogger("SetThresholdTrials");
+  }
+}
+
+inline G4double G4Transportation::GetMaxEnergyKilled() const
+{
+  return fMaxEnergyKilled; 
+}
+
+inline G4double G4Transportation::GetSumEnergyKilled() const
+{
+  return fSumEnergyKilled;
+}
+
+inline void G4Transportation::ResetKilledStatistics(G4int report)
+{
+  // Statistics for tracks killed (currently due to looping in field)
+
+  if( report )
+  { 
+    G4cout << " G4Transportation: Statistics for looping particles "
+           << G4endl;
+    G4cout << "   Sum of energy of loopers killed: " <<  fSumEnergyKilled
+           << G4endl;
+    G4cout << "   Max energy of loopers killed: " <<  fMaxEnergyKilled
+           << G4endl;
+  } 
+
+  fSumEnergyKilled= 0;
+  fMaxEnergyKilled= -1.0*CLHEP::GeV;
+}
+
+inline void
+G4Transportation::EnableShortStepOptimisation(G4bool optimiseShortStep)
+{ 
+  fShortStepOptimisation=optimiseShortStep;
+}
+
+inline void
+G4Transportation::PushThresholdsToLogger()
+{
+  if( fpLogger )
+     fpLogger->SetThresholds( GetThresholdWarningEnergy(),
+                              GetThresholdImportantEnergy(),
+                              GetThresholdTrials() );
+  else
+     ReportMissingLogger("PushThresholdsToLogger()");
+}
+

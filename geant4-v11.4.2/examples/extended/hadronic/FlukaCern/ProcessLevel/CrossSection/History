@@ -1,0 +1,22 @@
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                    HadronNucleusXS History file
+                    -------------------
+This file should be used by the G4 example coordinator to briefly
+summarize all major modifications introduced in the code and keep
+track of all tags.
+
+     ----------------------------------------------------------
+     * Reverse chronological order (last date on top), please *
+     ----------------------------------------------------------
+
+## 2023-11-09 I. Hrivnacova (HadronNucleusXS-V11-01-01)
+- Coding guidelines - split long lines in XSHistoManager.cc
+
+06-01-23 Gabrielle Hugo (HadronNucleusXS-V11-01-00)
+- Created this example.
+

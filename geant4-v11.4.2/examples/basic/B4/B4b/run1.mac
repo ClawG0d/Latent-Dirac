@@ -1,0 +1,40 @@
+# Macro file for example B4
+#
+# Can be run in batch, without graphic
+# or interactively: Idle> /control/execute run1.mac
+# 
+# change the default number of workers (in multi-threading mode)
+#/run/numberOfThreads 4
+#
+# Kind of tutorial:
+# interactively with visualization, issue the commands one by one:
+# Idle> gun/particle mu+
+# Idle> ...etc... 
+#
+# Initialize kernel
+/run/initialize
+#
+# muon 300 MeV in direction (0.,0.,1.)
+/gun/particle mu+
+/gun/energy 300 MeV
+#
+/run/beamOn 1
+#
+/run/printProgress 5
+/run/beamOn 10
+#
+# inactivate multiple scattering process
+/process/inactivate msc
+/run/beamOn 10
+#
+# set a magnetic field 
+/globalField/setValue 2 0 0 tesla
+/run/beamOn 10
+#
+# re-activate multiple scattering
+/process/activate msc
+/run/beamOn 10
+#
+# verbosity
+/tracking/verbose 2
+/run/beamOn 1

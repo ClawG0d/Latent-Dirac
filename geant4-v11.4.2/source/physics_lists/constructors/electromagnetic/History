@@ -1,0 +1,1322 @@
+# Category phys-ctor-em History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2026-02-24 Vladimir Ivanchenko (phys-ctor-em-V11-03-16)
+- G4EmStandardPhysics_option4 - added a possibility to use external dEdx tables
+  for ions (problem #2703). It is done by substitution of the
+  G4LindhardSorencenIonModel model class by G4IonParameterisedModel.
+
+## 2025-10-29 Vladimir Ivanchenko (phys-ctor-em-V11-03-15)
+- G4OpticalPhysics - instantiate a process only if it is activated,
+    added option to instantiate a new G4GeneralCerenkov.
+
+## 2025-10-27 Mihaly Novak (phys-ctor-em-V11-03-14)
+- G4EmStandardPhysicsGS - update according to the changes in the GS MSC model,
+    the standard GS EM constructor is expected to provide accurate e-/e+
+    simulations now (similar accuracy as in Livermove, Penelope and option 4)
+
+## 2025-09-10 Vladimir Ivanchenko (phys-ctor-em-V11-03-13)
+- G4EmDNABuilder - use upper energy limits from G4EmParameters.
+
+## 2025-07-25 Vladimir Ivanchenko (phys-ctor-em-V11-03-12)
+- G4EmDNABuilder - restore usage of Born model of ionisation in the energy
+    interval 0.5 - 100 MeV.
+
+## 2025-07-19 Vladimir Ivanchenko (phys-ctor-em-V11-03-11)
+- G4EmDNAPhysics_option4, G4EmDNAPhysics_option6, G4EmDNAPhysics_option8
+    used fast option - a significant speed-up of physics.
+
+## 2025-07-16 Soon Yung Jun (phys-ctor-em-V11-03-10)
+- G4OpticalPhoton - add G4QuasiOpticalPhoton to support offloading of optical
+  photon generation
+
+## 2025-07-16 Vladimir Ivanchenko (phys-ctor-em-V11-03-09)
+- G4EmDNABuilder - used Rudd extended model for light ions in all physics
+    configurations instead of old Rudd model, which should improve CPU
+    performance; in opt8 configuration use the same models as in opt2 for
+    electrons; increased low-energy limit to 11 eV for the CPA100 elastic
+    scattering model
+
+## 2025-06-22 Vladimir Ivanchenko (phys-ctor-em-V11-03-08)
+- G4EmDNABuilder - fixed upper energy limit for ionisation of hydrogen.
+
+## 2025-06-20 Vladimir Ivanchenko (phys-ctor-em-V11-03-07)
+- G4EmDNABuilder - fixed enegy limits for excitation model for light ions,
+  for increase/decrease models. This modification provides a correct
+  printout and does not change any DNA physics result.
+
+## 2025-06-13 Vladimir Ivanchenko (phys-ctor-em-V11-03-06)
+- G4EmDNABuilder - fixed upper limit of energy increase/decrease processes,
+  they should the same as for ionisation and excitation processes
+
+## 2025-06-05 Vladimir Ivanchenko (phys-ctor-em-V11-03-05)
+- G4EmDNABuilder - for opt8 configuration use the same configuration of
+  models for e- and protons as in opt2.
+- in all DNA constructors the upper limit for DNA models for ions is set
+  to 300 MeV instead of 400 MeV.
+
+## 2025-05-25 Vladimir Ivanchenko (phys-ctor-em-V11-03-04)
+- G4GeneralGammaProcess - updated destructor according to modification in
+    electromagnetic/utils
+
+## 2025-05-22 Sebastien Incerti (phys-ctor-em-V11-03-03)
+- G4EmDNABuilder - replaced G4DNABornIonisationModel by
+  G4DNABornIonisationModel1 for proton ionisation
+
+## 2025-05-21 Vladimir Ivanchenko (phys-ctor-em-V11-03-02)
+- G4EmDNAPhysics_option6 - disable "fast" flag in order to have comparisons
+    with Opt4 in the same set of general DNA parameters.
+- G4EmDNAPhysics_stationary_X constructor - added disclaimer saying that
+    these constructors are obsolete.
+
+## 2025-02-12 Vladimir Ivanchenko (phys-ctor-em-V11-03-01)
+- G4EmDNABuilder - use new version of Born ionisation model.
+
+## 2025-02-12 Vladimir Ivanchenko (phys-ctor-em-V11-03-00)
+- G4EmDNABuilder, G4EmDNAPhysicsActivator - introduce usage of the new ion
+  ionisation model in DNA Opt8 physics configuration
+- G4EmDNAPhysics, G4EmDNAPhysics_option2, G4EmDNAPhysics_option4,
+  G4EmDNAPhysics_option6, G4EmDNAPhysics_option8 - update interface to
+  G4EmDNABuilder.
+
+## 2024-10-18 Vladimir Ivanchenko (phys-ctor-em-V11-02-12)
+- G4EmStandardPhysics_option3 - return back positron annihilation lost in
+    previous MR.
+
+## 2024-10-17 Vladimir Ivanchenko (phys-ctor-em-V11-02-11)
+- G4EmStandardPhysics_option3, G4EmStandardPhysics_option4, G4EmLivermorePhysics,
+  G4EmStandardPhysics, G4EmStandardPhysicsWVI - added a possibility to
+  enable/disable 3 gamma annihilation on fly, take into account rename of the
+  model G4eplusTo2GammaOKVIModel -> G4eplusTo2or3GammaModel. By default it is
+  enabled in G4EmStandardPhysics_option4 only. This option is not added to
+  the G4EmPenelopePhysics class, because it has the original Penelope model
+  for annihilation.
+
+## 2024-10-02 Hoang Tran (phys-ctor-em-V11-02-10)
+- Modified the molecule names of OH, HO2, O in MoleculeDefinition.
+  Each molecule configuration has a molecule definition.
+
+## 2024-09-10 Alberto Ribon (phys-ctor-em-V11-02-09)
+- G4ChargedUnknownPhysics : replaced G4hIonisation and G4hMultipleScattering
+  (which use G4ParticleDefinition) with the corresponding new classes
+  G4DynamicParticleIonisation and G4DynamicParticleMSC (which use only
+  G4DynamicParticle), respectively.
+
+## 2024-08-01 Alberto Ribon (phys-ctor-em-V11-02-08)
+- Created new constructor G4ChargedUnknownPhysics, to be used on top on any
+  reference physics list, to assign ionisation and multiple scattering
+  (as well as transportation) processes to charged primary particles with
+  valid PDG code but not known to Geant4.
+  ( This was requested by ATLAS and LHCb. )
+
+## 2024-05-23 Hoang Tran (phys-ctor-em-V11-02-07)
+- Use EmParameters to control chemistry models in G4EmDNAChemistry_option3.
+
+## 2024-05-19 Vladimir Ivanchenko (phys-ctor-em-V11-02-06)
+- G4EmStandardPhysics_option3, G4EmStandardPhysics_option4, G4EmLivermorePhysics,
+  G4EmLivermorePhysics, G4EmDNAPhysics - use fAllisonPositronium type of model
+  for sampling of positron annihilation at rest (as it is in 11.2).
+- G4EmStandardPhysics_option4 - use model alternative model for positron
+  annihilation on fly with 3-gamma annihilation channel enabled.
+
+## 2024-05-04 Vladimir Ivanchenko (phys-ctor-em-V11-02-05)
+- G4GammaGeneralProcess - updated according to change in EM data tables
+
+## 2024-04-05 Vladimir Ivanchenko (phys-ctor-em-V11-02-04)
+- G4EmDNABuilder - added nuclear stopping process for G4GenericIon below 1 MeV/u.
+- G4EmDNAPhysics, G4EmDNAPhysicsActivator, G4EmDNAPhysics_option2,
+  G4EmDNAPhysics_option4, G4EmDNAPhysics_option6, G4EmDNAPhysics_option8
+    change upper limit for DNA physics of Helium ions from 300 MeV to 400 MeV.
+
+## 2024-04-04 Vladimir Ivanchenko (phys-ctor-em-V11-02-03)
+- G4EmDNAPhysics - define default maximum kinetic energy 600 MeV
+    instead of 300 MeV in order to have standard ionisation and
+    multiple scattering always defined for DNA physics configurations.
+    This allows avoid situations when low-energy ions path DNA region
+    without interaction
+
+## 2024-02-07 Vladimir Ivanchenko (phys-ctor-em-V11-02-02)
+- G4EmStandardPhysics_option3 - return back step limit type to
+    fUseDistanceToBoundary and the default RangeFactor 0.04 from 0.03,
+    which will allow to restore more accurate distributions for several
+    tests for medical benchmark
+
+## 2024-02-04 Vladimir Ivanchenko (phys-ctor-em-V11-02-01)
+- G4GammaGeneralProcess - fixed sampling of muon pair production - problem 2543
+
+## 2024-01-27 Vladimir Ivanchenko (phys-ctor-em-V11-02-00)
+- G4EmStandardPhysicsWVI - return back ATIMA model for ionisation and
+    fluctuations of ions in order to make comparisons with other models.
+
+## 2023-11-09 Hoang Tran (phys-ctor-em-V11-01-13)
+- Correct subtype process of G4LowECapture in G4EmDNABuilder.
+
+## 2023-11-04 Hoang Tran (phys-ctor-em-V11-01-12)
+- Correct G4EmDNABuilder for proton constructors.
+
+## 2023-11-03 Jonas Hahnfeld (phys-ctor-em-V11-01-11)
+- `G4EmStandardPhysicsSS`: Remove unused includes.
+
+## 2023-10-23 Jonas Hahnfeld (phys-ctor-em-V11-01-10)
+- `G4EmStandardPhysicsSS`: Allow to use `G4TransportationWithMsc`.
+
+## 2023-10-11 Vladimir Ivanchenko (phys-ctor-em-V11-01-09)
+- G4EmDNABuilder - for DNA Opt4 and Opt6 restored configuration of Geant4 11.1.2
+    for protons in order to have under control results of various tests.
+
+## 2023-07-19 Vladimir Ivanchenko (phys-ctor-em-V11-01-08)
+- G4EmDNABuilder - for Opt2, 4, 6 use for protons and ions
+    G4DNARuddIonisationExtendedModel from zero to 100 MeV; ion capture
+    limit is set to 0.1 keV.
+
+## 2023-04-06 Hoang Tran (phys-ctor-em-V11-01-07)
+- Introduced G4ChemDissociationChannels and G4ChemDissociationChannels_option1
+
+## 2023-03-08 Gabriele Cosmo (phys-ctor-em-V11-01-06)
+- Fixed compilation warning on macOS/XCode for implicit type conversion
+  in G4EmModelActivator::FindOrAddProcess().
+
+## 2023-03-04 Vladimir Ivanchenko (phys-ctor-em-V11-01-05)
+- G4EmParticleList - added method EmChargedPartNames(), which returns a minimal
+    list of charged EM particles
+- G4EmModelActivator - fix #2530 - single scattering per region is implemented
+    by addition of extra sngle scattering process, which is active inside this
+    region, and not active outside; multiple scattering and single scattering
+    processes for a given charged particle are disabled to this region
+
+## 2023-02-27 Vladimir Ivanchenko (phys-ctor-em-V11-01-04)
+- G4EmModelActivator - attempt to fix #2530 - single scattering per region
+
+## 2023-02-24 Vladimir Ivanchenko (phys-ctor-em-V11-01-03)
+- G4GammaGeneralProcess - added method GetGammaNuclear() useful for testing
+
+## 2023-02-21 Vladimir Ivanchenko (phys-ctor-em-V11-01-02)
+- G4EmBuilder, G4EmStandardPhysicsSS - use new constructor for
+    the G4CoulombScattering process
+- G4EmModelActivator - use new constructor for the G4CoulombScattering process,
+    allow add G4EmStandardPhysicsSS on top of G4EmStandardPhysics_option3
+
+## 2023-02-16 Vladimir Ivanchenko (phys-ctor-em-V11-01-01)
+- G4EmBuilder, G4EmModelActivator, G4EmStandardPhysicsSS - fix #2530,
+    single scattering model definition per region for e+, e-, and light hadrons
+
+## 2022-12-09 Vladimir Ivanchenko (phys-ctor-em-V11-01-00)
+- G4GammaGeneralProcess - in all cases select sub-process (fix problem #2521)
+
+## 2022-11-24 Gabriele Cosmo (phys-ctor-em-V11-00-35)
+- Fixed compilation warnings for implicit type conversions on macOS/XCode 14.1.
+
+## 2022-11-15 Vladimir Ivanchenko (phys-ctor-em-V11-00-34)
+- G4EmBuilder - added G4AntiLambda and G4PionZero to the minimal
+    EM particle list to avoid warnings issued due to new hypernuclei
+
+## 2022-11-08 Vladimir Ivanchenko (phys-ctor-em-V11-00-33)
+- G4EmBuilder - added G4Lambda to the minimal EM particle list
+    needed for hyper-nuclei physics
+
+## 2022-11-04 Vladimir Ivanchenko (phys-ctor-em-V11-00-32)
+- G4EmBuilder - added e- and mu- neutrino and anti-neutrino to
+    the minimal EM particle list
+- G4EmDNABuilder - added minimal list of EM standard particles
+    to all DNA physics variants, this allowing enable radioactive
+    decay, provides correct printout of EM processes and models,
+    and fix problem #2412
+
+## 2022-10-14 Vladimir Ivanchenko (phys-ctor-em-V11-00-31)
+- G4EmDNABuilder - enable combination of DNA and standard physics
+
+## 2022-10-08 Vladimir Ivanchenko (phys-ctor-em-V11-00-30)
+- Increased upper limit of DNA proton/ion physics from 100 MeV
+  to 300 MeV in all DNA constructors
+- G4EmDNABuilder - introduced const upper limit 1 MeV for DNA
+    models; introduced const upper limit 2 MeV for standard
+    low-energy ionisation; use the same upper limit for DNA
+    excitation and ionisation
+
+## 2022-09-05 Ben Morgan (phys-ctor-em-V11-00-29)
+- Update public/private dependencies for consistency
+
+## 2022-08-30 Vladimir Ivanchenko (phys-ctor-em-V11-00-28)
+- Chemistry builders - added used headers
+
+## 2022-08-09 Vladimir Ivanchenko (phys-ctor-em-V11-00-27)
+- G4EmBuilder, G4EmDNAPhysics - instantiate singletones for physics
+
+## 2022-07-06 Vladimir Ivanchenko (phys-ctor-em-V11-00-26)
+- G4GammaGeneralProcess - fixed problem of Compton scattering selection
+    in the low energy interval < 150 keV identified in test67; apply
+    spline interpolation for tables at low energy (<150 keV) and at
+    high energy (> 100 MeV)
+
+## 2022-06-17 Vladimir Ivanchenko (phys-ctor-em-V11-00-25)
+- G4EmStandardPhysics_option4 - use Penelope ionisation model for e-
+    below 100 keV
+
+## 2022-06-05 Vladimir Ivanchenko (phys-ctor-em-V11-00-24)
+- G4EmBuilder - use check on process sub-type, do not substitute
+    G4CoupledTransportation with G4TransportationWithMsc
+
+## 2022-05-27 Vladimir Ivanchenko (phys-ctor-em-V11-00-23)
+- G4EmLivermorePhysics, G4EmPenelopePhysics, G4EmStandardPhysics_option4,
+    G4EmStandardPhysics_option3, G4EmStandardPhysics - selection of the
+    model of energy loss fluctuation is inside processes of ionisation
+    according to the type defined in G4EmParameters
+
+## 2022-05-24 Vladimir Ivanchenko (phys-ctor-em-V11-00-22)
+- G4EmLivermorePhysics, G4EmPenelopePhysics, G4EmStandardPhysics_option4 -
+    provided identical configuration for msc, muon, hadron, and ion
+    physics.
+
+## 2022-05-19 Vladimir Ivanchenko (phys-ctor-em-V11-00-21)
+- GNUmakefile, source.cmake - updated list of sub-libraries and includes
+
+## 2022-05-16 Vladimir Ivanchenko (phys-ctor-em-V11-00-20)
+- G4EmLivermorePhysics, G4EmPenelopePhysics, G4EmStandardPhysicsSS - use
+    G4LinhardSorensenIonModel for GenericIon
+- G4EmStandardPhysics, G4EmStandardPhysics_option3,
+  G4EmStandardPhysics_option4 - use G4GammaGeneralProcess by default
+
+## 2022-05-11 Jonas Hahnfeld (phys-ctor-em-V11-00-19)
+- Remove dependency on `G4magneticfield`
+
+## 2022-05-10 Jonas Hahnfeld (phys-ctor-em-V11-00-18)
+- `G4GammaGeneralProcess`: Implement new method `GetCreatorProcess()`
+
+## 2022-05-02 Jonas Hahnfeld (phys-ctor-em-V11-00-17)
+- `G4EmBuilder`: Enable internal stepping in `G4TransportationWithMsc`
+  if requested
+
+## 2022-04-27 Vladimir Ivanchenko (phys-ctor-em-V11-00-16)
+- G4EmStandardPhysics_option4 - use G4LinhardSorensenIonModel for GenericIon
+
+## 2022-04-24 Vladimir Ivanchenko (phys-ctor-em-V11-00-15)
+- GNUmakefile, source.cmake - updated according to really used sub-libraries
+
+## 2022-04-22 Vladimir Ivanchenko (phys-ctor-em-V11-00-14)
+- G4EmDNABuilder, G4EmDNAPhysicsActivator, and DNA constructors - updated
+    configuration for Opt2
+
+## 2022-04-19 Jonas Hahnfeld (phys-ctor-em-V11-00-13)
+- Honor option to enable `G4TransportationWithMsc`
+- Enable by default in `G4EmStandardPhysics_option1`
+
+## 2022-04-05 Vladimir Ivanchenko (phys-ctor-em-V11-00-12)
+- G4EmDNABuilder, G4EmDNAPhysicsActivator - fixed Opt4 and Opt5
+    configurations according to prescription
+
+## 2022-04-05 Vladimir Ivanchenko (phys-ctor-em-V11-00-11)
+- G4EmDNABuilder, G4EmDNAPhysicsActivator - fixed instantiation
+    of DNA elastic scattering and ionisation for e-
+
+## 2022-03-28 Vladimir Ivanchenko (phys-ctor-em-V11-00-10)
+- G4EmStandardPhysics_option3 - use G4LinhardSorensenIonModel for GenericIon
+
+## 2022-03-24 Vladimir Ivanchenko (phys-ctor-em-V11-00-09)
+- G4EmDNABuilder, G4EmDNAPhysicsActivator - make consistent
+    configuration of DNA physics on top of standard physics
+
+## 2022-03-15 Hoang Tran (phys-ctor-em-V11-00-08)
+- add SBS and IRT_syn models in G4EmDNAChemistry_option3
+
+## 2022-03-10 Vladimir Ivanchenko (phys-ctor-em-V11-00-07)
+- G4EmDNABuilder - added extra utility methods to find or to build
+    electron processes
+- G4EmDNAPhysics_option6, G4EmDNAPhysics_option8 - use "fast" option
+
+## 2022-03-04 Hoang Tran (phys-ctor-em-V11-00-06)
+- add G4DNABrownianTransportation in G4EmDNAChemistry_option3
+
+## 2022-02-24 Vladimir Ivanchenko (phys-ctor-em-V11-00-05)
+- G4EmDNABuilder - added option2,3,6,8 configurations
+- G4EmDNAPhysics_option6, G4EmDNAPhysics_option6,
+  G4EmDNAPhysics_option8 - use G4EmDNABuilder
+- G4EmDNAPhysics_option7, G4EmDNAPhysics_stationary_option6
+  G4EmDNAPhysics_option3, G4EmDNAPhysics_stationary_option2
+    maximally simplified
+- G4EmDNAPhysicsActivator - fixed for light ions
+- G4EmStandardPhysics_option4 - use G4UrbanFluctuation model
+    for e+- to address problem #2466
+
+## 2022-02-23 Vladimir Ivanchenko (phys-ctor-em-V11-00-04)
+- G4EmDNABuilder - added option4 configuration
+- G4EmDNAPhysics - address interface to G4EmDNABuilder
+- G4EmDNAPhysics_option4 - use G4EmDNABuilder
+- G4EmDNAPhysics_option5, G4EmDNAPhysics_stationary_option4
+    maximally simplified
+
+## 2022-02-22 Vladimir Ivanchenko (phys-ctor-em-V11-00-03)
+- G4EmDNABuilder - new utility class, which provides instantiation of
+    standard and DNA processes/models; this reduces code duplication
+    for DNA physics, energy intervals for DNA models are defined
+    in one place
+- G4EmDNAPhysics is the base class for DNA physics constructors
+- G4EmDNAPhysics_option1, G4EmDNAPhysics_stationary - maximally simplified
+
+## 2022-02-10 Vladimir Ivanchenko (phys-ctor-em-V11-00-02)
+- G4EmModelActivator - fixed mechanism to define PAI model per region
+
+## 2021-12-11 Vladimir Ivanchenko (phys-ctor-em-V11-00-01)
+- G4EmStandardPhysics_option3 - use options providing more accurate
+    simulation without loss of CPU performance: RangeFactor=0.03,
+    and SafetyPlus step limitation instead of DistanceToBoundary,
+    which significantly improving fanoCavity results
+
+## 2021-12-10 Ben Morgan (phys-ctor-em-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+12 November 2021, V.Ivanchenko (phys-ctor-em-V10-07-23)
+- G4EmStandardPhysicsWVI - making this experimantal configuration
+    compatible for CPU performance with Opt3 (it was similar to SS)
+
+10 November 2021, V.Ivanchenko (phys-ctor-em-V10-07-22)
+- G4EmStandardPhysicsWVI - use similar options as in Opt3, for ions
+    use G4LinhardSorensenIonModel
+- G4EmModelActivator - updated according to the current Opt3 and Opt4
+    configurations
+
+29 October 2021, M. Novak (phys-ctor-em-V10-07-21)
+- G4GammaGeneralProcess - make some methods/fields visible for
+    derived classes
+
+25 October 2021, V.Ivanchenko (phys-ctor-em-V10-07-20)
+- G4EmBuilder - complete addition of hyper-nuclei EM physics
+- in all DNA Physics List use SetAuger() instead of SetAugerCascade()
+
+22 October 2021, V.Ivanchenko (phys-ctor-em-V10-07-19)
+- G4EmBuilder - added hyper-nuclei EM physics
+
+12 October 2021, V.Ivanchenko (phys-ctor-em-V10-07-18)
+- G4EmBuilder - removed obsolete header
+
+27 September 2021, V.Ivanchenko (phys-ctor-em-V10-07-17)
+- G4EmBuilder - use more optimal order of instantiation of processes,
+    should not affect any result but useful for debugging
+
+30 August 2021, D.Sawkey (phys-ctor-em-V10-07-16)
+- G4OpticalPhysics - apply clang-format style guidelines
+
+11 July 2021, V.Ivanchenko (phys-ctor-em-V10-07-15)
+- G4GammaGeneralProcess -  use base material approach
+
+14 June 2021, V.Ivanchenko (phys-ctor-em-V10-07-14)
+- G4EmLivermorePhysics, G4EmPenelopePhysics_option1,
+  G4EmStandardPhysics_option3, G4EmStandardPhysics_option4,
+  G4EmLowEPhysics, G4EmStandardPhysicsSS - instantiate G4ePairProduction
+    process after ionisation and bremsstrahlung; this does not change
+    physics but helps to have debug printouts to be easier to understand
+
+03 June 2021, V.Ivanchenko (phys-ctor-em-V10-07-13)
+- G4EmLivermorePhysics - use G4LivermorePolarizedComptonModel
+    if polarisation is enabled
+- G4EmLEPTSPhysics - removed obsolete
+- G4EmDNAPhysics, G4EmDNAPhysics_stationary - code clean-up
+
+26 May 2021, V.Ivanchenko (phys-ctor-em-V10-07-12)
+- G4GammaGeneralProcess - updated interface in the Retrieve(..) method
+- G4EmDNAPhysics - updated configuration of standard physics for
+    gamma and positrons according to Opt3; updated particle list by
+    addition of G4Alpha; simplified ConstructProcess() method using
+    G4PhysicsListHelper
+
+22 May 2021, V.Ivanchenko (phys-ctor-em-V10-07-11)
+- Updated all standard Physics Lists: removed local member "verbose"
+  and use uniform approach for verbosity via G4EmParameters;
+  instantiate NIEL process only if parameter MaxNIELEnergy is above
+  zero; include gamma linear polarization model to Opt0, Opt3, Opt4,
+  SS, and Livermore physics constructors if the parameter
+  EnablePolarisation="true"; G4EmLivermorePolarizedPhysics fully
+  inherit from G4EmLivermorePhysics
+
+24 April 2021, V.Ivanchenko (phys-ctor-em-V10-07-10)
+- G4EmStandardPhysics, G4EmStandardPhysicsGS - set default verbosity 1
+
+16 April 2021 Ben Morgan (phys-ctor-em-V10-07-09)
+- Migrate build to modular CMake API
+
+13 April 2021, A.Ribon (phys-ctor-em-V10-07-08)
+-  GNUmakefile, sources.cmake : removed dependency on hadronic/model/util
+   and hadronic/model/management (that have been now deleted, with their
+   classes moved to hadronic/util and hadronic/management).
+
+23 March 2021, J.Brown (phys-ctor-em-V10-07-07)
+- Updated G4EmLowEPPhysics physics model configuration
+  See https://arxiv.org/abs/2102.02721 for details
+
+18 March 2021, V.Ivanchenko (phys-ctor-em-V10-07-06)
+- GeneralGammaProcess - reduced usage of protected variables
+- DNA PhysicsLists - used SeEmModel() with correct signature
+
+24 February 2021, D.Sawkey (phys-ctor-em-V10-07-05)
+- G4OpticalPhysicsList: remove deprecated optical commands
+
+16 February 2021, W.G.Shin (phys-ctor-em-V10-07-04)
+- G4EmDNAChemistry, _option1, _option2, _option3
+    added the dissociation channel for electron-hole recombination
+- G4EmDNAChemistry_option3 - change the pre-chemical model
+
+12 Febuary 2021, V.Ivanchenko (phys-ctor-em-V10-07-03)
+- G4EmBuilder - added geantinos to the minimal list of EM particles
+
+09 Febuary 2021, V.Ivanchenko (phys-ctor-em-V10-07-02)
+- G4EmLivermorePolarizedPhysics - removed unused header
+
+24 January 2021, V.Ivanchenko (phys-ctor-em-V10-07-01)
+- G4GammaGeneralProcess - reduced more 'if' operators in run time;
+    exclude gamma-nuclear from the 2nd energy area, because cross section
+    is zero; in the 4th energy interval include in the vector value of
+    1 - p instead of p, where p is cumulative probability of a sub-process
+
+18 January 2021, V.Ivanchenko (phys-ctor-em-V10-07-00)
+- G4GammaGeneralProcess - changed 1st energy limit from 50 keV to 150 keV
+    to guarantee K-shell energy for any element be within 1st energy area;
+    changed logic for selection of a concrete process - maximally reduced
+    use 'if' operators; reduce number of 'return' in run time methods;
+    remove shadowing of base class methods; expected more performant code
+
+04 November 2020, V.Ivanchenko (phys-ctor-em-V10-06-20)
+- G4GammaGeneralProcess - improved printouts and make some methods
+    protected
+
+04 October 2020, V.Ivanchenko (phys-ctor-em-V10-06-19)
+- G4GammaGeneralProcess - resolved problem of assigning of
+    a concrete process define step to post step point
+
+19 September 2020, V.Ivanchenko (phys-ctor-em-V10-06-18)
+- G4EmStandardPhysics_option4 - use ICRU90 data
+
+05 August 2020, V.Ivanchenko (phys-ctor-em-V10-06-17)
+- G4EmBuilder - substitute hardcoded upper limit by the value from the
+    G4HadronicParameters class
+
+20 July 2020, D.Sawkey (phys-ctor-em-V10-06-16)
+- G4OpticalPhysics, G4OpticalPhysicsMessenger, G4OpticalProcessIndex:
+    Move optical physics parameters to new G4OpticalParameters class.
+    G4OpticalPhysicsMessenger removed and replaced by G4OpticalParametersMessenger.
+    G4OpticalProcessIndex removed, code put in G4OpticalParameters.
+
+11 July 2020, V.Ivanchenko (phys-ctor-em-V10-06-15)
+- G4EmModelActivator - updated msc and PAI configurations to address
+    concerns reported in problem reports #2052 and #2106
+
+6 July 2020, M.Novak (phys-ctor-em-V10-06-14)
+- G4EmStandardPhysicsSS - use the new G4eDPWACoulombScatteringModel for e-/e+
+    below 100 [MeV] (for testing this new model)
+
+29 June 2020, V.Ivanchenko (phys-ctor-em-V10-06-13)
+- G4EmStandardPhysicsWVI - fixed typo
+
+15 June 2020, V.Ivanchenko (phys-ctor-em-V10-06-12)
+- G4EmBuilder - attempt to fix non-reproducibility in the MT mode when
+    radioactive decay is enabled
+
+6 June 2020, V.Ivanchenko (phys-ctor-em-V10-06-11)
+- G4EmBuilder - fixed non-reproducibility in the MT mode, added
+    isWVI flag allowing choose msc model
+- G4EmStandardPhysics_option3 - restore the same configuration
+    of EM models as in 10.6p02
+
+3 June 2020, V.Ivanchenko (phys-ctor-em-V10-06-10)
+- G4EmModelActivator - use the same options for physics per region as
+    used in EM constructors 10.6ref05, this is needed to be coherent with
+    several modifications in these configurations
+- G4EmStandardPhysics, G4EmStandardPhysics_option1, G4EmStandardPhysics_option2,
+  G4EmStandardPhysics_option3, G4EmStandardPhysics_option4 G4EmStandardPhysicsSS,
+  G4EmStandardPhysicsGS, G4EmStandardPhysicsWVI, G4EmLowEPhysics - use C++11
+    keywords
+
+1 June 2020, V.Ivanchenko (phys-ctor-em-V10-06-09)
+- G4EmStandardPhysicsGS, G4EmStandardPhysicsWVI, G4EmLowEPhysics,
+  G4LivermorePhysics, G4EmPenelopePhysics - remove duplicate code by using
+    G4EmBuilder, fix definition of StepFunction, use the same flag as
+    hadronic physics to enable EM interaction of b- and c- mesons and baryons
+- G4LivermorePolarizedPhysics - use inheritance from G4LivermorePhysics
+
+30 May 2020, V.Ivanchenko (phys-ctor-em-V10-06-08)
+- G4EmStandardPhysics, G4EmStandardPhysics_option1, G4EmStandardPhysics_option2,
+  G4EmStandardPhysics_option3, G4EmStandardPhysics_option4 G4EmStandardPhysicsSS,
+  G4EmBuilder - remove duplicate code by using G4EmBuilder, fix definition
+    of StepFunction, use the same flag as hadronic physics to enable EM
+    interaction of b- and c- mesons and baryons
+
+27 May 2020, A.Howard (phys-ctor-em-V10-06-07)
+- Added second wavelength shifter optical process to constructors in
+  G4OpticalPhysics, G4OpticalPhysicsMessenger, G4OpticalProcessIndex
+
+25 May 2020, V.Ivanchenko (phys-ctor-em-V10-06-06)
+- G4EmDNAModelActivator - M.J. Pietrzak extended to extra available DNA options
+    DNA_Opt2, DNA_Opt4, DNA_Opt4a, DNA_Opt6, DNA_Opt6a, DNA_Opt7
+- G4EmBuilder - new utility class which will allow reduce code duplication
+    for standard and low-energy EM physics constructors
+- G4EmStandardPhysics_option1 - swith to use new G4EmBuilder utility, fixed
+    StepFunction definition
+- G4EmStandardPhysics_option3 - swith to use new G4EmBuilder utility, use
+    ICRU90 stopping power data for water and air
+
+24 May 2020, D.Sawkey (phys-ctor-em-V10-06-05)
+- G4OpticalPhysics, G4OpticalPhysicsMessenger - setting for G4Scintillation
+  to use 3 time constants
+
+04 April 2020, V.Ivanchenko (phys-ctor-em-V10-06-04)
+- G4EmStandardPhysics_option3 - return back UseDistanceToBoundary
+
+23 March 2020, V.Ivanchenko (phys-ctor-em-V10-06-03)
+- G4EmStandardPhysics_option3 - switch from UseDistanceToBoundary to
+    UseSafetyPlus
+
+23 February 2020, W.G.Shin (phys-ctor-em-V10-06-02)
+- fixed comments
+
+10 January 2020, W.G.Shin (phys-ctor-em-V10-06-01)
+- added new chemistry constructor option 3 for IRT
+
+21 December 2019, V.Ivanchenko (phys-ctor-em-V10-06-00)
+- G4EmModelActivator - fixed configuration of the default EM multiple
+  scattering on top of any other physics configuration (problem #2106)
+
+19 October 2019, W.G.Shin, S.Incerti (phys-ctor-em-V10-05-17)
+- added new ELSEPA elastic model for Geant4-DNA in G4EmDNAPhysics_option2
+
+13 September 2019, V.Ivanchenko (phys-ctor-em-V10-05-16)
+- G4EmLivermorePhysics, G4EmLowEPPhysics, G4EmStandardPhysics_option4
+    use SetEmModel(..) instead of AddEmModel(..) for gamma conversion
+
+11 September 2019, D.Sawkey (phys-ctor-em-V10-05-15)
+- G4OpticalPhysics - set boundary process to last. Fix bug 2113.
+
+02 September 2019, M.Novak (phys-ctor-em-V10-05-14)
+- G4EmLivermorePhysics, G4EmLowEPPhysics, G4EmStandardPhysics_option4 - updated
+    settings of the gamma conversion process to provide the original model
+    combinations when the low energy G4BetheHeitlerModel model was replaced by
+    the G4BetheHeitler5DModel.
+
+14 August 2019, V.Ivanchenko (phys-ctor-em-V10-05-13)
+- G4GammaGeneralProcess - fixed "Base Material" use case
+- G4EmStandardPhysics_option2, G4EmStandardPhysics_option3 - implement
+    "General Process" option for gamma
+- G4EmStandardPhysics_option4 - use 5D model for gamma conversion
+
+21 July 2019, M.Novak (phys-ctor-em-V10-05-12)
+- G4GammaGeneralProcess - use the new, optimised log-vector access method
+
+20 July 2019, V.Ivanchenko (phys-ctor-em-V10-05-11)
+- G4EmStandardPhysicsSS - in the case if Mott correction flag is TRUE
+    apply G4eSingleCoulombScatteringModel both for e+ and e-
+
+21 May 2019, V.Ivanchenko (phys-ctor-em-V10-05-10)
+- G4EmLivermorePhysics, G4EmPenelopePhysics, G4EmStandardPhysics_option4,
+  G4EmStandardPhysics_option3 - define upper energy limit for nuclear
+    stopping via EM parameters
+  all DNA constructors - added ActivateDNA() flag to EM parameters
+
+09 April 2019, H.Tran (phys-ctor-em-V10-05-09)
+- added G4EmDNAChemistry_option2
+
+05 April 2019, S.Incerti (phys-ctor-em-V10-05-08)
+- added sub-excitation processes in G4EmDNAPhysics_option8
+
+20 March 2019, D.Sawkey (phys-ctor-em-V10-05-07)
+- G4OpticalPhysics, G4OpticalPhysicsMessenger - put all UI commands
+  into messenger class; fix bug 2085; deprecate commands with
+  /default/ in command string
+
+10 March 2019, M. Karamitros (phys-ctor-em-V10-05-06)
+- G4EmDNAChemistry constructors: follow emdna changes
+
+07 March 2019, V.Ivanchenko (phys-ctor-em-V10-05-05)
+- G4EmLivermorePhysics, G4EmPenelopePhysics - make msc configuration
+    as in Opt4 : RangeFactor=0.08, Skin=3, UserSafetyPlus
+- G4EmModelActivator - fixed problem 2106
+
+08 February 2019, W. G. Shin, S. Incerti (phys-ctor-em-V10-05-04)
+- added handling of UI thermalization model control in
+G4EmDNAPhysics_option1,3,5,7,8
+
+06 February 2019, W. G. Shin, S. Incerti (phys-ctor-em-V10-05-03)
+- added handling of UI thermalization model control in
+G4EmDNAPhysics_option2,4,6
+
+18 January 2019, V.Ivanchenko (phys-ctor-em-V10-05-02)
+- G4EmStandardPhysicsWVI - use G4eplusTo2GammaOKVIModel with 3-gamma
+    annihilation for e+
+
+14 January 2019, V.Ivanchenko (phys-ctor-em-V10-05-01)
+- G4EmStandardPhysics_option4 - change RangeFactor to 0.08 in
+    order to have expected results from fanoCavity test (M.Novak)
+
+19 December 2018, V.Ivanchenko (phys-ctor-em-V10-05-00)
+- G4EmModelActivator - fixed clang7 compilation warning
+
+27 November 2018, V.Ivanchenko (phys-ctor-em-V10-04-21)
+- G4EmStandardPhysics_option2 - use the same models and parameters as
+    in LHCb EM physics constructor
+
+26 November 2018, V.Ivanchenko (phys-ctor-em-V10-04-20)
+- G4EmDNAChemistry, G4EmDNAChemistry_option1 - fixed typo in headers
+
+15 November 2018, V.Ivanchenko (phys-ctor-em-V10-04-19)
+- G4EmStandardPhysics_option3 - use Alg96 lateral displacement sampling
+  (address issue reported in HyperNews/geant4/get/emprocess/1516.html)
+
+9 November 2018, V.Ivanchenko (phys-ctor-em-V10-04-18)
+- G4EmLivermorePhysics - return back 5D gamma conversion model
+
+8 November 2018, S. Incerti (phys-ctor-em-V10-04-17)
+- G4EmDNAPhysics_option7: fix for electron models combination
+
+2 November 2018, V.Ivanchenko (phys-ctor-em-V10-04-16)
+- G4EmStandardPhysics_option4, G4EmStandardPhysics_option3 - cleaned up
+    definition of nuclear stopping process
+- G4EmStandardPhysicsWVI - use Opt3 parameters, use new ATENA ion
+    stopping model
+- G4EmLowEPPhysics - use Opt3 parameters, use Lindhard-Sorensen ion
+    stopping model, use ICRU90 stopping for protons and alpha
+
+27 October 2018, V.Ivanchenko (phys-ctor-em-V10-04-15)
+- G4EmLivermorePhysics - fixed nightly problem
+
+26 October 2018, D.Sawkey (phys-ctor-em-V10-04-14)
+- G4OpticalPhysicsMessenger, G4OpticalPhysics: fix documentation (bug #2020)
+
+26 October 2018, V.Ivanchenko (phys-ctor-em-V10-04-13)
+- G4EmStandardPhysics_option1 - disabled general gamma process
+- G4EmLivermorePhysics, G4EmPenelopePhysics - set stepping function
+    parameters for muons and hadrons to (0.2,50*um)
+- G4EmStandardPhysics_option3 - set stepping function parameters for muons
+    and hadrons to (0.2,50*um), enable Mott corrections, use the most recent
+    version of lateral displacement for the Urban model
+- G4EmStandardPhysics_option4 - set stepping function parameters for muons
+    and hadrons to (0.1,20*um)
+
+01 October 2018, V.Ivanchenko (phys-ctor-em-V10-04-12)
+- G4EmParticles - extended list of particle (Bc+-, OmegaB, XiB,
+    SigmaB)
+
+26 September 2018, V.Ivanchenko (phys-ctor-em-V10-04-11)
+- G4GammaGeneralProcess - a new class
+- G4EmStandardPhysics, G4EmStandardPhysics_option1,
+  G4EmStandardPhysics_option4 - renamed gamma general process class
+
+20-September-2018 J. Ramos-Mendez (phys-ctor-em-V10-04-10)
+- Addition of G4EmDNAPhysics_option8, G4EmDNAChemistry_option1
+
+20-September-2018 V.Ivanchenko (phys-ctor-em-V10-04-09)
+- G4EmStandardPhysics_option4, G4EmLivermorePhysics,
+  G4EmPenelopePhysics, G4EmPolarizedLivermorePhysics - use the same
+  GS msc model configuration and the same configurations for hadrons
+  and ions
+- G4EmLowEPPhysics - use the same configurations for hadrons
+
+22-August-2018 V.Ivanchenko (phys-ctor-em-V10-04-08)
+- G4GammaSuperProcess fixed for gamma-nuclear process
+
+18-August-2018 V.Ivanchenko (phys-ctor-em-V10-04-07)
+- G4GammaSuperProcess, G4EmStandardPhysics,
+- G4EmStandardPhysics_option1, G4EmStandardPhysics_option4
+    updated usage of gamma super process
+
+30-July-2018 V.Ivanchenko (phys-ctor-em-V10-04-06)
+28-July-2018 V.Ivanchenko (phys-ctor-em-V10-04-04)
+- G4GammaSuperProcess - new class
+- G4EmStandardPhysics_option1 - enable gamma super process
+- G4EmStandardPhysics - added possibility to use gamma super process
+- G4EmLowEPPhysics - added bremsstrahlung and pair production for ions
+
+17-May-2018 V.Ivanchenko (phys-ctor-em-V10-04-03)
+- G4EmModelActivator - fixed GS and Opt3 configurations
+
+27-April-2018 V.Ivanchenko (phys-ctor-em-V10-04-02)
+- in several constructors return back the order of photo-effect
+  and Compton in order to keep log file stable
+
+27-April-2018 V.Ivanchenko (phys-ctor-em-V10-04-01)
+- G4EmStandardPhysics_option1, G4EmStandardPhysics_option2 - use
+    Livermore photo-effect model
+- G4EmStandardPhysics_option4, G4EmLivermorePhysics,
+  G4EmPenelopePhysics - upper energy limit 100 TeV
+- G4EmLowEPPhysics - use new 5D gamma conversion model below 80 GeV,
+    use new Lindhard-Sorensen ion ionisation model above 20 MeV/u
+- G4EmModelActivator - modified accordingly
+
+28-March-2018 V.Ivanchenko (phys-ctor-em-V10-04-00)
+- G4EmStandardPhysics, G4EmStandardPhysics_option1,
+  G4EmStandardPhysics_option2, G4EmStandardPhysics_option4,
+  G4EmLowEPPhysics, G4EmPenelopePhysics, G4EmLivermorePhysics,
+  G4EmLivermorePolarizedPhysics, G4EmStandardPhysicsGS - use new
+    parameter MscEnergyLimit() (default is 100 MeV) allowing
+    customise transition from low-energy multiple scattering to
+    high energy combination of multiple and single scattering
+- G4EmModelActivator - fixed Opt4 and single scattering (problem #2045)
+
+07-November-2017 V.Ivanchenko (phys-ctor-em-V10-03-37)
+- G4EmStandardPhysics_option4 - enable Auger cascade
+
+03-November-2017 V.Ivanchenko (phys-ctor-em-V10-03-36)
+- G4EmStandardPhysics, G4EmStandardPhysics_option1,
+  G4EmStandardPhysics_option2 - use defalt (one of 9.6) Urban msc
+    lateral displacemet algorithm for e+-
+- G4EmStandardPhysics_option3, G4EmLowEPPhysics, G4EmPenelopePhysics,
+  G4EmLivermorePhysics, G4EmLivermorePolarizedPhysics - use new
+    Urban lateral displacement algorithm
+
+30-October-2017 M.Novak (phys-ctor-em-V10-03-35)
+- G4EmStandardPhysicsGS, G4EmStandardPhysics_option4
+    - default HEP settings of the GS physics constructor
+    - follow-up modification in opt4 according to recent (emstand-V10-03-45)
+      changes in the GS msc model
+
+28-October-2017 V.Ivanchenko (phys-ctor-em-V10-03-34)
+- G4EmDNAModelActivator - fixed for hydrogen
+
+25-October-2017 V.Ivanchenko (phys-ctor-em-V10-03-33)
+- G4EmDNAModelActivator - fixed for generic ions
+- G4EmStandardPhysics_option4 - use different G4NuclearStopping
+    instance for G4GenericIon and other baryons
+
+12-October-2017 V.Ivanchenko (phys-ctor-em-V10-03-32)
+- G4EmDNAModelActivator - fixed for helium ions
+
+11-October-2017 V.Ivanchenko (phys-ctor-em-V10-03-31)
+- G4EmDNAModelActivator - fixed configuration of helium and Generic ions
+- G4EmStandardPhysics, G4EmStandardPhysics_option1,
+  G4EmStandardPhysics_option2 - use new parameter SetLateralDisplacementAlg96
+
+22-September-2017 M.Novak (phys-ctor-em-V10-03-30)
+- G4EmStandardPhysics_option4 - change msc model for e-/e+ below
+    100 MeV from Urban + UseDistanceToBoundary stepping to
+    GS + Mott-correction + error-free stepping.
+
+16-September-2017 V.Ivanchenko (phys-ctor-em-V10-03-29)
+- G4EmStandard_option3 - use default Urban model of fluctuations
+
+24-August-2017 M.Novak (phys-ctor-em-V10-03-27)
+- G4EmStandardPhysicsGS - use the most accurate settings for the GS
+    MSC model (error-free stepping and Mott-correction) for testing.
+
+24-August-2017 V.Ivanchenko (phys-ctor-em-V10-03-26)
+- G4EmModelActivator - allow to use both "PAIphoton" and "pai_photon"
+    names when activating PAIphoton model
+- G4EmLivermorePolarizedPhysics - use upper limit 100 TeV, do not apply
+    high energy limit 1 GeV to gamma processes
+- G4EmLivermorePhysics, G4EmPenelopePhysics - cleanup
+
+10-August-2017 V.Ivanchenko (phys-ctor-em-V10-03-25)
+05-August-2017 V.Ivanchenko (phys-ctor-em-V10-03-23)
+-  all DNA physics constructors use gamma configuration as in
+   Livermore, fixed usage of SetEmModel() and AddEmModel()
+
+04-August-2017 V.Ivanchenko (phys-ctor-em-V10-03-22)
+04-August-2017 V.Ivanchenko (phys-ctor-em-V10-03-21)
+-  all EM physics constructors now does not share multiple and single
+   scattering processes between proton and anti_proton
+
+03-August-2017 V.Ivanchenko (phys-ctor-em-V10-03-20)
+03-August-2017 V.Ivanchenko (phys-ctor-em-V10-03-17)
+- all EM physics constructors now use G4EmParticleList
+- G4EmDNAPhysicsActivator - coherently initialise models
+
+02-August-2017 V.Ivanchenko (phys-ctor-em-V10-03-16)
+29-July-2017 V.Ivanchenko (phys-ctor-em-V10-03-13)
+- G4EmDNAPhysicsActivator - apply solatation model below 7.4 eV
+    (was 4 eV) in order to absorb low-energy e-; general cleanup
+
+06-June-2017 V.Ivanchenko (phys-ctor-em-V10-03-12)
+- G4EmStandardPhysics_option3 - use G4UniversalFluctuation2017
+    for energy loss fluctuation of e+-, protons, anti_protons
+
+01-June-2017 V.Ivanchenko (phys-ctor-em-V10-03-11)
+- G4EmStandardPhysicsSS - use G4hCoulombScatteringModel to take into
+    account relativistic corrections
+
+01-June-2017 V.Ivanchenko (phys-ctor-em-V10-03-10)
+- G4EmStandardPhysicsWVI - use G4WentzelVIRelModel and
+    G4hCoulombScatteringModel to take into account relativistic
+    corrections
+
+08-May-2017 V.Ivanchenko (phys-ctor-em-V10-03-09)
+- G4EmStandardPhysics - use RayleighScattering and LivermorePhotoElectricModel
+
+04-May-2017 V.Ivanchenko (phys-ctor-em-V10-03-08)
+- G4EmStandardPhysics_option4 - set finalStep for all changed
+    10 um (except GenericIon), this will somehow slow down the
+    simulation but increase accuracy of range simulation
+- G4EmParticleList - new class with the list of particles,
+    for whichg EM processes are instantiated
+- G4EmModelActivator - fixed Opt4 and SS per region
+
+29-April-2017 S.Incerti (phys-ctor-em-V10-03-07)
+- added stationary Geant4-DNA constructors
+
+25-April-2017 V.Ivanchenko (phys-ctor-em-V10-03-06)
+- G4EmStandardPhysicsWVI - revert back
+- G4EmStandardPhysicsSS - apply single scattering to all particles
+    (bug fix #1966)
+
+27-March-2017 V.Ivanchenko (phys-ctor-em-V10-03-05)
+- G4EmStandardPhysicsWVI - use G4WentzelVIRelModel and
+    G4hCoulombScatteringModel to take into account relativistic
+    corrections
+
+19-January-2017 P. Gumplinger (phys-ctor-em-V10-03-04)
+- add setCerenkov/ScintillationStackPhotons commands to
+  G4OpticalPhysicsMessenger and use them in G4OpticalPhysics
+
+02-January-2017 S. Incerti (phys-ctor-em-V10-03-03)
+- added elastic scattering process for ions to all DNA constructors
+
+27-December-2016 S. Incerti (phys-ctor-em-V10-03-02)
+- fixed compilation error
+
+27-December-2016 S. Incerti (phys-ctor-em-V10-03-01)
+- added G4EmDNAPhysics_option6
+
+16-December-2016 V.Ivanchenko (phys-ctor-em-V10-03-00)
+- G4EmModelActivator - use new access methods RegionsPhysics() and
+    TypesPhysics() instead of RegionsMsc() and TypesMsc()
+
+02-December-2016 V.Ivanchenko (phys-ctor-em-V10-02-38)
+- G4EmModelActivator - added initialisation of atomic deexcitation
+    for radioactive decay (also for the cases when radioactive
+    decay is registered before EM physics or is the only process)
+
+15-November-2016 V.Ivanchenko (phys-ctor-em-V10-02-37)
+- G4EmModelActivator - fixed PAI model activation (disable for ions)
+
+03-November-2016 V.Ivanchenko (phys-ctor-em-V10-02-36)
+- G4EmModelActivator - added SS PhysList per region
+
+20-October-2016 M.Maire   (phys-ctor-em-V10-02-35)
+- README : start to fill
+
+17-October-2016 M.Maire   (phys-ctor-em-V10-02-34)
+- add README
+
+11-October-2016 G.Folger  (phys-ctor-em-V10-02-33)
+- replace direct use of aParticleIterator by GetParticleIterator().
+
+11-October-2016 S.Incerti (phys-ctor-em-V10-02-32)
+- G4EmDNAPhysics* - retry of activation of atomic deex. conf.
+
+05-October-2016 V.Ivanchenko (phys-ctor-em-V10-02-31)
+- G4EmStandardPhysics_option4 - disable lateral displacement
+    beyond safety
+
+05-October-2016 S.Incerti (phys-ctor-em-V10-02-30)
+- G4EmDNAPhysics* - reconfigured activation of atomic deexcitation
+
+03-October-2016 S.Incerti (phys-ctor-em-V10-02-29)
+- G4EmDNAPhysics - added G4EmParameters::Instance()->SetDefaults();
+
+23-September-2016 V.Ivanchenko (phys-ctor-em-V10-02-28)
+- G4EmStandardPhysicsWVI - disable lateral displacement beyond safety
+
+26-August-2016 V.Ivanchenko (phys-ctor-em-V10-02-27)
+25-August-2016 V.Ivanchenko (phys-ctor-em-V10-02-26)
+- G4EmModelActivator - added configuration of EM physics per G4Region
+    via UI commands
+- G4EmLivermorePhysics, G4EmPenelopePhysics, G4EmStandardPhysicsGS,
+  G4EmLivermorePolarizedPhysics, G4EmStandardPhysicsWVI - use the same
+    style names for EM physics constructors
+
+10-August-2016 V.Ivanchenko (phys-ctor-em-V10-02-25)
+- G4EmModelActivator - simplified interface, removed not needed methods
+
+03-August-2016 V.Ivanchenko (phys-ctor-em-V10-02-24)
+- Opt3, Livermore and Penelope enable sampling of lateral displacement
+  for hadrons
+
+28-July-2016 V.Ivanchenko (phys-ctor-em-V10-02-23)
+- G4EmDNAPhysicsActivator - introduced new methods for DNA configuration
+    per particle type
+
+25-July-2016 V.Ivanchenko (phys-ctor-em-V10-02-22)
+- In all EM builders only one explicit constructor is left
+- Livermore and Penelope physics defined below 1 TeV (default 100 TeV)
+
+22-July-2016 V.Ivanchenko (phys-ctor-em-V10-02-21)
+- G4EmDNAPhysicsActivator - new class for DNA models configuration
+- G4EmModelActivator - take out DNA physics and move it to the new
+    class G4EmDNAPhysicsActivator
+
+06-June-2016 M. Karamitros (phys-ctor-em-V10-02-20)
+- G4EmModelActivator: Correct elastic process name for ions
+
+03-June-2016 M. Karamitros (phys-ctor-em-V10-02-19)
+- G4EmModelActivator: Use Uehara model with chemistry
+- G4EmDNAPhysics: load G4EmParameters
+
+02-June-2016 V.Ivanchenko (phys-ctor-em-V10-02-18)
+- G4EmModelActivator - fixed activation of DNA models
+
+28-May-2016 M. Karamitros (phys-ctor-em-V10-02-17)
+- G4EmDNAPhysics_option7: correct preproc flag
+
+24-May-2016 M. Novak (phys-ctor-em-V10-02-16)
+- G4EmStandardPhysicsGS: change back default step limit type to opt0 like
+  and set default range factor to 0.1
+
+17-May-2016 M. Karamitros (phys-ctor-em-V10-02-15)
+- DNA and ModelActivator constructors:
+* correct model/process names
+* adjust high energy threshold of solvation (kill) in respect to the energy range 
+of the elastic model
+
+12-May-2016 M. Karamitros (phys-ctor-em-V10-02-14)
+- Add G4DNAElectronSolvation to all DNA constructors
+- Update G4EmModelActivator
+
+27-Apr-2016 M.Novak (phys-ctor-em-V10-02-13)
+- G4EmStandardPhysicsGS: changed default step limit type to error-free
+
+23-Apr-2016 M. Karamitros (phys-ctor-em-V10-02-12)
+- G4EmDNAChemistry: G4DNAElectronSolvatation->G4DNAElectronSolvation
+
+20-Apr-2016 S. Incerti (phys-ctor-em-V10-02-11)
+- updated G4EmDNAPhysics_option5
+
+30-Mar-2016 V.Ivanchenko (phys-ctor-em-V10-02-10)
+- G4EmStandardPhysics_option3 - fixed typo: uncomment commented line
+
+29-Mar-2016 V.Ivanchenko (phys-ctor-em-V10-02-09)
+- G4EmStandardPhysics_option3, option4 - added process of e+e-
+    pair creation by e+ and e-; enable lateral displacement for
+    muons and hadrons
+
+21-Mar-2016 S. Incerti (phys_ctor-em-V10-02-08)
+- added updated G4EmDNAPhysics_option7
+
+07-Mar-2016 P. Gumplinger (phys_ctor-em-V10-02-07)
+- add flag and command whether or not to call InvokeSD method
+  of G4OpBoundaryProcess
+
+07-Mar-2016 M. Karamitros (phys_ctor-em-V10-02-06)
+- remove G4EmDNAPhysics_option7 from sources.cmake
+
+07-Mar-2016 M. Karamitros (phys_ctor-em-V10-02-05)
+- remove G4EmDNAPhysics_option7
+
+03-Mar-2016 I.Hrivnacova (phys_ctor-em-V10-02-04)
+- fixed G4Exception message in G4OpticalPhysicsMessenger
+
+01-Mar-2016 P.Gumplinger (phys_ctor-em-V10-02-03)
+- fix Coverity error of uninitialized fScintillationTrackInfo
+
+26-Feb-2016 P.Gumplinger (phys-ctor-em-V10-02-02)
+- addressing part of bug report 1832 as suggested by Ivana Hrivnacova
+
+05-Feb-2016 P.Gumplinger (phys-ctor-em-V10-02-01)
+- fix val-grind memory leakage check tool flag in G4OpticalPhysicsMessenger
+
+02-Feb-2016 P.Gumplinger (phys-ctor-em-V10-02-00)
+- add SetScintillationTrackInfo to G4OpticalPhysics with
+  associated command in G4OpticalPhysicsMessenger
+
+09-Nov-2015 V.Ivanchenko (phys-ctor-em-V10-01-22)
+- G4EmStandardPhysicsSS - allowing optional model with Mott
+    correction for e-
+
+28-Oct-2015 V.Ivanchenko (phys-ctor-em-V10-01-21)
+- G4EmStandardPhysicsGS - M. Novak tunned parameters and make
+    it compatible with standard Opt0
+
+16-Sept-2015 V.Ivanchenko (phys-ctor-em-V10-01-20)
+- define fluo flag in constructors of all EM constructors
+- G4EmStandardPhysics_option3, G4EmStandardPhysicsWVI,
+  G4EmStandardPhysicsSS, G4EmStandardPhysicsGS
+    - use G4LivermorePhotoElectricModel and G4KleinNishinaModel
+- G4EmStandardPhysics, G4EmStandardPhysics_option1,2 - set
+    new Urban msc lateral displacement off
+
+02-Sept-2015 V.Ivanchenko (phys-ctor-em-V10-01-19)
+- G4EmStandardPhysics_option4 - use WVI+SS for pions, kaons, p, pbar
+- G4EmStandardPhysicsGS - use PWA screening option for e+,
+    RangeFactor=0.15, UseSafetyPlus step limit
+- G4EmStandardPhysicsWVI - RangeFactor=0.15
+
+14-Aug-2015, S.Incerti (phys-ctor-em-V10-01-18)
+- added G4DNARuddIonisationExtendedModel to G4EmDNAPhysics_option5
+
+14-Aug-2015, S.Incerti (phys-ctor-em-V10-01-17)
+- corrected proton energy limits in G4EmDNAPhysics_option2
+
+27-July-2015 V.Ivanchenko (phys-ctor-em-V10-01-16)
+- G4EmLivermorePhysics, G4EmLowEPPhysics, G4EmPenelopePhysics,
+  G4EmStandardPhysics_option3,4 - set lowest e+- energy to 100 eV
+  G4EmStandardPhysicsWVI,  G4EmStandardPhysicsSS,
+  G4EmStandardPhysicsGS - set lowest e+- energy to 10 eV
+
+20-July-2015 D.Sawkey (phys-ctor-em-V10-01-15)
+- G4EmLivermorePhysics, G4EmLowEPPhysics, G4EmPenelopePhysics,
+  G4EmStandardPhysics_option[1,2,3,4], G4EmStandardPhysicsWVI,
+  G4EmStandardPhysicsSS, G4EmStandardPhysics,
+  G4EmLivermorePolarizedPhysics, G4EmDNAPhysics_option[1,2,3,4,5]
+  - call G4EmParameters::Instance()->SetDefaults() in ctor for
+  each electromagnetic physics list
+
+10-July-2015, M. Karamitros (phys-ctor-em-V10-01-14)
+- G4EmDNAChemistry : adapt for new elastic model
+- G4DNAPhysics_option5 : add Born models for energy regions
+where Emfietzoglou models do not apply
+
+08-July-2015, M. Karamitros (phys-ctor-em-V10-01-13)
+- G4EmDNAChemistry : use G4MolecularConfiguration instead of
+G4Molecule
+- G4EmModelActivator : Add Ion elastic model + cosmetics
+
+25-June-2015, S.Incerti (phys-ctor-em-V10-01-12)
+- updated G4EmDNAPhysics_option1 for GenericIon usage
+
+17-June-2015, S.Incerti (phys-ctor-em-V10-01-11)
+- added G4EmDNAPhysics_option5
+
+10-June-2015, V.Ivanchenko (phys-ctor-em-V10-01-10)
+- G4EmModelActivator - fixed Coverity report
+- G4EmStandardPhysicsGS, G4EmStandardPhysicsSS,
+  G4EmStandardPhysicsWVI - enable Rayleigh scattering and fluorescence
+
+05-June-2015, V.Ivanchenko (phys-ctor-em-V10-01-09)
+- added G4EmStandardPhysicsGS - use Goudsmity-Saunderson msc model
+    for e+e- below 100 MeV
+
+03-June-2015, V.Ivanchenko (phys-ctor-em-V10-01-08)
+- G4EmStandardPhysics_option4 configure Penelope ionisation for
+    e+- below 1 MeV
+
+03-June-2015, V.Ivanchenko (phys-ctor-em-V10-01-07)
+- G4EmModelActivator - new helper class to activate PAI, MicroElec
+    and DAN models per G4Region
+- G4EmLivermorePhysics, G4EmLowEPPhysics, G4EmPenelopePhysics,
+  G4EmStandardPhysics_option1, G4EmStandardPhysics_option2,
+  G4EmStandardPhysics_option3, G4EmStandardPhysics_option4
+  G4EmStandardPhysicsWVI, G4EmStandardPhysicsSS,
+  G4EmLivermorePolarizedPhysics - use G4EmModelActivator
+- G4EmStandardPhysicsSS - full activation of the de-excitation module
+
+24-May-2015, S.Incerti (phys-ctor-em-V10-01-06)
+- added G4EmDNAPhysics_option4
+
+04-Mar-2015, V.Ivanchenko (phys-ctor-em-V10-01-05)
+- G4EmLivermorePhysics, G4EmLowEPPhysics, G4EmPenelopePhysics,
+  G4EmStandardPhysics_option1, G4EmStandardPhysics_option2,
+  G4EmStandardPhysics_option3, G4EmStandardPhysics_option4
+    parameters for multiple scattering are defined via
+    G4EmParameters class
+
+16-Feb-2015, V.Ivanchenko (phys-ctor-em-V10-01-04)
+- G4EmStandardPhysicsWVI - disable DisplacementBeyondSafety for
+    the same reason as in previous tag
+
+13-Jan-2015, V.Ivanchenko (phys-ctor-em-V10-01-03)
+- G4EmStandardPhysics_option4 - disable DisplacementBeyondSafety
+    option (result of electron scattering benchmark demonstrate
+    some degradation of accuracy with this option enabled)
+
+17-Dec-2014, V.Ivanchenko (phys-ctor-em-V10-01-02)
+- G4EmStandardPhysicsWVI - added angular limit to WentzelVI model
+    in order to provide correct backscattering (fixing problem #1702)
+
+14-Dec-2014, S. Incerti (phys-ctor-em-V10-01-01)
+- G4EmDNAPhysics_option3: created
+
+13-Dec-2014, S. Incerti (phys-ctor-em-V10-01-00)
+- G4EmDNAPhysics_option2: created
+
+28-Nov-2014, M. Karamitros (phys-ctor-em-V10-00-27)
+- G4EmDNAChemistry: remove useless activation line
+
+24-Nov-2014, M. Karamitros (phys-ctor-em-V10-00-26)
+- G4EmDNAChemistry: initialization procedure of the chemistry reviewed
+G4DNAChemistryManager::Instance()->Initialize() is called from
+G4EmDNAChemistry::ConstructProcess.
+- Elastic scattering models are extended to low energies to avoid killing the
+electrons --> should be converted into a solvated electron
+
+21-Nov-2014, M. Karamitros (phys-ctor-em-V10-00-25)
+- Transfer initialization of chemistry from user code to geant4 code
+
+17-Nov-2014, I. Hrivnacova (phys-ctor-em-V10-00-24)
+- Improved printing in G4OpticalPhysics::PrintStatistics()
+
+12-Nov-2014, A. Dotti (phys-ctor-em-V10-00-23)
+- Use of the correct enumerator.
+
+08-Nov-2014, M. Karamitros (phys-ctor-em-V10-00-22)
+- Use G4MoleculeTable::GetModel rather than recreating molecules
+
+7-Nov-2014, V.Ivanchenko (phys-ctor-em-V10-00-21)
+- Use G4EmParameters used in low-energy constructors
+
+4-Nov-2014, A.Dotti (phys-ctor-em-V10-00-20)
+- Fix bug appearing in LXe boundscheck test. Actually it is a
+  serious bug that can also make program crash.
+
+28-Oct-2014, A. Dotti (phys-ctor-em-V10-00-19)
+- Add trailing '/' at end of new UI optical directories
+
+28-Oct-2014, P. Arce (phys-ctor-em-V10-00-18)
+- Add G4EmLEPTSPhysics
+
+27 Oct 14: A.Dotti ( phys-ctor-em-V10-00-17)
+- Address problem #1675, this requires re engineering of
+  all UI commands related to optical processes and created
+  in G4OpticalPhysics.
+- Co-working tags: xrays-V10-00-06, op-V10-00-09, phys-ctor-em-V10-00-17
+
+23-Oct-2014, M. Karamitros (phys-ctor-em-V10-00-16)
+- G4EmDNAChemistry: correct H3O+ settings
+
+17-Oct-2014, M. Karamitros (phys-ctor-em-V10-00-15)
+- G4EmDNAChemistry: avoid reseting vibrational model
+
+17-Oct-2014, V.Ivanchenko (phys-ctor-em-V10-00-14)
+- Use G4EmParameters used in all standard constructors
+  G4EmStandardPhysics_option3,4 - use G4GeneratorBS angular generator
+    for bremsstrahlung
+  G4EmStandardPhysics_option4 - use RangeFactor = 0.02 (instead of 0.01);
+    use G4DeltaAngle angular generator for all ionisation models
+  G4EmStandardPhysicsSS, G4EmStandardPhysicsWVI - new constructors
+
+07-Jul-2014, M. Karamitros (phys-ctor-em-V10-00-13)
+- Add G4EmDNAChemistry
+
+05-Jun-2014, S. Incerti (phys-ctor-em-V10-00-12)
+- Updated G4EmDNAPhysics to G4GenericIon usage for Z>2
+
+05-Apr-2014, V.Ivanchenko (phys-ctor-em-V10-00-11)
+- G4EmLivermorePhysics, G4EmLivermorePolarizedPhysics, G4EmPenelopePhysics,
+  G4EmStandardPhysics_option3, G4EmStandardPhysics_option4 - cleanup
+    msc instantiation for hadrons (use the same models for
+    particle/anti_particle)
+
+02-Apr-2014, V.Ivanchenko (phys-ctor-em-V10-00-10)
+- G4EmLowEPPhysics, G4EmStandardPhysics_option3,
+  G4EmStandardPhysics_option4, G4EmLivermoreStandardPhysics - cleanup
+    gamma and e- models instantiation
+
+28-Feb-2014, V.Ivanchenko (phys-ctor-em-V10-00-09)
+- G4EmLowEPPhysics - added G4LowEWentzelVIModel
+
+14-Feb-2014, V.Ivanchenko (phys-ctor-em-V10-00-08)
+- G4EmDNAPhysics_option1 - added new constructor for DNA physics
+
+04-Feb-2014, V.Ivanchenko (phys-ctor-em-V10-00-07)
+- G4EmStandardPhysics, G4EmStandardPhysics_option1,
+  G4EmStandardPhysics_option2 - added Coulomb scattering process for
+    pions, kaons, proton, anti-proton in order to have more smooth
+    transition from EM to hadronic scattering
+
+31-Jan-2014, V.Ivanchenko (phys-ctor-em-V10-00-06)
+- G4EmStandardPhysics_option4, G4EmLivermorePhysics,
+  G4EmPenelopePhysics, G4EmStandardPhysics_option3 - use the same
+    order of processes for e+- and the same comments, this does not
+    change any result but make more easy comparison of log
+    files for different EM physics options
+
+15-Jan-2014, V.Ivanchenko (phys-ctor-em-V10-00-05)
+- G4EmStandardPhysics_option4, G4EmLivermorePhysics,
+  G4EmPenelopePhysics: use G4UrbanMscModel for pions, kaons, protons
+    instead of WentzelVI to have more accurate ranges of low-energy
+    hadrons (in particular, protons)
+
+14-Jan-2014, V.Ivanchenko (phys-ctor-em-V10-00-04)
+- G4EmStandardPhysics_option4, G4EmLivermorePhysics,
+  G4EmPenelopePhysics: use RangeFactor=0.01 to increase
+  simulation accuracy
+
+23-Dec-2013, M.Asai (phys-ctor-em-V10-00-03)
+- Fix other via-pointer invokation to static methods.
+
+22-Dec-2013, M.Asai (phys-ctor-em-V10-00-02)
+- Avoid static G4Scintillation method invoked through a pointer.
+
+18-Dec-2013, P.Gumplinger (phys-ctor-em-V10-00-00 and 01)
+- Fix race condision issue in OpticalPhysics
+- /optics_engine/setOpProcessUse not available for G4State_Idle
+
+01-Nov-2013, M.K (phys-ctor-em-V09-06-21)
+- Update sources.cmake
+
+01-Nov-2013, M.K (phys-ctor-em-V09-06-20)
+- Remove temporarly G4EmDNAPhysicsChemistry to avoid conflicts with dna dev
+
+01-Nov-2013, M.K (phys-ctor-em-V09-06-19)
+- Modified G4EmDNAPhysicsChemistry
+- Update sources.cmake
+
+28-Oct-2013, V.Ivanchenko (phys-ctor-em-V09-06-18)
+- G4EmStandardPhysics - disable ApplyCuts option
+- G4EmStandardPhysics_option2 - removed unused header
+
+10-Oct-2013, M.K (phys-ctor-em-V09-06-17)
+- Same as before
+
+06-Oct-2013, M.K (phys-ctor-em-V09-06-16)
+- Same as before
+
+04-Oct-2013, M.K (phys-ctor-em-V09-06-15)
+- Remove unused variable
+
+03-Oct-2013, M.K (phys-ctor-em-V09-06-14)
+- DNA chemistry physics list updated
+
+16-Sep-2013, V.Ivanchenko (phys-ctor-em-V09-06-13)
+- G4EmStandardPhysics - enable ApplyCuts option
+- G4EmStandardPhysics_option2 - disable ApplyCuts option
+    both changings are needed to check an effect of these options
+    to optimise EM for the release
+
+14-Sep-2013, M.Asai (phys-ctor-em-V09-06-12)
+- Further fix G4OpticalPhysics for MT.
+
+12-Sep-2013, M.Asai (phys-ctor-em-V09-06-11)
+- Fix G4OpticalPhysics for MT.
+
+21-Aug-2013, V.Ivanchenko (phys-ctor-em-V09-06-10)
+-  Removed G4UrbanMscModel95 from EmDNA constructor
+
+19-Aug-2013, V.Ivanchenko (phys-ctor-em-V09-06-09)
+-  in all constructors use G4UrbanMscModel instead of Urban93 or Urban95
+
+17-Jun-2013, Alberto Ribon		(phys-ctor-em-V09-06-08)
+- Fixed compilation warning in G4EmDNAPhysicsChemistry.
+
+29-Mar-2013, Andrea Dotti		(phys-ctor-em-V09-06-07)
+- Changes needed for MT: now G4VUserPhysicsList is a split class
+
+21-Mar-2013, A. Dotti (phys-ctor-em-V09-06-06)
+- Use Get/Set methods to access master process manager pointer for G4ParticleDefinition
+in EmDNA constructor (co-working tag with particles-V09-06-08)
+
+27-Feb-2013, V.Ivanchenko (phys-ctor-em-V09-06-05)
+-  in all constructors improved verbose oputput and fixed warning from
+      the clang compiler on MacOS
+
+19-Feb-2013, V.Ivanchenko (phys-ctor-em-V09-06-04)
+-  in all constructors G4UrbanMscModel95 substituted by G4UrbanMscModel
+-  G4EmStandardPhysics_option4 - low limit increased from 10 eV to 100 eV
+
+13-Feb-2013, V.Ivanchenko (phys-ctor-em-V09-06-03)
+-  G4EmLivermorePhysics - set low-limit 100 eV and number of bins
+     for tables 220 to avoid problems in Livermore ionisation for
+     electron stopping powers and ranges
+
+01-Feb-2013, V.Ivanchenko (phys-ctor-em-V09-06-02)
+-  G4EmExtraPhysics and G4EmMessenger are moved to gamma_lepto_nuclear
+   subdirectory
+-  removed unused dependences from GNUmakefile and source.cmake
+
+30-Jan-2013, Mathieu Karamitros, G.Folger (phys-ctor-em-V09-06-01)
+-  First and simple approach to solve process manager initialization after
+    migratioon to G4MT.
+
+10-Jan-2013, Gunter Folger              (phys-ctor-em-V09-06-00)
+- new directory structure introduced.
+   constructors/electromagnetic classes

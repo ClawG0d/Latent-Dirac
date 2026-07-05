@@ -1,0 +1,5 @@
+# Vendored vanilla Geant4 source tree: keep bytes identical to the
+# upstream tarball (no EOL normalization) and mark as vendored so GitHub
+# folds diffs and excludes it from language statistics.
+geant4-v11.4.2/** -text
+geant4-v11.4.2/** linguist-vendored

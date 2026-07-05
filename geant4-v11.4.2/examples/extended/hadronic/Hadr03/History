@@ -1,0 +1,311 @@
+# Example Hadr03 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-10-29 Michel Maire (exhadr03-V11-03-01)
+- GammaNuclearPhysics.cc: use G4GammaNuclearXS dataset
+
+## 2025-05-20 Michel Maire (exhadr03-V11-03-00)
+- Hadr03.cc - SetUseNRESP71Model(true)
+
+## 2024-03-08 Michel Maire (exhadr03-V11-02-01)
+- PrimaryGeneratorAction - added tiny shift of position of the
+    particle gun from the world volume boundary. This fix removes
+    a warning due to the new protection in G4ParticleGun
+- update Readme
+
+## 2024-02-08 Michel Maire (exhadr03-V11-02-00)
+- PhysicsList: remove G4RadioactiveDecayPhysics
+- update fusion.mac
+
+## 2023-04-22 Michel Maire (exhadr03-V11-01-01)
+- continue revision of all header files
+- add a comment in nFission.mac
+
+## 2023-01-03 Michel Maire (exhadr03-V11-01-00)
+- Hadr03.cc : set ProduceFissionFragments = true
+- PhysicsList: go back to QGSP_BIC_HP
+- SteppingAction: add a protection against secondaries
+- Run::EndOfRun(): format adjustement, line 334.
+- revision of all header files
+
+## 2022-11-17 V. Ivanchenko (exhadr03-V11-00-02)
+- Hadr03.cc - removed RanecuEngine
+- PhysicsList: use G4NuclideTable::SetMeanLifeThreshold(1ns);
+    use QBBC as the default configuration
+- Run - added protection for the case when G4NeutronGeneralProcess is
+    used - in that case it is not possible to access cross section
+    via G4HadronicProcessStore, this may be resolved for the next release;
+    fixed problem 2517
+
+## 2022-04-01 mma (exhadr03-V11-00-01)
+- PhysicsList: add G4NuclideTable::SetThresholdOfHalfLife(1ns*log2)
+
+## 2021-12-10 Ben Morgan (exhadr03-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+    
+07-10-21 I. Hrivnacova (exhadr03-V10-07-05)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+27-07-21 mma (exhadr03-V10-07-04)
+- RunAction::CountProcesses() : add a protection if (process == nullptr)
+        
+19-07-21 I. Hrivnacova (Hadr03-V10-07-03)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+15-04-21 mma (Hadr03-V10-07-02)
+- Hadr03.cc: RunManagerFactory
+             G4SteppingVerboseWithUnits
+	     ParticleHP env variables 
+- ActionInitialization.hh and cc: remove SteppingVerbose class
+     
+04-03-21 A. Ribon (exhadr03-V10-07-01)
+- GammaNuclearPhysics, GammaNuclearPhysicsLEND : replaced
+  G4PhotoNuclearProcess (that has been deleted) with
+  G4HadronInelasticProcess.
+
+05-01-21 mma (exhadr03-V10-07-00)
+- PhysicsList: add GammaNuclearPhysicsLEND 
+     
+22-10-20 mma (exhadr03-V10-06-04)
+- add fusion.mac 
+- README : add macros descrption
+
+05-08-20 A. Ribon (exhadr03-V10-06-03)
+- envHadronic.(c)sh , nFission.mac , Hadr03.cc : removed deprecated
+  HP environmental variables and replaced them with corresponding
+  C++ calls in the main, and UI commands in the macros. 
+  (The two shell-script files will be removed in G4 11.0.)
+
+04-06-20 mma (exhadr03-V10-06-02)
+- HistoManager, SteppingAction : add plot of e-
+     
+04-05-20 mma (exhadr03-V10-06-01)
+- GammaNuclearPhysics : add G4LowEGammaNuclearModel
+- add GammaNuclearPhysicsLEND
+- modify gamma.mac;  add Au196.mac
+     
+30-04-20 mma (exhadr03-V10-06-00)
+- PhysicsList : add G4HadronPhysicsQGSP_BIC, Shielding, RadioactiveDecay
+
+03-10-18 mma (exhadr03-V10-04-06)
+- PhysicsList : add G4HadronElasticPhysicsXS
+
+28-09-18 mma (exhadr03-V10-04-05)
+- PhysicsList : use G4IonPhysicsXS
+- Run.cc : complete Merge() for fNbGamma and fPbalance 
+
+24-06-18 mma (exhadr03-V10-04-04)
+- envHadronic : add env variables for particleHP (PHP)
+
+09-05-18 B. Morgan (exhadr03-V10-04-03)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+05-04-18 mma (exhadr03-V10-04-02)
+- Hadr03.cc : set visualisation only in interactive session.
+
+16-03-18 mma (exhadr03-V10-04-01)
+- Hadr03.cc : C++ 11 feature
+
+15-03-18 mma (exhadr03-V10-04-00)
+- Hadr03.cc : remove G4UI_USE and G4VIS_USE
+
+04-07-17 mma  (exhadr03-V10-03-04)
+- SteppingAction() : take into account e- from internal conversion
+
+11-04-17 mma  (exhadr03-V10-03-03)
+- BeginOfRunAction() : remove SetRandomNumberStore()
+
+10-09-16 mma (exhadr03-V10-02-02)
+- change name : GammaPhysics --> GammaNuclearPhysics.
+
+15-08-16 mma (exhadr03-V10-02-01)
+- PhysicsList : rm G4HadronElasticPhysicsPHP  (not needed)
+
+28-07-16 mma (exhadr03-V10-02-00)
+- PhysicsList : add particleHP constructors
+
+04-07-16 I. Hrivnacova
+- Fixes for Doxygen documentation
+
+25-11-15 gum (exhadr03-V10-01-00)
+- fix G4HadronicProcess* hproc = dynamic_cast<G4HadronicProcess*>(process)
+  in SteppingAction
+
+19-10-14 mma (exhadr03-V10-00-09)
+- cosmetic in envHadronic.csh
+
+14-10-14 mma (exhadr03-V10-00-08)
+- particleCount : corrections for MT
+	 
+06-10-14 mma (exhadr03-V10-00-07)
+- nThreads as third argument in main
+	 	 
+06-10-14 mma (exhadr03-V10-00-06)
+- PhysicsList : add G4IonElasticPhysics constructor
+	 
+18-09-14 mma (exhadr03-V10-00-05)
+- Hadr03.cc : SetNumberOfThreads(G4Threading::G4GetNumberOfCores())
+- Fixed test in envHadronic.sh
+     
+07-04-14 mma (exhadr03-V10-00-04)
+- Register RunMessenger in RunAction instead of Run
+	 
+05-04-14 mma (exhadr03-V10-00-03)
+- Histograms: change numbering scheme. Add histo of atomic mass
+- EndOfRun: introduce optional print and UI command to control it
+- refresh nFission.mac
+     
+25-03-14 mma (exhadr03-V10-00-02)
+- Cosmetic when printing EndOfRun
+      
+26-02-14 mma (exhadr03-V10-00-01)
+- PhysicsList: use G4HadronElasticPhysicsHP 
+     
+14-12-13 mma (exhadr03-V10-00-00)
+- DetectorConstruction: remove magfield
+- MT: add ActionInitialization. Modify Hadr03.cc
+- MT: add Run. Modify RunAction, SteppingAction
+- remove EventAction and its messenger
+- define a stucture for nuclear channel data
+- put a flag for target name="XXXX"
+
+02-12-13  I.Hrivnacova (exhadr03-V09-06-23)
+- Updated .README for changes in README
+
+22-11-13  A.Dotti      (exhadr03-V09-06-22)
+- Use G4RunManager::ReinitializeGeometry() to trigger geo
+ rebuild. Remove UI command to update geometry.
+
+29-07-13  P.Gumplinger (exhadr03-V09-06-21)
+- fix MAC/clang32 compilation warnings
+
+11-07-13 I.Hrivnacova (exhadr03-V09-06-20) 
+- In HistoManager: use new analysis manager method SetH1Activation()   
+
+19-06-13 mma (exhadr03-V09-06-19)
+- SteppingVerbose: use G4Step::GetSecondaryInCurrentStep()
+     
+14-06-13 mma (exhadr03-V09-06-18)
+- SteppingAction: use G4Step::GetSecondaryInCurrentStep()
+
+05-06-13 I. Hrivnacova (exhadr03-V09-06-17)
+- applied coding guidelines (adding base class initialization in constructors, 
+  removed tabulations, fixed long lines)
+     
+28-05-13 mma (exhadr03-V09-06-16)
+- cosmetic in SteppingVerbose
+     
+21-04-13 mma (exhadr03-V09-06-15)
+- cleanup all macros for processName
+     
+24-03-13 mma (exhadr03-V09-06-14)
+- polish coding conventions
+     
+16-03-13 mma (exhadr03-V09-06-13)
+- restaure G4HadronPhysicsINCLXX    
+- G4 coding conventions
+
+13-03-13 V.Ivanchenko (exhadr03-V09-06-12)
+- RunAction - change printout from "warning XXXX" to "NOTE:"
+    because CDASH interpretation of "warning" is test failer 
+
+12-03-13 V.Ivanchenko (exhadr03-V09-06-11)
+- DetectorConstruction - improved material definition
+- HistoManager - do not delete singleton
+- PhsyicsList - new name for INCLXX physics constructor 
+     
+10-03-13 mma (exhadr03-V09-06-10)
+- PhysicsList: remove G4HadronPhysicsQGSP_INCLXX
+    
+10-03-13 mma (exhadr03-V09-06-09)
+- modify readme
+     
+09-03-13 mma (exhadr03-V09-06-08)
+- add envHadronic.csh to control environment variables
+     
+06-03-13 mma (exhadr03-V09-06-07)
+- RunAction - modify printing of cross section per atom
+     
+01-03-13 mma (exhadr03-V09-06-06)
+- DetectorConstruction - suppress natural abundance flag
+    
+22-02-13 V.Ivanchenko (exhadr03-V09-06-05)
+- DetectorConstruction - set natural abundances flag "false" for 
+    elements built from one isotope
+
+01-02-13 V.Ivanchenko (exhadr03-V09-06-04)
+- PhysicsList - adopted migration to new physics_lists directory 
+    structure and change of class names
+     
+01-02-13 mma (exhadr03-V09-06-03)
+- DetectorMessenger: change /buildMatIsotope to /setIsotopeMat
+      
+31-01-13 mma (exhadr03-V09-06-02)
+- DetectorMessenger: add command /buildMatIsotope 
+- RunAction: add material in GetCrossSectionPerAtom()
+     
+08-01-13 mma (exhadr03-V09-06-01)
+- DetectorConstruction: add function MaterialWithSingleIsotope()
+     
+04-12-12 mma (exhadr03-V09-06-00)
+- PhysicsList: QGSP_BERT_HP replaced by FTFP_BERT_HP
+- RunAction: compute crossSection per atom
+     
+23-11-12 mma (exhadr03-V09-05-15)
+- SteppingAction : add more protection for neutronHP
+     
+21-11-12 mma (exhadr03-V09-05-14)
+- PhysicsList: use QBBC instead of QGSP_BERT_HP
+     
+28-10-12 mma (exhadr03-V09-05-11)
+- update README and .README
+
+17-10-12 Ivana Hrivnacova (exhadr03-V09-05-10)
+- Adding missing explicit use of system of units 
+ 
+12-10-12 Andrea Dotti (exhadr03-V09-05-09)
+- Adding explicit use of system of units
+
+06-10-12 mma (exhadr03-V09-05-08)
+- SteppingAction, RunAction : print number of gamma
+- use G4Analysis
+    
+30-09-12 mma (exhadr03-V09-05-07)
+- SteppingAction : print number of particles in nuclear reaction (not gamma)
+     
+18-08-12 mma (exhadr03-V09-05-06)
+- SteppingAction : use GetTargetIsotope()
+     
+01-08-12 mma(exhadr03-V09-05-05) 
+- RunAction : use GetCrossSectionPerVolume()
+     
+20-07-12 mma(exhadr03-V09-05-04) 
+- GammaPhyics : rm crossSections
+- add histo Pbalance
+     
+27-06-12 mma (exhadr03-V09-05-03)
+- add .README
+     
+21-06-12 mma (exhadr03-V09-05-02)
+- GammaPhyics : add crossSections
+     
+19-06-12 mma (exhadr03-V09-05-01)
+- suppress local HadronPhysics and IonPhysics
+     
+15-06-12 mma (exhadr03-V09-05-00)
+- rename Hadr14
+     
+13-06-12 Michel Maire (exhadr14-V09-05-00)
+- created from TestEm14 and rdecay01

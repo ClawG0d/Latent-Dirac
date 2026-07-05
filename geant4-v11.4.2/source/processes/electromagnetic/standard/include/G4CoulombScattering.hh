@@ -1,0 +1,98 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//
+// -------------------------------------------------------------------
+//
+// GEANT4 Class header file
+//
+//
+// File name:     G4CoulombScattering
+//
+// Author:        Vladimir Ivanchenko 
+//
+// Creation date: 12.03.2006
+//
+// Modifications:
+//
+// Class Description:
+//
+// This class manages the process of Coulomb elastic scattering
+//
+
+// -------------------------------------------------------------------
+//
+
+#ifndef G4CoulombScattering_h
+#define G4CoulombScattering_h 1
+
+#include "G4VEmProcess.hh"
+#include "G4VEmModel.hh"
+
+class G4CoulombScattering : public G4VEmProcess
+{
+
+public:
+
+  explicit G4CoulombScattering(const G4String& name, G4bool combined);
+
+  // for pure single scattering use combined=false
+  G4CoulombScattering(G4bool combined = true);
+
+  // for pure single scattering use SetIsCombined(false) method 
+  G4CoulombScattering(const G4String& name);
+
+  ~G4CoulombScattering() override;
+
+  G4bool IsApplicable(const G4ParticleDefinition& p) final;
+
+  // print documentation in html format
+  void ProcessDescription(std::ostream&) const override;
+
+  inline void SetIsCombined(G4bool val) { isCombined = val; }
+
+  G4CoulombScattering & operator=(const G4CoulombScattering &right) = delete;
+  G4CoulombScattering(const G4CoulombScattering&) = delete;
+
+protected:
+
+  // Print out of the class parameters
+  void StreamProcessInfo(std::ostream& outFile) const override;
+
+  void InitialiseProcess(const G4ParticleDefinition*) override;
+
+  G4double MinPrimaryEnergy(const G4ParticleDefinition*,
+			    const G4Material*) final;
+
+private:
+  
+  G4double q2Max;
+  G4bool isInitialised = false;
+  G4bool isCombined;
+};
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#endif

@@ -1,0 +1,26 @@
+
+#/control/cout/ignoreThreadsExcept 0
+#/run/numberOfThreads 1
+#/control/verbose 1
+/run/verbose 1
+#/process/em/verbose 1
+#/tracking/verbose 1
+
+/XrayTESdet/det/readGDML xray_TESdetector.gdml
+
+/testem/phys/addPhysics SpacePhysics_QBBC
+/process/em/AddEmRegion InnerRegion G4EmStandardSS
+
+/run/initialize
+
+# Set a very high time threshold to allow all decays to happen
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+
+/random/setSeeds 123 2004
+/process/list
+
+/analysis/setFileName output.root
+
+#
+/run/printProgress 1000
+/run/beamOn 1000

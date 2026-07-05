@@ -1,0 +1,167 @@
+# Example Hadr07 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-10-29 Michel Maire (exhadr07-V11-03-01)
+- GammaNuclearPhysics.cc: use G4GammaNuclearXS dataset
+
+## 2025-05-20 Michel Maire (exhadr07-V11-03-00)
+- Hadr07.cc - SetUseNRESP71Model(true)
+
+## 2024-03-20 Michel Maire (exhadr07-V11-02-00)
+- RadioactiveDecayPhysics.cc: add Triton
+- apply coding rules: HistoManager.cc, Run.cc, TrackingAction.cc,
+                      GammaNuclearPhysics.cc, GammaNuclearPhysicsLEND.cc
+- document hadr07.in, multilayers.mac
+ 
+## 2023-11-12 Alberto Ribon (exhadr07-V11-01-03)
+- Na22.mac : introduced the UI command
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+to allow all radioactive decays (including the very long ones).
+This is necessary since G4 11.2, being 1 year the default time
+threshold above which the decays are ignored.
+
+## 2023-08-04 Michel Maire (exhadr07-V11-01-02)
+- add neutron.mac.mac
+- update README, CMakeLists.txt
+
+## 2023-06-20 Michel Maire (exhadr07-V11-01-01)
+- revision of all headers
+
+## 2023-01-10 Michel Maire (exhadr07-V11-01-00)
+- compute and plot Edep, Eleak, Etotal=Edep+Eleak
+
+## 2022-04-01 Michel Maire (exhadr07-V11-00-01)
+- PhysicsList: add G4NuclideTable::SetThresholdOfHalfLife(1ns*log2)
+- TrackingAction: print ions with meanLife = 0
+
+## 2021-12-10 Ben Morgan (exhadr07-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+13-10-21 mma (exhadr07-V10-07-12)
+- HadronElasticPhysicsHP : use G4GenericMessenger instead of NeutronHPMessenger
+- RadioactiveDecayPhysics : do not change ThresholdOfHalfLife     
+
+07-10-21 I. Hrivnacova (exhadr07-V10-07-11)
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+     
+05-08-21 mma (exhadr07-V10-07-10)
+- ElectromagneticPhysics : update EM parameters
+- RadioactiveDecayPhysics : new constructor, include G4Radioactivation process,
+                            inactivate atomic deexcitation
+			         
+27-07-21 mma (exhadr07-V10-07-09)
+- RunAction::CountProcesses() : add a protection if (process == nullptr)
+- TrackingAction, RunAction : add a comment for excited states
+
+19-07-21 I. Hrivnacova (exhadr07-V10-07-08)
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+22-06-21 G. Cosmo (exhadr07-V10-07-07)
+- Use new CLHEP units for minute, hour, day, year and millielectronvolt
+  in PhysicsList.
+
+13-04-21 mma (exhadr07-V10-07-06)
+- main : set true few env variables for ParticleHP
+     
+24-03-21 mma (exhadr07-V10-07-05)
+- main : migration to G4RunManagerFactory
+         and G4SteppingVerbose::UseBestUnit() classes.
+- TrackingAction : add TrackingMessenger with 1 command
+
+
+04-03-21 A. Ribon (exhadr07-V10-07-04)
+- GammaNuclearPhysics, GammaNuclearPhysicsLEND : replaced
+  G4PhotoNuclearProcess (that has been deleted) with
+  G4HadronInelasticProcess.
+
+28-01-21 mma (exhadr07-V10-07-03)
+- TrackingAction, Run: print meanLife
+- PhysicsList: add new units for time
+     
+15-01-21 mma (exhadr07-V10-07-02)
+- TrackingAction: count secondary particles with meanLife > 0.
+
+05-01-21 mma (exhadr07-V10-07-01)
+- PhysicsList: add GammaNuclearPhysicsLEND
+     
+30-12-20 mma (exhadr07-V10-07-00)
+- update ElectromagneticPhysics
+     
+25-10-20 mma (exhadr07-V10-06-02)
+- README : add macros descrption
+
+05-08-20 A. Ribon (exhadr07-V10-06-01)
+- Hadr07.cc , envHadronic.(c)sh : removed deprecated HP environmental
+  variables and replaced them with corresponding C++ calls in the main.
+  (These two shell-script files will be removed in G4 11.0.)
+
+13-05-20 mma (exhadr07-V10-06-00)
+- GammaNuclearPhysics : add G4LowEGammaNuclearModel
+
+07-10-18 mma (exhadr07-V10-04-05)
+- PhysicsList : use G4IonPhysicsXS
+
+25-06-18 mma (exhadr07-V10-04-04)
+- envHadronic : add env variables for particleHP (PHP)
+
+04-06-18 mma (exhadr07-V10-04-03)
+- SteppingAction.cc : Photoelectric, edep at end of step
+
+09-05-18 B. Morgan (exhadr07-V10-04-02)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+05-04-18 mma (exhadr07-V10-04-01)
+- Hadr07.cc : set visualisation only in interactive session.
+
+16-03-18 mma (exhadr07-V10-04-00)
+- Hadr07.cc : remove G4UI_USE and G4VIS_USE
+
+28-11-17 I. Hrivnacova  (exhadr07-V10-03-02)
+- Fixed Doxygen warnings
+
+27-04-17 mma  (exhadr07-V10-03-01)
+- Update Readme
+
+12-04-17 mma  (exhadr07-V10-03-00)
+- BeginOfRunAction() : remove SetRandomNumberStore()
+
+22-10-16 mma  (exhadr07-V10-02-07)
+- add alpha.mac ionC12.mac
+
+14-10-16 G.Folger (exhadr07-V10-02-06)
+- remove direct use of aParticleIterator, use GetParticleTableIterator().
+    fix required by clang39 on Linux and MAC
+	 
+09-09-16 mma  (exhadr07-V10-02-05)
+- rename GammaPhysics --> GammaNuclearPhysics
+         EmStandardPhysics --> ElectromagneticPhysics
+
+27-08-16 mma  (exhadr07-V10-02-04)
+- remove PhysListEmStandard
+
+11-08-16 V.Ivanchenko  (exhadr07-V10-02-03)
+- fixed local EM phys list
+
+02-08-16 mma  (exhadr07-V10-02-02)
+- coding conventions : kMaxAbsor
+
+04-07-16 I. Hrivnacova
+- Fixes for Doxygen documentation
+
+13-04-16 mma  (exhadr07-V10-02-01)
+- EmStandardPhysics: use G4EmParameters
+
+01-04-16 michel maire (exhadr07-V10-02-00)
+- created, from TestEm11 and Hadr06

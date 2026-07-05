@@ -1,0 +1,125 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// G4BFieldIntegrationDriver inline methods
+//
+// Author: Dmitry Sorokin (CERN, Google Summer of Code), 12.09.2018
+// Supervision: John Apostolakis (CERN)
+// --------------------------------------------------------------------
+
+inline
+G4bool G4BFieldIntegrationDriver::AccurateAdvance(G4FieldTrack& track,
+                                  G4double hstep,
+                                  G4double eps,
+                                  G4double hinitial)
+{
+  return fCurrDriver->AccurateAdvance(track, hstep, eps, hinitial);
+}
+
+inline
+G4bool G4BFieldIntegrationDriver::DoesReIntegrate() const
+{
+  return fCurrDriver->DoesReIntegrate();
+}
+   
+inline
+G4EquationOfMotion* G4BFieldIntegrationDriver::GetEquationOfMotion()
+{
+  return fCurrDriver->GetEquationOfMotion();
+}
+
+inline
+G4MagIntegratorStepper* G4BFieldIntegrationDriver::GetStepper()
+{
+  return fCurrDriver->GetStepper();
+}
+
+inline
+G4double G4BFieldIntegrationDriver::ComputeNewStepSize(G4double errMaxNorm,
+                                       G4double hstepCurrent)
+{
+  return fCurrDriver->ComputeNewStepSize(errMaxNorm, hstepCurrent);
+}
+
+inline
+void G4BFieldIntegrationDriver::SetVerboseLevel(G4int level)
+{
+  fSmallStepDriver->SetVerboseLevel(level);
+  fLargeStepDriver->SetVerboseLevel(level);
+}
+
+inline
+G4int G4BFieldIntegrationDriver::GetVerboseLevel() const
+{
+  return fCurrDriver->GetVerboseLevel();
+}
+
+inline
+void G4BFieldIntegrationDriver::OnComputeStep(const G4FieldTrack* track)
+{
+  fSmallStepDriver->OnComputeStep(track);
+  fLargeStepDriver->OnComputeStep(track);
+}
+
+inline
+void G4BFieldIntegrationDriver::OnStartTracking()
+{
+  fSmallStepDriver->OnStartTracking();
+  fLargeStepDriver->OnStartTracking();
+}
+
+inline
+void G4BFieldIntegrationDriver::StreamInfo( std::ostream& os ) const
+{
+  os << "Small Step Driver Info: " << std::endl;
+  fSmallStepDriver->StreamInfo(os);
+  os << "Large Step Driver Info: " << std::endl;        
+  fLargeStepDriver->StreamInfo(os);
+}
+   
+/** ----------------- Deprecated methods ----------------------------------- **/
+
+inline
+void G4BFieldIntegrationDriver::GetDerivatives(const G4FieldTrack& track,
+                                                     G4double dydx[]) const
+{
+  fCurrDriver->GetDerivatives(track, dydx);
+}
+
+inline
+void G4BFieldIntegrationDriver::GetDerivatives(const G4FieldTrack& track,
+                                                     G4double dydx[],
+                                                     G4double field[]) const
+{
+  fCurrDriver->GetDerivatives(track, dydx, field);
+}
+
+inline
+const G4MagIntegratorStepper* G4BFieldIntegrationDriver::GetStepper() const
+{
+  return fCurrDriver->GetStepper();
+}
+
+/** ------------------------------------------------------------------------ **/

@@ -1,0 +1,62 @@
+# Category channeling History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2026-02-04 Gabriele Cosmo (channeling-V11-03-00)
+- In G4ChannelingMaterialData, fixed reported Coverity defects for
+  string parameters copying. Use consistently G4 types and minor
+  code formatting.
+
+## 2024-07-17 Vladimir Ivanchenko (channeling-V11-02-00)
+- G4ChannelingOptrMultiParticleChangeCrossSection,
+  G4ChannelingOptrChangeCrossSection - fixed Coverity warnings
+
+## 2021-12-10 Ben Morgan (channeling-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+4 August 2021 Alberto Ribon channeling-V10-07-01
+-----------------------------------------------------
+- G4Channeling, G4ChannelingOptrChangeCrossSection : migrated to the
+  new version of G4PhysicsModelCatalog
+
+16 April 2021 Ben Morgan channeling-V10-07-00
+-----------------------------------------------------
+- Migrate build to modular CMake API
+
+28 May 2019 B. Morgan channeling-V10-06-00
+-----------------------------------------------------
+- Name module "G4solidstate_channeling" for use with new CMake system,
+  as old "G4phonon" name clashes with solidstate/phonon"
+
+11 March 2019 G. Cosmo channeling-V10-05-00
+-----------------------------------------------------
+- Fixed typos in printouts and comments.
+
+6 July 2017 E. Bagli channeling-V10-03-03
+-----------------------------------------------------
+- Coverity bug removal
+
+19 June 2017 E. Bagli channeling-V10-03-01
+-----------------------------------------------------
+- Coverity bug removal
+
+17 May 2017  E. Bagli channeling-V10-03-00
+-----------------------------------------------------
+- Removed spin modification
+
+20 April 2017  G. Cosmo
+-----------------------------------------------------
+- Removed inclusion if non-existing G4ChargeState.hh header in G4Channeling.cc.
+- Corrected GNUmakefile and sources.cmake scripts.
+
+6 April 2017  E. Bagli
+-----------------------------------------------------
+- Created

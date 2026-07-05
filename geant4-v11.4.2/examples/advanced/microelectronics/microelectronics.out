@@ -1,0 +1,420 @@
+Environment variable "G4FORCE_RUN_MANAGER_TYPE" enabled with value == Serial. Forcing G4RunManager type...
+
+        ############################################
+        !!! WARNING - FPE detection is activated !!!
+        ############################################
+
+
+          ################################
+          !!! G4Backtrace is activated !!!
+          ################################
+
+
+**************************************************************
+ Geant4 version Name: geant4-11-04-patch-02    (12-June-2026)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+Physic list : MicroElecPhysics
+Phonon model is constructed 
+Phonon Energy = 0 eV  
+
+### === G4UAtomicDeexcitation::InitialiseForNewRun()
+MicroElecPhysics::SetCuts:CutLength : 1 um 
+Visualization Manager instantiating with verbosity "warnings (3)"...
+Visualization Manager initialising...
+Registering graphics systems...
+
+You have successfully registered the following graphics systems.
+Registered graphics systems are:
+  ASCIITree (ATree)
+  DAWNFILE (DAWNFILE)
+  RayTracer (RT)
+  VRML2FILE (VRML2FILE)
+  gMocrenFile (gMocrenFile)
+  TOOLSSG_OFFSCREEN (TSG_OFFSCREEN, TSG_FILE)
+  OpenGLImmediateQt (OGLIQt, OGLI)
+  OpenGLStoredQt (OGLSQt, OGLS)
+  OpenGLImmediateXm (OGLIXm, OGLIQt_FALLBACK)
+  OpenGLStoredXm (OGLSXm, OGLSQt_FALLBACK)
+  OpenGLImmediateX (OGLIX, OGLIQt_FALLBACK, OGLIXm_FALLBACK)
+  OpenGLStoredX (OGLSX, OGLSQt_FALLBACK, OGLSXm_FALLBACK)
+  RayTracerX (RTX)
+  RayTracerQt (RTQt)
+  TOOLSSG_X11_GLES (TSG_X11_GLES, TSGX11, TSG_XT_GLES_FALLBACK)
+  TOOLSSG_X11_ZB (TSG_X11_ZB, TSGX11ZB)
+  TOOLSSG_XT_GLES (TSG_XT_GLES, TSGXt, TSG_QT_GLES_FALLBACK)
+  TOOLSSG_XT_ZB (TSG_XT_ZB, TSGXtZB)
+  TOOLSSG_QT_GLES (TSG_QT_GLES, TSGQt, TSG, OGL)
+  TOOLSSG_QT_ZB (TSG_QT_ZB, TSGQtZB, TSGZB)
+You may choose a graphics system (driver) with a parameter of
+the command "/vis/open" or "/vis/sceneHandler/create",
+or you may omit the driver parameter and choose at run time:
+- by argument in the construction of G4VisExecutive
+- by environment variable "G4VIS_DEFAULT_DRIVER"
+- by entry in "~/.g4session"
+- by build flags.
+- Note: This feature is not allowed in batch mode.
+For further information see "examples/basic/B1/exampleB1.cc"
+and "vis.mac".
+
+Registering model factories...
+
+You have successfully registered the following model factories.
+Registered model factories:
+  generic
+  drawByAttribute
+  drawByCharge
+  drawByOriginVolume
+  drawByParticleID
+  drawByEncounteredVolume
+
+Registered models:
+  None
+
+Registered filter factories:
+  attributeFilter
+  chargeFilter
+  originVolumeFilter
+  particleFilter
+  encounteredVolumeFilter
+
+Registered filters:
+  None
+
+You have successfully registered the following user vis actions.
+Run Duration User Vis Actions: none
+End of Event User Vis Actions: none
+End of Run User Vis Actions: none
+
+Some /vis commands (optionally) take a string to specify colour.
+"/vis/list" to see available colours.
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 meV
+Max kinetic energy for tables                      10 TeV
+Number of bins per decade of a table               20
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Positron annihilation at rest model                SimplePositronium
+Enable 3 gamma annihilation on fly                 0
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Use RiGe 5D e+e- pair production model by muons    0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         0 eV 
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks saturation                      0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 1
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           1
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  0
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 2 regions:
+          DefaultRegionForTheWorld  1  1  1
+          Target  1  1  1
+
+### === G4UAtomicDeexcitation::InitialiseForNewRun()
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   0
+### ===  PIXE model for hadrons: Empirical
+### ===  PIXE model for e+-:     Livermore
+****************************
+mermin model loaded !
+Material 1 / 2 : G4_Si
+Material 2 / 2 : G4_Si
+Calling G4MicroElecElasticModel_new::Initialise()
+MicroElasticModel, Material 1 / 2 : G4_Si
+Si
+Reading TCS file
+Elastic Total Cross file : Elastic/elsepa_elastic_cross_e_Si
+loaddata : Elastic/elsepa_elastic_cross_e_Si
+Elastic Cumulated Diff Cross : /cvmfs/geant4.cern.ch/share/data/G4EMLOW8.8/microelec/Elastic/elsepa_elastic_cumulated_diffcross_e_Si.dat
+MicroElasticModel, Material 2 / 2 : G4_Si
+Si
+Reading TCS file
+Elastic Total Cross file : Elastic/elsepa_elastic_cross_e_Si
+loaddata : Elastic/elsepa_elastic_cross_e_Si
+Elastic Cumulated Diff Cross : /cvmfs/geant4.cern.ch/share/data/G4EMLOW8.8/microelec/Elastic/elsepa_elastic_cumulated_diffcross_e_Si.dat
+****************************
+mermin model loaded !
+Material 1 / 2 : G4_Si
+Inelastic/mermin_sigma_inelastic_e-_Si
+loaddata : Inelastic/mermin_sigma_inelastic_e-_Si
+Faster code = true
+Inelastic/cumulated_mermin_sigmadiff_inelastic_e-_Si.dat
+Material 2 / 2 : G4_Si
+Inelastic/mermin_sigma_inelastic_e-_Si
+loaddata : Inelastic/mermin_sigma_inelastic_e-_Si
+Faster code = true
+Inelastic/cumulated_mermin_sigmadiff_inelastic_e-_Si.dat
+****************************
+mermin model loaded !
+Material 1 / 2 : G4_Si
+Inelastic/mermin_sigma_inelastic_p_Si
+loaddata : Inelastic/mermin_sigma_inelastic_p_Si
+Faster code = true
+Inelastic/cumulated_mermin_sigmadiff_inelastic_p_Si.dat
+Material 2 / 2 : G4_Si
+Inelastic/mermin_sigma_inelastic_p_Si
+loaddata : Inelastic/mermin_sigma_inelastic_p_Si
+Faster code = true
+Inelastic/cumulated_mermin_sigmadiff_inelastic_p_Si.dat
+
+msc:  for e-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=   10 TeV Nbins=220 100 eV  -  10 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+      ===== EM models for the G4Region  Target ======
+            UrbanMsc : Emin=  100 MeV Emax=   10 TeV Nbins=100 100 MeV -  10 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e-  XStype:3  SubType=2
+      dE/dx and range tables from 100 meV to 10 TeV in 280 bins
+      Lambda tables from threshold to 10 TeV, 20 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=   10 TeV  deltaVI
+      ===== EM models for the G4Region  Target ======
+        MollerBhabha : Emin=   10 MeV Emax=   10 TeV  deltaVI
+
+e-_G4MicroElecElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          DummyModel : Emin=    0 eV  Emax=   10 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+      ===== EM models for the G4Region  Target ======
+MicroElecElasticModel : Emin=    0 eV  Emax=  500 keV
+
+e-_G4Dielectrics:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          DummyModel : Emin=    0 eV  Emax=   10 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+      ===== EM models for the G4Region  Target ======
+MicroElecInelasticModel : Emin=    0 eV  Emax=   10 MeV  deltaVI Fluo
+
+e-_G4LOPhononScattering:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          DummyModel : Emin=    0 eV  Emax=   10 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+      ===== EM models for the G4Region  Target ======
+G4MicroElecLOPhononModel : Emin=    0 eV  Emax=   10 MeV
+G4MicroElecSurface::Initialise: Ncouples= 2
+G4Surface, Material 1 / 2 : G4_Si
+G4Surface, Material 2 / 2 : G4_Si
+
+hIoni:  for proton  XStype:3  SubType=2
+      dE/dx and range tables from 100 meV to 10 TeV in 280 bins
+      Lambda tables from threshold to 10 TeV, 20 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=    2 MeV  deltaVI
+          BetheBloch : Emin=    2 MeV Emax=   10 TeV  deltaVI
+      ===== EM models for the G4Region  Target ======
+          BetheBloch : Emin=   10 MeV Emax=   10 TeV  deltaVI
+
+p_G4Dielectrics:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          DummyModel : Emin=    0 eV  Emax=   10 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+      ===== EM models for the G4Region  Target ======
+MicroElecInelasticModel : Emin=  100 eV  Emax=   10 MeV  deltaVI Fluo
+
+ionIoni:  for GenericIon  XStype:3  SubType=2
+      dE/dx and range tables from 100 meV to 10 TeV in 280 bins
+      Lambda tables from threshold to 10 TeV, 20 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=    2 MeV  deltaVI
+          BetheBloch : Emin=    2 MeV Emax=   10 TeV  deltaVI
+      ===== EM models for the G4Region  Target ======
+          BetheBloch : Emin=   10 MeV Emax=   10 TeV  deltaVI
+
+ion_G4Dielectrics:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          DummyModel : Emin=    0 eV  Emax=   10 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+      ===== EM models for the G4Region  Target ======
+MicroElecInelasticModel : Emin=  100 eV  Emax=   10 MeV  deltaVI Fluo
+
+ionIoni:  for alpha  XStype:3  SubType=2
+      dE/dx and range tables from 100 meV to 10 TeV in 280 bins
+      Lambda tables from threshold to 10 TeV, 20 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            BraggIon : Emin=    0 eV  Emax=7.9452 MeV  deltaVI
+          BetheBloch : Emin=7.9452 MeV Emax=   10 TeV  deltaVI
+      ===== EM models for the G4Region  Target ======
+          BetheBloch : Emin=   10 MeV Emax=   10 TeV  deltaVI
+
+alpha_G4Dielectrics:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          DummyModel : Emin=    0 eV  Emax=   10 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+Region <DefaultRegionForTheWorld> --  -- appears in <World> world volume
+ This region is in the mass world.
+ Root logical volume(s) : World 
+ Pointers : G4VUserRegionInformation[0], G4UserLimits[0], G4FastSimulationManager[0], G4UserSteppingAction[0]
+ Materials : G4_Si 
+ Production cuts :   gamma 1 um      e- 1 um      e+ 1 um  proton 1 um 
+
+Region <DefaultRegionForParallelWorld> --  -- is not associated to any world.
+ Root logical volume(s) : 
+ Pointers : G4VUserRegionInformation[0], G4UserLimits[0], G4FastSimulationManager[0], G4UserSteppingAction[0]
+ Materials : 
+ Production cuts :   gamma 1 um      e- 1 um      e+ 1 um  proton 1 um 
+
+Region <Target> --  -- appears in <World> world volume
+ This region is in the mass world.
+ Root logical volume(s) : Target 
+ Pointers : G4VUserRegionInformation[0], G4UserLimits[0], G4FastSimulationManager[0], G4UserSteppingAction[0]
+ Materials : G4_Si 
+ Production cuts :   gamma 1 nm      e- 1 nm      e+ 1 nm  proton 1 nm 
+
+========= Table of registered couples ============================
+
+Index : 0     used in the geometry : Yes
+ Material : G4_Si
+ Range cuts        :  gamma  1 um     e-  1 um     e+  1 um  proton 1 um 
+ Energy thresholds :  gamma  990 eV     e-  990 eV     e+  990 eV  proton 100 eV 
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 1     used in the geometry : Yes
+ Material : G4_Si
+ Range cuts        :  gamma  1 nm     e-  1 nm     e+  1 nm  proton 1 nm 
+ Energy thresholds :  gamma  990 eV     e-  990 eV     e+  990 eV  proton 100 meV
+ Region(s) which use this couple : 
+    Target
+
+==================================================================
+
+Start closing geometry.
+--------------------------------------------------------------------------------
+G4VoxelisationHelper::ReportVoxelStats -- Voxel Statistics
+
+    Total memory consumed for geometry optimisation:   0 kByte
+    Total CPU time elapsed for geometry optimisation: 0 seconds
+--------------------------------------------------------------------------------
+
+### Run 0 starts.
+##### Create analysis manager   0x21baf90
+Using  analysis manager
+... set ntuple merging row mode : row-wise - done
+... create file : microelectronics.root - done
+... open analysis file : microelectronics.root - done
+... open analysis file : microelectronics.root - done
+ Run terminated.
+Run Summary
+  Number of events processed : 10
+  User=0.140000s Real=0.142572s Sys=0.000000s
+... write file : microelectronics.root - done
+... close file : microelectronics.root - done
+... clear all data - done
+Number and type of particles created outside region "Target" :
+_______________________
+Number and type of particles created in region "Target" :
+N e- : 1710
+Graphics systems deleted.
+Visualization Manager deleting...
+G4 kernel has come to Quit state.
+Deleting G4Run (id:0) 
+UserDetectorConstruction deleted 0x216b960
+UserPhysicsList deleted 0x2181830
+UserActionInitialization deleted 0x21b4410
+UserWorkerInitialization deleted 0
+UserWorkerThreadInitialization deleted 0
+UserRunAction deleted.
+UserPrimaryGenerator deleted.
+RunManager is deleting RunManagerKernel.
+G4SDManager deleted.
+EventManager deleted.
+Units table cleared.
+TransportationManager deleted.
+Total navigation history collections cleaned: 7
+G4RNGHelper object is deleted.
+================== Deleting memory pools ===================
+Pool ID '20G4NavigationLevelRep', size : 0.00769 MB
+Pool ID '24G4ReferenceCountedHandleIvE', size : 0.000961 MB
+Pool ID '7G4Event', size : 0.000961 MB
+Pool ID '15G4PrimaryVertex', size : 0.000961 MB
+Pool ID '17G4PrimaryParticle', size : 0.000961 MB
+Pool ID '17G4DynamicParticle', size : 0.0154 MB
+Pool ID '7G4Track', size : 0.0308 MB
+Pool ID '18G4TouchableHistory', size : 0.000961 MB
+Pool ID '15G4CountedObjectIvE', size : 0.000961 MB
+Number of memory pools allocated: 9 of which, static: 0
+Dynamic pools deleted: 9 / Total memory freed: 0.06 MB
+============================================================
+G4Allocator objects are deleted.
+UImanager deleted.
+StateManager deleted.
+RunManagerKernel is deleted. Good bye :)
+RunManager is deleted.

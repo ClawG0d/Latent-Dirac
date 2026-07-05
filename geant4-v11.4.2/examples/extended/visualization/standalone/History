@@ -1,0 +1,80 @@
+# Example standalone History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+
+## 2024-10-25 John Allison (exam-ext-vis-standalone-V11-02-01)
+- vis.mac:
+  - Add some commands from examples/basic/B1/vis.mac to get a nice view.
+
+## 2024-01-30 John Allison (exam-ext-vis-standalone-V11-02-00)
+- A smarter way of getting extent of geometry that ignores invisible volumes.
+  Thus, if the world is marked invisible, it ignores it.
+- DrawGeometryVisAction.cc:
+  - Use G4PhysicalVolumeModel to determine extent.
+
+## 2023-11-15 I. Hrivnacova, John Allison (exam-ext-vis-standalone-V11-01-01)
+- Updated standalone.mac:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2022-12-30 John Allison (exam-ext-vis-standalone-V11-01-00)
+- Include an example of DrawGeometry.
+   - DrawGeometryVisAction:
+     - Shows how to visualise your geometry alone, i.e., without the
+       run manager and the physics stuff.
+
+## 2022-11-04 John Allison (exam-ext-vis-standalone-V11-00-01)
+- Fix typo in README files
+
+## 2021-12-10 Ben Morgan (exam-ext-vis-standalone-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+3rd November 2020 B. Morgan (exam-ext-vis-standalone-V10-06-00)
+- Support same CMake version range as core Geant4
+
+8th January 2017  John Allison  (exam-ext-vis-standalone-V10-03-00)
+- standalone.cc:
+  o Updated to current practice.
+
+27th November 2014  John Allison  (exam-ext-vis-standalone-V10-00-01)
+- README: Mention /vis/scene/add/extent.
+
+27th March 2013  John Allison  (exam-ext-vis-standalone-V09-06-01)
+- Added separators between functions.
+- Removed standalone.g4m.
+
+25th September 2012  Ivana Hrivnacova
+- Renamed standalone.g4m in standalone.mac
+
+11th June 2012  John Allison  (exam-ext-vis-standalone-V09-05-02)
+- standalone.cc: Changed SetUserAction to RegisterRunDurationUserVisAction.
+- Improved README.
+- Added .README for doxygen.
+
+9th April 2012  John Allison  (exam-ext-vis-standalone-V09-05-01)
+- standalone.cc: Corrected vis user action extent.
+- standalone.g4m: Removed arguments from /vis/scene/add/userAction.
+- README: Improved.
+
+21st March 2012  John Allison  (exam-ext-vis-standalone-V09-05-00)
+- Re-tagged with directory specify name.
+
+21st March 2012  John Allison  (exam-ext-vis-V09-05-01)
+- Minor cosmetic improvements to comments and REAME.
+
+12th March 2012  John Allison  (exam-ext-vis-V09-05-00)
+- Added README.
+- Improved standalone.g4m.
+
+9th November 2010  John Allison  (exam-ext-vis-V09-03-00)
+- Introduced G4UIExecutive.
+
+18th October 2005 (exam-ext-vis-V07-01-00)
+- First standalone example.

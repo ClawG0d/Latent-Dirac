@@ -1,0 +1,7 @@
+
+Analysis_F001: Fatal exceptions:
+   When trying to create a singleton manager twice
+   When selecting non-existing output type.
+
+Analysis_W001: Warnings:
+   All cases when a JustWarning exception is issued

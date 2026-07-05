@@ -1,0 +1,95 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+
+#include "G4AnalysisUtilities.hh"
+
+#include "G4THnToolsManager.hh"
+
+//_____________________________________________________________________________
+template <typename HT>
+inline
+G4int G4ToolsAnalysisReader::ReadTImpl(
+        const G4String& htName, const G4String& fileName,
+        const G4String& dirName, G4bool isUserFileName,
+        G4THnManager<HT>* htManager)
+{
+  Message(G4Analysis::kVL4, "read", G4Analysis::GetHnType<HT>(), htName);
+
+  // Read hn
+  auto ht = fVFileManager->GetHnRFileManager<HT>()->Read(
+    htName, fileName, dirName, isUserFileName);
+
+  if ( ! ht ) {
+    G4Analysis::Warn(
+      "Streaming " + htName + " from file " + fileName +
+      " directory " + dirName + " failed.",
+      fkClass, "ReadTImpl");
+    return G4Analysis::kInvalidId;
+  }
+
+  auto id = htManager->RegisterT(htName, static_cast<HT*>(ht));
+
+  Message(G4Analysis::kVL2, "read", G4Analysis::GetHnType<HT>(), htName,
+          id > G4Analysis::kInvalidId);
+
+  return id;
+
+}
+
+//_____________________________________________________________________________
+inline
+tools::histo::h1d*  G4ToolsAnalysisReader::GetH1(G4int id, G4bool warn) const
+{
+  return fH1Manager->GetT(id, warn, false);
+}
+
+//_____________________________________________________________________________
+inline
+tools::histo::h2d*  G4ToolsAnalysisReader::GetH2(G4int id, G4bool warn) const
+{
+  return fH2Manager->GetT(id, warn, false);
+}
+
+//_____________________________________________________________________________
+inline
+tools::histo::h3d*  G4ToolsAnalysisReader::GetH3(G4int id, G4bool warn) const
+{
+  return fH3Manager->GetT(id, warn, false);
+}
+
+//_____________________________________________________________________________
+inline
+tools::histo::p1d*  G4ToolsAnalysisReader::GetP1(G4int id, G4bool warn) const
+{
+  return fP1Manager->GetT(id, warn, false);
+}
+
+//_____________________________________________________________________________
+inline
+tools::histo::p2d*  G4ToolsAnalysisReader::GetP2(G4int id, G4bool warn) const
+{
+  return fP2Manager->GetT(id, warn, false);
+}

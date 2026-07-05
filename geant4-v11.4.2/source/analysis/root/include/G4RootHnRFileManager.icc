@@ -1,0 +1,176 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//
+// Author: Ivana Hrivnacova, 26/08/2021 (ivana@ipno.in2p3.fr)
+
+#include "G4AnalysisUtilities.hh"
+#include "G4RootRFileDef.hh"
+
+#include "tools/rroot/file"
+#include "tools/rroot/rall"
+#include "tools/rroot/streamers"
+
+//_____________________________________________________________________________
+template <typename HT>
+inline
+tools::rroot::buffer* G4RootHnRFileManager<HT>::GetBuffer(
+  const G4String& fileName, const G4String& dirName, const G4String& objectName)
+{
+// Get buffer for reading histogram or profile specified by objectNmae
+// for a file specified by fileName;
+// Open the file if it was not yet open
+
+  // Histograms and profiles are not saved per thread
+  G4bool isPerThread = false;
+
+  // Get or open a file
+  auto rfileTuple = fRFileManager->GetRFile(fileName, isPerThread);
+  if (rfileTuple == nullptr) {
+    if ( ! fRFileManager->OpenRFile(fileName, isPerThread) ) {
+      return nullptr;
+    }
+    rfileTuple = fRFileManager->GetRFile(fileName, isPerThread);
+  }
+  auto rfile = std::get<0>(*rfileTuple);
+
+  // Get or open a directory if dirName is defined
+  tools::rroot::TDirectory* histoDirectory = nullptr;
+  if ( histoDirectory == nullptr ) {
+    // Retrieve directory only once as analysis manager supports only
+    // 1 histo directory par file)
+    if ( ! dirName.empty() ) {
+      histoDirectory = tools::rroot::find_dir(rfile->dir(), dirName);
+      if ( histoDirectory != nullptr ) {
+        std::get<1>(*rfileTuple) = histoDirectory;
+      }
+      else {
+        G4Analysis::Warn(
+          "Directory " + dirName + " not found in file " + fileName + ".",
+          fkClass, "ReadNtupleImpl");
+        return nullptr;
+      }
+    }
+  }
+
+  // Get key
+  tools::rroot::key* key = nullptr;
+  if ( histoDirectory != nullptr ) {
+    key = histoDirectory->find_key(objectName);
+  }
+  else {
+    key = rfile->dir().find_key(objectName);
+  }
+  if (key == nullptr) {
+    G4Analysis::Warn(
+      "Key " + objectName + " for Histogram/Profile not found in file " +
+      fileName + ", directory " + dirName, fkClass, "GetBuffer");
+    return nullptr;
+  }
+
+  unsigned int size;
+  char* charBuffer = key->get_object_buffer(*rfile, size);
+
+  if (charBuffer == nullptr) {
+    G4Analysis::Warn(
+      "Cannot get " + objectName + " in file " + fileName,
+      fkClass, "GetBuffer");
+    return nullptr;
+  }
+
+  auto verbose = false;
+  return new tools::rroot::buffer(G4cout, rfile->byte_swap(), size, charBuffer,
+                                  key->key_length(), verbose);
+}
+
+//_____________________________________________________________________________
+template <>
+inline
+tools::histo::h1d* G4RootHnRFileManager<tools::histo::h1d>::ReadT(
+  tools::rroot::buffer* buffer)
+{
+  return tools::rroot::TH1D_stream(*buffer);
+}
+
+//_____________________________________________________________________________
+template <>
+inline
+tools::histo::h2d* G4RootHnRFileManager<tools::histo::h2d>::ReadT(
+  tools::rroot::buffer* buffer)
+{
+  return tools::rroot::TH2D_stream(*buffer);
+}
+
+//_____________________________________________________________________________
+template <>
+inline
+tools::histo::h3d* G4RootHnRFileManager<tools::histo::h3d>::ReadT(
+  tools::rroot::buffer* buffer)
+{
+  return tools::rroot::TH3D_stream(*buffer);
+}
+
+//_____________________________________________________________________________
+template <>
+inline
+tools::histo::p1d* G4RootHnRFileManager<tools::histo::p1d>::ReadT(
+  tools::rroot::buffer* buffer)
+{
+  return tools::rroot::TProfile_stream(*buffer);
+}
+
+//_____________________________________________________________________________
+template <>
+inline
+tools::histo::p2d* G4RootHnRFileManager<tools::histo::p2d>::ReadT(
+  tools::rroot::buffer* buffer)
+{
+  return tools::rroot::TProfile2D_stream(*buffer);
+}
+
+//_____________________________________________________________________________
+template <typename HT>
+inline
+HT* G4RootHnRFileManager<HT>::Read(
+  const G4String& htName, const G4String& fileName, const G4String& dirName,
+  G4bool /*isUserFileName*/)
+{
+  auto buffer = GetBuffer(fileName, dirName, htName);
+  if ( ! buffer ) {
+    return nullptr;
+  }
+
+  auto ht = ReadT(buffer);
+  delete buffer;
+
+  if ( ! ht ) {
+    G4Analysis::Warn(
+      "Streaming " + htName + " in file " + fileName + " failed.",
+      fkClass, "Read");
+    return nullptr;
+  }
+
+  return ht;
+}

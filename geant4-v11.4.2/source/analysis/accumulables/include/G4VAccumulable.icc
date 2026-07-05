@@ -1,0 +1,115 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+
+// Author: Ivana Hrivnacova, IJCLab IN2P3/CNRS, 04/09/2015
+
+#include <utility>
+
+//_____________________________________________________________________________
+inline G4VAccumulable::G4VAccumulable(G4MergeMode mergeMode)
+  : fMergeMode(mergeMode)
+{}
+
+//_____________________________________________________________________________
+inline G4VAccumulable::G4VAccumulable(const G4String& name, G4MergeMode mergeMode)
+  : fName(name),
+    fMergeMode(mergeMode)
+{}
+
+//
+// protected methods
+//
+
+//_____________________________________________________________________________
+inline void G4VAccumulable::PrintBase(G4PrintOptions options) const
+{
+  if (options.Has(G4PrintOptions::kName)) {
+    G4cout << "\"" << GetName() << "\", ";
+  }
+  if (options.Has(G4PrintOptions::kId)) {
+    G4cout << "id: " << fId << ", ";
+  }
+}
+
+//
+// public methods
+//
+
+//_____________________________________________________________________________
+inline void G4VAccumulable::SetName(const G4String& name)
+{
+  if ( fId != G4Accumulables::kInvalidId) {
+    G4Exception(
+      "G4VAccumulable::SetName", "Analysis_W001",
+      JustWarning, "Accumulable was already registered. Setting is ignored");
+    return;
+  }
+
+  fName = name;
+}
+
+//_____________________________________________________________________________
+inline void G4VAccumulable::Print(G4PrintOptions options) const
+{
+  PrintBase(options);
+}
+
+//_____________________________________________________________________________
+inline void G4VAccumulable::SetMergeMode(G4MergeMode value)
+{
+  fMergeMode = value;
+}
+
+//_____________________________________________________________________________
+inline void G4VAccumulable::SetId(G4int id)
+{
+  if ( fId != G4Accumulables::kInvalidId) {
+    G4Exception(
+      "G4VAccumulable::SetId", "Analysis_W001",
+      JustWarning, "Accumulable was already registered. Setting is ignored");
+    return;
+  }
+
+  fId = id;
+}
+
+//_____________________________________________________________________________
+inline G4String G4VAccumulable::GetName() const
+{
+  return fName;
+}
+
+//_____________________________________________________________________________
+inline G4MergeMode G4VAccumulable::GetMergeMode() const
+{
+  return fMergeMode;
+}
+
+//_____________________________________________________________________________
+inline G4int G4VAccumulable::GetId() const
+{
+  return fId;
+}

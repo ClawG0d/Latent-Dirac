@@ -1,0 +1,45 @@
+
+#########################
+# Set of the verboses 
+#
+/control/verbose 1
+/tracking/verbose 0
+/run/verbose 1
+/event/verbose 0
+
+#########################
+# Set profiler
+#
+/profiler/run/enable true
+/profiler/event/enable true
+/profiler/track/enable true
+/profiler/step/enable false
+
+/profiler/run/components wall_clock cpu_clock peak_rss
+/profiler/event/components wall_clock cpu_clock peak_rss
+/profiler/track/components wall_clock
+/profiler/step/components wall_clock
+
+/profiler/per_thread false
+/profiler/per_event false
+
+/profiler/output/dart true
+/profiler/output/text true
+/profiler/output/json false
+/profiler/output/cout false
+
+/profiler/tree true
+/profiler/flat false
+/profiler/timeline false
+
+##########################
+# Random
+#
+/random/setDirectoryName run_random_seed_info
+/random/setSavingFlag 1
+/random/saveEachEventFlag 0
+
+##########################
+# Initialisation procedure
+#
+/run/beamOn 10000

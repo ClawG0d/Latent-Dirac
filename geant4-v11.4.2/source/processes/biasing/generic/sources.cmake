@@ -1,0 +1,52 @@
+# G4biasing_gen module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4biasing_gen
+  PUBLIC_HEADERS
+    G4BiasingHelper.hh
+    G4BiasingProcessInterface.hh
+    G4BiasingProcessSharedData.hh
+    G4BOptnChangeCrossSection.hh
+    G4BOptnCloning.hh
+    G4BOptnForceCommonTruncatedExp.hh
+    G4BOptnForceFreeFlight.hh
+    G4BOptnLeadingParticle.hh
+    G4BOptrForceCollision.hh
+    G4BOptrForceCollisionTrackData.hh
+    G4ILawCommonTruncatedExp.hh
+    G4ILawForceFreeFlight.hh
+    G4ILawTruncatedExp.hh
+    G4InteractionLawPhysical.hh
+    G4ParallelGeometriesLimiterProcess.hh
+    G4ParticleChangeForNothing.hh
+    G4ParticleChangeForOccurenceBiasing.hh
+  SOURCES
+    G4BiasingHelper.cc
+    G4BiasingProcessInterface.cc
+    G4BiasingProcessSharedData.cc
+    G4BOptnChangeCrossSection.cc
+    G4BOptnCloning.cc
+    G4BOptnForceCommonTruncatedExp.cc
+    G4BOptnForceFreeFlight.cc
+    G4BOptnLeadingParticle.cc
+    G4BOptrForceCollision.cc
+    G4BOptrForceCollisionTrackData.cc
+    G4ILawCommonTruncatedExp.cc
+    G4ILawForceFreeFlight.cc
+    G4ILawTruncatedExp.cc
+    G4InteractionLawPhysical.cc
+    G4ParallelGeometriesLimiterProcess.cc
+    G4ParticleChangeForOccurenceBiasing.cc)
+
+geant4_module_link_libraries(G4biasing_gen
+  PUBLIC
+    G4biasing_mgt
+    G4geometrymng
+    G4globman
+    G4magneticfield
+    G4navigation
+    G4procman
+    G4track
+  PRIVATE
+    G4heprandom
+    G4partman)

@@ -1,0 +1,153 @@
+# - G4processes category build
+foreach(modfile
+    biasing/management/sources.cmake
+    biasing/generic/sources.cmake
+    biasing/importance/sources.cmake
+    cuts/sources.cmake
+    decay/sources.cmake
+    electromagnetic/adjoint/sources.cmake
+    electromagnetic/dna/processes/sources.cmake
+    electromagnetic/dna/models/sources.cmake
+    electromagnetic/dna/utils/sources.cmake
+    electromagnetic/dna/management/sources.cmake
+    electromagnetic/dna/molecules/management/sources.cmake
+    electromagnetic/dna/molecules/types/sources.cmake
+    electromagnetic/highenergy/sources.cmake
+    electromagnetic/lowenergy/sources.cmake
+    electromagnetic/muons/sources.cmake
+    electromagnetic/pii/sources.cmake
+    electromagnetic/polarisation/sources.cmake
+    electromagnetic/standard/sources.cmake
+    electromagnetic/utils/sources.cmake
+    electromagnetic/xrays/sources.cmake
+    hadronic/cross_sections/sources.cmake
+    hadronic/management/sources.cmake
+    hadronic/models/abla/sources.cmake
+    hadronic/models/abrasion/sources.cmake
+    hadronic/models/binary_cascade/sources.cmake
+    hadronic/models/cascade/cascade/sources.cmake
+    hadronic/models/coherent_elastic/sources.cmake
+    hadronic/models/de_excitation/ablation/sources.cmake
+    hadronic/models/de_excitation/evaporation/sources.cmake
+    hadronic/models/de_excitation/fermi_breakup/sources.cmake
+    hadronic/models/de_excitation/fission/sources.cmake
+    hadronic/models/de_excitation/gem_evaporation/sources.cmake
+    hadronic/models/de_excitation/handler/sources.cmake
+    hadronic/models/de_excitation/management/sources.cmake
+    hadronic/models/de_excitation/multifragmentation/sources.cmake
+    hadronic/models/de_excitation/photon_evaporation/sources.cmake
+    hadronic/models/de_excitation/util/sources.cmake
+    hadronic/models/em_dissociation/sources.cmake
+    hadronic/models/fission/sources.cmake
+    hadronic/models/im_r_matrix/sources.cmake
+    hadronic/models/inclxx/utils/sources.cmake
+    hadronic/models/inclxx/incl_physics/sources.cmake
+    hadronic/models/inclxx/interface/sources.cmake
+    hadronic/models/gamma_nuclear/sources.cmake
+    hadronic/models/lend/sources.cmake
+    hadronic/models/lepto_nuclear/sources.cmake
+    hadronic/models/nudex/sources.cmake
+    hadronic/models/particle_hp/sources.cmake
+    hadronic/models/parton_string/diffraction/sources.cmake
+    hadronic/models/parton_string/hadronization/sources.cmake
+    hadronic/models/parton_string/management/sources.cmake
+    hadronic/models/parton_string/qgsm/sources.cmake
+    hadronic/models/pre_equilibrium/exciton_model/sources.cmake
+    hadronic/models/qmd/sources.cmake
+    hadronic/models/quasi_elastic/sources.cmake
+    hadronic/models/radioactive_decay/sources.cmake
+    hadronic/models/theo_high_energy/sources.cmake
+    hadronic/processes/sources.cmake
+    hadronic/stopping/sources.cmake
+    hadronic/util/sources.cmake
+    management/sources.cmake
+    optical/sources.cmake
+    solidstate/phonon/sources.cmake
+    solidstate/channeling/sources.cmake
+    parameterisation/sources.cmake
+    scoring/sources.cmake
+    transportation/sources.cmake)
+  include(${modfile})
+endforeach()
+
+# Processes is a split category due to its size
+# EM is kept in "main" for now as other components depend on it.
+geant4_add_category(G4processes_core
+  MODULES
+    G4biasing_mgt
+    G4biasing_gen
+    G4biasing_imp
+    G4cuts
+    G4decay
+    G4emadjoint
+    G4emdna-processes
+    G4emdna-models
+    G4emdna-utils
+    G4emdna-man
+    G4emdna-molman
+    G4emdna-moltypes
+    G4emhighenergy
+    G4emlowenergy
+    G4muons
+    G4empii
+    G4empolar
+    G4emstandard
+    G4emutils
+    G4xrays
+    G4procman
+    G4optical
+    G4solidstate_phonon
+    G4solidstate_channeling
+    G4parameterisation
+    G4scoring
+    G4transportation )
+# Override (private) allocation export symbol for the EM category
+geant4_set_category_property(G4processes_core PROPERTY DEFINE_SYMBOL G4EM_ALLOC_EXPORT)
+
+geant4_add_category(G4processes_hadronic
+  MODULES
+    G4hadronic_xsect
+    G4hadronic_mgt
+    G4hadronic_abla
+    G4hadronic_abrasion
+    G4hadronic_binary
+    G4hadronic_bert_cascade
+    G4hadronic_coherent_elastic
+    G4hadronic_ablation
+    G4hadronic_deex_evaporation
+    G4hadronic_deex_fermi_breakup
+    G4hadronic_deex_fission
+    G4hadronic_deex_gem_evaporation
+    G4hadronic_deex_handler
+    G4hadronic_deex_management
+    G4hadronic_deex_multifragmentation
+    G4hadronic_deex_photon_evaporation
+    G4hadronic_deex_util
+    G4hadronic_em_dissociation
+    G4had_fission
+    G4had_im_r_matrix
+    G4hadronic_inclxx_utils
+    G4hadronic_inclxx_physics
+    G4hadronic_inclxx_interface
+    G4had_gamma_nuclear
+    G4had_lend
+    G4had_lept_nuclear
+    G4hadronic_nudex
+    G4had_par_hp
+    G4had_string_diff
+    G4had_string_frag
+    G4had_string_man
+    G4hadronic_qgstring
+    G4had_preequ_exciton
+    G4hadronic_qmd
+    G4hadronic_quasi_elastic
+    G4hadronic_radioactivedecay
+    G4had_theo_max
+    G4hadronic_proc
+    G4hadronic_stop
+    G4hadronic_util )
+# Override (private) allocation export symbol for the hadronic category
+geant4_set_category_property(G4processes_hadronic PROPERTY DEFINE_SYMBOL G4HADRONIC_ALLOC_EXPORT)
+
+# For backward compatibility, we need to create an interface target
+geant4_add_category(G4processes INTERFACE G4processes_core G4processes_hadronic)

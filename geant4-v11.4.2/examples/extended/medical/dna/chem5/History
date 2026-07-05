@@ -1,0 +1,62 @@
+# Example chem5 History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-05-05 Hoang Tran (chem5-V11-03-02)
+- Replaced the shared_ptr with unique_ptr and raw for manager counters.
+
+## 2025-04-22 Hoang Tran (chem5-V11-03-01)
+- used new G4MoleculeCounterManager to manage the G4MoleculeCounter
+
+## 2025-04-01 Hoang Tran (chem5-V11-03-00)
+- clean up the code, add plot.py script for plotting the output data
+
+## 2024-09-19 Ivana Hrivnacova (chem5-V11-02-00)
+- Added HOW TO START section in README with
+  the beam.in, gui.mac macros usage
+
+## 2022-09-20 Hoang Tran (chem5-V11-00-02)
+- Fixed the examples naming conventions violations
+- delete unsused function clear()
+
+## 2022-05-02 Hoang Tran (chem5-V11-00-01)
+- Add localthread for fUse of G4VMoleculeCounter
+
+## 2021-12-10 Ben Morgan (chem5-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+10.11.2020 - B. Morgan            - chem5-V10-06-00
+- Migration to G4RunManagerFactory.
+
+26.11.2019 -  I. Hrivnacova       - chem5-V10-05-03
+- Fixed formatting in .README.txt
+
+11.09.2019 -  I. Hrivnacova       - chem5-V10-05-02
+- Removed unused include g4analysis_defs.hh from ScoreSpecies.cc
+
+10.03.2019 MK                     - chem5-V10-05-01
+- Fix: species hides a pointer
+
+08.02.2019 VI, WGS, SI            - chem5-V10-05-00
+- Fixed PhysicsList
+
+26 Nov 2018 -  V. Ivanchenko      - chem5-V10-04-03
+- Fixed nightly problem
+
+08 Nov 2018 -  I. Hrivnacova      - chem5-V10-04-02
+- Updated History
+
+07 Nov 2018 -  Jose Ramos-Mendez  - chem5-V10-04-01
+- Fix missing header
+
+07 Nov 2018 -  Jose Ramos-Mendez  - chem5-V10-04-00
+- First version
+
+26 Sept 2018 - Jose Ramos-Mendez
+- created

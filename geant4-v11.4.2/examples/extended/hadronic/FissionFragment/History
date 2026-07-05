@@ -1,0 +1,90 @@
+# Example FissionFragment History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2023-10-26 Alberto Ribon (exExtHadFissFrag-V11-01-00)
+- README : documented macro batch.in
+
+## 2022-10-04 Ben Morgan (exExtHadFissFrag-V11-00-01)
+- Replace sprintf with ostringstream to fix deprecation warning on macOS 13
+
+## 2021-12-10 Ben Morgan (exExtHadFissFrag-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+01-06-21 G. Folger (exExtHadFissFrag-V10-07-01)
+- Fixed CMake build script to define target properly.
+
+22-03-21 A. Ribon (exExtHadFissFrag-V10-07-00)
+- Improved comment.
+
+10-11-20 B, Morgan (exExtHadFissFrag-V10-06-01)
+- Migration to G4RunManagerFactory.
+
+05-08-20    A. Ribon		(exExtHadFissFrag-V10-06-00)
+- FissionFragment.cc , batch.in , README , .README.txt :
+  o Replaced deprecated HP environmental variables with corresponding
+    UI commands.
+
+08-05-18    J. Allison		(exExtHadFissFrag-V10-04-01)
+- FissionFragment.cc:
+  o Move instantiation of G4UIExecutive beyond the point where the main
+    program could exit, for example, if environment variables are incorrectly
+    set. The problem was that if G4UIExecutive invokes G4UIQt, and if the
+    program exits after instantiation but before SessionStart, all output
+    is lost.
+
+03-05-18    J. Allison		(exExtHadFissFrag-V10-04-00)
+- FissionFragment.cc:
+  o Remove G4_VIS_USE and G4UI_USE.
+  o Move instantiation of G4UIExecutive to start of main.
+
+26-10-15    T. Koi		(exExtHadFissFrag-V10-01-01)
+- Fix compiler waring message in previous tag
+
+25-10-15    T. Koi		(exExtHadFissFrag-V10-01-00)
+- Limit number of worker threads of one
+
+03-11-14    B. Wendt            (exExtHadFissFrag-V10-00-13)
+- Fixed duplicate plate addition of -x when x=0.0 in
+  FFDetectorConstruction.cc
+
+21-08-14    B. Wendt            (exExtHadFissFrag-V10-00-12)
+- Changed batch.in /run/beamOn from 1000 events to 50
+- Set the Mersenne Twister seed directly in FissionFragment.cc
+  to hopefully achieve a portable fix. I'm not sure about
+  portability to multi-threading - i.e. will each thread have a
+  unique pseudo-random number sequence?
+- Added precompiler options to enable debugging specific features
+
+27-06-14    I.Hrivnacova        (exExtHadFissFrag-V10-00-11)
+- Fixed FFActionInitialization (compilation is squential mode)
+
+26-06-14    B. Wendt            (exExtHadFissFrag-V10-00-10)
+- Added README files for doxygen documentation
+- Updated class data members to follow coding guidelines
+
+
+23-06-14    B. Wendt            (exExtHadFissFrag-V10-00-09)
+- Fixed fuel plate placement issue. Removed need for tag
+  "exExtHadFissFrag-V10-00-08"
+- Fixed sampling location for neutron source
+
+
+23-06-14    B. Wendt            (exExtHadFissFrag-V10-00-08)
+- Attempt to correct compilation warnings on gcc-4.1 regarding a call
+  to "int abs(int)" in FFDetectorConstruction.cc
+
+
+13-06-14    Gunter Folger       (exExtHadFissFrag-V10-00-07)
+- correct compilation warning on unused variable run in FFRunAction
+- add input file for testing: batch.in
+
+
+06-06-13    B. Wendt            (exExtHadFissFrag-V10-00-06)
+- First release

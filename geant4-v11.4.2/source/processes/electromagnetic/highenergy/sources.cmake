@@ -1,0 +1,74 @@
+# - G4emhighenergy module build definition
+
+# Define the Geant4 Module.
+geant4_add_module(G4emhighenergy
+  PUBLIC_HEADERS
+    G4AnnihiToMuPair.hh
+    G4BetheBlochNoDeltaModel.hh
+    G4BraggNoDeltaModel.hh
+    G4DynamicParticleFluctuation.hh
+    G4DynamicParticleIonisation.hh
+    G4DynamicParticleMSC.hh
+    G4GammaConversionToMuons.hh
+    G4ICRU73NoDeltaModel.hh
+    G4Vee2hadrons.hh
+    G4ee2KChargedModel.hh
+    G4ee2KNeutralModel.hh
+    G4eeCrossSections.hh
+    G4eeTo3PiModel.hh
+    G4eeToHadrons.hh
+    G4eeToHadronsModel.hh
+    G4eeToHadronsMultiModel.hh
+    G4eeToPGammaModel.hh
+    G4eeToTwoPiModel.hh
+    G4hBremsstrahlung.hh
+    G4hBremsstrahlungModel.hh
+    G4hPairProduction.hh
+    G4hPairProductionModel.hh
+    G4hhIonisation.hh
+    G4mplIonisation.hh
+    G4mplIonisationModel.hh
+    G4mplIonisationWithDeltaModel.hh
+  SOURCES
+    G4AnnihiToMuPair.cc
+    G4BetheBlochNoDeltaModel.cc
+    G4BraggNoDeltaModel.cc
+    G4DynamicParticleFluctuation.cc
+    G4DynamicParticleIonisation.cc
+    G4DynamicParticleMSC.cc
+    G4GammaConversionToMuons.cc
+    G4ICRU73NoDeltaModel.cc
+    G4ee2KChargedModel.cc
+    G4ee2KNeutralModel.cc
+    G4eeCrossSections.cc
+    G4eeTo3PiModel.cc
+    G4eeToHadrons.cc
+    G4eeToHadronsModel.cc
+    G4eeToHadronsMultiModel.cc
+    G4eeToPGammaModel.cc
+    G4eeToTwoPiModel.cc
+    G4hBremsstrahlung.cc
+    G4hBremsstrahlungModel.cc
+    G4hPairProduction.cc
+    G4hPairProductionModel.cc
+    G4hhIonisation.cc
+    G4mplIonisation.cc
+    G4mplIonisationModel.cc
+    G4mplIonisationWithDeltaModel.cc)
+
+geant4_module_link_libraries(G4emhighenergy
+  PUBLIC
+    G4emstandard
+    G4emutils
+    G4globman
+    G4heprandom
+    G4leptons
+    G4materials
+    G4muons
+    G4partman
+    G4procman
+    G4track
+  PRIVATE
+    G4bosons
+    G4cuts
+    G4mesons)

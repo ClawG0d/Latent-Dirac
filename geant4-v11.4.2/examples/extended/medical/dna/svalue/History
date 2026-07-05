@@ -1,0 +1,131 @@
+# Example svalue History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top).
+It must **not** be used as a substitute for writing good git commit messages!
+
+-------------------------------------------------------------------------------
+
+## 2025-07-25 I. Hrivnacova (svalue-V11-03-03)
+- Fixed Doxygen formatting
+
+## 2025-07-17 Sebastien Incerti (svalue-V11-03-02)
+- added missing optional include file in TrackingAction.hh
+
+## 2025-01-22 Sebastien Incerti (svalue-V11-03-01)
+- added optional time threshold to iodine macros
+
+## 2025-01-02 Sebastien Incerti (svalue-V11-03-00)
+- added ntuple merging
+
+## 2024-10-05 Sebastien Incerti (svalue-V11-02-01)
+- Updated README
+- added auto to plot.C
+
+## 2024-03-10 Sebastien Incerti (svalue-V11-02-00)
+- Cleaned example
+
+## 2021-12-10 Ben Morgan (svalue-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+
+06-10-2021 - tag svalue-V10-07-02 - I. Hrivnacova
+- Migration to new G4AnalysisManager.hh header;
+  define the default output file type (root).
+
+19-07-2021 - tag svalue-V10-07-01 - I. Hrivnacova
+- Updated for changes in the analysis category:
+  removed deleting of the analysis manager,
+  as this is now done by the Geant4 kernel.
+
+11-02-2021 - tag svalue-V10-07-00 - V. Ivanchenko
+- PhysicsList - remove unused header; radioactive decay is defined
+  via standard radioactive physics builder; do not allow change
+  of geometry between runs, only materials may be changed;
+  removed all warning in test run
+
+26-11-19 I. Hrivnacova (svalue-V10-05-01)
+- Fixed Doxygen warnings
+
+14-09-19 S. Incerti (svalue-V10-05-00)
+- coding guidelines fix in MyFileReader.hh
+
+22-07-18 S. Incerti (svalue-V10-04-02)
+- removed obsolete RanecuEngine
+
+30-06-2018 S. Incerti (svalue-V10-04-01)
+- major update for cell simulation (cytoplasm and nucleus)
+
+09-05-2018 B.Morgan (svalue-V10-04-00)
+- Include G4Types before use of G4MULTITHREADED. For forward
+  compatibility with move to #defines over -D for G4 preprocessor
+  symbols.
+
+08-09-2017 S. Incerti (svalue-V10-03-03)
+- updated README
+
+26-07-2017 S. Incerti (svalue-V10-03-02)
+- added coding guidelines
+
+04-04-2017 S. Incerti (svalue-V10-03-01)
+- updated plot.C
+
+31-12-2016 S. Incerti (svalue-V10-03-00)
+- cleanup
+
+14-10-16 G.Folger (svalue-V10-02-06)
+         tagged only on 07-Nov-16
+- remove direct use of theParticleIterator, use GetParticleTableIterator().
+    fix required by clang39 on Linux and MAC
+
+14-10-2016 S. Incerti (svalue-V10-02-05)
+- updated README
+
+28-07-2016 S. Incerti (svalue-V10-02-04)
+- updated plot.C
+
+27-07-2016 S. Incerti (svalue-V10-02-03)
+- added plot.C
+
+09-07-2016 S. Incerti (svalue-V10-02-02)
+- updated README
+
+04-07-2016 I.Hrivnacova  (svalue-V10-02-01)
+- Fixes for Doxygen documentation
+
+28-05-2016 MK (svalue-V10-02-00)
+- DetectorConstruction.cc: G4RunManager::GetRunManager()->GeometryHasBeenModified()
+- PhysicsList.cc: add other DNA constructors
+- svalue.cc: code clean up
+
+17-09-15 SI (svalue-V10-01-08)
+- applied coding guidelines
+
+18-08-15 SI (svalue-V10-01-07)
+- updated README
+
+07-05-15 MK (svalue-V10-01-06)
+- rollback svalue.in
+
+07-05-15 MK (svalue-V10-01-05)
+- rollback physicslist
+
+06-05-15 MK (svalue-V10-01-04)
+- make PrimaryGeneratorAction g4 state dependent in order to enable
+generic physics list (empty modular physics list)
+
+05-05-15 MK (svalue-V10-01-03)
+- update PhysicsList
+- code cleaning
+
+05-05-15 MK (svalue-V10-01-02)
+- remplace HistoManager::Book : kMaxHisto=9 --> kMaxHisto=8
+
+04-05-15 SI (svalue-V10-01-01)
+- fix compilation warnings and crashes
+
+01-05-15 SI (svalue-V10-01-00)
+- created and adapted from TestEm12

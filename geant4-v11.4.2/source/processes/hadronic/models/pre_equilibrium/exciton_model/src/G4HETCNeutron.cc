@@ -1,0 +1,91 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//
+// by V. Lara
+//
+// Modified:
+// 23.08.2010 V.Ivanchenko general cleanup, move constructor and destructor 
+//            the source, use G4Pow
+
+#include "G4HETCNeutron.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4Neutron.hh"
+#include "G4NuclearLevelData.hh"
+
+G4HETCNeutron::G4HETCNeutron() 
+  : G4HETCFragment(G4Neutron::Neutron())
+{}
+
+G4double G4HETCNeutron::GetAlpha() const
+{
+  return 0.76+2.2/theResA13;
+}
+  
+G4double G4HETCNeutron::GetBeta() const
+{
+  return (2.12/(theResA13*theResA13)-0.05)/GetAlpha(); // in MeV
+}
+
+G4double G4HETCNeutron::GetSpinFactor() const
+{
+  // (2s+1)
+  return 2.0;
+}
+  
+G4double G4HETCNeutron::K(const G4Fragment& aFragment) const
+{
+  // Number of protons in emitted fragment
+  G4int Pa = theZ;
+  // Number of neutrons in emitted fragment 
+  G4int Na = theA - Pa;
+
+  G4double r = G4double(theResZ)/G4double(theResA);
+  
+  G4int P = aFragment.GetNumberOfParticles();
+  G4int H = aFragment.GetNumberOfHoles();
+  
+  G4double result = (P > 0) ? (H + Na/(1.0 - r))/P : 0.0;
+  return result;
+}
+
+G4double G4HETCNeutron::SampleKineticEnergy(const G4Fragment& frag)
+{
+  G4int H = frag.GetNumberOfHoles();
+  G4int Pb = frag.GetNumberOfParticles();
+  G4int Nb = Pb + H;
+  G4double U = frag.GetExcitationEnergy();
+  G4double g0 = 
+    (6.0/CLHEP::pi2)*fNucData->GetLevelDensity(theFragZ,theFragA,U);
+  
+  G4double Ab = std::max(0.0, (G4double)(Pb*Pb+H*H+Pb-3*H)/(4.0*g0));
+  G4double Emax = theMaxKinEnergy - Ab;
+  
+  G4double cut = GetBeta() / (GetBeta()+Emax/G4double(Nb+1));
+  G4double x = (G4UniformRand() <= cut) ? BetaRand(Nb,1) : BetaRand(Nb,2);
+
+  return Emax * (1.0 - x);
+}

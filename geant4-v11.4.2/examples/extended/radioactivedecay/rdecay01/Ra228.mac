@@ -1,0 +1,16 @@
+# macro for rdecay01
+#
+/control/cout/ignoreThreadsExcept 0
+/control/verbose 2
+/run/verbose 1
+#
+# Set a very high time threshold to allow all decays to happen
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+#
+/gun/particle ion
+/gun/ion 88 228 0 63.823
+#
+/rdecay01/fullChain false
+#
+#/run/printProgress 1
+/run/beamOn 20

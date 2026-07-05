@@ -1,0 +1,122 @@
+# Example hadronic History
+
+See `CONTRIBUTING.rst` for details of **required** info/format for each entry,
+which **must** added in reverse chronological order (newest at the top). It must **not**
+be used as a substitute for writing good git commit messages!
+
+## 2025-07-30 I. Hrivnacova (exHadronic-V11-03-00)
+- Migration of README pages to Markdown:
+  - .README.txt replaced with README.md and removed README
+  - Reviewed and fixed external links, references to code,
+    removed references to non existing claseses or files
+    (if present)
+
+## 2023-11-15 I. Hrivnacova (exHadronic-V11-01-01)
+- Updated vis.mac macros:
+  - Changed "/vis/open XYZ [600x600-0+0]" to "/vis/open" to allow run-time choices
+    and simplified comments.
+
+## 2022-05-09 G. Hugo (exHadronic-V11-01-00)
+- Add a G4-FLUKA interface and two G4 hadronic examples, 
+providing access to FLUKA hadron-nucleus inelastic physics.
+
+## 2022-10-25 I. Hrivnacova (exHadronic-V11-00-02)
+- Fixed link to new ParticleFluence example in Doxygen documentation
+
+## 2022-06-10 Alberto Ribon (exHadronic-V11-00-01)
+- Created new test: ParticleFluence.
+
+## 2021-12-10 Ben Morgan (exHadronic-V11-00-00)
+- Change to new Markdown History format
+
+---
+
+# History entries prior to 11.0
+     
+29-11-21 I. Hrivnacova (exHadronic-V10-07-04)
+- Removed obsolete references to AIDA analysis tools
+
+17-11-21 I. Hrivnacova (exHadronic-V10-07-03)
+- Updated documentation
+
+20-06-21 M. Maire (exHadronic-V10-07-02)
+- new example: Hadr05.
+
+26-05-21 A. Ribon (exHadronic-V10-07-01)
+- Created new test: Hadr10.
+
+24-05-21 B. Morgan (exHadronic-V10-07-00)
+- Bump required CMake version range to 3.12...3.20, matching core Geant4
+
+13-11-20 B. Morgan (exHadronic-V10-06-03)
+- Enforce use of Serial RunManager for serial-only examples.
+
+10-11-20 B. Morgan (exHadronic-V10-06-02)
+- Migration to G4RunManagerFactory for:
+  - FissionFragment
+  - Hadr00
+  - Hadr01
+  - Hadr02
+  - Hadr08
+  - Remainder use G4SteppingVerbose which requires further checks
+    for compatibility with G4RunManagerFactory.
+
+06-11-20 A. Ribon (exHadronic-V10-06-01)
+- Created new test: Hadr09.
+
+03-11-20 B. Morgan (exHadronic-V10-06-00)
+- Support same CMake version range as core Geant4
+
+25-10-19 A. Ribon (exHadronic-V10-05-01)
+- Created new test: Hadr08.
+
+31-01-19 I. Hrivnacova ((exHadronic-V10-05-00)
+- Merged GitHub PR #4: all Boolean operators now return G4bool.
+
+29-11-17 I. Hrivnacova (exHadronic-V10-03-00)
+- Removed Hadr05 (replaced with physicslists/genericPL)
+
+28-09-16 M. Maire (exHadronic-V10-02-03)
+- remove AmBe
+
+26-09-16 M. Maire (exHadronic-V10-02-02)
+- Added newly created example NeutronSource
+
+04-07-16 I. Hrivnacova  (exHadronic-V10-02-01)
+- Fixes for Doxygen documentation in Hadr03 - Hadr07
+
+03-04-16 M. Maire (exHadronic-V10-02-00)
+- Added newly created example Hadr07
+
+27-06-14 I. Hrivnacova (exHadronic-V10-00-00)
+- Updated documentation:
+  Added newly added examples in README and  .README files
+- Added Hadr06 in CMakeLists.txt
+
+03-06-13 B. Wendt
+- Added FissionGenerator in CMakeLists.txt and README
+
+27-11-13 G. Cosmo (exHadronic-V09-06-01)
+- Added Hadr05 in CMakeLists.txt and README
+
+22-11-13 I. Hrivnacova (exHadronic-V09-06-00)
+- Added Hadr04 in CMakeLists.txt and README
+
+17-11-12 I. Hrivnacova (exHadronic-V09-05-03)
+- Updated documentation:
+  - Fixed .README files for artefacts from Markdown support
+  - Removed obsolete instructions (how to compile & link)
+
+13-10-12 A. Dotti (exHadronic-V09-05-02)
+- Adding explicit use of system of units
+
+29-09-12 I. Hrivnacova (exHadronic-V09-05-01)
+- Renamed hadr0N.cc to Hadr0N.cc to match exactly with the example directory name
+  (this allows to configure CMake build in the same way on both case sensitive
+  and case insensitive platforms).
+
+21-09-12 I. Hrivnacova (exHadronic-V09-05-00)
+- Updated CMakeLists.txt files:
+  adding visualization, copying macros, install target and comment lines
+- Adding explicit includes of G4SystemOfUnits.hh and G4PhysicalConstants.hh
+- Replaced tabulators with space characters
