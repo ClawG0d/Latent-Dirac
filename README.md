@@ -78,28 +78,6 @@ always carry their provenance (engine version, physics list, dataset
 versions, patch list): the engine is invisible in the API, never in the
 report.
 
-### Honesty discipline
-
-Every physics model declares one of five fidelity tiers: **placeholder**,
-**parameterized**, **surrogate**, **table-based**, or
-**externally calibrated** — and every demo animation below carries its
-field model and fidelity note in its title. Performance or physics claims must reference
-reproducible settings, and comparative performance statements require an
-open benchmark. Latent Dirac does not reimplement high-fidelity
-particle-matter physics in its Python core; that role belongs to the
-vendored vanilla Geant4 engine track and to external tools behind
-adapters.
-
-The platform description above is design intent. The current release is a
-lightweight NumPy-based Python core for source-to-acceptance modeling,
-with placeholder adapters for future calibration against external tools
-such as Xsuite, and the vanilla Geant4 v11.4.2 tree vendored in-repo as
-the engine-track baseline (it builds via the `engine/README.md` recipe
-and feeds the pipeline through offline yield tables; no runtime coupling
-ships yet). GPU execution and interactive 3D viewers are roadmap items,
-not shipped features — see [Current Status](#current-status) and
-[docs/roadmap.md](docs/roadmap.md).
-
 ## Demos
 
 Thirteen 3D demos, each rendered from real simulation output. Most are defined
