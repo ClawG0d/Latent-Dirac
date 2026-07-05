@@ -5,6 +5,13 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the Xopt-compatible scene evaluator
+  (`latent_dirac.backends.evaluator.make_scene_evaluator`): scalar and
+  vector-component variables (`"label.param"`, `"label.vec[i]"`),
+  Xopt's dict-to-dict calling convention with no xopt dependency, and
+  `evaluate.batch` for one-launch candidate generations on the new
+  `BatchedSceneProgram` (built once; JAX compiles on first run and
+  caches per batch shape).
 - Added the JAX batched backend (`latent_dirac.backends.jax_scene`,
   optional `[jax]` extra): a declarative scene compiles into one JAX
   program (`lax.scan` transports, mask-and-ledger acceptance) and `vmap`

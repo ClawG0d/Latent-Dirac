@@ -81,37 +81,6 @@ def _base_params(scene: Scene) -> list[dict[str, np.ndarray]]:
     return params
 
 
-def _apply_overrides(scene: Scene, params, overrides):
-    label_to_index = {element.label: index for index, element in enumerate(scene.elements)}
-    in_axes = [dict.fromkeys(entry, None) for entry in params]
-    batch_size: int | None = None
-
-    for key, values in overrides.items():
-        label, _, param = key.partition(".")
-        if label not in label_to_index:
-            raise ValueError(f"override {key!r}: no element labeled {label!r} in the scene")
-        index = label_to_index[label]
-        if param not in params[index]:
-            raise ValueError(
-                f"override {key!r}: element {label!r} has no sweepable parameter {param!r} "
-                f"(sweepable: {sorted(params[index])})"
-            )
-        array = np.asarray(values, dtype=float)
-        base_shape = params[index][param].shape
-        if array.ndim != len(base_shape) + 1 or array.shape[1:] != base_shape:
-            raise ValueError(f"override {key!r} must have shape (batch, *{base_shape}), got {array.shape}")
-        if array.shape[0] == 0:
-            raise ValueError(f"override {key!r}: batch size must be at least 1, got 0")
-        if batch_size is None:
-            batch_size = array.shape[0]
-        elif array.shape[0] != batch_size:
-            raise ValueError(f"override {key!r}: batch size {array.shape[0]} does not match {batch_size}")
-        params[index][param] = array
-        in_axes[index][param] = 0
-
-    return params, in_axes, batch_size
-
-
 def _uniform_field(jnp, positions, params):
     count = positions.shape[0]
     e_field = jnp.broadcast_to(params["E_vector_v_m"], (count, 3))
@@ -210,6 +179,132 @@ def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float):
     return simulate
 
 
+def base_parameters(scene: Scene) -> dict[str, np.ndarray]:
+    """Sweepable parameters as a flat `"label.param" -> base value` map."""
+
+    params = _base_params(scene)
+    return {
+        f"{element.label}.{name}": value
+        for element, entry in zip(scene.elements, params, strict=True)
+        for name, value in entry.items()
+    }
+
+
+class BatchedSceneProgram:
+    """Compile a scene once, run it many times with different overrides.
+
+    The source is sampled once (deterministic from the scene seed) and
+    the vmapped simulator is staged for jit at construction; JAX compiles
+    on the first `run` and caches per batch shape, so each distinct batch
+    size compiles once and every further `run` with that shape reuses it.
+    This is the path repeated callers (parameter scans, optimizers)
+    should use.
+
+    Dtype policy: outputs follow JAX's dtype configuration. Without
+    `jax_enable_x64`, float64 inputs are downcast and results come back
+    float32 - safe for the dimensionless internals, but avoid computing
+    float32 SI-momentum magnitudes downstream (|p|^2 underflows); enable
+    x64 for float64-validated results.
+    """
+
+    def __init__(
+        self,
+        scene: Scene,
+        override_keys: tuple[str, ...] | list[str] = (),
+        rng: np.random.Generator | None = None,
+    ):
+        jax, jnp = _import_jax()
+        self._jnp = jnp
+        self._scene = scene
+
+        params = _base_params(scene)
+        label_to_index = {element.label: index for index, element in enumerate(scene.elements)}
+        in_axes = [dict.fromkeys(entry, None) for entry in params]
+        self._slots: dict[str, tuple[int, str, tuple[int, ...]]] = {}
+        for key in override_keys:
+            label, _, param = key.partition(".")
+            if label not in label_to_index:
+                raise ValueError(f"override {key!r}: no element labeled {label!r} in the scene")
+            index = label_to_index[label]
+            if param not in params[index]:
+                raise ValueError(
+                    f"override {key!r}: element {label!r} has no sweepable parameter {param!r} "
+                    f"(sweepable: {sorted(params[index])})"
+                )
+            in_axes[index][param] = 0
+            self._slots[key] = (index, param, params[index][param].shape)
+        self._base = params
+
+        rng = np.random.default_rng(scene.seed) if rng is None else rng
+        initial = build_source(scene).sample(rng)
+        self._mass_kg = initial.species.mass_kg
+        self._weight = np.asarray(initial.weight)
+        self._initial = (
+            jnp.asarray(initial.position_m),
+            jnp.asarray(initial.momentum_kg_m_s / (self._mass_kg * SPEED_OF_LIGHT_M_PER_S)),
+            jnp.asarray(initial.time_s),
+            jnp.asarray(initial.alive),
+            jnp.asarray(initial.lost_at_element),
+        )
+
+        simulate = _make_simulator(scene, jax, jnp, self._mass_kg, initial.species.charge_c)
+        if self._slots:
+            self._fn = jax.jit(jax.vmap(simulate, in_axes=(in_axes, None, None, None, None, None)))
+        else:
+            self._fn = jax.jit(simulate)
+
+    def run(self, values: dict[str, np.ndarray] | None = None) -> BatchedSceneResult:
+        jnp = self._jnp
+        values = dict(values) if values is not None else {}
+
+        missing = set(self._slots) - set(values)
+        if missing:
+            raise ValueError(f"missing override values for {sorted(missing)}")
+        unexpected = set(values) - set(self._slots)
+        if unexpected:
+            raise ValueError(f"unexpected override values for {sorted(unexpected)}")
+
+        params = [dict(entry) for entry in self._base]
+        batch_size: int | None = None
+        for key, array_values in values.items():
+            index, param, base_shape = self._slots[key]
+            array = np.asarray(array_values, dtype=float)
+            if array.ndim != len(base_shape) + 1 or array.shape[1:] != base_shape:
+                raise ValueError(
+                    f"override {key!r} must have shape (batch, *{base_shape}), got {array.shape}"
+                )
+            if array.shape[0] == 0:
+                raise ValueError(f"override {key!r}: batch size must be at least 1, got 0")
+            if batch_size is None:
+                batch_size = array.shape[0]
+            elif array.shape[0] != batch_size:
+                raise ValueError(f"override {key!r}: batch size {array.shape[0]} does not match {batch_size}")
+            params[index][param] = array
+
+        jax_params = [{name: jnp.asarray(value) for name, value in entry.items()} for entry in params]
+        raw = self._fn(jax_params, *self._initial)
+        if self._slots:
+            outputs = tuple(np.asarray(value) for value in raw)
+        else:
+            outputs = tuple(np.asarray(value)[np.newaxis] for value in raw)
+        return self._package(outputs)
+
+    def _package(self, outputs) -> BatchedSceneResult:
+        position_out, u_out, time_out, alive_out, ledger_out = outputs
+        accepted_weighted = np.sum(self._weight[np.newaxis, :] * alive_out, axis=1)
+        total_weight = float(np.sum(self._weight))
+        return BatchedSceneResult(
+            position_m=position_out,
+            momentum_kg_m_s=u_out * (self._mass_kg * SPEED_OF_LIGHT_M_PER_S),
+            time_s=time_out,
+            alive=alive_out.astype(bool),
+            lost_at_element=ledger_out.astype(np.int32),
+            weight=self._weight,
+            accepted_weighted=accepted_weighted,
+            accepted_fraction=accepted_weighted / total_weight if total_weight > 0.0 else accepted_weighted,
+        )
+
+
 def run_scene_batched(
     scene: Scene,
     overrides: dict[str, np.ndarray] | None = None,
@@ -221,53 +316,11 @@ def run_scene_batched(
     batch axis; all overrides must share the batch size. With no overrides
     the scene runs as a single configuration (batch size 1).
 
-    Dtype policy: outputs follow JAX's dtype configuration. Without
-    `jax_enable_x64`, float64 inputs are downcast and results come back
-    float32 — safe for the dimensionless internals, but avoid computing
-    float32 SI-momentum magnitudes downstream (|p|^2 underflows); enable
-    x64 for float64-validated results. Each call builds and jit-compiles a
-    fresh program for the scene (no cross-call compile caching yet).
+    This is a one-shot convenience wrapper around `BatchedSceneProgram`;
+    repeated callers should build the program once and call `run` (see the
+    dtype policy documented there).
     """
 
-    jax, jnp = _import_jax()
-
-    params, in_axes, batch_size = _apply_overrides(
-        scene, _base_params(scene), dict(overrides) if overrides is not None else {}
-    )
-
-    rng = np.random.default_rng(scene.seed) if rng is None else rng
-    initial = build_source(scene).sample(rng)
-    mass_kg = initial.species.mass_kg
-    charge_c = initial.species.charge_c
-
-    position = jnp.asarray(initial.position_m)
-    u = jnp.asarray(initial.momentum_kg_m_s / (mass_kg * SPEED_OF_LIGHT_M_PER_S))
-    time_s = jnp.asarray(initial.time_s)
-    alive = jnp.asarray(initial.alive)
-    ledger = jnp.asarray(initial.lost_at_element)
-
-    simulate = _make_simulator(scene, jax, jnp, mass_kg, charge_c)
-    jax_params = jax.tree_util.tree_map(jnp.asarray, params)
-
-    if batch_size is None:
-        outputs = jax.jit(simulate)(jax_params, position, u, time_s, alive, ledger)
-        outputs = tuple(np.asarray(value)[np.newaxis] for value in outputs)
-    else:
-        mapped = jax.jit(jax.vmap(simulate, in_axes=(in_axes, None, None, None, None, None)))
-        outputs = tuple(np.asarray(value) for value in mapped(jax_params, position, u, time_s, alive, ledger))
-
-    position_out, u_out, time_out, alive_out, ledger_out = outputs
-    weight = np.asarray(initial.weight)
-    accepted_weighted = np.sum(weight[np.newaxis, :] * alive_out, axis=1)
-    total_weight = float(np.sum(weight))
-
-    return BatchedSceneResult(
-        position_m=position_out,
-        momentum_kg_m_s=u_out * (mass_kg * SPEED_OF_LIGHT_M_PER_S),
-        time_s=time_out,
-        alive=alive_out.astype(bool),
-        lost_at_element=ledger_out.astype(np.int32),
-        weight=weight,
-        accepted_weighted=accepted_weighted,
-        accepted_fraction=accepted_weighted / total_weight if total_weight > 0.0 else accepted_weighted,
-    )
+    overrides = dict(overrides) if overrides is not None else {}
+    program = BatchedSceneProgram(scene, override_keys=tuple(overrides), rng=rng)
+    return program.run(overrides)

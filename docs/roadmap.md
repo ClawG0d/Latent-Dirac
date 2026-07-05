@@ -38,7 +38,10 @@ Split into independently deliverable specs:
   float64 reference comparisons in CI — **done** (Spec 3a:
   `latent_dirac.backends.jax_scene.run_scene_batched`, optional `[jax]`
   extra; field maps and batched monitor snapshots still pending)
-- Xopt-compatible sweep evaluator as an optional extra
+- Xopt-compatible sweep evaluator — **done** (Spec 3b:
+  `latent_dirac.backends.evaluator.make_scene_evaluator`; plain-callable
+  convention, no xopt dependency; `evaluate.batch` runs a generation of
+  candidates in one launch via the precompiled `BatchedSceneProgram`)
 - interactive 3D viewer (plotly first, then web); USD export kept open
 - flagship batched-sweep 3D demo with trajectory downsampling/streaming
 - honest benchmark suite: analytic cases in CI; external comparisons only
