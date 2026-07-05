@@ -5,6 +5,13 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- The README no longer mirrors the safety-scope exclusion list or the
+  vendored-engine section (owner decision): the canonical list stays
+  pinned across `docs/safety_scope.md`, `AGENTS.md`, and
+  `tests/test_project_positioning.py`, and the README keeps a
+  test-enforced link to `docs/safety_scope.md`. Geant4 attribution
+  remains in `NOTICE`.
+
 - Added openPMD particle output (`latent_dirac.io.openpmd_io`, new
   optional `[openpmd]` extra): `write_particle_states` writes labeled
   `ParticleState` snapshots as openPMD iterations (SI unit metadata,

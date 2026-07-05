@@ -5,7 +5,10 @@ docs/superpowers/specs/2026-07-05-platform-positioning-and-roadmap-design.md:
 
 - the README must separate design intent from current status
 - source-model fidelity tiers must be declared in the README
-- every safety-scope exclusion must survive verbatim in the README
+- every safety-scope exclusion must survive verbatim in AGENTS.md; the
+  README links to docs/safety_scope.md instead of mirroring the list
+  (owner decision, 2026-07-05 — see the engine positioning spec
+  addendum)
 - comparative performance wording requires a benchmark reference in the
   same document
 """
@@ -27,7 +30,8 @@ ALLOWED_ADAPTERS = {"geant4", "root", "xsuite"}
 # deposition are delegated to the vendored vanilla Geant4 engine as
 # diagnostics, while weaponization, energetic-release applications, and
 # facility write-back stay excluded. These strings must appear verbatim in
-# docs/safety_scope.md, AGENTS.md, and the README.
+# docs/safety_scope.md and AGENTS.md (the README links to the canonical
+# file instead of mirroring it).
 EXPECTED_EXCLUSIONS = (
     "weaponization scenarios",
     "energetic-release applications (antimatter as an energy source or destructive payload in any form)",
@@ -89,18 +93,16 @@ def test_safety_scope_is_the_canonical_exclusion_list():
     assert tuple(safety_scope_exclusions()) == EXPECTED_EXCLUSIONS, (
         "docs/safety_scope.md exclusions drifted from the canonical list; "
         "safety-scope changes require a positioning spec and a coordinated "
-        "update of docs/safety_scope.md, AGENTS.md, the README, and this test"
+        "update of docs/safety_scope.md, AGENTS.md, and this test"
     )
 
 
-def test_safety_scope_exclusions_survive_in_readme():
-    exclusions = safety_scope_exclusions()
-    assert len(exclusions) >= 9, "safety scope exclusions must not be trimmed"
+def test_readme_links_to_the_canonical_safety_scope():
+    # The README no longer mirrors the exclusion list (owner decision,
+    # 2026-07-05); it must at least keep the canonical file one click away.
+    readme = README_PATH.read_text(encoding="utf-8")
 
-    readme = README_PATH.read_text(encoding="utf-8").lower()
-    missing = [item for item in exclusions if item.lower() not in readme]
-
-    assert missing == [], f"README safety scope is missing exclusions: {missing}"
+    assert "docs/safety_scope.md" in readme
 
 
 def test_safety_scope_exclusions_survive_in_agents_md():

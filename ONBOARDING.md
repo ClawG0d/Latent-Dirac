@@ -113,10 +113,11 @@ Load-bearing 的设计决策（改代码前必须懂）：
 
 ## 六、五大陷阱（学费已交，别再交一遍）
 
-1. **安全范围四处同步**：`tests/test_project_positioning.py` 的
+1. **安全范围三处同步**：`tests/test_project_positioning.py` 的
    `EXPECTED_EXCLUSIONS`（元组精确相等）+ `docs/safety_scope.md` +
-   `AGENTS.md` + README（子串断言）。改一处必须改四处，且范围变更
-   要先写定位 spec。
+   `AGENTS.md`。改一处必须改三处，且范围变更要先写定位 spec。
+   README **有意不再镜像**该清单（所有者决定，2026-07-05），只保留
+   到 docs/safety_scope.md 的链接（测试强制）——不要把整节加回去。
 2. **README 性能措辞**：无 benchmark 引用的比较性性能词
    （faster than / fastest 等）会挂 CI。改 README 前先读
    `test_project_positioning.py`。

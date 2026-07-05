@@ -154,6 +154,18 @@ to the engine) and annihilation energetics as a figure of merit
 - **M4:** companion acceleration library R&D (EM first), benchmarked
   against vanilla.
 
+## Addendum (2026-07-05): README no longer mirrors the exclusion list
+
+Owner decision (direct README edit, commit `6759d7ad`): the README's
+Safety Scope and Vendored Geant4 Engine Source sections are removed to
+keep the README lean. The canonical exclusion list stays pinned in
+**three** places — `EXPECTED_EXCLUSIONS` in
+`tests/test_project_positioning.py` (exact tuple equality),
+`docs/safety_scope.md`, and `AGENTS.md` (verbatim asserts) — and the
+README must keep a link to `docs/safety_scope.md` (test-enforced).
+Geant4 attribution remains in `NOTICE` (license-required) and the
+vendored-tree description in the README intro paragraph.
+
 ## Addendum (2026-07-05): verified vendoring fidelity, one known deviation
 
 A full byte-level comparison against the upstream v11.4.2 tag (GitHub

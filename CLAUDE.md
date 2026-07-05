@@ -69,12 +69,13 @@ only Claude-Code-specific operational notes.
 
 ## Traps (learned the hard way)
 
-- The safety-scope exclusion bullets are pinned in **four** places:
+- The safety-scope exclusion bullets are pinned in **three** places:
   `EXPECTED_EXCLUSIONS` in `tests/test_project_positioning.py` (exact
   tuple equality) plus verbatim-identical copies in
-  `docs/safety_scope.md`, `AGENTS.md`, and the README (substring
-  asserts). Change one, change all four — and scope changes require a
-  positioning spec first.
+  `docs/safety_scope.md` and `AGENTS.md`. Change one, change all three
+  — and scope changes require a positioning spec first. The README
+  deliberately does NOT mirror the list (owner decision, 2026-07-05);
+  it only links to docs/safety_scope.md — do not re-add the section.
 - Before editing README wording, read `tests/test_project_positioning.py`
   (comparative performance phrases without a benchmark reference fail CI).
 - `latent_dirac/backends/differentiable.py` mirrors the element loop in
