@@ -1,0 +1,5 @@
+# AI gateway deploy dependencies (a standalone service, not part of the
+# latent-dirac package). Install into the gateway's own environment.
+fastapi>=0.110
+uvicorn>=0.29
+anthropic>=0.40

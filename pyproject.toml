@@ -62,7 +62,8 @@ server = [
 include = ["latent_dirac*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+# services/ holds standalone deployables (the AI gateway) with their own tests
+testpaths = ["tests", "services"]
 addopts = "-ra"
 
 [tool.ruff]
