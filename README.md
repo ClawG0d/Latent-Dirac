@@ -17,14 +17,15 @@ Declarative scenes describe the beamline. Batched solvers sweep whole
 configuration families in one launch. A per-particle ledger accounts for
 every antiparticle, because antiparticles are extraordinarily expensive.
 
-![Animated 3D positron spiral capture hero demo](assets/demos/positron_capture_3d.webp)
+![Animated 3D trap storage lifecycle hero demo](assets/demos/trap_storage_lifecycle_3d.webp)
 
-*A positron cloud spiraling through the fringe of a thin-sheet capture
-solenoid: the aperture and momentum window select the accepted core
-(green), the ledger accounts for the rest (red), and the collector plate
-ends the story in back-to-back photon pairs (at-rest kinematics; 511 keV
-as a label only) — rendered, like every animation below, from the
-recorded trajectories of a real solver run.*
+*An eV-scale positron cloud held in an ideal Penning trap — straight
+axial B field lines (blue) confine radially, the quadrupole well's
+hyperbolic E lines (amber) confine axially. Buffer-gas cooling bursts
+visibly shrink the bounce amplitude toward the 300 K floor, while the
+per-particle ledger separates positronium-formation losses from
+storage losses by color — rendered, like every animation below, from
+the recorded trajectories of a real solver run.*
 
 ## Table of Contents
 
