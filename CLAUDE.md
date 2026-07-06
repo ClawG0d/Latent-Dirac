@@ -67,6 +67,44 @@ only Claude-Code-specific operational notes.
    is Python 3.14, but the matrix tests 3.10–3.14 (a `tomllib` import
    once broke only the 3.10 jobs and went unnoticed for five pushes)
 
+## Collaboration (multiple agents on one master)
+
+Up to three people work this repo simultaneously, each in their own
+Claude Code session, all pushing to `master` (no feature-branch flow
+yet). Assume the remote moved since you last looked.
+
+- **Fetch before you push, always.** `git fetch origin` then rebase
+  onto `origin/master` — never merge (keep history linear). If the push
+  is rejected, fetch and rebase again; the remote may have moved twice
+  in one work burst. This happened five times in one afternoon — it is
+  the norm, not the exception.
+- **Push small and often.** A large local pile of commits turns every
+  rebase into a minefield. Land each reviewed feature immediately.
+- **Rebase, then re-run the gates.** After a rebase, run
+  `pytest -q` + `ruff check .` again before pushing — someone else's
+  merged change (e.g. a new fidelity tier, a moved section) can break
+  your green even with no textual conflict.
+- **Append-heavy shared files collide constantly:** `CHANGELOG.md`,
+  `docs/roadmap.md`, `AGENTS.md` "Next:" line, and `README.md`. On a
+  conflict, KEEP BOTH sides' entries — a conflict here almost always
+  means two real features landed, not that one overwrote the other.
+- **README is owner-edited out-of-band** (direct GitHub web edits,
+  including structural rewrites). When rebasing a README conflict,
+  reconcile against the NEW structure on `origin/master`, do not blindly
+  keep your HEAD version. Re-check `tests/test_project_positioning.py`
+  after (the honesty gates parse the README).
+- **Same-day spec filenames collide:** specs are
+  `YYYY-MM-DD-<topic>-design.md`; two sessions on the same day can pick
+  the same date — glob `docs/superpowers/specs/` first and keep topics
+  distinct.
+- **Avoid two sessions in the same module.** Coordinate ownership with
+  the human before starting; the load-bearing mirror pairs
+  (`differentiable.py` ↔ `jax_scene.py`) and the three-place safety
+  pinning are especially painful to resolve blind.
+- CI is the shared backstop: after your push settles, confirm the final
+  status (step 6 above) — a red master blocks everyone, so fix or
+  revert promptly rather than leaving it for the next person.
+
 ## Traps (learned the hard way)
 
 - The safety-scope exclusion bullets are pinned in **three** places:
