@@ -5,6 +5,22 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Annihilation demo visuals and the thin-sheet demo rollout: the plate
+  now records per-event `time_s`/`particle_id` — projected back onto
+  the plate plane (the stage-boundary kill overshoots) — and rejects
+  non-positron clouds (antiproton annihilation is engine physics);
+  `render_scene_3d` draws the plate and gold back-to-back photon rays
+  (kinematics only, 511 keV as a label); the WebP generator grows each
+  photon pair from the frame its trail reaches the plate, with a fading
+  vertex flash. The hero `positron_capture` scene ends its accepted
+  core at a collector plate, and the solenoid demos
+  (`positron_capture`, `scene_tour`, `decay_emission`,
+  `target_production_engine`, `hello_beamline`) switch to
+  `profile: thin_sheet`; scene reports are profile-aware (a thin-sheet
+  solenoid no longer reports itself as hard-edge) and README
+  captions/reports/assets are regenerated. Design record:
+  `docs/superpowers/specs/2026-07-06-annihilation-demo-visuals-design.md`.
+
 - **Desktop client (cross-platform Electron app).** A new `desktop/` tree:
   a chat panel where a user describes a simulation in natural language and a
   3D panel that shows it run. One prompt runs the full loop — the AI call

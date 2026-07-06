@@ -84,10 +84,13 @@ def test_uniform_field_sweep_matches_per_config_numpy_loop():
 
 
 def test_scalar_parameter_sweep_over_solenoid_field():
-    scene = load_scene(SCENES_DIR / "positron_capture.yaml")
+    # hello_beamline: positron_capture now ends at an annihilation plate,
+    # which the JAX backend rejects by design; hello also exercises the
+    # thin_sheet profile path
+    scene = load_scene(SCENES_DIR / "hello_beamline.yaml")
     b_values = np.array([0.4, 0.8, 1.2])
 
-    batched = run_scene_batched(scene, overrides={"capture-solenoid.b_tesla": b_values})
+    batched = run_scene_batched(scene, overrides={"hello-solenoid.b_tesla": b_values})
 
     assert batched.accepted_fraction.shape == (3,)
     reference = run_scene(scene).pipeline_result.final_cloud

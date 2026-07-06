@@ -213,6 +213,13 @@ def _annihilation_action(element, annihilations, rng):
     """
 
     def annihilate(cloud: ParticleState) -> ParticleState:
+        if cloud.species.name != "positron":
+            raise ValueError(
+                f"annihilation_plate {element.label!r} models positron two-photon "
+                f"annihilation; species {cloud.species.name!r} is not supported "
+                "(antiproton annihilation is a multi-pion final state — engine "
+                "physics, see the safety scope)"
+            )
         result = cloud.copy()
         radial = np.linalg.norm(result.position_m[:, :2], axis=1)
         hits = result.alive & (result.position_m[:, 2] >= element.z_m) & (radial <= element.radius_m)
@@ -220,9 +227,26 @@ def _annihilation_action(element, annihilations, rng):
         count = int(np.sum(hits))
         directions = rng.normal(size=(count, 3))
         directions /= np.linalg.norm(directions, axis=1)[:, np.newaxis]
+        # the stage-boundary kill overshoots the plane by up to a full
+        # transport stage; project each event straight back along its
+        # velocity onto the plate plane (exact in field-free drift,
+        # first-order in a field) so recorded vertices and clocks sit on
+        # the plate the caption points at
+        positions = result.position_m[hits].copy()
+        times = result.time_s[hits].copy()
+        velocities = result.velocity()[hits]
+        v_z = velocities[:, 2]
+        forward = v_z > 0.0
+        dt_back = np.where(forward, (positions[:, 2] - element.z_m) / np.where(forward, v_z, 1.0), 0.0)
+        positions -= velocities * dt_back[:, np.newaxis]
+        times -= dt_back
         annihilations[element.label] = {
-            "positions": result.position_m[hits].copy(),
+            "positions": positions,
             "photon_directions": np.stack([directions, -directions], axis=1),
+            # plane-projected event clock and identity so renderers can
+            # animate each burst at the moment its trail reaches the plate
+            "time_s": times,
+            "particle_id": result.particle_id[hits].copy(),
         }
 
         result.apply_alive_mask(~hits)

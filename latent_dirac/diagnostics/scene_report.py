@@ -32,11 +32,24 @@ def field_status_lines(scene: Scene) -> list[str]:
         if getattr(element, "space_charge", None) is not None:
             lines.append(f"- space charge ({element.label}): {SPACE_CHARGE_VALIDITY_NOTE}")
         if element.type == "solenoid":
-            lines.append(f"- field model: {_FIELD_DESCRIPTIONS[element.type]}")
-            lines.append(f"- B vector [T]: [0, 0, {element.b_tesla:g}] inside solenoid envelope")
-            lines.append(
-                f"- status: active inside radius {element.radius_m:g} m and length {element.length_m:g} m"
-            )
+            if element.profile == "thin_sheet":
+                lines.append(
+                    "- field model: thin-sheet solenoid (smooth finite-length profile, "
+                    "first-order fringe)"
+                )
+                lines.append(
+                    f"- sheet strength B0 [T]: {element.b_tesla:g} (center Bz below B0 for short coils)"
+                )
+                lines.append(
+                    f"- status: sheet radius {element.radius_m:g} m, length {element.length_m:g} m, "
+                    "smooth fringe outside"
+                )
+            else:
+                lines.append(f"- field model: {_FIELD_DESCRIPTIONS[element.type]}")
+                lines.append(f"- B vector [T]: [0, 0, {element.b_tesla:g}] inside solenoid envelope")
+                lines.append(
+                    f"- status: active inside radius {element.radius_m:g} m and length {element.length_m:g} m"
+                )
         elif element.type == "uniform_field":
             lines.append(f"- field model: {_FIELD_DESCRIPTIONS[element.type]}")
             b = element.B_vector_t

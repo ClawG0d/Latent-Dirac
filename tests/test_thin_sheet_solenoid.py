@@ -244,13 +244,16 @@ def test_profiles_produce_different_transport():
     assert not np.allclose(hard_final.momentum_kg_m_s, thin_final.momentum_kg_m_s, rtol=1e-6, atol=0.0)
 
 
-def test_jax_parity_and_sweep_thin_sheet():
+@pytest.mark.parametrize("profile", ["thin_sheet", "hard_edge"])
+def test_jax_parity_and_sweep(profile):
+    # both profiles: the demo scenes all switched to thin_sheet, so this
+    # is the suite's only element-wise hard-edge JAX-vs-NumPy comparison
     jax = pytest.importorskip("jax")
     jax.config.update("jax_enable_x64", True)
     from latent_dirac.backends.jax_scene import run_scene_batched
     from latent_dirac.scene.build import run_scene
 
-    scene = scene_from_mapping(scene_mapping("thin_sheet"))
+    scene = scene_from_mapping(scene_mapping(profile))
     reference = run_scene(scene).pipeline_result.final_cloud
     batched = run_scene_batched(scene, overrides={})
     np.testing.assert_array_equal(batched.alive[0], reference.alive)

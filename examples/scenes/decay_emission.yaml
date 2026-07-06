@@ -8,6 +8,7 @@ source:
             endpoint_energy_MeV: 0.546, source_radius_m: 0.0008, macro_particles: 96 }
 solver: { type: relativistic_boris, dt_s: 4.0e-12, steps: 90 }
 elements:
-  - { type: solenoid, label: guide-solenoid, b_tesla: 0.6, radius_m: 0.025, length_m: 0.18, center_z_m: 0.09 }
+  - { type: solenoid, label: guide-solenoid, b_tesla: 0.6, radius_m: 0.025, length_m: 0.18, center_z_m: 0.09,
+      profile: thin_sheet }
   - { type: aperture, label: collimator, radius_m: 0.01, z_m: 0.09 }
   - { type: monitor, label: beam-monitor }

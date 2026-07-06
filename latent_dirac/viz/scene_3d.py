@@ -106,6 +106,7 @@ def render_scene_3d(scene: Scene, run_result: SceneRunResult, max_particles: int
         figure.add_trace(_trajectory_trace(go, combined, max_particles))
 
     _add_final_state_traces(go, figure, run_result)
+    _add_annihilation_traces(go, figure, run_result)
 
     figure.update_layout(
         title=scene.name,
@@ -231,6 +232,11 @@ def _element_segments(element, run_result: SceneRunResult) -> list[np.ndarray]:
         ]
     if element.type == "momentum_window":
         return []
+    if element.type == "annihilation_plate":
+        return [
+            _circle(element.radius_m, element.z_m),
+            _circle(0.5 * element.radius_m, element.z_m),
+        ]
     if element.type == "matter_slab":
         thickness_m = element.thickness_mm / 1000.0
         center_z_m = element.entry_z_m + thickness_m / 2.0
@@ -356,6 +362,44 @@ def _trajectory_trace(go, combined: np.ndarray, max_particles: int):
         opacity=0.6,
         line={"width": 2},
     )
+
+
+def _add_annihilation_traces(go, figure, run_result: SceneRunResult) -> None:
+    """Back-to-back photon rays per annihilation event (kinematics only).
+
+    511 keV appears in the hover text as a label; no energetics — see the
+    safety scope.
+    """
+
+    for label, events in run_result.annihilations.items():
+        positions = events.get("positions")
+        if positions is None or positions.shape[0] == 0:
+            continue
+        directions = events["photon_directions"]
+        extent = float(np.max(np.ptp(positions, axis=0))) if positions.shape[0] > 1 else 0.0
+        ray_length = max(extent, 0.01)
+        xs: list[float | None] = []
+        ys: list[float | None] = []
+        zs: list[float | None] = []
+        for start, pair in zip(positions, directions, strict=True):
+            for direction in pair:
+                end = start + ray_length * direction
+                xs.extend([start[0], end[0], None])
+                ys.extend([start[1], end[1], None])
+                zs.extend([start[2], end[2], None])
+        figure.add_trace(
+            go.Scatter3d(
+                x=xs,
+                y=ys,
+                z=zs,
+                mode="lines",
+                name=f"{label} photons",
+                hovertext="at-rest two-photon kinematics; 511 keV label only; no energetics",
+                hoverinfo="text",
+                line={"width": 2, "color": "goldenrod"},
+                opacity=0.55,
+            )
+        )
 
 
 def _add_final_state_traces(go, figure, run_result: SceneRunResult) -> None:

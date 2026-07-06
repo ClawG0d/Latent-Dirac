@@ -7,8 +7,9 @@ def test_positron_capture_report_shows_magnetic_field_status():
     report = run_report()
 
     assert "Magnetic field status:" in report
-    assert "- field model: idealized solenoid (hard-edge)" in report
-    assert "- status: active inside radius 0.02 m and length 0.15 m" in report
+    # the hero scene runs the thin-sheet profile (2026-07-06 demo rollout)
+    assert "- field model: thin-sheet solenoid (smooth finite-length profile, first-order fringe)" in report
+    assert "- status: sheet radius 0.02 m, length 0.15 m, smooth fringe outside" in report
     assert "Loss ledger (weighted, by killing element):" in report
 
 

@@ -297,8 +297,62 @@ def draw_beam_arrow(axes, z_start: float, z_end: float, color=(0.85, 0.3, 0.25),
         )
 
 
-def draw_scene_elements(axes, scene, run_result, plane_half_width=0.01):
-    """Draw geometry for every scene element that has a spatial footprint."""
+def draw_photon_burst(
+    axes,
+    positions: np.ndarray,
+    photon_directions: np.ndarray,
+    progress: np.ndarray,
+    max_length: float,
+    color=(0.85, 0.65, 0.13),
+    flash_color=(1.0, 0.92, 0.55),
+):
+    """Back-to-back photon pairs growing with per-event progress in [0, 1].
+
+    Kinematic visualization only: 511 keV is a label, no energetics (see
+    the safety scope). `positions` is (K, 3), `photon_directions` is
+    (K, 2, 3), `progress` is (K,) — 0 draws nothing for that event, 1 is
+    a fully grown ray pair; events still in progress get a fading star
+    flash at the vertex.
+    """
+
+    progress = np.clip(np.asarray(progress, dtype=float), 0.0, 1.0)
+    active = progress > 0.0
+    if not np.any(active):
+        return
+    for direction_index in (0, 1):
+        ends = positions + (progress[:, np.newaxis] * max_length) * photon_directions[:, direction_index, :]
+        for start, end, fraction in zip(positions[active], ends[active], progress[active], strict=True):
+            axes.plot(
+                [start[2], end[2]],
+                [start[0], end[0]],
+                [start[1], end[1]],
+                color=color,
+                linewidth=0.7,
+                alpha=0.25 + 0.4 * (1.0 - fraction),
+            )
+    fresh = active & (progress < 1.0)
+    if np.any(fresh):
+        flare = positions[fresh]
+        sizes = 8.0 + 30.0 * (1.0 - progress[fresh])
+        axes.scatter(
+            flare[:, 2],
+            flare[:, 0],
+            flare[:, 1],
+            c=[flash_color],
+            s=sizes,
+            alpha=0.7,
+            depthshade=False,
+            marker="*",
+        )
+
+
+def draw_scene_elements(axes, scene, run_result, plane_half_width=0.01, plate_display_radius=None):
+    """Draw geometry for every scene element that has a spatial footprint.
+
+    `plate_display_radius` visually crops an annihilation plate to the
+    framed region: mplot3d does not clip surfaces to the axes box, so a
+    plate much wider than the beam would bleed past the frame edge.
+    """
 
     for element in scene.elements:
         if element.type == "solenoid":
@@ -311,6 +365,20 @@ def draw_scene_elements(axes, scene, run_result, plane_half_width=0.01):
             draw_box(axes, plane_half_width, z0, z1)
         elif element.type == "aperture":
             draw_disc(axes, element.radius_m, 1.6 * element.radius_m, element.z_m)
+        elif element.type == "annihilation_plate":
+            radius = element.radius_m
+            if plate_display_radius is not None:
+                radius = min(radius, plate_display_radius)
+            theta = np.linspace(0.0, 2.0 * np.pi, 60)
+            for ring in (radius, 0.6 * radius):
+                axes.plot(
+                    np.full_like(theta, element.z_m),
+                    ring * np.cos(theta),
+                    ring * np.sin(theta),
+                    color=(0.55, 0.45, 0.35),
+                    linewidth=1.2,
+                    alpha=0.7,
+                )
         elif element.type == "monitor":
             snapshot = run_result.monitors.get(element.label)
             if snapshot is None:

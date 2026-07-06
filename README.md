@@ -19,10 +19,12 @@ every antiparticle, because antiparticles are extraordinarily expensive.
 
 ![Animated 3D positron spiral capture hero demo](assets/demos/positron_capture_3d.webp)
 
-*A positron cloud spiraling through a capture solenoid: the aperture and
-momentum window select the accepted core (green), the ledger accounts for
-the rest (red) — rendered, like every animation below, from the recorded
-trajectories of a real solver run.*
+*A positron cloud spiraling through the fringe of a thin-sheet capture
+solenoid: the aperture and momentum window select the accepted core
+(green), the ledger accounts for the rest (red), and the collector plate
+ends the story in back-to-back photon pairs (at-rest kinematics; 511 keV
+as a label only) — rendered, like every animation below, from the
+recorded trajectories of a real solver run.*
 
 ## Table of Contents
 
@@ -115,7 +117,8 @@ source:
             endpoint_energy_MeV: 0.546, source_radius_m: 0.001, macro_particles: 96 }
 solver: { type: relativistic_boris, dt_s: 4.0e-12, steps: 80 }
 elements:
-  - { type: solenoid, label: guide-solenoid, b_tesla: 0.5, radius_m: 0.03, length_m: 0.2, center_z_m: 0.1 }
+  - { type: solenoid, label: guide-solenoid, b_tesla: 0.5, radius_m: 0.03, length_m: 0.2, center_z_m: 0.1,
+      profile: thin_sheet }
   - { type: drift, label: gap, steps: 20 }
   - { type: aperture, label: collimator, radius_m: 0.012, z_m: 0.1 }
   - { type: monitor, label: end-station }
@@ -136,24 +139,24 @@ Latent Dirac scene report: scene-tour
 Stage accounting:
 - guide-solenoid: input=3.33e+08, output=3.33e+08, transmission=1, losses=0
 - gap: input=3.33e+08, output=3.33e+08, transmission=1, losses=0
-- collimator: input=3.33e+08, output=5.20312e+07, transmission=0.156, losses=2.80969e+08
-- end-station: input=5.20312e+07, output=5.20312e+07, transmission=1, losses=0
+- collimator: input=3.33e+08, output=1.00594e+08, transmission=0.302, losses=2.32406e+08
+- end-station: input=1.00594e+08, output=1.00594e+08, transmission=1, losses=0
 
 Loss ledger (weighted, by killing element):
 - guide-solenoid: 0
 - gap: 0
-- collimator: 2.80969e+08
+- collimator: 2.32406e+08
 - end-station: 0
-- surviving: 5.20312e+07
+- surviving: 1.00594e+08
 
 Accepted state:
-- weighted count: 5.20312e+07
-- mean kinetic energy: 0.244291 MeV
+- weighted count: 1.00594e+08
+- mean kinetic energy: 0.234927 MeV
 
 Magnetic field status:
-- field model: idealized solenoid (hard-edge)
-- B vector [T]: [0, 0, 0.5] inside solenoid envelope
-- status: active inside radius 0.03 m and length 0.2 m
+- field model: thin-sheet solenoid (smooth finite-length profile, first-order fringe)
+- sheet strength B0 [T]: 0.5 (center Bz below B0 for short coils)
+- status: sheet radius 0.03 m, length 0.2 m, smooth fringe outside
 
 Scope note:
 - beta-plus transport and acceptance diagnostic only
@@ -163,9 +166,13 @@ Scope note:
 
 ### Demo 2: Positron Spiral Capture
 
-A parameterized pair source spirals through a hard-edge solenoid; an
-aperture and momentum window select the accepted cloud (green) and the
-ledger accounts for the rest (red).
+A parameterized pair source spirals through the smooth fringe of a
+thin-sheet solenoid — watch the spirals tighten as the field funnels
+them in; an aperture and momentum window select the accepted cloud
+(green), the ledger accounts for the rest (red), and the collector
+plate ends every accepted positron in a back-to-back photon pair
+(at-rest two-photon kinematics; 511 keV as a label only, no
+energetics).
 
 ![Animated 3D positron capture demo](assets/demos/positron_capture_3d.webp)
 
@@ -181,25 +188,33 @@ Latent Dirac scene report: positron-capture
 
 Stage accounting:
 - capture-solenoid: input=200, output=200, transmission=1, losses=0
-- capture-aperture: input=200, output=87.5, transmission=0.438, losses=112.5
-- momentum-cut: input=87.5, output=79.1667, transmission=0.905, losses=8.33333
-- end-station: input=79.1667, output=79.1667, transmission=1, losses=0
+- capture-aperture: input=200, output=97.9167, transmission=0.49, losses=102.083
+- momentum-cut: input=97.9167, output=89.5833, transmission=0.915, losses=8.33333
+- end-station: input=89.5833, output=89.5833, transmission=1, losses=0
+- collector-drift: input=89.5833, output=89.5833, transmission=1, losses=0
+- collector-plate: input=89.5833, output=0, transmission=0, losses=89.5833
 
 Loss ledger (weighted, by killing element):
 - capture-solenoid: 0
-- capture-aperture: 112.5
+- capture-aperture: 102.083
 - momentum-cut: 8.33333
 - end-station: 0
-- surviving: 79.1667
+- collector-drift: 0
+- collector-plate: 89.5833
+- surviving: 0
 
 Accepted state:
-- weighted count: 79.1667
-- mean kinetic energy: 3.00357 MeV
+- weighted count: 0
+- mean kinetic energy: 0 MeV
+
+Annihilation endpoint 'collector-plate':
+- events: 43
+- at-rest two-photon kinematics (511 keV label only; no energetics)
 
 Magnetic field status:
-- field model: idealized solenoid (hard-edge)
-- B vector [T]: [0, 0, 0.8] inside solenoid envelope
-- status: active inside radius 0.02 m and length 0.15 m
+- field model: thin-sheet solenoid (smooth finite-length profile, first-order fringe)
+- sheet strength B0 [T]: 0.8 (center Bz below B0 for short coils)
+- status: sheet radius 0.02 m, length 0.15 m, smooth fringe outside
 
 Scope note:
 - positron transport and acceptance diagnostic only
@@ -454,14 +469,14 @@ Latent Dirac scene report: target-production-engine
 
 Stage accounting:
 - collection-solenoid: input=1.91025e+10, output=1.91025e+10, transmission=1, losses=0
-- collection-aperture: input=1.91025e+10, output=4.17e+09, transmission=0.218, losses=1.49325e+10
-- ad-momentum-cut: input=4.17e+09, output=7.95e+08, transmission=0.191, losses=3.375e+09
+- collection-aperture: input=1.91025e+10, output=4.1625e+09, transmission=0.218, losses=1.494e+10
+- ad-momentum-cut: input=4.1625e+09, output=7.95e+08, transmission=0.191, losses=3.3675e+09
 - end-station: input=7.95e+08, output=7.95e+08, transmission=1, losses=0
 
 Loss ledger (weighted, by killing element):
 - collection-solenoid: 0
-- collection-aperture: 1.49325e+10
-- ad-momentum-cut: 3.375e+09
+- collection-aperture: 1.494e+10
+- ad-momentum-cut: 3.3675e+09
 - end-station: 0
 - surviving: 7.95e+08
 
@@ -478,9 +493,9 @@ Source provenance (engine four-tuple):
 - table primaries: 2000000
 
 Magnetic field status:
-- field model: idealized solenoid (hard-edge)
-- B vector [T]: [0, 0, 2] inside solenoid envelope
-- status: active inside radius 0.08 m and length 0.4 m
+- field model: thin-sheet solenoid (smooth finite-length profile, first-order fringe)
+- sheet strength B0 [T]: 2 (center Bz below B0 for short coils)
+- status: sheet radius 0.08 m, length 0.4 m, smooth fringe outside
 
 Scope note:
 - transport and acceptance diagnostic only

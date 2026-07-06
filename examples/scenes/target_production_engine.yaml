@@ -9,7 +9,8 @@ source:
     primary_proton_count: 1.5e+13
 solver: { type: relativistic_boris, dt_s: 2.0e-11, steps: 100 }
 elements:
-  - { type: solenoid, label: collection-solenoid, b_tesla: 2.0, radius_m: 0.08, length_m: 0.4, center_z_m: 0.25 }
+  - { type: solenoid, label: collection-solenoid, b_tesla: 2.0, radius_m: 0.08, length_m: 0.4, center_z_m: 0.25,
+      profile: thin_sheet }
   - { type: aperture, label: collection-aperture, radius_m: 0.04, z_m: 0.5 }
   - { type: momentum_window, label: ad-momentum-cut, p_min_gev_c: 3.0, p_max_gev_c: 4.2 }
   - { type: monitor, label: end-station }

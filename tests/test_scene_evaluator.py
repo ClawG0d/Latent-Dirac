@@ -65,10 +65,12 @@ def test_program_reuse_matches_fresh_runs():
 
 
 def test_evaluator_matches_numpy_pipeline():
-    scene = load_scene(SCENES_DIR / "positron_capture.yaml")
-    evaluate = make_scene_evaluator(scene, variables=["capture-solenoid.b_tesla"])
+    # hello_beamline: positron_capture now ends at an annihilation plate,
+    # which the JAX-backed evaluator rejects by design
+    scene = load_scene(SCENES_DIR / "hello_beamline.yaml")
+    evaluate = make_scene_evaluator(scene, variables=["hello-solenoid.b_tesla"])
 
-    outputs = evaluate({"capture-solenoid.b_tesla": 0.8})
+    outputs = evaluate({"hello-solenoid.b_tesla": 0.8})
 
     reference = run_scene(scene).pipeline_result.final_cloud
     expected_fraction = reference.weighted_count() / float(np.sum(reference.weight))

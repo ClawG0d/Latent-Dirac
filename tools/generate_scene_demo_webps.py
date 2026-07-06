@@ -42,14 +42,17 @@ SCENE_DEMOS = {
     "scene_tour_3d.webp": {
         "scene": "scene_tour.yaml",
         "title": "YAML scene tour - beta+ source, guide solenoid, collimator\n"
-        "hard-edge optics models | relativistic Boris solver | transport diagnostic only",
+        "thin-sheet solenoid (first-order fringe) | relativistic Boris solver | "
+        "transport diagnostic only",
         "coloring": "fate",
     },
     "positron_capture_3d.webp": {
         "scene": "positron_capture.yaml",
-        "title": "Positron capture - pair source spiraling in a solenoid\n"
-        "hard-edge solenoid | relativistic Boris solver | transport and acceptance diagnostic only",
+        "title": "Positron capture - spiral through the fringe to the collector plate\n"
+        "thin-sheet solenoid (first-order fringe) | at-rest 2-photon kinematics "
+        "(511 keV label only; NO energetics) | relativistic Boris solver",
         "coloring": "fate",
+        "annotate": "annihilation",
     },
     "dipole_quad_line_3d.webp": {
         "scene": "dipole_quad_line.yaml",
@@ -75,7 +78,7 @@ SCENE_DEMOS = {
         "scene": "target_production_engine.yaml",
         "title": "Antiproton production - ENGINE-BACKED table-based source\n"
         "vanilla Geant4 v11.4.2 FTFP_BERT yield table (2M protons on Ir) | "
-        "relativistic Boris solver | acceptance diagnostic only",
+        "thin-sheet collection solenoid | relativistic Boris solver | acceptance diagnostic only",
         "coloring": "fate",
         "annotate": "target_engine",
         # the yield table holds the full exit phase space; wide-angle
@@ -125,7 +128,11 @@ def _particle_colors_energy(scene):
     return [colormap(float(value))[:3] for value in normalized]
 
 
-def _particle_colors(final_state, coloring: str):
+def _particle_colors(final_state, coloring: str, accepted_stages: set[int] | None = None):
+    """`accepted_stages`: ledger indices that count as accepted endings —
+    e.g. the collector plate, where annihilating IS the accepted fate."""
+
+    accepted_stages = accepted_stages or set()
     if coloring == "ledger":
         colors = []
         for alive, lost_at in zip(final_state.alive, final_state.lost_at_element, strict=True):
@@ -134,7 +141,10 @@ def _particle_colors(final_state, coloring: str):
             else:
                 colors.append(mpl3d.LEDGER_PALETTE[int(lost_at) % len(mpl3d.LEDGER_PALETTE)])
         return colors
-    return [mpl3d.ACCEPTED if alive else mpl3d.LOST for alive in final_state.alive]
+    return [
+        mpl3d.ACCEPTED if alive or int(lost_at) in accepted_stages else mpl3d.LOST
+        for alive, lost_at in zip(final_state.alive, final_state.lost_at_element, strict=True)
+    ]
 
 
 def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: int, config=None):
@@ -142,16 +152,25 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
     run_result = run_scene(scene, record_trajectories=True)
     combined = _combined_trajectories(scene, run_result)
     final_state = run_result.pipeline_result.final_cloud
+    # annihilating at a collector plate is the accepted core's intended
+    # ending — keep those trails green rather than lost-red
+    plate_stages = {
+        index
+        for index, element in enumerate(scene.elements)
+        if element.type == "annihilation_plate"
+    }
     if coloring == "energy":
         colors = _particle_colors_energy(scene)
     else:
-        colors = _particle_colors(final_state, coloring)
+        colors = _particle_colors(final_state, coloring, accepted_stages=plate_stages)
 
     max_trails = (config or {}).get("max_trails")
+    column_particle_ids = final_state.particle_id
     if max_trails is not None and combined.shape[1] > max_trails:
         picked = np.random.default_rng(scene.seed).choice(combined.shape[1], max_trails, replace=False)
         combined = combined[:, picked]
         colors = [colors[int(index)] for index in picked]
+        column_particle_ids = final_state.particle_id[picked]
 
     limits = (config or {}).get("limits") or mpl3d.axis_limits(combined)
     total = combined.shape[0]
@@ -159,15 +178,37 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
     annotate = config.get("annotate") if config else None
     beam_extent = float(np.nanmax(np.abs(combined[..., :2])))
     z_span = float(combined[..., 2].max()) - float(combined[..., 2].min())
-    photon_rays = None
+    photon_bursts = None
     if annotate == "annihilation" and run_result.annihilations:
-        events = next(iter(run_result.annihilations.values()))
-        ray_length = 0.25 * z_span
-        starts = events["positions"]
-        photon_rays = [
-            (starts, starts + ray_length * events["photon_directions"][:, 0, :]),
-            (starts, starts + ray_length * events["photon_directions"][:, 1, :]),
-        ]
+        plate = next(element for element in scene.elements if element.type == "annihilation_plate")
+        events = run_result.annihilations[plate.label]
+        max_bursts = 48
+        if events["positions"].shape[0] > max_bursts:
+            chosen = np.random.default_rng(scene.seed).choice(
+                events["positions"].shape[0], max_bursts, replace=False
+            )
+            events = {key: value[chosen] for key, value in events.items()}
+        if events["positions"].shape[0]:
+            # each burst starts on the frame where that particle's recorded
+            # trail first crosses the plate plane (via the reveal schedule)
+            id_to_column = {int(pid): col for col, pid in enumerate(column_particle_ids)}
+            start_snapshots = []
+            for pid in events["particle_id"]:
+                column = id_to_column.get(int(pid))
+                if column is None:
+                    start_snapshots.append(total - 1)
+                    continue
+                crossed = combined[:, column, 2] >= plate.z_m
+                start_snapshots.append(int(np.argmax(crossed)) if crossed.any() else total - 1)
+            photon_bursts = {
+                "positions": events["positions"],
+                "directions": events["photon_directions"],
+                "start_snapshots": np.asarray(start_snapshots),
+                # rays are near-isotropic: cap by the transverse extent or
+                # they leave the frame sideways and read as clutter
+                "ray_length": min(0.22 * z_span, 1.5 * beam_extent),
+                "growth_frames": 10.0,
+            }
 
     def draw(axes, index, count):
         reveal = 2 + int(round((total - 2) * index / max(count - 1, 1)))
@@ -180,21 +221,24 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
             # stand-in at its true z extent instead of a scaled block
             mpl3d.draw_block(axes, -0.0275, 0.0275, 0.014)
             mpl3d.draw_beam_arrow(axes, -0.07, -0.032)
-        mpl3d.draw_scene_elements(axes, scene, run_result)
+        mpl3d.draw_scene_elements(axes, scene, run_result, plate_display_radius=1.5 * beam_extent)
         mpl3d.draw_trajectories(axes, combined, reveal, colors)
         mpl3d.draw_points(axes, combined[reveal - 1], colors)
-        if photon_rays is not None and index > count * 0.55:
-            gold = (0.85, 0.65, 0.13)
-            for starts_arr, ends_arr in photon_rays:
-                for start, end in zip(starts_arr, ends_arr, strict=True):
-                    axes.plot(
-                        [start[2], end[2]],
-                        [start[0], end[0]],
-                        [start[1], end[1]],
-                        color=gold,
-                        linewidth=0.6,
-                        alpha=0.6,
-                    )
+        if photon_bursts is not None:
+            # invert reveal(frame) = 2 + round((total-2) * frame / (count-1))
+            # so each burst opens once the drawn head (combined[reveal-1])
+            # has reached the crossing snapshot: reveal >= s + 1
+            start_frames = np.ceil(
+                (photon_bursts["start_snapshots"] - 1.0) * max(count - 1, 1) / max(total - 2, 1)
+            )
+            progress = (index - start_frames + 1.0) / photon_bursts["growth_frames"]
+            mpl3d.draw_photon_burst(
+                axes,
+                photon_bursts["positions"],
+                photon_bursts["directions"],
+                progress,
+                photon_bursts["ray_length"],
+            )
 
     render_kwargs = (config or {}).get("render", {})
     return mpl3d.render_frames(draw, frame_count, title, limits, **render_kwargs)

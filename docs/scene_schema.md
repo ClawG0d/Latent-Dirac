@@ -41,7 +41,9 @@ elements:
   optional per-element `steps` override), `drift` (zero-field transport),
   `aperture`, `momentum_window` (momenta in GeV/c),
   `annihilation_plate` (ledgered loss endpoint recording at-rest
-  two-photon kinematics; NumPy pipeline only),
+  two-photon kinematics, events projected onto the plate plane; positron
+  clouds only — other species are rejected at run time, antiproton
+  annihilation is engine physics; NumPy pipeline only),
   `residual_gas_loss` (storage lifetime: stochastic annihilation on
   residual gas over a hold time, `mean_lifetime_s` / `hold_time_s`;
   NumPy pipeline only),

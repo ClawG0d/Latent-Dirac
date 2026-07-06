@@ -9,7 +9,10 @@ source:
             bunch_length_s: 1.0e-12, macro_particles: 96 }
 solver: { type: relativistic_boris, dt_s: 3.0e-12, steps: 150 }
 elements:
-  - { type: solenoid, label: capture-solenoid, b_tesla: 0.8, radius_m: 0.02, length_m: 0.15, center_z_m: 0.075 }
+  - { type: solenoid, label: capture-solenoid, b_tesla: 0.8, radius_m: 0.02, length_m: 0.15, center_z_m: 0.075,
+      profile: thin_sheet }
   - { type: aperture, label: capture-aperture, radius_m: 0.006, z_m: 0.13 }
   - { type: momentum_window, label: momentum-cut, p_min_gev_c: 0.002, p_max_gev_c: 0.005 }
   - { type: monitor, label: end-station }
+  - { type: drift, label: collector-drift, steps: 40 }
+  - { type: annihilation_plate, label: collector-plate, z_m: 0.144, radius_m: 0.02 }

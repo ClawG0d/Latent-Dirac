@@ -9,6 +9,7 @@ source:
             bunch_length_s: 1.0e-12, macro_particles: 64 }
 solver: { type: relativistic_boris, dt_s: 3.0e-12, steps: 100 }
 elements:
-  - { type: solenoid, label: hello-solenoid, b_tesla: 0.8, radius_m: 0.02, length_m: 0.12, center_z_m: 0.06 }
+  - { type: solenoid, label: hello-solenoid, b_tesla: 0.8, radius_m: 0.02, length_m: 0.12, center_z_m: 0.06,
+      profile: thin_sheet }
   - { type: aperture, label: hello-aperture, radius_m: 0.008, z_m: 0.1 }
   - { type: monitor, label: hello-monitor }

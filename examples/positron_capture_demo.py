@@ -1,8 +1,10 @@
 """Positron capture demo, defined by a declarative scene.
 
-A parameterized positron pair source spirals through an idealized
-hard-edge solenoid, then an aperture and a momentum window select the
-accepted cloud. The scene file is `examples/scenes/positron_capture.yaml`.
+A parameterized positron pair source spirals through a thin-sheet
+solenoid (smooth first-order fringe), an aperture and a momentum window
+select the accepted cloud, and the collector plate ends the story with
+ledgered two-photon annihilation events. The scene file is
+`examples/scenes/positron_capture.yaml`.
 """
 
 from __future__ import annotations

@@ -28,7 +28,12 @@ def test_demo_scene_loads_and_runs(name):
     scene = load_scene(SCENES_DIR / name)
     result = run_scene(scene)
 
-    assert result.pipeline_result.final_cloud.weighted_count() > 0.0
+    # a demo either keeps an accepted core alive, or ends it deliberately
+    # at a ledgered annihilation endpoint (e.g. the hero collector plate)
+    annihilated = any(
+        events["positions"].shape[0] > 0 for events in result.annihilations.values()
+    )
+    assert result.pipeline_result.final_cloud.weighted_count() > 0.0 or annihilated
 
 
 def test_energy_coloring_maps_initial_kinetic_energy():
