@@ -17,11 +17,13 @@ resolves it under `resources/engine/latent-dirac-engine/` (see
 
 ```bash
 # from the repo root, in a clean venv
-pip install -e ".[server]" pyinstaller
+# NON-editable install (editable installs are not reliably collected by
+# PyInstaller); viz brings plotly for the inlined offline 3D
+pip install ".[viz]" pyinstaller
 
 cd desktop/packaging
 ./build_engine.sh                 # macOS / Linux
-#   → dist/latent-dirac-engine/latent-dirac-engine  (+ smoke-tests the PORT line)
+#   → dist/latent-dirac-engine/latent-dirac-engine  (+ smoke-tests a stdio request)
 ```
 
 Windows (PowerShell), same spec:
@@ -34,8 +36,9 @@ python -m PyInstaller engine.spec --noconfirm
 `engine.spec` produces a **one-folder** build (faster startup, no per-launch
 temp extraction, drops straight into electron-builder). It is lean by
 construction: only the engine's real import closure ships — numpy, pydantic,
-pyyaml, fastapi, uvicorn, plotly (with its JS bundle, needed for the inlined
-offline 3D HTML). The heavy optional stacks (jax, openpmd, uproot, xsuite,
+pyyaml, plotly (with its JS bundle, needed for the inlined offline 3D HTML;
+the stdio bridge needs no web framework). The heavy optional stacks (jax,
+openpmd, uproot, xsuite,
 matplotlib) are excluded, and the vendored Geant4 tree is never a Python
 import so it cannot be pulled in.
 

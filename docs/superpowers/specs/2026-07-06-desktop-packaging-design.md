@@ -63,6 +63,28 @@ under `resources/engine/latent-dirac-engine/` with no environment variable.
   is verified on the owner's Mac and Windows machines (needs a display, native
   install, and signing certs), not in the headless CI here.
 
+## Build-recipe corrections (verified on the dev Mac, 2026-07-06)
+
+Producing the `.dmg` on the Mac surfaced two real recipe bugs the earlier
+review couldn't catch without running PyInstaller:
+
+- **Editable install → `No module named 'latent_dirac'` at runtime.** An
+  editable (`pip install -e`) install is not reliably collected by
+  PyInstaller. Fix: install latent-dirac **non-editable** in the freeze venv
+  and add `collect_submodules("latent_dirac")` (+ `collect_data_files`) to the
+  spec so the whole package (including lazily-imported `viz`/`adapters`) is
+  bundled.
+- **Frozen entry / smoke test followed the retired HTTP server.** The engine
+  is now the stdio bridge: `engine_entry.py` calls
+  `latent_dirac.bridge.__main__.main`; the spec drops the fastapi/uvicorn
+  hidden imports and excludes the web stack; `build_engine.sh` smoke-tests by
+  piping a `{"op":"schema"}` line in and checking for `{"ready":true}` + an
+  `"ok": true` response.
+
+An arm64, unsigned `.dmg` was built and verified on the dev Mac (the bundled
+frozen engine starts and answers a stdio `run`). Signed `.dmg`/`.exe` still
+need the owner's certificates and a Windows host.
+
 ## Boundaries
 
 New files stay under `desktop/`; nothing in `latent_dirac/`, `backends/`,

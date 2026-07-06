@@ -207,6 +207,27 @@ The AI integration moved from a hosted gateway (owner pays, unified billing) to
   is no longer the default path; the packaged client is BYOK and ships no
   secrets.
 
+## Engine IPC change — stdio, not HTTP (2026-07-06)
+
+For a local-only, single-client link, the FastAPI/uvicorn HTTP server was
+heavier than needed (a listening socket, a port handshake, extra freeze
+weight). It was replaced with a **stdio JSON-RPC sidecar**:
+
+- `latent_dirac.server` (HTTP) retired → `latent_dirac.bridge`: prints
+  `{"ready":true}`, then reads one JSON request per line on stdin and writes
+  one response per line on stdout. Ops: `schema`, `validate`, `run`. Pure
+  Python — no `[server]` extra, no FastAPI/uvicorn, no port. It talks only to
+  its parent over pipes.
+- `desktop/src/sidecar.js`: spawns the engine, resolves on the `{ready:true}`
+  line, and exposes `request({op,...})` — an id-correlated JSON-RPC over the
+  child's stdin/stdout (out-of-order-safe; pending requests reject if the
+  engine dies).
+- `orchestrator` takes the injected `engine` (with `.request`) instead of a
+  `fetch`+URL; `config.engineSpawnSpec` launches `python -m latent_dirac.bridge`
+  (dev) or the frozen binary (packaged), with no host/port args.
+- `services/ai_gateway/` (also HTTP) stays as an optional hosted alternative;
+  it is independent of the retired local server.
+
 ## Boundaries / risks
 
 - New top-level `desktop/` tree; outside the Mac/Windows Python lanes in

@@ -14,19 +14,17 @@ function loadConfig(env = process.env) {
   };
 }
 
-// How to launch the local sim engine. The server binds an ephemeral port and
-// prints "PORT <n>" on stdout in every case. Resolution order:
+// How to launch the local sim engine (the stdio JSON-RPC bridge — it prints
+// {"ready":true} and then talks JSON over stdin/stdout; no port). Resolution:
 //   1. LATENT_DIRAC_ENGINE_CMD  — explicit override (always wins)
 //   2. packaged build           — the frozen PyInstaller binary bundled by
 //      electron-builder as an extraResource under resources/engine/
-//   3. development              — the installed package (`python -m ...`)
+//   3. development              — the installed package (`python -m latent_dirac.bridge`)
 // opts (from main.js): { isPackaged, resourcesPath, platform }.
 function engineSpawnSpec(env = process.env, opts = {}) {
-  const portArgs = ["--host", "127.0.0.1", "--port", "0"];
-
   const explicit = env.LATENT_DIRAC_ENGINE_CMD;
   if (explicit) {
-    return { command: explicit, args: portArgs };
+    return { command: explicit, args: [] };
   }
 
   if (opts.isPackaged && opts.resourcesPath) {
@@ -35,11 +33,11 @@ function engineSpawnSpec(env = process.env, opts = {}) {
     // matches the electron-builder extraResources mapping in package.json:
     // packaging/dist/latent-dirac-engine -> resources/engine/latent-dirac-engine
     const command = path.join(opts.resourcesPath, "engine", "latent-dirac-engine", exe);
-    return { command, args: portArgs };
+    return { command, args: [] };
   }
 
   const python = env.LATENT_DIRAC_PYTHON || "python";
-  return { command: python, args: ["-m", "latent_dirac.server", ...portArgs] };
+  return { command: python, args: ["-m", "latent_dirac.bridge"] };
 }
 
 module.exports = { loadConfig, engineSpawnSpec };

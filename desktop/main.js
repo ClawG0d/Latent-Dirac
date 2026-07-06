@@ -63,17 +63,14 @@ function stopEngine() {
 
 async function startEngine() {
   // in a packaged build, launch the frozen engine bundled as an extraResource;
-  // in dev, `python -m latent_dirac.server` (see src/config.js)
+  // in dev, `python -m latent_dirac.bridge` (see src/config.js). startSidecar
+  // resolves once the engine prints its {"ready":true} line.
   const spec = engineSpawnSpec(process.env, {
     isPackaged: app.isPackaged,
     resourcesPath: process.resourcesPath,
     platform: process.platform,
   });
   sidecar = await startSidecar({ spawn, command: spec.command, args: spec.args });
-  const resp = await fetch(`${sidecar.baseUrl}/health`);
-  if (!resp.ok) {
-    throw new Error(`engine health check failed (status ${resp.status})`);
-  }
 }
 
 async function createWindow() {
@@ -114,7 +111,7 @@ ipcMain.handle("run-prompt", async (_event, { prompt, currentScene }) => {
     const generate = (a) => generateScene({ ...a, apiKey, model: config.model, fetch });
     const result = await generateAndRun(
       { prompt, currentScene },
-      { fetch, engineUrl: sidecar.baseUrl, generate, maxRetries: config.maxRetries, onStatus: sendStatus }
+      { engine: sidecar, generate, maxRetries: config.maxRetries, onStatus: sendStatus }
     );
     return { ok: true, result };
   } catch (err) {
@@ -134,17 +131,13 @@ ipcMain.handle("clear-api-key", async () => {
 });
 ipcMain.handle("key-status", () => ({ hasKey: !!apiKey }));
 
-// run a scene the renderer already holds (loaded from a file), no gateway
+// run a scene the renderer already holds (loaded from a file), no AI
 ipcMain.handle("run-scene", async (_event, scene) => {
   if (!sidecar) {
     return { ok: false, error: "the sim engine is not running", category: "engine-unreachable" };
   }
   try {
-    const result = await runScene(scene, {
-      fetch,
-      engineUrl: sidecar.baseUrl,
-      onStatus: sendStatus,
-    });
+    const result = await runScene(scene, { engine: sidecar, onStatus: sendStatus });
     return { ok: true, result };
   } catch (err) {
     return failure(err);

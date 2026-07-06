@@ -1,16 +1,16 @@
-"""PyInstaller entry point for the frozen local sim engine.
+"""PyInstaller entry point for the frozen local engine (stdio bridge).
 
-The desktop client spawns this frozen binary as its sidecar. It behaves
-exactly like `python -m latent_dirac.server`: bind 127.0.0.1 on an ephemeral
-port, print `PORT <n>` on stdout, then serve the FastAPI app. See
-desktop/packaging/engine.spec and desktop/packaging/README.md.
+The desktop client spawns this frozen binary as its sidecar. It behaves exactly
+like `python -m latent_dirac.bridge`: print {"ready": true}, then read one JSON
+request per line on stdin and write one JSON response per line on stdout — no
+HTTP, no port. See desktop/packaging/engine.spec and desktop/packaging/README.md.
 """
 
 from __future__ import annotations
 
 import sys
 
-from latent_dirac.server.__main__ import main
+from latent_dirac.bridge.__main__ import main
 
 if __name__ == "__main__":
     sys.exit(main())

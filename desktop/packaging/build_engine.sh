@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
-# Freeze the local sim engine into a lean one-folder binary with PyInstaller,
-# then smoke-test that it prints the PORT line the desktop client reads.
+# Freeze the local sim engine (the stdio bridge) into a lean one-folder binary
+# with PyInstaller, then smoke-test that it answers a JSON request on stdio.
 #
 # Run on the target OS (a frozen binary is platform-specific). On Windows use
 # the documented command in README.md instead of this POSIX script.
 #
 #   cd desktop/packaging && ./build_engine.sh
 #
-# Requires: the engine installed with the server extra plus PyInstaller, e.g.
-#   pip install -e "../..[server]" pyinstaller
+# Requires PyInstaller and latent-dirac installed NON-editable (editable installs
+# are not reliably collected by PyInstaller — the frozen binary would fail with
+# "No module named 'latent_dirac'"), with the viz extra (brings plotly, needed
+# for the inlined offline 3D):
+#   pip install "../..[viz]" pyinstaller
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -23,23 +26,17 @@ if [ ! -x "$bin" ]; then
   exit 1
 fi
 
-echo "==> Smoke test: the binary must print 'PORT <n>' on stdout"
+echo "==> Smoke test: the binary must answer a JSON request on stdin/stdout"
 out="$(mktemp)"
-# same args the client uses at runtime (see src/config.js engineSpawnSpec)
-"$bin" --host 127.0.0.1 --port 0 >"$out" 2>/dev/null &
-pid=$!
-for _ in $(seq 1 50); do
-  grep -q '^PORT [0-9]' "$out" && break
-  sleep 0.2
-done
-kill "$pid" 2>/dev/null || true
-wait "$pid" 2>/dev/null || true
+# send a schema request; expect the ready line then a {"ok": true, ...} response
+printf '%s\n' '{"id":1,"op":"schema"}' | "$bin" >"$out" 2>/dev/null || true
 
-if grep -q '^PORT [0-9]' "$out"; then
-  echo "==> OK: $(grep '^PORT' "$out" | head -1)"
+if grep -q '"ready"' "$out" && grep -q '"ok": *true' "$out"; then
+  echo "==> OK: engine printed ready and answered the schema request"
   rm -f "$out"
 else
-  echo "ERROR: the frozen engine did not print a PORT line" >&2
+  echo "ERROR: the frozen engine did not answer the stdio request" >&2
+  echo "--- output ---" >&2; head -5 "$out" >&2
   rm -f "$out"
   exit 1
 fi

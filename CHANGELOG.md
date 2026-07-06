@@ -44,8 +44,9 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
   app's main process (encrypted via the OS keychain when available) and never
   seen by the renderer; the simulation runs **locally** in a bundled
   engine sidecar (user scenes/results never leave the machine). The
-  load-bearing logic (engine-sidecar lifecycle reading the `PORT` line; the
-  gateway → validate → run loop with a bounded corrective retry on a
+  load-bearing logic (engine-sidecar lifecycle over stdio JSON-RPC — the
+  engine prints `{"ready":true}` then answers one JSON line per request; the
+  generate → validate → run loop with a bounded corrective retry on a
   schema-invalid scene; the packaged engine-path resolution) is
   dependency-injected Node, unit-tested with `node --test` (no network, no
   Electron, no Python). The Electron wiring keeps `contextIsolation`/
@@ -74,20 +75,20 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
   Code signing, notarization, and the Windows build lane are owner-side,
   documented not automated.
 
-- Added a local sim-engine HTTP API (`latent_dirac.server`, new optional
-  `[server]` extra: FastAPI + uvicorn) — the backend for the desktop
-  client. `GET /schema` returns the Scene JSON Schema (the AI's
-  structured-output contract), `POST /validate` runs fail-fast pydantic
-  validation and returns structured errors for an AI retry loop, and
-  `POST /run` validates + runs + returns the text report, a summary
-  (accepted count, per-stage losses), and a **self-contained offline**
-  interactive 3D HTML (plotly.js inlined, no CDN — so the desktop 3D
-  panel renders with no network). Run-time engine/adapter failures
-  surface as 400 with a clear message, not a 500. Launch with
-  `python -m latent_dirac.server` (binds 127.0.0.1 on an ephemeral port
-  and prints it for a parent process); localhost only — simulations run
-  on the user's machine, never remotely. 9 tests via FastAPI TestClient.
-  Design record:
+- Added the local engine bridge (`latent_dirac.bridge`, pure Python — no
+  extra, no web framework) — the backend for the desktop client. The
+  desktop app spawns `python -m latent_dirac.bridge` (or the frozen binary)
+  and exchanges **line-delimited JSON over stdin/stdout**: the engine prints
+  `{"ready":true}`, then answers one request per line — `{op:"schema"}`
+  (Scene JSON Schema, the AI's structured-output contract), `{op:"validate"}`
+  (fail-fast pydantic validation with structured errors for the retry loop),
+  `{op:"run"}` (report + summary + a **self-contained offline** 3D HTML,
+  plotly.js inlined). A validation failure or a run-time engine/adapter
+  failure comes back as a categorized error object, never a crash; the loop
+  survives a malformed line. No HTTP, no port, no listening socket — it
+  speaks only to its parent over pipes. (Replaces the earlier
+  FastAPI/uvicorn HTTP server and its `[server]` extra, retired for this
+  local-only, single-client link.) 10 tests. Design record:
   `docs/superpowers/specs/2026-07-06-interactive-viewer-design.md` and
   the desktop-client plan.
 

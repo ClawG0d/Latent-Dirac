@@ -822,10 +822,11 @@ Implemented:
   subprocess — energy loss, scattering, and antiproton annihilation into
   the loss ledger; provenance four-tuple in the report)
 - a placeholder adapter for ROOT (ROOT file I/O itself ships via uproot)
-- a local sim-engine HTTP API (`latent_dirac.server`, `[server]` extra)
-  backing a cross-platform Electron desktop client (`desktop/`:
-  natural-language prompt → scene → local run → 3D; simulations stay on
-  the user's machine) with a hosted AI gateway (`services/ai_gateway/`)
+- a local engine bridge (`latent_dirac.bridge`, stdin/stdout JSON — no
+  server, no port) backing a cross-platform Electron desktop client
+  (`desktop/`: natural-language prompt → scene → local run → 3D;
+  bring-your-own Anthropic key, held in the app; simulations stay on the
+  user's machine)
 - a Material for MkDocs documentation site (`[docs]` extra;
   `mkdocs build --strict`)
 

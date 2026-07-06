@@ -16,16 +16,16 @@ test("honours model and retry overrides from env", () => {
   assert.equal(cfg.maxRetries, 4);
 });
 
-test("engineSpawnSpec launches the installed package in development", () => {
+test("engineSpawnSpec launches the installed bridge module in development", () => {
   const spec = engineSpawnSpec({});
   assert.equal(spec.command, "python");
-  assert.deepEqual(spec.args, ["-m", "latent_dirac.server", "--host", "127.0.0.1", "--port", "0"]);
+  assert.deepEqual(spec.args, ["-m", "latent_dirac.bridge"]);
 });
 
 test("engineSpawnSpec uses the frozen binary when LATENT_DIRAC_ENGINE_CMD is set", () => {
   const spec = engineSpawnSpec({ LATENT_DIRAC_ENGINE_CMD: "/opt/latent-dirac/engine" });
   assert.equal(spec.command, "/opt/latent-dirac/engine");
-  assert.deepEqual(spec.args, ["--host", "127.0.0.1", "--port", "0"]);
+  assert.deepEqual(spec.args, []);
 });
 
 test("engineSpawnSpec resolves the bundled engine in a packaged build (macOS)", () => {
@@ -37,7 +37,7 @@ test("engineSpawnSpec resolves the bundled engine in a packaged build (macOS)", 
     spec.command.endsWith("/engine/latent-dirac-engine/latent-dirac-engine"),
     `unexpected command: ${spec.command}`
   );
-  assert.deepEqual(spec.args, ["--host", "127.0.0.1", "--port", "0"]);
+  assert.deepEqual(spec.args, []);
 });
 
 test("engineSpawnSpec resolves the bundled .exe in a packaged build (Windows)", () => {

@@ -30,8 +30,7 @@ Changelog = "https://github.com/ClawG0d/Latent-Dirac/blob/master/CHANGELOG.md"
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0",
-  "ruff>=0.4",
-  "httpx>=0.27"
+  "ruff>=0.4"
 ]
 viz = [
   "matplotlib",
@@ -52,10 +51,6 @@ xsuite = [
 ]
 docs = [
   "mkdocs-material>=9.5"
-]
-server = [
-  "fastapi>=0.110",
-  "uvicorn>=0.29"
 ]
 
 [tool.setuptools.packages.find]

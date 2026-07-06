@@ -12,29 +12,26 @@
 # extraction, and it drops straight into electron-builder's extraResources.
 #
 # Lean by construction: only the engine's real import closure ships — numpy,
-# pydantic, pyyaml, fastapi, uvicorn, plotly. The heavy optional stacks are
-# excluded, and the vendored Geant4 tree is never a Python import so it can
+# pydantic, pyyaml, plotly (the stdio bridge needs no web framework). The heavy
+# optional stacks are excluded, and the vendored Geant4 tree is never a Python
+# import so it can
 # never be pulled in.
 
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
-hiddenimports = [
-    # uvicorn resolves these dynamically at runtime
-    "uvicorn",
-    "uvicorn.logging",
-    "uvicorn.loops.auto",
-    "uvicorn.protocols.http.auto",
-    "uvicorn.protocols.websockets.auto",
-    "uvicorn.lifespan.on",
-    # our own server package (imported lazily inside __main__.main)
-    "latent_dirac.server",
-    "latent_dirac.server.app",
-]
+hiddenimports = []
 
 # plotly ships its JS bundle as package data; include_plotlyjs=True reads it to
 # inline the runtime into the offline 3D HTML, so it must travel with the binary
 datas = collect_data_files("plotly")
 hiddenimports += collect_submodules("plotly")
+
+# collect the whole first-party package — some submodules (viz, adapters) are
+# imported lazily inside functions, and an editable install would otherwise be
+# missed. Install latent-dirac NON-editable in the freeze venv (see
+# build_engine.sh) so PyInstaller finds it in site-packages.
+datas += collect_data_files("latent_dirac")
+hiddenimports += collect_submodules("latent_dirac")
 
 excludes = [
     # the optional heavy stacks the engine does not need for source->acceptance
@@ -48,6 +45,10 @@ excludes = [
     "xpart",
     "xdeps",
     "xobjects",
+    # the stdio bridge needs no web stack (the HTTP server was retired)
+    "fastapi",
+    "uvicorn",
+    "starlette",
     # never needed at runtime
     "matplotlib",
     "tkinter",
@@ -80,7 +81,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=False,
-    console=True,  # required: the "PORT <n>" line is read from stdout
+    console=True,  # required: the stdio bridge speaks JSON over stdin/stdout
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,

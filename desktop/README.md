@@ -9,17 +9,20 @@ only in the main process and sent only to Anthropic. The simulation and your
 scenes/results never leave the machine.
 
 ```
-prompt ─▶ Anthropic (your key, in main) ─▶ scene JSON ─▶ local engine /validate ─(422)─▶ retry
+prompt ─▶ Anthropic (your key, in main) ─▶ scene JSON ─▶ engine {op:validate} ─(invalid)─▶ retry
                                                           │(ok)
                                                           ▼
-                                                    local engine /run ─▶ report + offline 3D HTML
+                                                    engine {op:run} ─▶ report + offline 3D HTML
+
+the engine is a local stdio sidecar (line-delimited JSON on stdin/stdout) —
+no HTTP, no port; it talks only to the app over pipes.
 ```
 
 ## Layout
 
 | Path | Role |
 | --- | --- |
-| `src/sidecar.js` | spawn the local sim engine, read its `PORT`, expose `baseUrl` + `stop()` |
+| `src/sidecar.js` | spawn the engine, await its `{ready:true}` line, expose `request({op,...})` (id-correlated JSON-RPC) + `stop()` |
 | `src/ai.js` | BYOK Anthropic client — shape the forced `emit_scene` tool call, extract the scene; categorized errors |
 | `src/orchestrator.js` | the prompt → generate → validate → run loop (bounded retry); `runScene` runs a loaded scene directly; categorized errors |
 | `src/scene_file.js` | serialize / parse a scene for Save & Load |

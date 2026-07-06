@@ -1,64 +1,112 @@
 "use strict";
-// Engine-sidecar lifecycle. Spawns the local Latent Dirac sim engine and waits
-// for the "PORT <n>" line it prints on stdout (see latent_dirac/server/
-// __main__.py), then hands back the localhost base URL and a stop() to kill it.
-//
-// spawn is injected so this is unit-tested with a fake child process; in
-// production main.js passes Node's child_process.spawn.
+// Engine sidecar over stdio JSON-RPC. Spawns the local Latent Dirac engine
+// (`python -m latent_dirac.bridge` in dev, the frozen binary when packaged),
+// waits for its {"ready":true} line, then exchanges one JSON request/response
+// per line — no HTTP, no port. spawn is injected so this is unit-tested with a
+// fake child process.
 
-const PORT_LINE = /^PORT\s+(\d+)$/;
+const { StringDecoder } = require("node:string_decoder");
 
 function startSidecar({ spawn, command, args = [], readyTimeoutMs = 15000 }) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolveReady, rejectReady) => {
     const child = spawn(command, args);
+    // decode across chunk boundaries so a multi-byte char split between two
+    // stdout chunks can never corrupt a line (which would hang that request)
+    const decoder = new StringDecoder("utf8");
     let buffer = "";
-    let settled = false;
-
-    const finish = (fn) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timer);
-      fn();
-    };
+    let ready = false;
+    let nextId = 1;
+    let deadError = null;
+    const pending = new Map(); // id -> { resolve, reject }
 
     const timer = setTimeout(() => {
-      finish(() => {
+      if (!ready) {
+        clearTimeout(timer);
         try {
           child.kill();
         } catch {
-          // best-effort; the process may already be gone
+          /* already gone */
         }
-        reject(new Error(`sidecar did not report a port within ${readyTimeoutMs}ms`));
-      });
+        rejectReady(new Error(`engine did not report ready within ${readyTimeoutMs}ms`));
+      }
     }, readyTimeoutMs);
     if (typeof timer.unref === "function") timer.unref();
 
+    function rejectAllPending(err) {
+      for (const { reject } of pending.values()) reject(err);
+      pending.clear();
+    }
+
+    function handleLine(text) {
+      let msg;
+      try {
+        msg = JSON.parse(text);
+      } catch {
+        return; // ignore non-JSON noise (e.g. an import warning before ready)
+      }
+      if (!ready) {
+        if (msg && msg.ready) {
+          ready = true;
+          clearTimeout(timer);
+          resolveReady({ request, stop, process: child });
+        }
+        return;
+      }
+      if (msg && msg.id != null && pending.has(msg.id)) {
+        const { resolve } = pending.get(msg.id);
+        pending.delete(msg.id);
+        resolve(msg);
+      }
+    }
+
     child.stdout.on("data", (chunk) => {
-      buffer += chunk.toString();
+      buffer += typeof chunk === "string" ? chunk : decoder.write(chunk);
       let nl;
       while ((nl = buffer.indexOf("\n")) >= 0) {
-        const line = buffer.slice(0, nl).trim();
+        const text = buffer.slice(0, nl).trim();
         buffer = buffer.slice(nl + 1);
-        const match = line.match(PORT_LINE);
-        if (match) {
-          const port = Number(match[1]);
-          finish(() =>
-            resolve({
-              port,
-              baseUrl: `http://127.0.0.1:${port}`,
-              stop: () => child.kill(),
-              process: child,
-            })
-          );
-          return;
-        }
+        if (text) handleLine(text);
       }
     });
 
-    child.on("error", (err) => finish(() => reject(err)));
-    child.on("exit", (code) =>
-      finish(() => reject(new Error(`sidecar exited (code ${code}) before reporting a port`)))
-    );
+    child.on("error", (err) => {
+      deadError = err;
+      clearTimeout(timer);
+      if (!ready) rejectReady(err);
+      rejectAllPending(err);
+    });
+
+    child.on("exit", (code) => {
+      const err = deadError || new Error(`engine exited (code ${code})`);
+      clearTimeout(timer);
+      if (!ready) rejectReady(new Error(`engine exited (code ${code}) before reporting ready`));
+      rejectAllPending(err);
+    });
+
+    function request(msg) {
+      return new Promise((resolve, reject) => {
+        if (deadError) {
+          reject(deadError);
+          return;
+        }
+        const id = nextId++;
+        pending.set(id, { resolve, reject });
+        try {
+          child.stdin.write(JSON.stringify({ id, ...msg }) + "\n");
+        } catch (err) {
+          pending.delete(id);
+          reject(err);
+        }
+      });
+    }
+
+    function stop() {
+      try {
+        child.kill();
+      } catch {
+        /* already gone */
+      }
+    }
   });
 }
 
