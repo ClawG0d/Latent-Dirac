@@ -86,7 +86,7 @@ report.
 
 ## Demos
 
-Thirteen 3D demos, each rendered from real simulation output. Most are defined
+Fourteen 3D demos, each rendered from real simulation output. Most are defined
 by a declarative YAML scene under [examples/scenes/](examples/scenes/) —
 the scene file *is* the demo. Interactive Plotly versions
 (`assets/demos/*_3d.html`) sit next to each scene-driven animation.
@@ -417,6 +417,53 @@ result = program.run({"sweep-field.B_vector_t": b_vectors})  # (24, 3)
 result.accepted_fraction  # (24,)
 result.trajectories       # (24, S, N, 3)
 ```
+
+### Demo 9: Trap Storage Lifecycle — Capture, Cool, Store
+
+The trap-physics elements working together: an isotropic eV-scale
+positron bunch (a parameterized prepared cloud) oscillates in an ideal
+Penning trap while transport windows alternate with buffer-gas cooling
+bursts — the mean axial bounce amplitude collapses from 1.6 mm to
+0.23 mm (~7x) as the cloud cools from 10.3 eV to a 0.06 eV mean,
+approaching the 300 K floor (38.8 meV). The ledger separates two loss
+channels by color: positronium formation during the cooling stages and
+annihilation on residual gas during a 60 s storage hold. Trap
+eigenfrequencies are the validated analytic ones; cooling is the
+constant-rate Surko stand-in (parameterized tier); and the µs-scale
+cooling holds freeze positions while only the ns-scale transport
+windows are animated — an idealization of this rendering, stated here.
+
+![Animated 3D trap storage lifecycle demo](assets/demos/trap_storage_lifecycle_3d.webp)
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/trap_storage_lifecycle.yaml
+```
+
+<details>
+<summary>Text report (excerpt)</summary>
+
+```text
+Latent Dirac scene report: trap-storage-lifecycle
+
+Loss ledger (weighted, by killing element):
+- cool-1: 2.08125e+07
+- cool-2: 4.1625e+07
+- cool-3: 4.68281e+07
+- cool-4: 2.60156e+07
+- storage-hold: 5.20312e+07
+- surviving: 1.45688e+08
+
+Accepted state:
+- weighted count: 1.45688e+08
+- mean kinetic energy: 6.00078e-08 MeV
+
+Magnetic field status:
+- field model: ideal Penning trap (quadrupole well + axial B)
+- well parameter V0: 50 V, d: 0.005 m, axial B: 0.05 T
+- status: ideal global field (no hard edge)
+```
+
+</details>
 
 ## The Antimatter Factory Chain
 

@@ -20,6 +20,7 @@ SCENE_FILES = (
     "dipole_quad_line.yaml",
     "wien_filter.yaml",
     "antiproton_ledger.yaml",
+    "trap_storage_lifecycle.yaml",
 )
 
 

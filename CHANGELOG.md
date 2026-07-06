@@ -5,6 +5,22 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the trap storage lifecycle demo (demo #14,
+  `examples/scenes/trap_storage_lifecycle.yaml`): an isotropic eV-scale
+  positron bunch in the ideal Penning trap, transport windows
+  interleaved with `buffer_gas_cooling` bursts so the mean axial bounce
+  amplitude visibly collapses (1.6 mm → 0.23 mm; 10.3 eV → 0.06 eV
+  mean, approaching the 300 K floor of 38.8 meV), then a 60 s
+  `residual_gas_loss` hold — the ledger
+  separates positronium-formation losses from storage losses by color.
+  The WebP generator gains a `trail_window` option (sliding trail for
+  long multi-period runs that would otherwise saturate into a
+  hairball), and scene reports deduplicate consecutive
+  physics-identical field elements (an interleaved trap → cool → trap
+  pipeline describes its field once, not once per stage). Design
+  record:
+  `docs/superpowers/specs/2026-07-06-trap-storage-lifecycle-demo-design.md`.
+
 - Annihilation demo visuals and the thin-sheet demo rollout: the plate
   now records per-event `time_s`/`particle_id` — projected back onto
   the plate plane (the stage-boundary kill overshoots) — and rejects

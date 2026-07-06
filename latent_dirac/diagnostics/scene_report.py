@@ -7,7 +7,7 @@ from latent_dirac.fields.space_charge import (
     VALIDITY_NOTE as SPACE_CHARGE_VALIDITY_NOTE,
 )
 from latent_dirac.scene.build import SceneRunResult
-from latent_dirac.scene.schema import Scene
+from latent_dirac.scene.schema import FIELD_ELEMENT_TYPES, Scene
 
 _FIELD_DESCRIPTIONS = {
     "uniform_field": "uniform field",
@@ -16,6 +16,26 @@ _FIELD_DESCRIPTIONS = {
     "quadrupole": "idealized quadrupole (hard-edge)",
     "penning_trap": "ideal Penning trap (quadrupole well + axial B)",
 }
+
+
+def _deduplicated_field_elements(scene: Scene):
+    """Field elements with physics-identical consecutive repeats dropped.
+
+    Interleaved pipelines (e.g. trap -> cool -> trap -> cool) re-declare
+    the same field element many times; the field-status block should
+    describe the field once per distinct configuration, not once per
+    pipeline stage. Only the field subsequence is compared, and `label`/
+    `steps` are ignored (stage bookkeeping, not field physics).
+    """
+
+    previous = None
+    for element in scene.elements:
+        if element.type not in FIELD_ELEMENT_TYPES:
+            continue
+        fingerprint = element.model_dump(exclude={"label", "steps"})
+        if fingerprint != previous:
+            yield element
+        previous = fingerprint
 
 
 def _append_gate_line(lines: list[str], element) -> None:
@@ -28,7 +48,7 @@ def _append_gate_line(lines: list[str], element) -> None:
 
 def field_status_lines(scene: Scene) -> list[str]:
     lines = ["Magnetic field status:"]
-    for element in scene.elements:
+    for element in _deduplicated_field_elements(scene):
         if getattr(element, "space_charge", None) is not None:
             lines.append(f"- space charge ({element.label}): {SPACE_CHARGE_VALIDITY_NOTE}")
         if element.type == "solenoid":

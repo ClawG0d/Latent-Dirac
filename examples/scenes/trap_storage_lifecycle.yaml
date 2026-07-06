@@ -1,0 +1,28 @@
+schema_version: 1
+name: trap-storage-lifecycle
+seed: 2026
+source:
+  # parameterized isotropic eV bunch inside the trap volume (the beta-plus
+  # sampler used as a prepared warm cloud; no nuclear physics implied)
+  type: beta_plus
+  label: warm-ev-bunch
+  params: { half_life_s: 8.21e7, beta_plus_branching_ratio: 0.9, initial_activity_bq: 3.7e8,
+            endpoint_energy_MeV: 2.0e-5, source_radius_m: 0.0005, macro_particles: 64 }
+solver: { type: relativistic_boris, dt_s: 2.0e-11, steps: 530 }
+elements:
+  - { type: penning_trap, label: trap-1, v0_volt: 50.0, d_m: 0.005, b_tesla: 0.05 }
+  - { type: buffer_gas_cooling, label: cool-1, hold_time_s: 2.0e-6, collision_rate_hz: 7.0e6,
+      energy_loss_ev: 0.3, ps_fraction: 0.008, gas_temperature_k: 300.0 }
+  - { type: penning_trap, label: trap-2, v0_volt: 50.0, d_m: 0.005, b_tesla: 0.05 }
+  - { type: buffer_gas_cooling, label: cool-2, hold_time_s: 2.0e-6, collision_rate_hz: 7.0e6,
+      energy_loss_ev: 0.3, ps_fraction: 0.008, gas_temperature_k: 300.0 }
+  - { type: penning_trap, label: trap-3, v0_volt: 50.0, d_m: 0.005, b_tesla: 0.05 }
+  - { type: buffer_gas_cooling, label: cool-3, hold_time_s: 2.0e-6, collision_rate_hz: 7.0e6,
+      energy_loss_ev: 0.3, ps_fraction: 0.008, gas_temperature_k: 300.0 }
+  - { type: penning_trap, label: trap-4, v0_volt: 50.0, d_m: 0.005, b_tesla: 0.05 }
+  - { type: buffer_gas_cooling, label: cool-4, hold_time_s: 2.0e-6, collision_rate_hz: 7.0e6,
+      energy_loss_ev: 0.3, ps_fraction: 0.008, gas_temperature_k: 300.0 }
+  - { type: penning_trap, label: trap-5, v0_volt: 50.0, d_m: 0.005, b_tesla: 0.05 }
+  - { type: residual_gas_loss, label: storage-hold, mean_lifetime_s: 200.0, hold_time_s: 60.0 }
+  - { type: penning_trap, label: trap-6, v0_volt: 50.0, d_m: 0.005, b_tesla: 0.05, steps: 800 }
+  - { type: monitor, label: end-station }

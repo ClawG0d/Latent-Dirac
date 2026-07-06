@@ -110,6 +110,15 @@ SCENE_DEMOS = {
         "uniform field | relativistic Boris solver | acceptance ledger diagnostic only",
         "coloring": "ledger",
     },
+    "trap_storage_lifecycle_3d.webp": {
+        "scene": "trap_storage_lifecycle.yaml",
+        "title": "Trap storage lifecycle - capture, cool, store\n"
+        "ideal Penning trap + Surko-cooling stand-in (parameterized) + storage lifetime | "
+        "relativistic Boris solver | trap diagnostic only",
+        "coloring": "ledger",
+        "trail_window": 530,  # ~one axial period: the cooling shrink stays visible
+        "render": {"box_aspect": (2.6, 1.0, 1.0), "azim_start": -70, "azim_sweep": 45, "elev": 16},
+    },
 }
 
 DIRECT_DEMOS = ("magnetic_mirror_3d.webp", "magnetic_control_sweep_3d.webp", "batched_sweep_3d.webp")
@@ -210,8 +219,13 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
                 "growth_frames": 10.0,
             }
 
+    trail_window = (config or {}).get("trail_window")
+
     def draw(axes, index, count):
         reveal = 2 + int(round((total - 2) * index / max(count - 1, 1)))
+        # sliding trail window: long multi-period runs (traps) saturate
+        # into a hairball if every past snapshot stays drawn
+        start = max(0, reveal - trail_window) if trail_window else 0
         if annotate == "target":
             mpl3d.draw_block(axes, -0.12 * z_span, 0.0, 1.1 * beam_extent)
             mpl3d.draw_beam_arrow(axes, -0.45 * z_span, -0.13 * z_span)
@@ -222,7 +236,7 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
             mpl3d.draw_block(axes, -0.0275, 0.0275, 0.014)
             mpl3d.draw_beam_arrow(axes, -0.07, -0.032)
         mpl3d.draw_scene_elements(axes, scene, run_result, plate_display_radius=1.5 * beam_extent)
-        mpl3d.draw_trajectories(axes, combined, reveal, colors)
+        mpl3d.draw_trajectories(axes, combined[start:], reveal - start, colors)
         mpl3d.draw_points(axes, combined[reveal - 1], colors)
         if photon_bursts is not None:
             # invert reveal(frame) = 2 + round((total-2) * frame / (count-1))
