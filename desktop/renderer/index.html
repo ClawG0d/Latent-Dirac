@@ -2,12 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <!-- self-contained: no remote resources. The 3D HTML is generated locally
-         with plotly inlined and shown in a sandboxed srcdoc iframe. The frame
-         carries sandbox="allow-scripts" (no allow-same-origin), so it gets an
-         opaque origin, does NOT inherit this strict parent CSP, and runs the
-         trusted local plotly inline scripts in isolation. connect-src 'none'
-         still blocks any exfiltration from this page. -->
+    <!-- self-contained. The 3D HTML is generated locally with plotly inlined
+         and shown in a sandbox="allow-scripts" srcdoc iframe: an opaque origin
+         that does not inherit this strict CSP, so the trusted local plotly
+         scripts run in isolation. connect-src 'none' blocks exfiltration. -->
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-src 'self'; connect-src 'none'"
@@ -17,53 +15,80 @@
   </head>
   <body>
     <div class="app">
-      <section class="chat" aria-label="Chat">
-        <header class="chat__head">
-          <div class="chat__titles">
-            <span class="chat__title">Latent Dirac</span>
-            <span class="chat__sub">describe a beamline; it runs locally</span>
-          </div>
-          <div class="toolbar">
-            <button id="new-scene" type="button" class="toolbar__btn" title="Start a fresh scene">
-              New
-            </button>
-            <button id="save-scene" type="button" class="toolbar__btn" title="Save the current scene">
-              Save
-            </button>
-            <button id="load-scene" type="button" class="toolbar__btn" title="Load a scene file">
-              Load
-            </button>
-            <button id="key-btn" type="button" class="toolbar__btn" title="Set your Anthropic API key">
-              Key
-            </button>
-          </div>
-        </header>
-        <div id="log" class="log" aria-live="polite"></div>
-        <div id="status" class="status" hidden></div>
-        <form id="form" class="composer">
-          <textarea
-            id="prompt"
-            class="composer__input"
-            rows="2"
-            placeholder="a positron pair through a solenoid into an aperture"
-            autofocus
-          ></textarea>
-          <button id="send" type="submit" class="composer__send">Run</button>
-        </form>
-      </section>
-      <section class="viz" aria-label="3D view">
-        <div id="placeholder" class="viz__placeholder">
-          The 3D view of your simulation will appear here.
+      <div class="titlebar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <span>Latent Dirac</span>
+      </div>
+
+      <div class="body">
+        <div class="col col-left">
+          <section class="card viewport" aria-label="3D view">
+            <header class="card__head">
+              <span class="card__lbl">Scene</span>
+              <span id="view-meta" class="card__meta"></span>
+            </header>
+            <div class="card__body">
+              <div id="placeholder" class="viz__placeholder">
+                Describe a beamline below — it runs locally and appears here in 3D.
+              </div>
+              <iframe
+                id="frame"
+                class="viz__frame"
+                title="3D simulation"
+                sandbox="allow-scripts"
+                hidden
+              ></iframe>
+            </div>
+          </section>
+
+          <section class="card chat" aria-label="Chat">
+            <header class="card__head">
+              <span class="card__lbl">Assistant</span>
+              <div class="tools">
+                <button id="new-scene" type="button" title="Start a fresh scene">New</button>
+                <button id="save-scene" type="button" title="Save the current scene">Save</button>
+                <button id="load-scene" type="button" title="Load a scene file">Load</button>
+                <button id="key-btn" type="button" title="Set your Anthropic API key">Key</button>
+              </div>
+            </header>
+            <div class="card__body chat__body">
+              <div id="log" class="clog" aria-live="polite"></div>
+              <div id="status" class="status" hidden></div>
+              <form id="form" class="composer">
+                <textarea
+                  id="prompt"
+                  class="field"
+                  rows="2"
+                  placeholder="a positron pair through a solenoid into an aperture"
+                  autofocus
+                ></textarea>
+                <button id="send" type="submit" class="run">Run</button>
+              </form>
+            </div>
+          </section>
         </div>
-        <iframe
-          id="frame"
-          class="viz__frame"
-          title="3D simulation"
-          sandbox="allow-scripts"
-          hidden
-        ></iframe>
-      </section>
+
+        <div class="col col-right">
+          <section class="card physics" aria-label="Physics">
+            <header class="card__head">
+              <span class="card__lbl">Physics</span>
+              <span id="phys-live" class="card__meta"></span>
+            </header>
+            <div class="card__body"><div id="stats" class="stats"></div></div>
+          </section>
+
+          <section class="card tools-card" aria-label="Tools">
+            <header class="card__head tabbar">
+              <button class="tab active" type="button" data-tab="ledger">Ledger</button>
+              <button class="tab" type="button" data-tab="inspector">Inspector</button>
+              <button class="tab" type="button" data-tab="sweep">Sweep</button>
+            </header>
+            <div class="card__body"><div id="tabbody" class="tabbody"></div></div>
+          </section>
+        </div>
+      </div>
     </div>
+    <script src="panels.js"></script>
     <script src="renderer.js"></script>
   </body>
 </html>

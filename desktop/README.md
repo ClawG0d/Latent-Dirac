@@ -1,10 +1,12 @@
 # Latent Dirac desktop client
 
-A cross-platform (macOS + Windows) Electron app: describe a simulation in
-natural language, and it generates a scene, runs it **locally**, and shows the
-result as interactive 3D. **Bring your own key (BYOK):** you enter your own
-Anthropic API key; it is held only in the main process and sent only to
-Anthropic. The simulation and your scenes/results never leave the machine.
+A cross-platform (macOS + Windows) Electron app: a Unity-style four-quadrant
+dashboard — a large 3D viewport, live physics, an AI chat, and a switchable
+tools panel (Ledger / Inspector / Sweep). Describe a simulation in natural
+language; it generates a scene, runs it **locally**, and shows it in 3D.
+**Bring your own key (BYOK):** you enter your own Anthropic API key; it is held
+only in the main process and sent only to Anthropic. The simulation and your
+scenes/results never leave the machine.
 
 ```
 prompt ─▶ Anthropic (your key, in main) ─▶ scene JSON ─▶ local engine /validate ─(422)─▶ retry
@@ -25,7 +27,8 @@ prompt ─▶ Anthropic (your key, in main) ─▶ scene JSON ─▶ local engin
 | `src/config.js` | model + retry count + engine launch spec (env-overridable) |
 | `main.js` | Electron main: window, sidecar lifecycle, the BYOK key store (encrypted via `safeStorage`), `run-prompt` / `run-scene` / `save-scene` / `open-scene` / `set-api-key` / `clear-api-key` / `key-status` IPC |
 | `preload.js` | `contextBridge` exposing `runPrompt` / `runScene` / `saveScene` / `openScene` / `setApiKey` / `clearApiKey` / `keyStatus` / `onStatus` — no Node, no key, in the page |
-| `renderer/` | chat panel + sandboxed 3D `<iframe>` (offline plotly via `srcdoc`) |
+| `renderer/panels.js` | pure transforms feeding the panels (physics summary, ledger rows, scene elements, sweepable params) — UMD, unit-tested |
+| `renderer/` | the four-quadrant dashboard: 3D viewport (offline plotly via a sandboxed `srcdoc` iframe), live physics, chat, and the Ledger/Inspector/Sweep tabs |
 | `test/` | `node --test` over the logic modules, with injected `spawn`/`fetch` |
 
 The logic that carries risk (engine lifecycle, the retry loop) lives in `src/`
