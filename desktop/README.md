@@ -31,6 +31,7 @@ no HTTP, no port; it talks only to the app over pipes.
 | `main.js` | Electron main: window, sidecar lifecycle, the BYOK key store (encrypted via `safeStorage`), `run-prompt` / `run-scene` / `save-scene` / `open-scene` / `set-api-key` / `clear-api-key` / `key-status` IPC |
 | `preload.js` | `contextBridge` exposing `runPrompt` / `runScene` / `saveScene` / `openScene` / `setApiKey` / `clearApiKey` / `keyStatus` / `onStatus` — no Node, no key, in the page |
 | `renderer/panels.js` | pure transforms feeding the panels (physics summary, ledger rows, scene elements, sweepable params) — UMD, unit-tested |
+| `renderer/splitters.js` | draggable dock gutters — resize any pane by dragging; sizes persist (UMD; size math unit-tested) |
 | `renderer/` | the four-quadrant dashboard: 3D viewport (offline plotly via a sandboxed `srcdoc` iframe), live physics, chat, and the Ledger/Inspector/Sweep tabs |
 | `test/` | `node --test` over the logic modules, with injected `spawn`/`fetch` |
 

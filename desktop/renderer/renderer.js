@@ -459,6 +459,7 @@ function welcome() {
 }
 
 // init
+if (window.Splitters) window.Splitters.initSplitters();
 window.api.onStatus(showStatus);
 renderPhysics();
 renderTools();

@@ -41,6 +41,8 @@
             </div>
           </section>
 
+          <div class="splitter splitter--h" data-resize="viewport" data-axis="y" title="Drag to resize"></div>
+
           <section class="card chat" aria-label="Chat">
             <header class="card__head">
               <span class="card__lbl">Assistant</span>
@@ -68,6 +70,8 @@
           </section>
         </div>
 
+        <div class="splitter splitter--v" data-resize="col-left" data-axis="x" title="Drag to resize"></div>
+
         <div class="col col-right">
           <section class="card physics" aria-label="Physics">
             <header class="card__head">
@@ -76,6 +80,8 @@
             </header>
             <div class="card__body"><div id="stats" class="stats"></div></div>
           </section>
+
+          <div class="splitter splitter--h" data-resize="physics" data-axis="y" title="Drag to resize"></div>
 
           <section class="card tools-card" aria-label="Tools">
             <header class="card__head tabbar">
@@ -89,6 +95,7 @@
       </div>
     </div>
     <script src="panels.js"></script>
+    <script src="splitters.js"></script>
     <script src="renderer.js"></script>
   </body>
 </html>

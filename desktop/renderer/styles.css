@@ -30,11 +30,24 @@ body { background: var(--bg); color: var(--ink); font-family: var(--font-sans); 
 .dots i:nth-child(3) { background: #28c840; }
 .titlebar span { font-size: 12px; color: var(--muted); margin: 0 auto; letter-spacing: .04em; }
 
-/* Unity-style dock: big viewport left (~70%), narrow right rail */
-.body { display: grid; grid-template-columns: 70% 1fr; gap: 8px; padding: 8px; flex: 1; min-height: 0; }
-.col { display: flex; flex-direction: column; gap: 8px; min-height: 0; min-width: 0; }
-.col-left .viewport { flex: 2.7; } .col-left .chat { flex: 1; }
-.col-right .physics { flex: 1; } .col-right .tools-card { flex: 1.75; }
+/* Unity-style dock: big viewport left (~70%), narrow right rail. Panes size
+   via flex-basis so the draggable splitters can override them (splitters.js). */
+.body { display: flex; flex-direction: row; padding: 8px; flex: 1; min-height: 0; }
+.col { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.col-left { flex: 0 0 70%; } .col-right { flex: 1 1 0; }
+.col-left .viewport { flex: 0 0 64%; } .col-left .chat { flex: 1 1 0; }
+.col-right .physics { flex: 0 0 34%; } .col-right .tools-card { flex: 1 1 0; }
+
+/* draggable gutters between panes (they also supply the spacing) */
+.splitter { flex: 0 0 8px; align-self: stretch; position: relative; z-index: 2; }
+.splitter--v { cursor: col-resize; }
+.splitter--h { cursor: row-resize; }
+.splitter::before { content: ""; position: absolute; background: var(--line); border-radius: 1px; }
+.splitter--v::before { top: 6px; bottom: 6px; left: 3px; width: 2px; }
+.splitter--h::before { left: 6px; right: 6px; top: 3px; height: 2px; }
+.splitter:hover::before, .splitter.dragging::before { background: var(--accent); }
+body.resizing { cursor: inherit; user-select: none; }
+body.resizing .viz__frame { pointer-events: none; } /* don't let the 3D iframe swallow the drag */
 
 .card {
   background: var(--card); border: 1px solid var(--line);
