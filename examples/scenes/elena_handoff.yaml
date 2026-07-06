@@ -1,0 +1,24 @@
+schema_version: 1
+name: elena-handoff
+seed: 2026
+source:
+  # parameterized stand-in for the ELENA extraction: 100 keV antiprotons
+  # (13.7 MeV/c), narrow spread, small forward divergence
+  type: antiproton_surrogate
+  label: elena-bunch
+  params: { primary_proton_count: 3.0e+7, yield_pbar_per_primary_in_acceptance: 1.0,
+            central_momentum_GeV_c: 0.0137, momentum_spread_fraction: 5.0e-4,
+            angular_rms_rad: 0.005, source_sigma_m: 0.0005, bunch_length_s: 1.0e-12,
+            macro_particles: 96 }
+solver: { type: relativistic_boris, dt_s: 6.0e-10, steps: 1400 }
+elements:
+  # 2 um aluminium degrader, tracked by the vendored Geant4 engine
+  # (transformer binary injected via LATENT_DIRAC_G4_TRANSFORMER)
+  - { type: matter_slab, label: degrader-foil, material: G4_Al, thickness_mm: 0.002,
+      entry_z_m: 0.003 }
+  # gate-off keV drift from the foil, then the whole trap field (well +
+  # axial B) switches on around the bunch — idealized instantaneous
+  # capture in the spirit of the real catching sequence
+  - { type: penning_trap, label: catch-trap, v0_volt: -10000.0, d_m: 0.012, b_tesla: 3.0,
+      center_z_m: 0.010, t_on_s: 6.0e-9, t_off_s: 1.0 }
+  - { type: monitor, label: end-station }

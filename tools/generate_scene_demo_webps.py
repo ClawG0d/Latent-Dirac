@@ -11,6 +11,7 @@ Plotly HTML via `render_scene_3d` when Plotly is available.
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -109,6 +110,17 @@ SCENE_DEMOS = {
         "title": "Antiproton loss ledger - trajectory color = killing element\n"
         "uniform field | relativistic Boris solver | acceptance ledger diagnostic only",
         "coloring": "ledger",
+    },
+    "elena_handoff_3d.webp": {
+        "scene": "elena_handoff.yaml",
+        "title": "ELENA handoff - engine-backed degrader foil into a gated trap catch\n"
+        "vanilla Geant4 v11.4.2 FTFP_BERT 2 um Al foil | gated ideal Penning trap | "
+        "catch diagnostic only",
+        "coloring": "fate",
+        # the engine transformer must be reachable to run this scene
+        "requires_engine": True,
+        "trail_window": 130,  # ~one axial bounce period at dt = 0.6 ns
+        "render": {"box_aspect": (2.6, 1.0, 1.0), "azim_start": -72, "azim_sweep": 40, "elev": 14},
     },
     "trap_storage_lifecycle_3d.webp": {
         "scene": "trap_storage_lifecycle.yaml",
@@ -425,6 +437,12 @@ def generate_scene_demo_webps(
     outputs: dict[str, Path] = {}
 
     for file_name, config in SCENE_DEMOS.items():
+        if config.get("requires_engine") and not os.environ.get("LATENT_DIRAC_G4_TRANSFORMER"):
+            print(
+                f"skipping {file_name}: set LATENT_DIRAC_G4_TRANSFORMER to regenerate "
+                "engine-backed demos (the committed asset stays in place)"
+            )
+            continue
         frames = _scene_demo_frames(
             config["scene"], config["title"], config["coloring"], frame_count, config=config
         )

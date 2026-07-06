@@ -3,18 +3,28 @@ from pathlib import Path
 import pytest
 
 
-def test_scene_demo_generator_creates_animated_webp_files(tmp_path):
+def test_scene_demo_generator_creates_animated_webp_files(tmp_path, monkeypatch):
     image_module = pytest.importorskip("PIL.Image")
     pytest.importorskip("matplotlib")
     pytest.importorskip("jax")  # the batched sweep demo runs on the JAX backend
-    from tools.generate_scene_demo_webps import DEMO_WEBP_FILES, generate_scene_demo_webps
+    from tools.generate_scene_demo_webps import (
+        DEMO_WEBP_FILES,
+        SCENE_DEMOS,
+        generate_scene_demo_webps,
+    )
 
     assert "antiproton_ledger_3d.webp" in DEMO_WEBP_FILES
     assert "magnetic_mirror_3d.webp" in DEMO_WEBP_FILES
 
+    # without the engine env var, engine-gated demos are skipped (their
+    # committed assets stay in place) and everything else still renders
+    monkeypatch.delenv("LATENT_DIRAC_G4_TRANSFORMER", raising=False)
     generated = generate_scene_demo_webps(tmp_path, frame_count=2, write_html=False)
 
     for name in DEMO_WEBP_FILES:
+        if SCENE_DEMOS.get(name, {}).get("requires_engine"):
+            assert name not in generated
+            continue
         path = generated[name]
         assert path == tmp_path / name
         assert path.stat().st_size > 0

@@ -5,6 +5,19 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the ELENA handoff demo (demo #15,
+  `examples/scenes/elena_handoff.yaml`, factory-chain 3b): a
+  parameterized 100 keV ELENA-extraction bunch through a 2 µm Al
+  degrader foil tracked by the vendored vanilla Geant4 engine
+  (`matter_slab`, FTFP_BERT, provenance four-tuple in the report), then
+  a gated ideal Penning trap catch (−10 kV, 3 T) — 53/96 annihilate in
+  the foil, 28 caught at 0.1–2.8 keV, the rest oscillate wide in the
+  ideal global well. Engine-gated regeneration: the WebP generator
+  skips `requires_engine` demos when `LATENT_DIRAC_G4_TRANSFORMER` is
+  unset (committed assets stay); CI exercises the wiring through the
+  stub transformer. Design record:
+  `docs/superpowers/specs/2026-07-06-elena-handoff-demo-design.md`.
+
 - Added the trap storage lifecycle demo (demo #14,
   `examples/scenes/trap_storage_lifecycle.yaml`): an isotropic eV-scale
   positron bunch in the ideal Penning trap, transport windows

@@ -86,7 +86,7 @@ report.
 
 ## Demos
 
-Fourteen 3D demos, each rendered from real simulation output. Most are defined
+Fifteen 3D demos, each rendered from real simulation output. Most are defined
 by a declarative YAML scene under [examples/scenes/](examples/scenes/) —
 the scene file *is* the demo. Interactive Plotly versions
 (`assets/demos/*_3d.html`) sit next to each scene-driven animation.
@@ -580,6 +580,62 @@ real accumulator sequence — leaving the positrons bouncing in the well.
 ```bash
 .venv/bin/latent-dirac run examples/scenes/decel_capture.yaml
 ```
+
+### Chain 3b: The ELENA Handoff (Engine-Backed Degrader Catch)
+
+The downstream half of the AD/ELENA story, engine-anchored: a
+parameterized ELENA-extraction bunch (100 keV antiprotons, 13.7 MeV/c)
+hits a 2 µm aluminium degrader foil — energy loss, scattering, and
+in-foil annihilation computed by the vendored vanilla Geant4 engine via
+the `matter_slab` element — and the keV survivors drift into an ideal
+Penning trap whose whole field (well and axial B) switches on around
+the bunch, the same idealized instantaneous catch the deceleration demo
+established. Of 96 macro-antiprotons, 53 annihilate in the foil
+(ledgered by the engine stage), 28 are caught cold (0.1–2.8 keV) inside
+the −10 kV well, and the rest arrive too fast and oscillate at large
+amplitude in the ideal global well (finite electrodes are field-map
+territory). The in-ring deceleration itself — RF ramp, electron
+cooling — is not modeled and stays on the not-implemented list.
+Regenerating this demo needs the engine transformer
+(`LATENT_DIRAC_G4_TRANSFORMER`); without it the generator skips it and
+the committed asset stays.
+
+![Animated 3D ELENA handoff demo](assets/demos/elena_handoff_3d.webp)
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/elena_handoff.yaml
+```
+
+<details>
+<summary>Text report (excerpt)</summary>
+
+```text
+Latent Dirac scene report: elena-handoff
+
+Stage accounting:
+- degrader-foil: input=3e+07, output=1.34375e+07, transmission=0.448, losses=1.65625e+07
+- catch-trap: input=1.34375e+07, output=1.34375e+07, transmission=1, losses=0
+- end-station: input=1.34375e+07, output=1.34375e+07, transmission=1, losses=0
+
+Accepted state:
+- weighted count: 1.34375e+07
+- mean kinetic energy: 0.00228277 MeV
+
+Matter engine provenance (four-tuple):
+- material: G4_Al, thickness: 0.002 mm
+- geant4 version: $Name: geant4-11-04-patch-02 [MT]$
+- physics list: FTFP_BERT
+- datasets: G4NDL4.7.1,G4EMLOW8.8,PhotonEvaporation6.1.2,RadioactiveDecay6.1.2,G4PARTICLEXS4.2,G4PII1.3,RealSurface2.2,G4SAIDDATA2.0,G4ABLA3.3,G4INCL1.3,G4ENSDFSTATE3.0,G4CHANNELING2.0
+- patches: none
+
+Magnetic field status:
+- field model: ideal Penning trap (quadrupole well + axial B)
+- well parameter V0: -10000 V, d: 0.012 m, axial B: 3 T
+- status: ideal global field (no hard edge)
+- gate: active for t in [6e-09 s, 1 s) (ideal instantaneous switching)
+```
+
+</details>
 
 ### Chain 4: The Annihilation Endpoint
 
