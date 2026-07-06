@@ -28,26 +28,31 @@ Latent Dirac 是反物质工厂（正电子/反质子设施）的开放仿真平
 - **轨道 C**：JAX 校准环（Geant4 离线产出产额表/训练数据 →
   table_based / externally calibrated 源）
 
-## 二、当前仓库状态（2026-07-05 推送后更新）
+## 二、当前仓库状态（2026-07-06 更新）
 
-master 已全部推送到远端，CI 绿。引擎轨道 M0 的四个提交
-（早先 Windows 快照里的哈希已被最终推送版本取代）：
+master 全部推送，CI 绿，241 个测试。已完成的大块（详见 CHANGELOG 与
+`git log`，各自的设计记录在 docs/superpowers/specs/ 同日 spec 里）：
 
-| 提交 | 内容 |
-|---|---|
-| `3e84c0cf` `vendor:` | Geant4 v11.4.2 整树进仓（`.gitattributes -text` 保证字节级等同上游） |
-| `84edaf2b` `chore:` | 工具链排除（ruff/MANIFEST）、NOTICE 归属、README vendored 小节、AGENTS/CLAUDE 规则 |
-| `0fe84fab` `docs!:` | M0 定位改写：安全范围四处同步重写 + 守门测试 + 引擎 spec + roadmap |
-| `203d2c6b` `docs:` | 本交接文档 |
-| `bb01614b` `feat:` | 引擎轨道首批交付（M1'-lite + M3-lite）：`engine/yieldgen` 产额表生成器 + `antiproton_yield_table` 源 + Chain 2b demo |
+- **引擎轨道 M0 + M1'-lite + M3-lite**：Geant4 v11.4.2 整树 vendored
+  （与上游 tag 字节级比对一致；唯一已知偏差：上游 `CHANGELOG` symlink
+  在仓库里是普通文件——因保留 Windows 原生 checkout **有意维持，
+  勿"修复"**，见引擎 spec 附录）；`engine/README.md` 构建配方 +
+  `engine/yieldgen` 产额表 + `antiproton_yield_table` 源 + Chain 2b demo
+- **solver 动物园定位**：JAX/NumPy 是基底，CERN 工具链是引擎组件；
+  README 已重构为 Genesis 风格四层架构
+- **闭环 v1 全部完成（勿重做）**：openPMD 输出（`io/openpmd_io.py`，
+  `[openpmd]` extra）→ uproot ROOT I/O（`io/root_io.py`，`[root]`，
+  显式写 TTree 非 RNTuple）→ Xsuite adapter
+  （`adapters/xsuite/adapter.py`，`[xsuite]`，placeholder 守门测试已
+  翻转为 adapter-status 测试）→ mean-field 空间电荷
+  （`fields/space_charge.py`，`space_charge: uniform_sphere`，NumPy
+  管线专属，JAX 侧显式拒绝）
+- **安全范围钉死降为三处**（所有者决定）：`EXPECTED_EXCLUSIONS` 元组 +
+  `docs/safety_scope.md` + `AGENTS.md`；README 只留链接，
+  **不要把整节加回**
 
-推送后在 macOS 侧完成的独立复核：188 个测试全绿 + ruff 干净 + sdist
-实测不含 vendored 树（85 KB / 133 个文件）+ 与上游 v11.4.2 tag 全量
-字节比对一致。唯一已知偏差：上游 `CHANGELOG` 是指向 `ReleaseNotes`
-的 symlink，仓库里为内容是链接目标路径（`ReleaseNotes`）的普通文件
-（zip 归档语义）——因保留
-Windows 原生 checkout 而**有意维持，勿"修复"**（详见引擎 spec 附录）。
-接手后第一件事仍是 `git status` + `git log --oneline -5` 核对现状。
+接手后第一件事仍是 `git status` + `git log --oneline -10` 核对现状；
+多会话并行开发是常态（昨天 rebase 调和了五次）——**push 前必 fetch**。
 
 ## 三、必读文件（按优先级）
 
@@ -131,15 +136,9 @@ Load-bearing 的设计决策（改代码前必须懂）：
    不要放 `/mnt/c`——vendored 树 17k 文件跨 9P 慢一个数量级；
    WSL 与 Windows 原生各自独立 clone，不要共用一个工作树。
 
-## 七、下一步工作（按 roadmap 顺序）
+## 七、下一步工作（按 roadmap 顺序；闭环 v1 已完成，见 §二）
 
-- **闭环 v1（Python 侧，最优先）**：openPMD 输出（搁置的 2e）→
-  uproot ROOT I/O → Xsuite adapter（第一个变真的 adapter：
-  `ParticleState` ↔ `xtrack.Particles` 往返 + 减速环式验证案例，
-  **同一变更内**翻转 `test_only_placeholder_adapters_are_present`）→
-  自研 mean-field 空间电荷（新物理：保真层级 + 适用范围显式声明）。
-  骨架见 solver 动物园 spec。
-- **M1' 引擎构建配方**（与闭环 v1 并行）：首个配方已交付
+- **M1' 引擎构建配方（续）**：首个配方已交付
   （`engine/README.md`：WSL/Linux 最小物理构建，不链
   visualization/UI，数据集构建期获取）。剩余：容器化 CI
   （放 Python 矩阵之外）与按物理列表裁剪数据集的配方变体。
@@ -153,9 +152,16 @@ Load-bearing 的设计决策（改代码前必须懂）：
 - **M4 伴生加速库**：根目录 `engine/`（一等公民 C++），经
   fast-sim 挂点接入，EM 域先行；性能数字必须带 vs 香草 Geant4 的
   开放基准。
-- 其余 Python 侧方向（排在闭环 v1 与 GPU 车道之后）：交互式查看器、
+- **GPU 车道**（本机 5070 Ti 正是为它准备的）：WSL2 装
+  `jax[cuda12]`（Blackwell 需较新 CUDA 12.8+/jaxlib，以官方支持矩阵
+  为准），先做 float32 GPU 后端对 float64 CPU 参考的容差分层校验，
+  再做诚实 benchmark 套件。性能数字标签必须打全：GPU 型号 + WSL2 +
+  CUDA/驱动版本 + 积分器/步长/粒子数/batch/保真层级。
+- 其余 Python 侧方向（排在 GPU 车道之后）：交互式查看器、
   JAX 后端场图支持、平滑有限长螺线管场模型（demo 硬边场的改进，
-  设计讨论已有，未立项）。
+  设计讨论已有，未立项）；物理填充方向：残余气体湮灭寿命模型、
+  降能片物理（走 M3 产额表路线）、Surko 阱 buffer-gas 碰撞
+  （需截面数据研究）。
 
 ## 八、开发环境与命令
 
@@ -166,7 +172,7 @@ checkout（独立 clone）。
 ```bash
 # macOS / WSL2（Linux 路径习惯）
 python -m venv .venv
-.venv/bin/python -m pip install -e ".[dev,viz,jax]"
+.venv/bin/python -m pip install -e ".[dev,viz,jax,openpmd,root,xsuite]"
 .venv/bin/python -m pytest -q
 .venv/bin/python -m ruff check .
 .venv/bin/latent-dirac run examples/scenes/hello_beamline.yaml
