@@ -17,7 +17,7 @@
   "build": {
     "appId": "io.ora.latentdirac",
     "productName": "Latent Dirac",
-    "icon": "build/icon.png",
+    "icon": "appicon.png",
     "files": ["main.js", "preload.js", "src/**/*", "renderer/**/*"],
     "extraResources": [
       {
