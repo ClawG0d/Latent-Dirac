@@ -122,6 +122,21 @@ def _solenoid_field(jnp, positions, time_s, params):
     return jnp.zeros_like(positions), jnp.stack([zeros, zeros, b_z], axis=1)
 
 
+def _thin_sheet_solenoid_field(jnp, positions, time_s, params):
+    # same algebra as fields.solenoid.ThinSheetSolenoidField: exactly
+    # divergence-free first-order pair B_z = b(z), B_r = -(r/2) b'(z)
+    r_sq = params["radius_m"] * params["radius_m"]
+    zeta_plus = positions[:, 2] - params["center_z_m"] + 0.5 * params["length_m"]
+    zeta_minus = positions[:, 2] - params["center_z_m"] - 0.5 * params["length_m"]
+    root_plus = jnp.sqrt(zeta_plus * zeta_plus + r_sq)
+    root_minus = jnp.sqrt(zeta_minus * zeta_minus + r_sq)
+    b = 0.5 * params["b_tesla"] * (zeta_plus / root_plus - zeta_minus / root_minus)
+    db_dz = 0.5 * params["b_tesla"] * r_sq * (root_plus**-3 - root_minus**-3)
+    b_x = -0.5 * positions[:, 0] * db_dz
+    b_y = -0.5 * positions[:, 1] * db_dz
+    return jnp.zeros_like(positions), jnp.stack([b_x, b_y, b], axis=1)
+
+
 def _dipole_field(jnp, positions, time_s, params):
     inside = jnp.abs(positions[:, 2] - params["center_z_m"]) <= 0.5 * params["length_m"]
     b_field = inside[:, None] * jnp.broadcast_to(params["B_vector_t"], positions.shape)
@@ -165,6 +180,18 @@ _FIELD_FNS = {
 }
 
 
+def _field_fn_for(element):
+    """Field function for an element; static profile dispatch for solenoids.
+
+    Shared with the differentiable-objective mirror so profile dispatch
+    lives in exactly one place.
+    """
+
+    if element.type == "solenoid" and element.profile == "thin_sheet":
+        return _thin_sheet_solenoid_field
+    return _FIELD_FNS[element.type]
+
+
 def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float, record: bool = False):
     # NOTE: backends/differentiable.py mirrors this element loop with soft
     # acceptance; when adding an element type here, extend the mirror too
@@ -178,7 +205,7 @@ def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float, rec
             element_params = params[index]
             if element.type in _TRANSPORT_TYPES:
                 steps = element.steps if element.steps is not None else scene.solver.steps
-                field_fn = _FIELD_FNS[element.type]
+                field_fn = _field_fn_for(element)
 
                 def step_fn(carry, _, field_fn=field_fn, element_params=element_params, alive=alive):
                     pos, u_now, t_now = carry

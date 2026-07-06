@@ -37,9 +37,9 @@ import numpy as np
 
 from latent_dirac.backends.evaluator import parse_variables
 from latent_dirac.backends.jax_scene import (
-    _FIELD_FNS,
     _TRANSPORT_TYPES,
     _base_params,
+    _field_fn_for,
     _import_jax,
 )
 from latent_dirac.core.constants import ELEMENTARY_CHARGE_C, SPEED_OF_LIGHT_M_PER_S
@@ -115,7 +115,7 @@ class DifferentiableObjective:
                 element_params = params[index]
                 if element.type in _TRANSPORT_TYPES:
                     steps = element.steps if element.steps is not None else scene.solver.steps
-                    field_fn = _FIELD_FNS[element.type]
+                    field_fn = _field_fn_for(element)
 
                     def step_fn(carry, _, field_fn=field_fn, element_params=element_params):
                         pos, u_now, t_now = carry

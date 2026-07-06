@@ -14,7 +14,7 @@ from latent_dirac.fields.composite import CompositeField
 from latent_dirac.fields.dipole import DipoleField
 from latent_dirac.fields.penning_trap import PenningTrapField
 from latent_dirac.fields.quadrupole import QuadrupoleField
-from latent_dirac.fields.solenoid import SolenoidField
+from latent_dirac.fields.solenoid import SolenoidField, ThinSheetSolenoidField
 from latent_dirac.fields.space_charge import fit_uniform_sphere
 from latent_dirac.fields.time_gated import TimeGatedField
 from latent_dirac.fields.uniform import UniformField
@@ -143,7 +143,8 @@ def _base_field_for(element) -> Field:
             E_vector_v_m=np.asarray(element.E_vector_v_m, dtype=float),
         )
     if element.type == "solenoid":
-        return SolenoidField(
+        solenoid_class = ThinSheetSolenoidField if element.profile == "thin_sheet" else SolenoidField
+        return solenoid_class(
             b_tesla=element.b_tesla,
             radius_m=element.radius_m,
             length_m=element.length_m,

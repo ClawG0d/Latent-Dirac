@@ -33,6 +33,12 @@ _BOX_HALF_WIDTH_M = 0.05
 _CIRCLE_POINTS = 41
 
 
+def _fidelity_label(element) -> str:
+    if element.type == "solenoid" and element.profile == "thin_sheet":
+        return "fidelity: parameterized (thin-sheet profile, first-order fringe)"
+    return FIDELITY_LABELS[element.type]
+
+
 def render_scene_3d(scene: Scene, run_result: SceneRunResult, max_particles: int = 64):
     """Render scene elements, trajectories, and final states as a 3D figure."""
 
@@ -51,7 +57,7 @@ def render_scene_3d(scene: Scene, run_result: SceneRunResult, max_particles: int
             _wire_trace(
                 go,
                 name=name,
-                hovertext=f"{name}<br>{FIDELITY_LABELS[element.type]}",
+                hovertext=f"{name}<br>{_fidelity_label(element)}",
                 segments=segments,
             )
         )

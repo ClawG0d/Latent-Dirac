@@ -15,6 +15,19 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
   spec review. Design record:
   `docs/superpowers/specs/2026-07-06-buffer-gas-collisions-design.md`.
 
+- Added the `thin_sheet` solenoid profile (`profile: hard_edge |
+  thin_sheet` on the `solenoid` element, default unchanged): a smooth
+  finite-length thin-current-sheet field with a first-order radial
+  fringe — exactly divergence-free (curl of `A_phi = r b(z)/2`), fringe
+  funneling and Busch Larmor rotation validated via canonical angular
+  momentum conservation. `b_tesla` is the sheet strength B0, keeping
+  the integrated on-axis strength `B0 * length_m` equal to the
+  hard-edge element. Runs on the NumPy pipeline, the batched JAX
+  backend, and the differentiable objective; all four numeric
+  parameters remain sweepable. Fidelity tier: parameterized. Design
+  record:
+  `docs/superpowers/specs/2026-07-06-thin-sheet-solenoid-profile-design.md`.
+
 - Added the `xsuite_lattice` scene element: track the cloud through an
   `xtrack.Line` from within a scene via the Xsuite adapter. The Line is a
   data artifact referenced by `line_path` (resolved relative to the scene

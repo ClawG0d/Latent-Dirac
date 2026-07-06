@@ -81,11 +81,21 @@ class UniformFieldElement(ElementBase):
 
 
 class SolenoidElement(ElementBase):
+    """Solenoid with a selectable axial profile.
+
+    `hard_edge` (default): uniform Bz inside the cylinder, zero outside.
+    `thin_sheet`: smooth finite-length thin-current-sheet profile with a
+    first-order radial fringe (exactly divergence-free); `b_tesla` is
+    then the sheet strength B0, preserving the integrated on-axis
+    strength B0 * length_m of the hard-edge element.
+    """
+
     type: Literal["solenoid"]
     b_tesla: float
     radius_m: float
     length_m: float
     center_z_m: float = 0.0
+    profile: Literal["hard_edge", "thin_sheet"] = "hard_edge"
     steps: int | None = Field(default=None, ge=1)
 
 

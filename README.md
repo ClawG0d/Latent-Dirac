@@ -681,6 +681,10 @@ Implemented:
 - surrogate antiproton source model
 - uniform, solenoid, dipole, quadrupole, composite, and ideal Penning
   trap field models (analytic eigenfrequencies exposed and validated)
+- the `thin_sheet` solenoid profile: a smooth finite-length
+  thin-current-sheet field with a first-order radial fringe (exactly
+  divergence-free; Busch rotation validated via canonical angular
+  momentum), selectable per element and available on both backends
 - table-based field maps with trilinear interpolation and COMSOL
   regular-grid CSV import
 - relativistic Boris transport as a pure-function kernel (dimensionless

@@ -66,6 +66,12 @@ elements:
 - Time gating: `uniform_field` and `penning_trap` accept optional
   `t_on_s`/`t_off_s` (set together); the whole element field is active
   only inside the half-open window — idealized instantaneous switching.
+- Solenoid profile: `solenoid` accepts `profile: hard_edge | thin_sheet`
+  (default `hard_edge`, unchanged behavior). `thin_sheet` is the smooth
+  finite-length thin-current-sheet model with a first-order radial
+  fringe (exactly divergence-free); `b_tesla` is then the sheet strength
+  B0, preserving the hard-edge integrated strength `B0 * length_m`.
+  Both profiles run on both backends and stay fully sweepable.
 - Batch convention: every numeric parameter must remain liftable into a
   batch-dimension array. This keeps the schema compatible with the Phase 3
   batched (vmap) execution plan.
