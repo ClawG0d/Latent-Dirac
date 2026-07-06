@@ -19,8 +19,21 @@
     <div class="app">
       <section class="chat" aria-label="Chat">
         <header class="chat__head">
-          <span class="chat__title">Latent Dirac</span>
-          <span class="chat__sub">describe a beamline; it runs locally</span>
+          <div class="chat__titles">
+            <span class="chat__title">Latent Dirac</span>
+            <span class="chat__sub">describe a beamline; it runs locally</span>
+          </div>
+          <div class="toolbar">
+            <button id="new-scene" type="button" class="toolbar__btn" title="Start a fresh scene">
+              New
+            </button>
+            <button id="save-scene" type="button" class="toolbar__btn" title="Save the current scene">
+              Save
+            </button>
+            <button id="load-scene" type="button" class="toolbar__btn" title="Load a scene file">
+              Load
+            </button>
+          </div>
         </header>
         <div id="log" class="log" aria-live="polite"></div>
         <div id="status" class="status" hidden></div>

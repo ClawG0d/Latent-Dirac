@@ -17,10 +17,11 @@ prompt ─▶ hosted AI gateway ─▶ scene JSON ─▶ local engine /validate 
 | Path | Role |
 | --- | --- |
 | `src/sidecar.js` | spawn the local sim engine, read its `PORT`, expose `baseUrl` + `stop()` |
-| `src/orchestrator.js` | the prompt → gateway → validate → run loop (bounded retry) |
+| `src/orchestrator.js` | the prompt → gateway → validate → run loop (bounded retry); `runScene` runs a loaded scene directly; categorized errors |
+| `src/scene_file.js` | serialize / parse a scene for Save & Load |
 | `src/config.js` | gateway URL + retry count + engine launch spec (env-overridable) |
-| `main.js` | Electron main: window, sidecar lifecycle, `run-prompt` IPC |
-| `preload.js` | `contextBridge` exposing `runPrompt` / `onStatus` — no Node in the page |
+| `main.js` | Electron main: window, sidecar lifecycle, `run-prompt` / `run-scene` / `save-scene` / `open-scene` IPC |
+| `preload.js` | `contextBridge` exposing `runPrompt` / `runScene` / `saveScene` / `openScene` / `onStatus` — no Node in the page |
 | `renderer/` | chat panel + sandboxed 3D `<iframe>` (offline plotly via `srcdoc`) |
 | `test/` | `node --test` over the logic modules, with injected `spawn`/`fetch` |
 
@@ -28,6 +29,13 @@ The logic that carries risk (engine lifecycle, the retry loop) lives in `src/`
 and is unit-tested with no network, no Electron, and no Python. `main.js` and
 `preload.js` are thin wiring, verified by launching the app on a machine with a
 display.
+
+Beyond the core chat → run → 3D flow, the UI offers: example-prompt chips to
+start from, **New** (fresh scene), **Save** (write the current scene to a
+`.json` file), and **Load** (open a scene file and run it directly, skipping the
+gateway). Failures are shown with a category-specific hint (AI service
+unreachable, engine not responding, the AI couldn't produce a valid scene, or a
+valid scene that failed to run).
 
 ## Develop
 

@@ -166,6 +166,25 @@ documented rather than pre-applied, since it cannot be verified here.
   scene) happens on the owner's machine with a display — noted in the
   desktop README; not run here.
 
+## Polish increment (2026-07-06)
+
+A follow-up pass on the shell, logic TDD'd, GUI owner-verified:
+
+- **Save / Load a scene.** `src/scene_file.js` (`serializeScene` /
+  `parseSceneFile`, unit-tested) plus main-process `save-scene` / `open-scene`
+  IPC handlers using `dialog` + `fs`. A loaded scene runs through a new
+  `orchestrator.runScene(scene, {...})` that validates then runs it **directly,
+  skipping the gateway** — a loaded scene is authoritative. Scenes persist as
+  pretty-printed JSON (the engine loads JSON as well as YAML).
+- **Example-prompt chips + New scene.** The renderer seeds a few clickable
+  starter prompts and a **New** button that clears `currentScene` and resets the
+  3D panel, so the next prompt starts fresh rather than editing.
+- **Categorized errors.** `orchestrator` errors now carry a `category`
+  (`gateway-unreachable`, `gateway-error`, `engine-unreachable`,
+  `validation-giveup`, `engine-runtime`); a gateway/engine network failure is
+  caught and re-thrown with a clear message naming the URL. The renderer maps
+  each category to a human hint.
+
 ## Boundaries / risks
 
 - New top-level `desktop/` tree; outside the Mac/Windows Python lanes in

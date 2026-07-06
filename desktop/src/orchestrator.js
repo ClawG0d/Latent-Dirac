@@ -12,6 +12,13 @@
 // Gateway contract (Phase D, services/ai_gateway/app.py):
 //   POST /generate {prompt, schema, current_scene?, validation_error?} -> {scene}
 
+function categorized(message, category, extra = {}) {
+  const err = new Error(message);
+  err.category = category;
+  Object.assign(err, extra);
+  return err;
+}
+
 async function postJson(fetch, url, payload) {
   const resp = await fetch(url, {
     method: "POST",
@@ -32,11 +39,20 @@ async function generateAndRun(
   { fetch, gatewayUrl, engineUrl, maxRetries = 2, onStatus = () => {} }
 ) {
   // 1. The engine's schema is the AI's output contract. Fetch it once.
-  const schemaResp = await fetch(`${engineUrl}/schema`);
-  if (!schemaResp.ok) {
-    throw new Error(`engine /schema failed (status ${schemaResp.status})`);
+  let schema;
+  try {
+    const schemaResp = await fetch(`${engineUrl}/schema`);
+    if (!schemaResp.ok) {
+      throw categorized(
+        `engine /schema failed (status ${schemaResp.status})`,
+        "engine-unreachable"
+      );
+    }
+    schema = await schemaResp.json();
+  } catch (err) {
+    if (err.category) throw err;
+    throw categorized(`cannot reach the local sim engine (${engineUrl}): ${err.message}`, "engine-unreachable");
   }
-  const schema = await schemaResp.json();
 
   // 2. Generate -> validate, retrying on a schema-validation failure only.
   let scene = null;
@@ -45,18 +61,26 @@ async function generateAndRun(
 
   for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
     onStatus(attempt === 0 ? "generating" : "retrying");
-    const gen = await postJson(fetch, `${gatewayUrl}/generate`, {
-      prompt,
-      schema,
-      current_scene: currentScene,
-      validation_error: validationError,
-    });
+    let gen;
+    try {
+      gen = await postJson(fetch, `${gatewayUrl}/generate`, {
+        prompt,
+        schema,
+        current_scene: currentScene,
+        validation_error: validationError,
+      });
+    } catch (err) {
+      throw categorized(
+        `cannot reach the AI gateway (${gatewayUrl}): ${err.message}`,
+        "gateway-unreachable"
+      );
+    }
     if (!gen.ok) {
-      throw new Error(`gateway /generate failed (status ${gen.status})`);
+      throw categorized(`gateway /generate failed (status ${gen.status})`, "gateway-error");
     }
     const candidate = gen.body && gen.body.scene;
     if (!candidate) {
-      throw new Error("gateway returned no scene; retry or refine the prompt");
+      throw categorized("gateway returned no scene; retry or refine the prompt", "gateway-error");
     }
 
     onStatus("validating");
@@ -70,15 +94,18 @@ async function generateAndRun(
       validationError = lastErrors;
       continue;
     }
-    throw new Error(`engine /validate returned unexpected status ${val.status}`);
+    throw categorized(
+      `engine /validate returned unexpected status ${val.status}`,
+      "engine-runtime"
+    );
   }
 
   if (!scene) {
-    const err = new Error(
-      `could not produce a valid scene after ${maxRetries + 1} attempts`
+    throw categorized(
+      `could not produce a valid scene after ${maxRetries + 1} attempts`,
+      "validation-giveup",
+      { errors: lastErrors }
     );
-    err.errors = lastErrors;
-    throw err;
   }
 
   // 3. Run locally. A run-time 400 (e.g. an element needing an absent engine)
@@ -86,16 +113,46 @@ async function generateAndRun(
   onStatus("running");
   const run = await postJson(fetch, `${engineUrl}/run`, { scene });
   if (run.status === 400) {
-    const err = new Error((run.body && run.body.detail) || "engine run failed");
-    err.errorType = run.body && run.body.error_type;
-    throw err;
+    throw categorized((run.body && run.body.detail) || "engine run failed", "engine-runtime", {
+      errorType: run.body && run.body.error_type,
+    });
   }
   if (!run.ok) {
-    throw new Error(`engine /run failed (status ${run.status})`);
+    throw categorized(`engine /run failed (status ${run.status})`, "engine-runtime");
   }
 
   onStatus("done");
   return { scene, ...run.body };
 }
 
-module.exports = { generateAndRun, postJson };
+// Run a scene the client already holds (e.g. loaded from a file), skipping the
+// gateway entirely — the scene is authoritative. Still validates first for a
+// clean error, then runs.
+async function runScene(scene, { fetch, engineUrl, onStatus = () => {} }) {
+  onStatus("validating");
+  const val = await postJson(fetch, `${engineUrl}/validate`, { scene });
+  if (val.status === 422) {
+    throw categorized("the loaded scene is invalid", "validation-giveup", {
+      errors: val.body && val.body.errors,
+    });
+  }
+  if (!(val.status === 200 && val.body && val.body.ok)) {
+    throw categorized(`engine /validate returned unexpected status ${val.status}`, "engine-runtime");
+  }
+
+  onStatus("running");
+  const run = await postJson(fetch, `${engineUrl}/run`, { scene });
+  if (run.status === 400) {
+    throw categorized((run.body && run.body.detail) || "engine run failed", "engine-runtime", {
+      errorType: run.body && run.body.error_type,
+    });
+  }
+  if (!run.ok) {
+    throw categorized(`engine /run failed (status ${run.status})`, "engine-runtime");
+  }
+
+  onStatus("done");
+  return { scene, ...run.body };
+}
+
+module.exports = { generateAndRun, runScene, postJson };

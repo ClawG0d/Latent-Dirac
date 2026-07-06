@@ -44,8 +44,16 @@ body {
   padding: 14px 18px;
   border-bottom: 1px solid var(--line);
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chat__titles {
+  display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .chat__title {
@@ -56,6 +64,54 @@ body {
 .chat__sub {
   color: var(--muted);
   font-size: 12px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.toolbar__btn {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.toolbar__btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.toolbar__btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.chip {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-2);
+  color: var(--accent-2);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
 }
 
 .log {

@@ -5,7 +5,7 @@
 const test = require("node:test");
 const assert = require("node:assert");
 
-const { generateAndRun } = require("../src/orchestrator");
+const { generateAndRun, runScene } = require("../src/orchestrator");
 
 function json(status, body) {
   return { ok: status >= 200 && status < 300, status, json: async () => body };
@@ -145,4 +145,80 @@ test("throws when the gateway returns no scene", async () => {
     "POST /generate": () => json(200, {}),
   });
   await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch }), /no scene/);
+});
+
+test("runScene runs a loaded scene directly, skipping the gateway", async () => {
+  const calls = [];
+  const scene = { name: "loaded" };
+  const fetch = fakeFetch(calls, {
+    "POST /validate": json(200, { ok: true }),
+    "POST /run": json(200, { report: "R", html: "H", accepted: 5, losses: {} }),
+  });
+  const out = await runScene(scene, { fetch, engineUrl: "http://e" });
+  assert.equal(out.report, "R");
+  assert.equal(out.accepted, 5);
+  assert.deepEqual(out.scene, scene);
+  // no gateway call and no schema fetch — a loaded scene is authoritative
+  assert.equal(calls.filter((c) => c.path === "/generate").length, 0);
+  assert.equal(calls.filter((c) => c.path === "/schema").length, 0);
+});
+
+test("runScene rejects an invalid loaded scene with a category", async () => {
+  const fetch = fakeFetch([], {
+    "POST /validate": json(422, { ok: false, errors: [{ msg: "bad element" }] }),
+  });
+  await assert.rejects(runScene({ name: "bad" }, { fetch, engineUrl: "http://e" }), (err) => {
+    assert.equal(err.category, "validation-giveup");
+    return true;
+  });
+});
+
+test("categorizes an unreachable gateway (fetch throws)", async () => {
+  const fetch = fakeFetch([], {
+    "GET /schema": () => json(200, {}),
+    "POST /generate": () => {
+      throw new TypeError("fetch failed");
+    },
+  });
+  await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch }), (err) => {
+    assert.equal(err.category, "gateway-unreachable");
+    assert.match(err.message, /gateway/);
+    assert.match(err.message, /https:\/\/gw/);
+    return true;
+  });
+});
+
+test("categorizes an unreachable engine (schema fetch throws)", async () => {
+  const fetch = fakeFetch([], {
+    "GET /schema": () => {
+      throw new TypeError("connection refused");
+    },
+  });
+  await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch }), (err) => {
+    assert.equal(err.category, "engine-unreachable");
+    return true;
+  });
+});
+
+test("tags the validation give-up and run-time errors with a category", async () => {
+  const giveUp = fakeFetch([], {
+    "GET /schema": () => json(200, {}),
+    "POST /generate": () => json(200, { scene: { name: "bad" } }),
+    "POST /validate": () => json(422, { ok: false, errors: [{ msg: "nope" }] }),
+  });
+  await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch: giveUp, maxRetries: 0 }), (err) => {
+    assert.equal(err.category, "validation-giveup");
+    return true;
+  });
+
+  const runFail = fakeFetch([], {
+    "GET /schema": () => json(200, {}),
+    "POST /generate": () => json(200, { scene: { name: "ok" } }),
+    "POST /validate": () => json(200, { ok: true }),
+    "POST /run": () => json(400, { detail: "boom", error_type: "RuntimeError" }),
+  });
+  await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch: runFail }), (err) => {
+    assert.equal(err.category, "engine-runtime");
+    return true;
+  });
 });

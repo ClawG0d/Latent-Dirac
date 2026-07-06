@@ -5,12 +5,14 @@
 // needs a display and is verified on the owner's machine, not in CI here.
 
 const path = require("node:path");
+const fs = require("node:fs/promises");
 const { spawn } = require("node:child_process");
 
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 
 const { startSidecar } = require("./src/sidecar");
-const { generateAndRun } = require("./src/orchestrator");
+const { generateAndRun, runScene } = require("./src/orchestrator");
+const { serializeScene, parseSceneFile } = require("./src/scene_file");
 const { loadConfig, engineSpawnSpec } = require("./src/config");
 
 const config = loadConfig();
@@ -64,9 +66,17 @@ function sendStatus(stage) {
   }
 }
 
+function failure(err) {
+  return {
+    ok: false,
+    error: err && err.message ? err.message : String(err),
+    category: err && err.category ? err.category : "unknown",
+  };
+}
+
 ipcMain.handle("run-prompt", async (_event, { prompt, currentScene }) => {
   if (!sidecar) {
-    return { ok: false, error: "the sim engine is not running" };
+    return { ok: false, error: "the sim engine is not running", category: "engine-unreachable" };
   }
   try {
     const result = await generateAndRun(
@@ -81,7 +91,56 @@ ipcMain.handle("run-prompt", async (_event, { prompt, currentScene }) => {
     );
     return { ok: true, result };
   } catch (err) {
-    return { ok: false, error: err && err.message ? err.message : String(err) };
+    return failure(err);
+  }
+});
+
+// run a scene the renderer already holds (loaded from a file), no gateway
+ipcMain.handle("run-scene", async (_event, scene) => {
+  if (!sidecar) {
+    return { ok: false, error: "the sim engine is not running", category: "engine-unreachable" };
+  }
+  try {
+    const result = await runScene(scene, {
+      fetch,
+      engineUrl: sidecar.baseUrl,
+      onStatus: sendStatus,
+    });
+    return { ok: true, result };
+  } catch (err) {
+    return failure(err);
+  }
+});
+
+ipcMain.handle("save-scene", async (_event, scene) => {
+  if (!scene) return { ok: false, error: "no scene to save yet" };
+  try {
+    const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+      title: "Save scene",
+      defaultPath: "scene.json",
+      filters: [{ name: "Scene JSON", extensions: ["json"] }],
+    });
+    if (canceled || !filePath) return { ok: false, canceled: true };
+    await fs.writeFile(filePath, serializeScene(scene), "utf8");
+    return { ok: true, filePath };
+  } catch (err) {
+    return failure(err);
+  }
+});
+
+ipcMain.handle("open-scene", async () => {
+  try {
+    const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+      title: "Open scene",
+      properties: ["openFile"],
+      filters: [{ name: "Scene JSON", extensions: ["json"] }],
+    });
+    if (canceled || !filePaths || !filePaths.length) return { ok: false, canceled: true };
+    const text = await fs.readFile(filePaths[0], "utf8");
+    const scene = parseSceneFile(text);
+    return { ok: true, scene, filePath: filePaths[0] };
+  } catch (err) {
+    return failure(err);
   }
 });
 
