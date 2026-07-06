@@ -79,6 +79,100 @@ def render_scene_3d(scene: Scene, run_result: SceneRunResult, max_particles: int
     return figure
 
 
+def render_scene_animation(
+    scene: Scene,
+    run_result: SceneRunResult,
+    max_particles: int = 64,
+    trail: bool = True,
+):
+    """Animate the recorded cloud traversing the scene (play/pause + scrub).
+
+    Requires `run_scene(..., record_trajectories=True)`. Element wireframes
+    and the optional faint full paths are static; a single marker cloud is
+    animated over the recorded steps. Lost particles are frozen in the
+    recording, so they visibly stop at their loss point. Self-contained
+    Plotly figure — no server.
+    """
+    if max_particles <= 0:
+        raise ValueError("max_particles must be positive")
+
+    combined = _combined_trajectories(scene, run_result)
+    if combined is None:
+        raise ValueError(
+            "the animation viewer needs recorded trajectories; call "
+            "run_scene(scene, record_trajectories=True) first"
+        )
+
+    go = import_optional("plotly.graph_objects", "plotly")
+    count = min(combined.shape[1], max_particles)
+    steps = combined.shape[0]
+
+    static_traces = []
+    for element in scene.elements:
+        segments = _element_segments(element, run_result)
+        if not segments:
+            continue
+        name = f"{element.label} [{element.type}]"
+        static_traces.append(
+            _wire_trace(
+                go,
+                name=name,
+                hovertext=f"{name}<br>{_fidelity_label(element)}",
+                segments=segments,
+            )
+        )
+    if trail:
+        static_traces.append(_trajectory_trace(go, combined, max_particles))
+
+    def _cloud(step: int):
+        frame = combined[step, :count, :]
+        return go.Scatter3d(
+            x=frame[:, 0],
+            y=frame[:, 1],
+            z=frame[:, 2],
+            mode="markers",
+            name="cloud",
+            marker={"size": 3},
+        )
+
+    figure = go.Figure(data=[*static_traces, _cloud(0)])
+    figure.frames = [
+        go.Frame(data=[_cloud(step)], traces=[len(static_traces)], name=str(step))
+        for step in range(steps)
+    ]
+
+    play = {
+        "label": "Play",
+        "method": "animate",
+        "args": [None, {"frame": {"duration": 60, "redraw": True}, "fromcurrent": True}],
+    }
+    pause = {
+        "label": "Pause",
+        "method": "animate",
+        "args": [[None], {"frame": {"duration": 0, "redraw": False}, "mode": "immediate"}],
+    }
+    slider = {
+        "steps": [
+            {
+                "label": str(step),
+                "method": "animate",
+                "args": [[str(step)], {"frame": {"duration": 0, "redraw": True}, "mode": "immediate"}],
+            }
+            for step in range(steps)
+        ],
+        "x": 0.1,
+        "len": 0.9,
+        "currentvalue": {"prefix": "step "},
+    }
+    figure.update_layout(
+        title=scene.name,
+        scene={"xaxis_title": "x [m]", "yaxis_title": "y [m]", "zaxis_title": "z [m]"},
+        updatemenus=[{"type": "buttons", "buttons": [play, pause]}],
+        sliders=[slider],
+    )
+    return figure
+
+
 def _element_segments(element, run_result: SceneRunResult) -> list[np.ndarray]:
     if element.type == "solenoid":
         return _cylinder_segments(element.radius_m, element.center_z_m, element.length_m)

@@ -30,6 +30,20 @@ def test_render_writes_interactive_html(tmp_path):
     assert "plotly" in output.read_text(encoding="utf-8")[:5000].lower()
 
 
+def test_render_animate_writes_interactive_html(tmp_path):
+    pytest.importorskip("plotly")
+    output = tmp_path / "hello_anim.html"
+
+    exit_code = main(["render", str(HELLO_SCENE), "-o", str(output), "--animate"])
+
+    assert exit_code == 0
+    assert output.stat().st_size > 0
+    text = output.read_text(encoding="utf-8").lower()
+    assert "plotly" in text[:5000]
+    # animation frames land in the exported HTML
+    assert "frames" in text
+
+
 def test_missing_scene_file_exits_nonzero(capsys):
     exit_code = main(["run", "does/not/exist.yaml"])
 

@@ -30,6 +30,16 @@ pip install "latent-dirac[viz]"
 trajectories, accepted/lost final states, and per-element fidelity labels
 in the hover text.
 
+`latent_dirac.viz.scene_3d.render_scene_animation` renders the same scene
+as a play/pause + scrub animation of the recorded cloud traversing the
+beamline (lost particles freeze at their loss point — the loss ledger in
+motion); it needs `run_scene(..., record_trajectories=True)`. From the
+CLI, add `--animate`:
+
+```bash
+latent-dirac render scene.yaml -o scene_anim.html --animate
+```
+
 `latent_dirac.viz.field_3d.render_field_magnitude_3d` renders |B| of a
 table-based field map as a translucent volume, labeled with its fidelity
 tier.

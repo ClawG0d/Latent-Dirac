@@ -38,6 +38,11 @@ def _build_parser() -> argparse.ArgumentParser:
         default=64,
         help="maximum particle trajectories to draw (default: 64)",
     )
+    render_parser.add_argument(
+        "--animate",
+        action="store_true",
+        help="write a play/pause animation of the cloud traversing the scene",
+    )
     return parser
 
 
@@ -59,14 +64,18 @@ def _command_render(args: argparse.Namespace) -> int:
     scene = _load(args.scene)
     result = run_scene(scene, record_trajectories=True)
     try:
-        from latent_dirac.viz.scene_3d import render_scene_3d
+        from latent_dirac.viz.scene_3d import render_scene_3d, render_scene_animation
 
-        figure = render_scene_3d(scene, result, max_particles=args.max_particles)
+        if args.animate:
+            figure = render_scene_animation(scene, result, max_particles=args.max_particles)
+        else:
+            figure = render_scene_3d(scene, result, max_particles=args.max_particles)
     except ImportError as exc:
         raise ImportError('rendering requires the viz extra: pip install "latent-dirac[viz]"') from exc
     output = Path(args.output)
     figure.write_html(output, include_plotlyjs="cdn")
-    print(f"interactive 3D scene written to {output}")
+    kind = "animation" if args.animate else "3D scene"
+    print(f"interactive {kind} written to {output}")
     return 0
 
 

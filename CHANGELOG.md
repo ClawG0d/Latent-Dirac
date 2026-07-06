@@ -5,6 +5,17 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added an animated interactive 3D viewer
+  (`latent_dirac.viz.scene_3d.render_scene_animation`, Plotly-first
+  slice 1 of the roadmap's interactive viewer): a play/pause + scrub
+  animation of the recorded cloud traversing the scene, with lost
+  particles freezing at their loss point (the loss ledger in motion).
+  Static element wireframes and optional faint trajectory trails, one
+  animated marker cloud, self-contained HTML (no server). The
+  `latent-dirac render` CLI gains `--animate`. Requires
+  `record_trajectories=True`. Design record:
+  `docs/superpowers/specs/2026-07-06-interactive-viewer-design.md`.
+
 - Added a Material for MkDocs documentation site (`mkdocs.yml`, new
   optional `[docs]` extra): the user-facing docs under `docs/` build
   into a navigable site with a `docs/index.md` landing page; internal
