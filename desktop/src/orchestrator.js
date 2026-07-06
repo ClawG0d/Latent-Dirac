@@ -26,6 +26,18 @@ async function schemaOf(engine) {
   return resp.result;
 }
 
+// Per-source-type param schemas — the scene schema types source.params as an
+// open dict, so this is what tells the AI a source's required params. Best
+// effort: if unavailable, the validate retry loop still self-corrects.
+async function sourceParamsOf(engine) {
+  try {
+    const resp = await engine.request({ op: "source_params" });
+    return resp && resp.ok ? resp.result : null;
+  } catch {
+    return null;
+  }
+}
+
 // run a validated scene and normalize the response / errors
 async function runValidated(engine, scene, onStatus) {
   onStatus("running");
@@ -51,6 +63,7 @@ async function generateAndRun(
   { engine, generate, maxRetries = 2, onStatus = () => {} }
 ) {
   const schema = await schemaOf(engine);
+  const sourceParams = await sourceParamsOf(engine);
 
   let scene = null;
   let validationError = null;
@@ -59,7 +72,7 @@ async function generateAndRun(
   for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
     onStatus(attempt === 0 ? "generating" : "retrying");
     // generate throws its own categorized error (ai-no-key, ai-bad-key, ...)
-    const candidate = await generate({ prompt, schema, currentScene, validationError });
+    const candidate = await generate({ prompt, schema, sourceParams, currentScene, validationError });
     if (!candidate) {
       throw categorized("no scene was produced; retry or refine the prompt", "ai-no-scene");
     }
@@ -113,4 +126,4 @@ async function runScene(scene, { engine, onStatus = () => {} }) {
   return runValidated(engine, scene, onStatus);
 }
 
-module.exports = { generateAndRun, runScene, schemaOf };
+module.exports = { generateAndRun, runScene, schemaOf, sourceParamsOf };

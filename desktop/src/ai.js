@@ -30,8 +30,16 @@ const SYSTEM_PROMPT = [
   "- If a prior validation error is provided, fix exactly what it reports.",
 ].join("");
 
-function buildMessages({ prompt, currentScene, validationError }) {
+function buildMessages({ prompt, currentScene, validationError, sourceParams }) {
   const parts = [`Request: ${prompt}`];
+  if (sourceParams) {
+    // the scene schema types source.params as an open dict; this is the real
+    // per-type param contract the source.params object must match
+    parts.push(
+      "The `params` object of the chosen source `type` MUST match that type's " +
+        `JSON schema here: ${JSON.stringify(sourceParams)}`
+    );
+  }
   if (currentScene) {
     parts.push(`Current scene (edit this): ${JSON.stringify(currentScene)}`);
   }
@@ -44,7 +52,7 @@ function buildMessages({ prompt, currentScene, validationError }) {
   return [{ role: "user", content: parts.join("\n\n") }];
 }
 
-function buildRequest({ prompt, schema, currentScene = null, validationError = null, model }) {
+function buildRequest({ prompt, schema, sourceParams = null, currentScene = null, validationError = null, model }) {
   return {
     model: model || DEFAULT_MODEL,
     max_tokens: 4096,
@@ -53,7 +61,7 @@ function buildRequest({ prompt, schema, currentScene = null, validationError = n
       { name: TOOL_NAME, description: "Emit one Latent Dirac scene matching the schema.", input_schema: schema },
     ],
     tool_choice: { type: "tool", name: TOOL_NAME },
-    messages: buildMessages({ prompt, currentScene, validationError }),
+    messages: buildMessages({ prompt, currentScene, validationError, sourceParams }),
   };
 }
 
@@ -67,11 +75,11 @@ function extractScene(body) {
   throw categorized("the model returned no scene; retry or refine the prompt", "ai-no-scene");
 }
 
-async function generateScene({ apiKey, prompt, schema, currentScene = null, validationError = null, model, fetch }) {
+async function generateScene({ apiKey, prompt, schema, sourceParams = null, currentScene = null, validationError = null, model, fetch }) {
   if (!apiKey) {
     throw categorized("no Anthropic API key set — add one in Settings", "ai-no-key");
   }
-  const request = buildRequest({ prompt, schema, currentScene, validationError, model });
+  const request = buildRequest({ prompt, schema, sourceParams, currentScene, validationError, model });
 
   let resp;
   try {

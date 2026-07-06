@@ -20,7 +20,7 @@ from pydantic import ValidationError
 
 from latent_dirac.diagnostics.loss_ledger import loss_ledger
 from latent_dirac.diagnostics.scene_report import scene_report
-from latent_dirac.scene.build import run_scene
+from latent_dirac.scene.build import build_source, run_scene
 from latent_dirac.scene.loader import scene_from_mapping
 
 _log = logging.getLogger("latent_dirac.bridge")
@@ -57,11 +57,31 @@ def handle_request(req: dict) -> dict:
 
         return {"ok": True, "result": Scene.model_json_schema()}
 
+    if op == "source_params":
+        # The scene schema types `source.params` as an open dict, so the AI has
+        # no way to know a source's required params from `schema` alone. Expose
+        # each source type's param model so the client can hand it to the AI.
+        from latent_dirac.scene.build import _SOURCE_CLASSES
+
+        return {
+            "ok": True,
+            "result": {name: cls.model_json_schema() for name, cls in _SOURCE_CLASSES.items()},
+        }
+
     if op == "validate":
         try:
-            scene_from_mapping(req["scene"])
+            scene = scene_from_mapping(req["scene"])
         except ValidationError as exc:
             return {"ok": False, "error": {"type": "validation", "errors": _json_errors(exc)}}
+        # `source.params` is an open dict at the scene layer — construct the
+        # source here to catch param errors as *validation* (so the AI retry
+        # loop can fix them) rather than letting them explode at run time.
+        try:
+            build_source(scene)
+        except ValidationError as exc:
+            return {"ok": False, "error": {"type": "validation", "errors": _json_errors(exc)}}
+        except Exception:
+            pass  # non-param construction issues (e.g. a missing data file) surface at run
         return {"ok": True, "result": {"valid": True}}
 
     if op == "run":
@@ -73,6 +93,8 @@ def handle_request(req: dict) -> dict:
             result = run_scene(scene, record_trajectories=True)
             report = scene_report(scene, result, req.get("scope_note", _DEFAULT_NOTE))
             html = _render_html(scene, result, req)
+        except ValidationError as exc:  # source/element param errors -> validation, retryable
+            return {"ok": False, "error": {"type": "validation", "errors": _json_errors(exc)}}
         except Exception as exc:  # run-time engine/adapter failures -> runtime error, never a crash
             _log.exception("scene run failed")
             return {

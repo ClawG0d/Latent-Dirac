@@ -28,6 +28,16 @@ test("buildRequest includes current scene and validation error when given", () =
   assert.ok(s.toLowerCase().includes("bad"), "validation error forwarded");
 });
 
+test("buildRequest includes the source param schemas when provided", () => {
+  const r = buildRequest({
+    prompt: "x", schema: SCHEMA,
+    sourceParams: { positron_pair: { required: ["primary_count", "mean_energy_MeV"] } },
+  });
+  const s = JSON.stringify(r.messages);
+  assert.ok(s.includes("primary_count"), "forwards the source param contract");
+  assert.ok(s.includes("params"), "tells the model params must match");
+});
+
 test("buildRequest honours a model override", () => {
   const r = buildRequest({ prompt: "x", schema: SCHEMA, model: "claude-opus-4-8" });
   assert.equal(r.model, "claude-opus-4-8");

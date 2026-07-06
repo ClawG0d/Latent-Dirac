@@ -106,6 +106,36 @@ def test_run_reports_engine_absence_gracefully():
     assert "LATENT_DIRAC_G4_TRANSFORMER" in resp["error"]["detail"]
 
 
+def test_validate_catches_bad_source_params_as_validation():
+    # source.params is an open dict at the scene layer; validate must still catch
+    # a wrong-param source (the common AI mistake) so the retry loop can fix it,
+    # instead of it sailing through and exploding at run time
+    scene = valid_scene()
+    scene["source"]["params"] = {"n_particles": 10}
+    resp = handle_request({"op": "validate", "scene": scene})
+    assert resp["ok"] is False
+    assert resp["error"]["type"] == "validation"
+    msgs = json.dumps(resp["error"]["errors"])
+    assert "primary_count" in msgs  # the AI is told exactly what's required
+
+
+def test_run_labels_source_param_errors_as_validation_not_runtime():
+    scene = valid_scene()
+    scene["source"]["params"] = {"n_particles": 10}
+    resp = handle_request({"op": "run", "scene": scene})
+    assert resp["ok"] is False
+    assert resp["error"]["type"] == "validation"  # not "runtime"
+
+
+def test_source_params_op_exposes_each_source_type_schema():
+    resp = handle_request({"op": "source_params"})
+    assert resp["ok"] is True
+    params = resp["result"]
+    assert "positron_pair" in params
+    required = params["positron_pair"].get("required", [])
+    assert "primary_count" in required and "mean_energy_MeV" in required
+
+
 def test_unknown_op_is_a_bad_request():
     resp = handle_request({"op": "explode"})
     assert resp["ok"] is False

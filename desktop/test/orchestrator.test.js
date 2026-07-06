@@ -55,6 +55,18 @@ test("fetches the schema once and forwards it to generate", async () => {
   assert.deepEqual(rec.calls[0].schema, { properties: { source: {} } });
 });
 
+test("fetches source_params and forwards them to generate", async () => {
+  const engine = fakeEngine({
+    schema: { ok: true, result: {} },
+    source_params: { ok: true, result: { positron_pair: { required: ["primary_count"] } } },
+    validate: { ok: true },
+    run: RUN_OK,
+  });
+  const rec = recorder([{ name: "ok" }]);
+  await generateAndRun({ prompt: "p" }, { engine, generate: rec.generate });
+  assert.deepEqual(rec.calls[0].sourceParams, { positron_pair: { required: ["primary_count"] } });
+});
+
 test("forwards currentScene to generate", async () => {
   const engine = fakeEngine({ schema: { ok: true, result: {} }, validate: { ok: true }, run: RUN_OK });
   const rec = recorder([{ name: "edited" }]);
