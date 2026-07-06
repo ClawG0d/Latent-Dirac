@@ -185,6 +185,28 @@ A follow-up pass on the shell, logic TDD'd, GUI owner-verified:
   caught and re-thrown with a clear message naming the URL. The renderer maps
   each category to a human hint.
 
+## AI model change — BYOK (2026-07-06)
+
+The AI integration moved from a hosted gateway (owner pays, unified billing) to
+**bring-your-own-key**: the user enters their own Anthropic API key.
+
+- The key lives **only in the Electron main process** — persisted encrypted via
+  `safeStorage` (OS keychain) when available, held in memory otherwise. The
+  renderer never receives it; it only learns whether one is set (`key-status`)
+  and can set/clear it (`set-api-key` / `clear-api-key`).
+- The client calls the Anthropic API **directly from the main process** (Node,
+  so no CORS), reusing the proven request shaping (forced `emit_scene` tool,
+  the honesty system prompt) now in `desktop/src/ai.js`.
+- `orchestrator.generateAndRun` takes an injected `generate({prompt, schema,
+  currentScene, validationError})` instead of a gateway URL; main wires it to
+  `ai.generateScene({..., apiKey, model, fetch})`. The orchestrator stays
+  network-free in tests (inject a fake `generate`).
+- New error categories flow to the renderer: `ai-no-key`, `ai-bad-key`,
+  `ai-unreachable`, `ai-error`, `ai-no-scene` (each with a UI hint).
+- `services/ai_gateway/` stays in the repo as an optional hosted alternative but
+  is no longer the default path; the packaged client is BYOK and ships no
+  secrets.
+
 ## Boundaries / risks
 
 - New top-level `desktop/` tree; outside the Mac/Windows Python lanes in

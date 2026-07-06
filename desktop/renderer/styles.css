@@ -114,6 +114,56 @@ body {
   color: var(--text);
 }
 
+.keyform {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.keyform__err {
+  flex-basis: 100%;
+  color: var(--danger);
+  font-size: 11px;
+}
+
+.keyform__err:empty {
+  display: none;
+}
+
+.keyform input {
+  flex: 1;
+  min-width: 0;
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 9px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.keyform input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.keyform button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.keyform button[type="submit"] {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
 .log {
   flex: 1;
   overflow-y: auto;

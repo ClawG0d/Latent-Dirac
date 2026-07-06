@@ -1,18 +1,17 @@
 "use strict";
-// node --test: the prompt -> gateway -> validate -> run loop, with an injected
-// fetch so no network, no gateway, and no Python engine are needed. Locks the
-// Phase A engine contract and the Phase D gateway contract.
+// node --test: the prompt loop with an injected `generate` (the BYOK AI step)
+// and an injected `fetch` (the local engine). No network, no key, no Python.
 const test = require("node:test");
 const assert = require("node:assert");
 
 const { generateAndRun, runScene } = require("../src/orchestrator");
+const { categorized } = require("../src/errors");
 
 function json(status, body) {
   return { ok: status >= 200 && status < 300, status, json: async () => body };
 }
 
-// records every call and dispatches on "METHOD /path"; a route value may be a
-// response object or a function (url, opts) -> response (for stateful sequences)
+// engine routes only ("METHOD /path"); values are responses or (url,opts)->resp
 function fakeFetch(calls, routes) {
   return async (url, opts = {}) => {
     const method = (opts.method || "GET").toUpperCase();
@@ -26,199 +25,146 @@ function fakeFetch(calls, routes) {
   };
 }
 
-const base = { gatewayUrl: "https://gw", engineUrl: "http://127.0.0.1:9", maxRetries: 2 };
+// a generate() that records its calls and returns queued scenes
+function recorder(scenes) {
+  const calls = [];
+  let i = 0;
+  const generate = async (args) => {
+    calls.push(args);
+    const s = scenes[Math.min(i, scenes.length - 1)];
+    i += 1;
+    return s;
+  };
+  return { generate, calls };
+}
 
-test("runs the full loop and returns report + html + summary on a valid scene", async () => {
+const engineUrl = "http://127.0.0.1:9";
+
+test("runs the full loop and returns report + html + summary", async () => {
   const calls = [];
   const scene = { name: "ok" };
   const fetch = fakeFetch(calls, {
     "GET /schema": json(200, { properties: {} }),
-    "POST /generate": json(200, { scene }),
     "POST /validate": json(200, { ok: true }),
-    "POST /run": json(200, {
-      report: "Latent Dirac scene report",
-      html: "<html>3d</html>",
-      accepted: 12.5,
-      losses: { iris: 3 },
-    }),
+    "POST /run": json(200, { report: "Latent Dirac scene report", html: "<html>3d</html>", accepted: 12.5, losses: { iris: 3 } }),
   });
-  const out = await generateAndRun({ prompt: "a pair through a solenoid" }, { ...base, fetch });
+  const { generate } = recorder([scene]);
+  const out = await generateAndRun({ prompt: "a pair" }, { fetch, engineUrl, generate, maxRetries: 2 });
   assert.equal(out.report, "Latent Dirac scene report");
   assert.equal(out.html, "<html>3d</html>");
   assert.equal(out.accepted, 12.5);
-  assert.deepEqual(out.losses, { iris: 3 });
   assert.deepEqual(out.scene, scene);
 });
 
-test("fetches the engine schema once and forwards it to the gateway", async () => {
+test("fetches the engine schema once and forwards it to generate", async () => {
   const calls = [];
   const fetch = fakeFetch(calls, {
     "GET /schema": json(200, { properties: { source: {} } }),
-    "POST /generate": json(200, { scene: { name: "ok" } }),
     "POST /validate": json(200, { ok: true }),
     "POST /run": json(200, { report: "R", html: "H", accepted: 0, losses: {} }),
   });
-  await generateAndRun({ prompt: "p" }, { ...base, fetch });
+  const rec = recorder([{ name: "ok" }]);
+  await generateAndRun({ prompt: "p" }, { fetch, engineUrl, generate: rec.generate, maxRetries: 2 });
   assert.equal(calls.filter((c) => c.path === "/schema").length, 1);
-  const gen = calls.find((c) => c.path === "/generate");
-  assert.deepEqual(gen.body.schema, { properties: { source: {} } });
+  assert.deepEqual(rec.calls[0].schema, { properties: { source: {} } });
 });
 
-test("forwards current_scene when editing an existing scene", async () => {
+test("forwards currentScene to generate", async () => {
   const calls = [];
   const current = { name: "existing" };
   const fetch = fakeFetch(calls, {
     "GET /schema": json(200, {}),
-    "POST /generate": json(200, { scene: { name: "edited" } }),
     "POST /validate": json(200, { ok: true }),
     "POST /run": json(200, { report: "R", html: "H", accepted: 0, losses: {} }),
   });
-  await generateAndRun({ prompt: "make it longer", currentScene: current }, { ...base, fetch });
-  const gen = calls.find((c) => c.path === "/generate");
-  assert.deepEqual(gen.body.current_scene, current);
+  const rec = recorder([{ name: "edited" }]);
+  await generateAndRun({ prompt: "longer", currentScene: current }, { fetch, engineUrl, generate: rec.generate });
+  assert.deepEqual(rec.calls[0].currentScene, current);
 });
 
-test("feeds a validation error back to the gateway and retries", async () => {
+test("feeds a validation error back into the next generate call and retries", async () => {
   const calls = [];
-  let generateN = 0;
   let validateN = 0;
   const fetch = fakeFetch(calls, {
-    "GET /schema": () => json(200, { properties: {} }),
-    "POST /generate": () => {
-      generateN += 1;
-      return json(200, { scene: { name: generateN === 1 ? "bad" : "good" } });
-    },
+    "GET /schema": () => json(200, {}),
     "POST /validate": () => {
       validateN += 1;
       return validateN === 1
-        ? json(422, { ok: false, errors: [{ loc: ["elements", 0, "type"], msg: "unknown" }] })
+        ? json(422, { ok: false, errors: [{ loc: ["elements", 0], msg: "unknown" }] })
         : json(200, { ok: true });
     },
     "POST /run": () => json(200, { report: "R", html: "H", accepted: 1, losses: {} }),
   });
+  const rec = recorder([{ name: "bad" }, { name: "good" }]);
   const statuses = [];
-  const out = await generateAndRun(
-    { prompt: "p" },
-    { ...base, fetch, onStatus: (s) => statuses.push(s) }
-  );
+  const out = await generateAndRun({ prompt: "p" }, { fetch, engineUrl, generate: rec.generate, onStatus: (s) => statuses.push(s) });
   assert.equal(out.scene.name, "good");
-  assert.equal(generateN, 2);
-  const secondGen = calls.filter((c) => c.path === "/generate")[1];
-  assert.ok(secondGen.body.validation_error, "second generate carries validation_error");
-  assert.ok(statuses.includes("retrying"), "emits a retrying status");
+  assert.equal(rec.calls.length, 2);
+  assert.ok(rec.calls[1].validationError, "second generate call carries the validation error");
+  assert.ok(statuses.includes("retrying"));
 });
 
-test("gives up after maxRetries when the scene never validates", async () => {
+test("gives up with a category after maxRetries", async () => {
   const fetch = fakeFetch([], {
     "GET /schema": () => json(200, {}),
-    "POST /generate": () => json(200, { scene: { name: "bad" } }),
     "POST /validate": () => json(422, { ok: false, errors: [{ msg: "nope" }] }),
   });
+  const rec = recorder([{ name: "bad" }]);
   await assert.rejects(
-    generateAndRun({ prompt: "p" }, { ...base, fetch, maxRetries: 1 }),
-    /could not produce a valid scene/
+    generateAndRun({ prompt: "p" }, { fetch, engineUrl, generate: rec.generate, maxRetries: 1 }),
+    (e) => { assert.equal(e.category, "validation-giveup"); return true; }
   );
 });
 
-test("surfaces a run-time 400 from the engine without retrying", async () => {
-  let generateN = 0;
+test("surfaces a run-time 400 as engine-runtime, no retry", async () => {
   const fetch = fakeFetch([], {
     "GET /schema": () => json(200, {}),
-    "POST /generate": () => {
-      generateN += 1;
-      return json(200, { scene: { name: "ok" } });
-    },
     "POST /validate": () => json(200, { ok: true }),
-    "POST /run": () =>
-      json(400, { detail: "set LATENT_DIRAC_G4_TRANSFORMER", error_type: "RuntimeError" }),
+    "POST /run": () => json(400, { detail: "set LATENT_DIRAC_G4_TRANSFORMER", error_type: "RuntimeError" }),
   });
+  const rec = recorder([{ name: "ok" }]);
   await assert.rejects(
-    generateAndRun({ prompt: "a slab" }, { ...base, fetch }),
-    /LATENT_DIRAC_G4_TRANSFORMER/
+    generateAndRun({ prompt: "a slab" }, { fetch, engineUrl, generate: rec.generate }),
+    (e) => { assert.equal(e.category, "engine-runtime"); assert.match(e.message, /LATENT_DIRAC_G4_TRANSFORMER/); return true; }
   );
-  assert.equal(generateN, 1, "a run-time failure is not retried");
+  assert.equal(rec.calls.length, 1);
 });
 
-test("throws when the gateway returns no scene", async () => {
-  const fetch = fakeFetch([], {
-    "GET /schema": () => json(200, {}),
-    "POST /generate": () => json(200, {}),
-  });
-  await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch }), /no scene/);
+test("propagates a generate error unrelabeled (BYOK key/network failures)", async () => {
+  const fetch = fakeFetch([], { "GET /schema": () => json(200, {}) });
+  const generate = async () => { throw categorized("the API key was rejected", "ai-bad-key"); };
+  await assert.rejects(
+    generateAndRun({ prompt: "p" }, { fetch, engineUrl, generate }),
+    (e) => { assert.equal(e.category, "ai-bad-key"); return true; }
+  );
 });
 
-test("runScene runs a loaded scene directly, skipping the gateway", async () => {
+test("categorizes an unreachable engine (schema fetch throws)", async () => {
+  const fetch = fakeFetch([], { "GET /schema": () => { throw new TypeError("connection refused"); } });
+  const rec = recorder([{ name: "ok" }]);
+  await assert.rejects(
+    generateAndRun({ prompt: "p" }, { fetch, engineUrl, generate: rec.generate }),
+    (e) => { assert.equal(e.category, "engine-unreachable"); return true; }
+  );
+});
+
+test("runScene runs a loaded scene directly (no generate, no schema)", async () => {
   const calls = [];
   const scene = { name: "loaded" };
   const fetch = fakeFetch(calls, {
     "POST /validate": json(200, { ok: true }),
     "POST /run": json(200, { report: "R", html: "H", accepted: 5, losses: {} }),
   });
-  const out = await runScene(scene, { fetch, engineUrl: "http://e" });
+  const out = await runScene(scene, { fetch, engineUrl });
   assert.equal(out.report, "R");
-  assert.equal(out.accepted, 5);
   assert.deepEqual(out.scene, scene);
-  // no gateway call and no schema fetch — a loaded scene is authoritative
-  assert.equal(calls.filter((c) => c.path === "/generate").length, 0);
   assert.equal(calls.filter((c) => c.path === "/schema").length, 0);
 });
 
 test("runScene rejects an invalid loaded scene with a category", async () => {
-  const fetch = fakeFetch([], {
-    "POST /validate": json(422, { ok: false, errors: [{ msg: "bad element" }] }),
-  });
-  await assert.rejects(runScene({ name: "bad" }, { fetch, engineUrl: "http://e" }), (err) => {
-    assert.equal(err.category, "validation-giveup");
-    return true;
-  });
-});
-
-test("categorizes an unreachable gateway (fetch throws)", async () => {
-  const fetch = fakeFetch([], {
-    "GET /schema": () => json(200, {}),
-    "POST /generate": () => {
-      throw new TypeError("fetch failed");
-    },
-  });
-  await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch }), (err) => {
-    assert.equal(err.category, "gateway-unreachable");
-    assert.match(err.message, /gateway/);
-    assert.match(err.message, /https:\/\/gw/);
-    return true;
-  });
-});
-
-test("categorizes an unreachable engine (schema fetch throws)", async () => {
-  const fetch = fakeFetch([], {
-    "GET /schema": () => {
-      throw new TypeError("connection refused");
-    },
-  });
-  await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch }), (err) => {
-    assert.equal(err.category, "engine-unreachable");
-    return true;
-  });
-});
-
-test("tags the validation give-up and run-time errors with a category", async () => {
-  const giveUp = fakeFetch([], {
-    "GET /schema": () => json(200, {}),
-    "POST /generate": () => json(200, { scene: { name: "bad" } }),
-    "POST /validate": () => json(422, { ok: false, errors: [{ msg: "nope" }] }),
-  });
-  await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch: giveUp, maxRetries: 0 }), (err) => {
-    assert.equal(err.category, "validation-giveup");
-    return true;
-  });
-
-  const runFail = fakeFetch([], {
-    "GET /schema": () => json(200, {}),
-    "POST /generate": () => json(200, { scene: { name: "ok" } }),
-    "POST /validate": () => json(200, { ok: true }),
-    "POST /run": () => json(400, { detail: "boom", error_type: "RuntimeError" }),
-  });
-  await assert.rejects(generateAndRun({ prompt: "p" }, { ...base, fetch: runFail }), (err) => {
-    assert.equal(err.category, "engine-runtime");
+  const fetch = fakeFetch([], { "POST /validate": json(422, { ok: false, errors: [{ msg: "bad" }] }) });
+  await assert.rejects(runScene({ name: "bad" }, { fetch, engineUrl }), (e) => {
+    assert.equal(e.category, "validation-giveup");
     return true;
   });
 });

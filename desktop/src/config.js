@@ -1,16 +1,15 @@
 "use strict";
-// Runtime configuration. No secrets here — the Anthropic key lives on the
-// hosted gateway, never in the client. The gateway URL is owner-deployed; the
-// default is a local placeholder until then.
+// Runtime configuration. BYOK: the Anthropic key is the user's, entered in the
+// app and held only in the main process (see main.js) — it is never stored here
+// and never reaches the renderer.
 
 const path = require("node:path");
-
-const DEFAULT_GATEWAY_URL = "http://127.0.0.1:8080";
 
 function loadConfig(env = process.env) {
   const retries = Number(env.LATENT_DIRAC_MAX_RETRIES);
   return {
-    gatewayUrl: env.LATENT_DIRAC_GATEWAY_URL || DEFAULT_GATEWAY_URL,
+    // null -> the BYOK client (src/ai.js) uses its DEFAULT_MODEL
+    model: env.LATENT_DIRAC_MODEL || null,
     maxRetries: Number.isFinite(retries) ? retries : 2,
   };
 }
@@ -43,4 +42,4 @@ function engineSpawnSpec(env = process.env, opts = {}) {
   return { command: python, args: ["-m", "latent_dirac.server", ...portArgs] };
 }
 
-module.exports = { loadConfig, engineSpawnSpec, DEFAULT_GATEWAY_URL };
+module.exports = { loadConfig, engineSpawnSpec };

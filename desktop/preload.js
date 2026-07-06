@@ -14,6 +14,10 @@ contextBridge.exposeInMainWorld("api", {
   saveScene: (scene) => ipcRenderer.invoke("save-scene", scene),
   // open a scene file -> { ok, scene, filePath } | { ok:false, ... }
   openScene: () => ipcRenderer.invoke("open-scene"),
+  // BYOK key: the renderer only sets/clears/queries; it never reads the key back
+  setApiKey: (key) => ipcRenderer.invoke("set-api-key", key),
+  clearApiKey: () => ipcRenderer.invoke("clear-api-key"),
+  keyStatus: () => ipcRenderer.invoke("key-status"),
   // subscribe to progress stages ("generating" | "validating" | "retrying" |
   // "running" | "done"); returns an unsubscribe function
   onStatus: (callback) => {

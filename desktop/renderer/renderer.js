@@ -1,6 +1,6 @@
 "use strict";
-// Chat UI. Sends a prompt to the main process (which runs the gateway ->
-// validate -> run loop), streams status stages, then shows the text report and
+// Chat UI. Sends a prompt to the main process (which calls Anthropic with the
+// user's key, then validate -> run), streams status stages, shows the report and
 // loads the offline 3D HTML into the panel. Also: save/load a scene, start a
 // fresh scene, seed example prompts, and category-aware error hints.
 // window.api is defined by preload.js.
@@ -15,6 +15,7 @@ const placeholder = document.getElementById("placeholder");
 const newBtn = document.getElementById("new-scene");
 const saveBtn = document.getElementById("save-scene");
 const loadBtn = document.getElementById("load-scene");
+const keyBtn = document.getElementById("key-btn");
 
 // the last valid scene, so a follow-up prompt edits it rather than start over
 let currentScene = null;
@@ -27,10 +28,13 @@ const STATUS_TEXT = {
   done: "Done.",
 };
 
-// a short, human hint per error category from the orchestrator
+// a short, human hint per error category from the orchestrator / BYOK client
 const CATEGORY_HINT = {
-  "gateway-unreachable": "Can't reach the AI service — check the connection or the gateway URL.",
-  "gateway-error": "The AI service returned an error. Try again in a moment.",
+  "ai-no-key": "Add your Anthropic API key first — click “Key”.",
+  "ai-bad-key": "That API key was rejected — click “Key” to update it.",
+  "ai-unreachable": "Can't reach the Anthropic API — check your connection.",
+  "ai-error": "The AI service returned an error. Try again in a moment.",
+  "ai-no-scene": "The AI didn't return a scene. Try rephrasing the request.",
   "engine-unreachable": "The local sim engine isn't responding.",
   "validation-giveup": "The AI couldn't produce a valid scene. Try rephrasing the request.",
   "engine-runtime": "The scene is valid but couldn't be run (an element may need an external engine).",
@@ -171,6 +175,53 @@ loadBtn.addEventListener("click", async () => {
   }
 });
 
+function askKey() {
+  const form = document.createElement("form");
+  form.className = "keyform";
+  const input = document.createElement("input");
+  input.type = "password";
+  input.placeholder = "sk-ant-…";
+  input.autocomplete = "off";
+  const save = document.createElement("button");
+  save.type = "submit";
+  save.textContent = "Save";
+  const clear = document.createElement("button");
+  clear.type = "button";
+  clear.textContent = "Clear";
+  const err = document.createElement("span");
+  err.className = "keyform__err";
+  err.setAttribute("role", "alert");
+  form.appendChild(input);
+  form.appendChild(save);
+  form.appendChild(clear);
+  form.appendChild(err);
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    err.textContent = "";
+    const v = input.value.trim();
+    if (!v) return;
+    if (!v.startsWith("sk-ant-")) {
+      err.textContent = "That doesn't look like an Anthropic key (they start with “sk-ant-”).";
+      return;
+    }
+    const r = await window.api.setApiKey(v);
+    input.value = "";
+    const where = r.encrypted
+      ? "stored encrypted on this machine"
+      : "stored on this machine (no OS keychain here, so at rest in plaintext)";
+    addMessage("bot", { meta: "Key", text: r.hasKey ? `API key saved — ${where}.` : "No key set." });
+  });
+  clear.addEventListener("click", async () => {
+    await window.api.clearApiKey();
+    input.value = "";
+    addMessage("bot", { meta: "Key", text: "API key cleared." });
+  });
+  addMessage("bot", { meta: "Your Anthropic API key (BYOK)", text: "Stays on this machine, sent only to Anthropic. Not shared.", node: form });
+  input.focus();
+}
+
+keyBtn.addEventListener("click", askKey);
+
 function welcome() {
   const chips = document.createElement("div");
   chips.className = "chips";
@@ -194,3 +245,18 @@ function welcome() {
 
 window.api.onStatus(showStatus);
 welcome();
+
+// nudge for a key on first launch (BYOK)
+(async () => {
+  try {
+    const s = await window.api.keyStatus();
+    if (!s.hasKey) {
+      addMessage("bot", {
+        meta: "Bring your own key",
+        text: "This app uses your own Anthropic API key. Click “Key” to add it — it stays on this machine.",
+      });
+    }
+  } catch {
+    /* keyStatus unavailable outside Electron */
+  }
+})();

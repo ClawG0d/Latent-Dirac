@@ -2,14 +2,15 @@
 
 A cross-platform (macOS + Windows) Electron app: describe a simulation in
 natural language, and it generates a scene, runs it **locally**, and shows the
-result as interactive 3D. Only the AI call leaves the machine — the simulation
-and your scenes/results stay local.
+result as interactive 3D. **Bring your own key (BYOK):** you enter your own
+Anthropic API key; it is held only in the main process and sent only to
+Anthropic. The simulation and your scenes/results never leave the machine.
 
 ```
-prompt ─▶ hosted AI gateway ─▶ scene JSON ─▶ local engine /validate ─(422)─▶ retry
-                                               │(ok)
-                                               ▼
-                                         local engine /run ─▶ report + offline 3D HTML
+prompt ─▶ Anthropic (your key, in main) ─▶ scene JSON ─▶ local engine /validate ─(422)─▶ retry
+                                                          │(ok)
+                                                          ▼
+                                                    local engine /run ─▶ report + offline 3D HTML
 ```
 
 ## Layout
@@ -17,11 +18,13 @@ prompt ─▶ hosted AI gateway ─▶ scene JSON ─▶ local engine /validate 
 | Path | Role |
 | --- | --- |
 | `src/sidecar.js` | spawn the local sim engine, read its `PORT`, expose `baseUrl` + `stop()` |
-| `src/orchestrator.js` | the prompt → gateway → validate → run loop (bounded retry); `runScene` runs a loaded scene directly; categorized errors |
+| `src/ai.js` | BYOK Anthropic client — shape the forced `emit_scene` tool call, extract the scene; categorized errors |
+| `src/orchestrator.js` | the prompt → generate → validate → run loop (bounded retry); `runScene` runs a loaded scene directly; categorized errors |
 | `src/scene_file.js` | serialize / parse a scene for Save & Load |
-| `src/config.js` | gateway URL + retry count + engine launch spec (env-overridable) |
-| `main.js` | Electron main: window, sidecar lifecycle, `run-prompt` / `run-scene` / `save-scene` / `open-scene` IPC |
-| `preload.js` | `contextBridge` exposing `runPrompt` / `runScene` / `saveScene` / `openScene` / `onStatus` — no Node in the page |
+| `src/errors.js` | `categorized(message, category)` helper shared by the AI client and orchestrator |
+| `src/config.js` | model + retry count + engine launch spec (env-overridable) |
+| `main.js` | Electron main: window, sidecar lifecycle, the BYOK key store (encrypted via `safeStorage`), `run-prompt` / `run-scene` / `save-scene` / `open-scene` / `set-api-key` / `clear-api-key` / `key-status` IPC |
+| `preload.js` | `contextBridge` exposing `runPrompt` / `runScene` / `saveScene` / `openScene` / `setApiKey` / `clearApiKey` / `keyStatus` / `onStatus` — no Node, no key, in the page |
 | `renderer/` | chat panel + sandboxed 3D `<iframe>` (offline plotly via `srcdoc`) |
 | `test/` | `node --test` over the logic modules, with injected `spawn`/`fetch` |
 
@@ -33,7 +36,7 @@ display.
 Beyond the core chat → run → 3D flow, the UI offers: example-prompt chips to
 start from, **New** (fresh scene), **Save** (write the current scene to a
 `.json` file), and **Load** (open a scene file and run it directly, skipping the
-gateway). Failures are shown with a category-specific hint (AI service
+AI step). Failures are shown with a category-specific hint (AI service
 unreachable, engine not responding, the AI couldn't produce a valid scene, or a
 valid scene that failed to run).
 
@@ -49,17 +52,24 @@ npm test          # node --test over src/ — runs anywhere, no display needed
 npm start         # launches Electron; spawns the engine sidecar automatically
 ```
 
+On first launch, click **Key** to paste your Anthropic API key. It is stored on
+this machine only — encrypted via the OS keychain (`safeStorage`) when
+available — held in the main process, and sent only to Anthropic. The renderer
+never sees it; only whether one is set.
+
 Configuration (all optional, via environment):
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `LATENT_DIRAC_GATEWAY_URL` | `http://127.0.0.1:8080` | the hosted AI gateway |
+| `LATENT_DIRAC_MODEL` | `claude-sonnet-5` | the Anthropic model used for scene generation |
 | `LATENT_DIRAC_MAX_RETRIES` | `2` | corrective retries on a schema-invalid scene |
 | `LATENT_DIRAC_PYTHON` | `python` | interpreter for the dev engine sidecar |
 | `LATENT_DIRAC_ENGINE_CMD` | — | a frozen engine binary (packaged build) instead of `python -m` |
 
-No Anthropic key lives here — it stays server-side on the gateway
-(`services/ai_gateway/`). The client only knows the gateway URL.
+The API key is entered in-app (not an env var) so it never lands in shell
+history or a committed file. `services/ai_gateway/` remains in the repo as an
+optional hosted-backend alternative, but the desktop client is BYOK and does
+not require it.
 
 ## Packaging (Phase E)
 

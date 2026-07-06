@@ -71,7 +71,8 @@ engine-path resolution, the retry loop) is unit-tested cross-platform in
 - **Cross-platform build CI.** Building the `.exe` requires a Windows runner;
   per `TASK-SPLIT.md` the installer-build CI lane is owner/Windows-side. This
   phase does not touch `.github/workflows/ci.yml`.
-- **The hosted AI gateway** (`services/ai_gateway/`) is deployed separately and
-  holds the Anthropic key; the installer ships no secrets. Point the app at the
-  deployed gateway with `LATENT_DIRAC_GATEWAY_URL` (or bake the owner default
-  into `src/config.js` before building).
+- **The AI is BYOK.** The user enters their own Anthropic API key in-app; it is
+  held only in the main process (encrypted via the OS keychain when available)
+  and sent only to Anthropic. The installer ships no secrets and needs no
+  gateway. (`services/ai_gateway/` remains in the repo as an optional hosted
+  alternative, not used by the packaged client.)

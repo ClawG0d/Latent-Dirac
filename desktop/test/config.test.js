@@ -2,17 +2,17 @@
 const test = require("node:test");
 const assert = require("node:assert");
 
-const { loadConfig, engineSpawnSpec, DEFAULT_GATEWAY_URL } = require("../src/config");
+const { loadConfig, engineSpawnSpec } = require("../src/config");
 
-test("defaults the gateway URL and retry count when env is empty", () => {
+test("defaults model to null (BYOK client picks its own) and retries to 2", () => {
   const cfg = loadConfig({});
-  assert.equal(cfg.gatewayUrl, DEFAULT_GATEWAY_URL);
+  assert.equal(cfg.model, null);
   assert.equal(cfg.maxRetries, 2);
 });
 
-test("honours gateway URL and retry overrides from env", () => {
-  const cfg = loadConfig({ LATENT_DIRAC_GATEWAY_URL: "https://ai.ora.io", LATENT_DIRAC_MAX_RETRIES: "4" });
-  assert.equal(cfg.gatewayUrl, "https://ai.ora.io");
+test("honours model and retry overrides from env", () => {
+  const cfg = loadConfig({ LATENT_DIRAC_MODEL: "claude-opus-4-8", LATENT_DIRAC_MAX_RETRIES: "4" });
+  assert.equal(cfg.model, "claude-opus-4-8");
   assert.equal(cfg.maxRetries, 4);
 });
 

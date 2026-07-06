@@ -8,16 +8,48 @@ const path = require("node:path");
 const fs = require("node:fs/promises");
 const { spawn } = require("node:child_process");
 
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, safeStorage } = require("electron");
 
 const { startSidecar } = require("./src/sidecar");
 const { generateAndRun, runScene } = require("./src/orchestrator");
+const { generateScene } = require("./src/ai");
 const { serializeScene, parseSceneFile } = require("./src/scene_file");
 const { loadConfig, engineSpawnSpec } = require("./src/config");
 
 const config = loadConfig();
 let mainWindow = null;
 let sidecar = null;
+
+// BYOK: the user's Anthropic key lives only here in the main process (never in
+// the renderer). Persisted encrypted via the OS keychain (safeStorage) when
+// available; held in memory for the session either way.
+let apiKey = null;
+const keyFile = () => path.join(app.getPath("userData"), "anthropic-key.bin");
+
+async function loadKey() {
+  try {
+    const buf = await fs.readFile(keyFile());
+    apiKey = safeStorage.isEncryptionAvailable() ? safeStorage.decryptString(buf) : buf.toString("utf8");
+  } catch {
+    apiKey = null;
+  }
+}
+
+async function saveKey(key) {
+  apiKey = key || null;
+  try {
+    if (!key) {
+      await fs.rm(keyFile(), { force: true });
+      return;
+    }
+    const data = safeStorage.isEncryptionAvailable()
+      ? safeStorage.encryptString(key)
+      : Buffer.from(key, "utf8");
+    await fs.writeFile(keyFile(), data, { mode: 0o600 });
+  } catch {
+    // persistence failed (e.g. no keychain) — the key still works this session
+  }
+}
 
 function stopEngine() {
   if (!sidecar) return;
@@ -79,21 +111,28 @@ ipcMain.handle("run-prompt", async (_event, { prompt, currentScene }) => {
     return { ok: false, error: "the sim engine is not running", category: "engine-unreachable" };
   }
   try {
+    const generate = (a) => generateScene({ ...a, apiKey, model: config.model, fetch });
     const result = await generateAndRun(
       { prompt, currentScene },
-      {
-        fetch,
-        gatewayUrl: config.gatewayUrl,
-        engineUrl: sidecar.baseUrl,
-        maxRetries: config.maxRetries,
-        onStatus: sendStatus,
-      }
+      { fetch, engineUrl: sidecar.baseUrl, generate, maxRetries: config.maxRetries, onStatus: sendStatus }
     );
     return { ok: true, result };
   } catch (err) {
     return failure(err);
   }
 });
+
+// BYOK key management — the renderer only ever learns whether a key is set,
+// never the key itself.
+ipcMain.handle("set-api-key", async (_event, key) => {
+  await saveKey((key || "").trim());
+  return { ok: true, hasKey: !!apiKey, encrypted: !!apiKey && safeStorage.isEncryptionAvailable() };
+});
+ipcMain.handle("clear-api-key", async () => {
+  await saveKey(null);
+  return { ok: true, hasKey: false };
+});
+ipcMain.handle("key-status", () => ({ hasKey: !!apiKey }));
 
 // run a scene the renderer already holds (loaded from a file), no gateway
 ipcMain.handle("run-scene", async (_event, scene) => {
@@ -155,6 +194,7 @@ if (!app.requestSingleInstanceLock()) {
   });
 
   app.whenReady().then(async () => {
+    await loadKey();
     try {
       await startEngine();
     } catch (err) {

@@ -24,7 +24,9 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 - **Desktop client (cross-platform Electron app).** A new `desktop/` tree:
   a chat panel where a user describes a simulation in natural language and a
   3D panel that shows it run. One prompt runs the full loop — the AI call
-  goes to a hosted gateway, the simulation runs **locally** in a bundled
+  goes to Anthropic with the user's **own API key (BYOK)**, held only in the
+  app's main process (encrypted via the OS keychain when available) and never
+  seen by the renderer; the simulation runs **locally** in a bundled
   engine sidecar (user scenes/results never leave the machine). The
   load-bearing logic (engine-sidecar lifecycle reading the `PORT` line; the
   gateway → validate → run loop with a bounded corrective retry on a
@@ -43,7 +45,8 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
   prior validation error for a corrective retry. Engine-version-agnostic
   (the schema arrives from the caller); injectable LLM client (7 tests, no
   key/network needed); the Anthropic key stays server-side. Hosting, TLS,
-  auth, and rate limiting are owner infrastructure.
+  auth, and rate limiting are owner infrastructure. (Retained as an optional
+  hosted alternative; the desktop client itself is BYOK and needs no gateway.)
 
 - **Desktop app packaging (PyInstaller + electron-builder).** A per-OS
   recipe: freeze the sim engine into a lean one-folder binary
