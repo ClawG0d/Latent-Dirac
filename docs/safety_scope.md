@@ -4,8 +4,9 @@ Latent Dirac is scoped to open simulation architecture and diagnostics for
 antimatter facility design studies. Particle-matter interaction physics
 (showers, stopping, energy deposition) is delegated to the vendored
 vanilla Geant4 engine track and is in scope only as diagnostics; the red
-lines below sit at the application layer. No engine build or runtime
-coupling ships yet; adapters remain placeholders.
+lines below sit at the application layer. The engine runs only as an
+out-of-process subprocess (offline yield tables and the material-slab
+Matter adapter) — never in-process, and never in a facility control loop.
 
 Out of scope:
 - weaponization scenarios

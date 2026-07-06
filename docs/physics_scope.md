@@ -41,7 +41,8 @@ SIMION) are later field-library extensions (see the roadmap).
 The Python core does not implement shower physics in-house:
 electromagnetic and hadronic showers are delegated to the vendored
 vanilla Geant4 engine track and enter scope only as engine-computed
-diagnostics (no build or runtime coupling ships yet). Annihilation is
+diagnostics, reached out-of-process (offline yield tables and the
+material-slab Matter adapter — never in-process). Annihilation is
 modeled only as a ledgered loss endpoint with kinematic two-photon
 emission for visualization. Annihilation energetics as a figure of
 merit, material activation, shielding design, target engineering, real

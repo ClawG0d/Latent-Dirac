@@ -143,8 +143,16 @@ def test_adapter_status_matches_roadmap():
     for name in ("to_xtrack_particles", "from_xtrack_particles", "xsuite_tracking_stage"):
         assert callable(getattr(adapter, name))
 
-    # geant4 and root stay placeholder-only until their milestones land
-    for adapter_name in ("geant4", "root"):
+    # geant4 is real (M2): the Matter adapter module exists, the
+    # placeholder is gone, and the module imports without any engine build
+    geant4_dir = PROJECT_ROOT / "latent_dirac" / "adapters" / "geant4"
+    assert not (geant4_dir / "placeholder.py").exists()
+    matter = importlib.import_module("latent_dirac.adapters.geant4.adapter")
+    assert callable(matter.Geant4MatterAdapter)
+    assert callable(matter.windows_to_wsl_path)
+
+    # root stays placeholder-only until its milestone lands
+    for adapter_name in ("root",):
         module = importlib.import_module(
             f"latent_dirac.adapters.{adapter_name}.placeholder"
         )

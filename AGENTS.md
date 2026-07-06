@@ -36,13 +36,13 @@ validation + fully labeled benchmarks on the WSL2 box), then the
 interactive viewer. See docs/roadmap.md.
 
 Geant4 engine track: the complete vanilla Geant4 v11.4.2 source tree is
-vendored at `geant4-v11.4.2/` as the in-repo engine baseline. The first
-build recipe (`engine/README.md`) and the first yield table
-(`engine/yieldgen` feeding the `antiproton_yield_table` source) have
-landed; exchange stays offline. The real adapter (GDML + subprocess)
-and the companion acceleration library are phased in via
-docs/roadmap.md; `latent_dirac/adapters/` stays placeholder-only until
-that work lands.
+vendored at `geant4-v11.4.2/` as the in-repo engine baseline. The build
+recipe (`engine/README.md`), the yield-table route (`engine/yieldgen`
+feeding the `antiproton_yield_table` source), and the real Matter
+adapter (M2: `latent_dirac/adapters/geant4/adapter.py` driving
+`engine/transformer` — subprocess + phase-space files, never
+in-process) have landed. The companion acceleration library is phased
+in via docs/roadmap.md (M4).
 
 Vendored Geant4 tree rules:
 
@@ -62,9 +62,10 @@ Vendored Geant4 tree rules:
 
 Do not integrate FLUKA, MAD-X, or RF-Track. The Xsuite adapter is real
 (closed-loop v1: `ParticleState` ↔ `xtrack.Particles` plus a tracking
-Stage); ROOT file I/O ships via uproot in `latent_dirac/io/`. The
-Geant4 and ROOT adapter packages stay placeholder-only until their
-milestones land.
+Stage); the Geant4 Matter adapter is real (M2: material-slab transform
+via `engine/transformer`); ROOT file I/O ships via uproot in
+`latent_dirac/io/`. The ROOT adapter package stays placeholder-only
+until its milestone lands.
 
 ## Core physics scope
 

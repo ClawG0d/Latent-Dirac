@@ -68,7 +68,7 @@ and fidelity note. Design record:
 | Source     | positron / antiproton source terms    | sampler     | first-party (pair, beta-plus, surrogate) + engine yield-table replay | shipped (first engine table committed); more tables per M3 |
 | Transport  | vacuum EM transport                   | stepper     | first-party Boris kernel (NumPy + JAX)      | shipped |
 | Lattice    | decelerator rings, transfer lines     | stepper     | Xsuite adapter                              | adapter shipped (conversion + line tracking) |
-| Matter     | targets, degraders, annihilation      | transformer | vendored vanilla Geant4 v11.4.2             | builds via recipe; offline yield tables only, no runtime coupling |
+| Matter     | targets, degraders, annihilation      | transformer | vendored vanilla Geant4 v11.4.2             | adapter shipped (slab transform via subprocess + files; yield tables for sources) |
 | Collective | in-trap space charge                  | stepper     | first-party mean-field v1, later WarpX      | mean-field v1 shipped (parameterized, beta<<1) |
 | Detector   | detector response                     | transformer | parameterized model first, Garfield++ later | planned |
 | Analysis   | persistent output, ecosystem exchange | sink        | openPMD + ROOT via uproot                   | shipped (openPMD write; ROOT round-trip) |
@@ -493,8 +493,9 @@ Scope note:
 
 The original stage kept the target as **drawn annotations only** and
 sampled the antiproton cloud from the surrogate accepted-source model —
-the honest placeholder this engine-backed version replaces. The runtime
-adapter remains on the roadmap.
+the honest placeholder this engine-backed version replaces. (The Matter
+adapter has since shipped; a `matter_slab` scene element is a later
+extension.)
 
 ![Animated 3D target production demo](assets/demos/target_production_3d.webp)
 
@@ -730,14 +731,17 @@ Implemented:
   electrostatic only (beta << 1), no self-consistency; NumPy pipeline
   only (the JAX backend rejects it); plus the `cold_uniform_sphere`
   prepared-cloud source (placeholder tier)
-- placeholder adapters for Geant4 and ROOT
+- the Geant4 Matter adapter (`Geant4MatterAdapter`: a `ParticleState`
+  cloud through a NIST-material slab via the `engine/transformer`
+  subprocess — energy loss, scattering, and antiproton annihilation into
+  the loss ledger; provenance four-tuple in the report)
+- a placeholder adapter for ROOT (ROOT file I/O itself ships via uproot)
 
 Not implemented yet:
 
-- Geant4 engine adapter integration (the vanilla tree builds via the
-  `engine/README.md` recipe and feeds the pipeline through offline yield
-  tables, but there is no runtime coupling — the Geant4 adapter remains
-  a placeholder; see the roadmap)
+- a `matter_slab` scene element for the Geant4 Matter adapter (the
+  adapter itself ships for the Python API; exchange stays subprocess +
+  files with no in-process engine coupling)
 - scene-schema lattice elements for the Xsuite adapter
 - buffer-gas collisions and rotating wall in the trap; self-consistent
   space charge (PIC via WarpX) beyond the shipped mean-field tier

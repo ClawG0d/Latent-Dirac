@@ -5,6 +5,22 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- **The Geant4 Matter adapter is real (engine-track M2).**
+  `Geant4MatterAdapter` (`latent_dirac/adapters/geant4/adapter.py`,
+  placeholder retired) tracks a `ParticleState` cloud through a
+  NIST-material slab via the new `engine/transformer` application
+  (vanilla Geant4, FTFP_BERT): energy loss, multiple scattering, and
+  antiproton annihilation come back as engine phase space for survivors
+  and ledger deaths for absorbed particles, with the provenance
+  four-tuple namespaced under `matter` (the source's own provenance is
+  preserved). Exchange is subprocess + phase-space CSV files (id-keyed,
+  completion-marker guarded; WSL bridge helper for Windows hosts) —
+  never in-process. The adapter fails fast on particles outside the
+  engine transverse aperture or world envelope. Physically validated
+  brackets: 3.6 GeV/c antiprotons through 1 mm Al survive with textbook
+  dE/dx and MSC; 100 MeV antiprotons into 50 mm Al all stop and
+  annihilate. A `matter_slab` scene element is deferred to M2b.
+
 - Added mean-field space charge (closed-loop v1 item 4, completing
   closed-loop v1): `space_charge: uniform_sphere` on `uniform_field`
   and `penning_trap` elements enables a parameterized uniform-sphere

@@ -14,7 +14,8 @@ Component → next milestone:
 - Transport → shipped (NumPy float64 reference + JAX batch)
 - Lattice → adapter shipped (conversion + tracking Stage);
   scene-schema lattice elements later
-- Matter → first build recipe shipped (M1'-lite); real adapter next (M2)
+- Matter → adapter shipped (M2: slab transform via `engine/transformer`);
+  `matter_slab` scene element next (M2b)
 - Collective → mean-field v1 shipped (uniform-sphere, parameterized);
   WarpX adapter later
 - Detector → parameterized model first, Garfield++ later
@@ -108,10 +109,13 @@ controlled patch protocol (frozen until its infrastructure exists).
   WSL/Linux minimal-physics build, no visualization/UI, datasets fetched
   at build time); containerized CI outside the Python matrix still
   pending
-- **M2 — adapter made real**: scene → GDML export, subprocess/macro
-  driving, particle-cloud exchange; the placeholder-only gate will
-  already have flipped with the Xsuite adapter (closed-loop v1) — M2
-  extends the adapter-status assertions instead
+- **M2 — adapter made real** — done (the Matter adapter:
+  `Geant4MatterAdapter` drives `engine/transformer` over the phase-space
+  file contract; FTFP_BERT slab transform with annihilation into the
+  loss ledger; physically validated thin-foil/stopping-block brackets —
+  see the 2026-07-05 matter-adapter spec). A `matter_slab` scene
+  element (M2b) and GDML translation of full scenes remain later
+  extensions
 - **M3 — yield-table pipeline** — first deliverable done
   (`engine/yieldgen`: proton-on-iridium FTFP_BERT production, CSV
   contract with the provenance four-tuple, consumed by the

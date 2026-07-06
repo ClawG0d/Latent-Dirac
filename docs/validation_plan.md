@@ -11,6 +11,8 @@ Initial validation focuses on analytic and accounting checks:
 - loss-ledger agreement with per-stage accounting
 - accepted-yield calculation
 
-Future validation can compare source and acceptance outputs against external
-tools through adapter interfaces once those integrations are intentionally
-introduced.
+Source and acceptance outputs are validated against external tools through
+the adapter interfaces now that they are real: the Xsuite Lattice adapter
+(`ParticleState` ↔ `xtrack.Particles` round-trip) and the Geant4 Matter
+adapter (material-slab transform, physically bracketed by thin-foil dE/dx
+and stopping-block annihilation checks — see the matter-adapter spec).

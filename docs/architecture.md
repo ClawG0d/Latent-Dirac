@@ -25,9 +25,12 @@ The current package is intentionally lightweight:
 - `backends`: optional JAX batched execution (`run_scene_batched`: one
   compiled program, `vmap` over configurations)
 - `diagnostics`: accepted-yield, loss-ledger, and text-report utilities
-- `adapters`: placeholders for future optional Geant4, Xsuite, and ROOT integrations
+- `adapters`: external-ecosystem adapters — Geant4 (Matter, via the
+  out-of-process `engine/transformer`) and Xsuite (Lattice) are real;
+  ROOT stays a placeholder (ROOT file I/O ships via uproot in `io`)
 
-External scientific ecosystems are not integrated in this phase.
+Engine coupling is out-of-process only (subprocess + files), never
+in-process and never a facility control loop.
 
 ## Model / State / Control
 
