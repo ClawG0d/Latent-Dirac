@@ -30,14 +30,18 @@ Latent Dirac 是反物质工厂（正电子/反质子设施）的开放仿真平
 
 ## 二、当前仓库状态（2026-07-06 更新）
 
-master 全部推送，CI 绿，241 个测试。已完成的大块（详见 CHANGELOG 与
+master 全部推送，CI 绿（M2 又新增 13 个 Matter 适配器测试；精确总数随
+并行开发漂移，以 `pytest -q` 为准）。已完成的大块（详见 CHANGELOG 与
 `git log`，各自的设计记录在 docs/superpowers/specs/ 同日 spec 里）：
 
-- **引擎轨道 M0 + M1'-lite + M3-lite**：Geant4 v11.4.2 整树 vendored
+- **引擎轨道 M0 + M1'-lite + M2 + M3-lite**：Geant4 v11.4.2 整树 vendored
   （与上游 tag 字节级比对一致；唯一已知偏差：上游 `CHANGELOG` symlink
   在仓库里是普通文件——因保留 Windows 原生 checkout **有意维持，
   勿"修复"**，见引擎 spec 附录）；`engine/README.md` 构建配方 +
-  `engine/yieldgen` 产额表 + `antiproton_yield_table` 源 + Chain 2b demo
+  `engine/yieldgen` 产额表 + `antiproton_yield_table` 源 + Chain 2b demo；
+  **M2 Geant4 Matter 适配器真实化**（`adapters/geant4/adapter.py` +
+  `engine/transformer`，材料板相空间变换，子进程+文件、决不进程内，
+  详见 §七）
 - **solver 动物园定位**：JAX/NumPy 是基底，CERN 工具链是引擎组件；
   README 已重构为 Genesis 风格四层架构
 - **闭环 v1 全部完成（勿重做）**：openPMD 输出（`io/openpmd_io.py`，
@@ -142,9 +146,15 @@ Load-bearing 的设计决策（改代码前必须懂）：
   （`engine/README.md`：WSL/Linux 最小物理构建，不链
   visualization/UI，数据集构建期获取）。剩余：容器化 CI
   （放 Python 矩阵之外）与按物理列表裁剪数据集的配方变体。
-- **M2 适配器真实化**：场景 → GDML 导出 + 子进程/宏驱动 + 粒子云
-  交换。届时 `test_only_placeholder_adapters_are_present` 守门测试
-  已随闭环 v1 的 Xsuite adapter 翻转，M2 改为扩展 adapter 状态断言。
+- **M2 适配器真实化（已完成，勿重做）**：Geant4 Matter 适配器
+  （`adapters/geant4/adapter.py` 的 `Geant4MatterAdapter` 驱动
+  `engine/transformer`）——粒子云穿过 NIST 材料板，FTFP_BERT 算能损/
+  散射/反质子湮灭，幸存者带引擎相空间回来、被吸收者进损失账本；
+  交换走子进程 + 相空间 CSV（id 键、完成标记守卫、Windows 走 WSL
+  桥），**决不进程内**。守门测试已翻转为 adapter-status 断言
+  （geant4 真实、root 仍占位）。剩余：`matter_slab` 场景元素（M2b）、
+  全场景 GDML 翻译。**注意实际形态是"材料板相空间变换"，不是最初
+  设想的 GDML 全场景导出**——那留作后续。
 - **M3 产额表管线**：首个交付已落地（`engine/yieldgen` 离线
   FTFP_BERT 产额 → `antiproton_yield_table` table_based 源 →
   引擎背书的 Chain 2b demo）。剩余：正电子/慢化产额表、surrogate
