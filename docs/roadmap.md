@@ -137,8 +137,11 @@ controlled patch protocol (frozen until its infrastructure exists).
 - Penning-Malmberg trap element — **field model done** (Spec 4a: ideal
   quadrupole well + axial B with validated eigenfrequencies; electrode
   geometries stay on the field-map route); Surko buffer-gas Monte Carlo
-  collisions with cross-section data curated as an open,
-  provenance-tracked dataset — pending
+  collisions — **design spec done** (2026-07-06 buffer-gas collisions
+  spec: null-collision operator, channel set, and the per-source
+  cross-section provenance discipline since positron data is not in a
+  single open database like LXCat); code landing deferred pending spec
+  review and a curated N2 cross-section dataset
 - storage lifetime — **parameterized model done** (the `residual_gas_loss`
   element: stochastic annihilation on residual gas over a hold time,
   `mean_lifetime_s` a direct input, ledgered per particle; the

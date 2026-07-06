@@ -5,6 +5,16 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the buffer-gas collisions design spec (research deliverable, no
+  code): the Monte Carlo collision operator for Surko-type positron
+  cooling — null-collision algorithm, the elastic/electronic/vibrational/
+  Ps-formation/annihilation/ionization channel set, operator-splitting
+  with the Penning trap, and the per-source cross-section provenance
+  discipline (positron data is not in a single open database like LXCat,
+  so tables are curated per publication). Code landing deferred pending
+  spec review. Design record:
+  `docs/superpowers/specs/2026-07-06-buffer-gas-collisions-design.md`.
+
 - Added the `xsuite_lattice` scene element: track the cloud through an
   `xtrack.Line` from within a scene via the Xsuite adapter. The Line is a
   data artifact referenced by `line_path` (resolved relative to the scene
