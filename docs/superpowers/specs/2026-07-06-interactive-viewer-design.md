@@ -82,6 +82,19 @@ mask needed).
 Structural tests only; visual quality (smoothness, framing) is checked
 by opening the HTML, like the WebP demo assets.
 
+## Addendum (slice 1b): cloud coloring
+
+`render_scene_animation(..., color=...)` colors the animated cloud by a
+static per-particle property (constant across frames), matching the WebP
+demos' conventions: `"fate"` (accepted green vs lost red, default),
+`"ledger"` (accepted green, else colored by the killing-element index),
+`"energy"` (initial kinetic energy on a Plasma ramp with a colorbar), or
+`"none"` (uniform). The color array is computed once and reused in every
+frame. The CLI exposes `--color` (with `--animate`). An unknown mode
+raises `ValueError`. Tests pin each mode's marker (fate/ledger color
+mapping, energy numeric+colorbar, none→uniform) and that the color holds
+across frames.
+
 ## Honesty / scope
 
 No physics change; the animation replays recorded positions exactly.

@@ -13,7 +13,10 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
   Static element wireframes and optional faint trajectory trails, one
   animated marker cloud, self-contained HTML (no server). The
   `latent-dirac render` CLI gains `--animate`. Requires
-  `record_trajectories=True`. Design record:
+  `record_trajectories=True`. The cloud is colorable (`color=` /
+  `--color`): `fate` (accepted vs lost, default), `ledger` (by killing
+  element), `energy` (initial KE on a Plasma ramp), or `none`. Design
+  record:
   `docs/superpowers/specs/2026-07-06-interactive-viewer-design.md`.
 
 - Added a Material for MkDocs documentation site (`mkdocs.yml`, new

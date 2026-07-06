@@ -32,6 +32,45 @@ FIDELITY_LABELS = {
 _BOX_HALF_WIDTH_M = 0.05
 _CIRCLE_POINTS = 41
 
+# Animated-cloud coloring (Plotly hex), matching the WebP demo conventions.
+_ACCEPTED_COLOR = "#2ca02c"
+_LOST_COLOR = "#d62728"
+_LEDGER_PALETTE = (
+    "#1f77b4", "#ff7f0e", "#9467bd", "#8c564b",
+    "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
+)
+_CLOUD_COLOR_MODES = ("none", "fate", "ledger", "energy")
+
+
+def _cloud_marker(scene: Scene, run_result: SceneRunResult, count: int, color: str) -> dict:
+    """Per-particle marker dict for the animated cloud (color is static across
+    frames — it encodes a final/initial property, not a per-step one)."""
+    if color not in _CLOUD_COLOR_MODES:
+        raise ValueError(f"color must be one of {_CLOUD_COLOR_MODES}, got {color!r}")
+    base = {"size": 3}
+    if color == "none":
+        return base
+
+    final = run_result.pipeline_result.final_cloud
+    if color == "energy":
+        from latent_dirac.scene.build import build_source
+
+        initial = build_source(scene).sample(np.random.default_rng(scene.seed))
+        energies = initial.kinetic_energy_joule()[:count]
+        return {**base, "color": energies, "colorscale": "Plasma", "showscale": True,
+                "colorbar": {"title": "KE [J]"}}
+
+    alive = final.alive[:count]
+    if color == "fate":
+        colors = [_ACCEPTED_COLOR if a else _LOST_COLOR for a in alive]
+    else:  # ledger: accepted green, else colored by killing-element index
+        lost_at = final.lost_at_element[:count]
+        colors = [
+            _ACCEPTED_COLOR if a else _LEDGER_PALETTE[int(idx) % len(_LEDGER_PALETTE)]
+            for a, idx in zip(alive, lost_at, strict=True)
+        ]
+    return {**base, "color": colors}
+
 
 def _fidelity_label(element) -> str:
     if element.type == "solenoid" and element.profile == "thin_sheet":
@@ -84,6 +123,7 @@ def render_scene_animation(
     run_result: SceneRunResult,
     max_particles: int = 64,
     trail: bool = True,
+    color: str = "fate",
 ):
     """Animate the recorded cloud traversing the scene (play/pause + scrub).
 
@@ -92,6 +132,11 @@ def render_scene_animation(
     animated over the recorded steps. Lost particles are frozen in the
     recording, so they visibly stop at their loss point. Self-contained
     Plotly figure — no server.
+
+    `color` sets the cloud coloring (a static per-particle property, so it
+    holds across frames): "fate" (accepted vs lost, default), "ledger"
+    (accepted vs the killing element), "energy" (initial kinetic energy on
+    a Plasma ramp), or "none" (uniform).
     """
     if max_particles <= 0:
         raise ValueError("max_particles must be positive")
@@ -106,6 +151,7 @@ def render_scene_animation(
     go = import_optional("plotly.graph_objects", "plotly")
     count = min(combined.shape[1], max_particles)
     steps = combined.shape[0]
+    marker = _cloud_marker(scene, run_result, count, color)
 
     static_traces = []
     for element in scene.elements:
@@ -132,7 +178,7 @@ def render_scene_animation(
             z=frame[:, 2],
             mode="markers",
             name="cloud",
-            marker={"size": 3},
+            marker=marker,
         )
 
     figure = go.Figure(data=[*static_traces, _cloud(0)])

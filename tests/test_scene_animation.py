@@ -156,6 +156,53 @@ def test_nonpositive_max_particles_raises():
         render_scene_animation(scene, result, max_particles=0)
 
 
+def test_fate_coloring_maps_accepted_and_lost():
+    from latent_dirac.viz.scene_3d import _ACCEPTED_COLOR, _LOST_COLOR
+
+    scene, result = _run()
+    figure = render_scene_animation(scene, result, color="fate")
+    colors = list(figure.data[-1].marker.color)
+    final = result.pipeline_result.final_cloud
+    count = len(colors)
+    expected = [_ACCEPTED_COLOR if a else _LOST_COLOR for a in final.alive[:count]]
+    assert colors == expected
+    # color is static across frames
+    assert list(figure.frames[0].data[0].marker.color) == expected
+
+
+def test_energy_coloring_is_numeric_with_colorbar():
+    scene, result = _run()
+    figure = render_scene_animation(scene, result, color="energy")
+    marker = figure.data[-1].marker
+    assert marker.colorscale is not None
+    assert marker.showscale
+    assert len(marker.color) == min(20, 64)  # numeric KE array, one per particle
+
+
+def test_ledger_coloring_accepted_are_green():
+    from latent_dirac.viz.scene_3d import _ACCEPTED_COLOR
+
+    scene, result = _run()
+    figure = render_scene_animation(scene, result, color="ledger")
+    colors = list(figure.data[-1].marker.color)
+    final = result.pipeline_result.final_cloud
+    for c, alive in zip(colors, final.alive[: len(colors)], strict=True):
+        if alive:
+            assert c == _ACCEPTED_COLOR
+
+
+def test_color_none_is_uniform():
+    scene, result = _run()
+    figure = render_scene_animation(scene, result, color="none")
+    assert figure.data[-1].marker.color is None
+
+
+def test_invalid_color_raises():
+    scene, result = _run()
+    with pytest.raises(ValueError, match="color must be one of"):
+        render_scene_animation(scene, result, color="rainbow")
+
+
 def test_writes_interactive_html(tmp_path):
     scene, result = _run()
     figure = render_scene_animation(scene, result)

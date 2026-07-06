@@ -43,6 +43,12 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="write a play/pause animation of the cloud traversing the scene",
     )
+    render_parser.add_argument(
+        "--color",
+        choices=("none", "fate", "ledger", "energy"),
+        default="fate",
+        help="animated-cloud coloring (with --animate; default: fate)",
+    )
     return parser
 
 
@@ -67,7 +73,9 @@ def _command_render(args: argparse.Namespace) -> int:
         from latent_dirac.viz.scene_3d import render_scene_3d, render_scene_animation
 
         if args.animate:
-            figure = render_scene_animation(scene, result, max_particles=args.max_particles)
+            figure = render_scene_animation(
+                scene, result, max_particles=args.max_particles, color=args.color
+            )
         else:
             figure = render_scene_3d(scene, result, max_particles=args.max_particles)
     except ImportError as exc:

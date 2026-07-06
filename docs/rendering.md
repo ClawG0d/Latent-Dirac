@@ -33,11 +33,13 @@ in the hover text.
 `latent_dirac.viz.scene_3d.render_scene_animation` renders the same scene
 as a play/pause + scrub animation of the recorded cloud traversing the
 beamline (lost particles freeze at their loss point — the loss ledger in
-motion); it needs `run_scene(..., record_trajectories=True)`. From the
-CLI, add `--animate`:
+motion); it needs `run_scene(..., record_trajectories=True)`. The cloud
+is colorable by `fate` (accepted vs lost, default), `ledger` (killing
+element), `energy` (initial kinetic energy), or `none`. From the CLI,
+add `--animate` (and optionally `--color`):
 
 ```bash
-latent-dirac render scene.yaml -o scene_anim.html --animate
+latent-dirac render scene.yaml -o scene_anim.html --animate --color energy
 ```
 
 `latent_dirac.viz.field_3d.render_field_magnitude_3d` renders |B| of a
