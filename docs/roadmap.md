@@ -1,12 +1,12 @@
 # Roadmap
 
 The positioning behind this roadmap is recorded in
-[the platform positioning spec](superpowers/specs/2026-07-05-platform-positioning-and-roadmap-design.md).
+[the platform positioning spec](https://github.com/ClawG0d/Latent-Dirac/blob/master/docs/superpowers/specs/2026-07-05-platform-positioning-and-roadmap-design.md).
 
 ## Solver-zoo view (adopted 2026-07-05)
 
 The platform composes solver components behind one scene/state spine;
-see [the solver-zoo spec](superpowers/specs/2026-07-05-solver-zoo-composition-design.md).
+see [the solver-zoo spec](https://github.com/ClawG0d/Latent-Dirac/blob/master/docs/superpowers/specs/2026-07-05-solver-zoo-composition-design.md).
 Component → next milestone:
 
 - Source → first engine yield table shipped (`engine/yieldgen`);
@@ -99,7 +99,7 @@ and real target physics remain below.
 ## Geant4 engine track
 
 Positioning and rules in
-[the engine positioning spec](superpowers/specs/2026-07-05-geant4-engine-positioning-design.md):
+[the engine positioning spec](https://github.com/ClawG0d/Latent-Dirac/blob/master/docs/superpowers/specs/2026-07-05-geant4-engine-positioning-design.md):
 vanilla Geant4 v11.4.2 vendored in-repo as a read-only baseline, a
 companion acceleration library via the fast-simulation hooks, and a
 controlled patch protocol (frozen until its infrastructure exists).

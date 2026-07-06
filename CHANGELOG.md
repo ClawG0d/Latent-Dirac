@@ -5,6 +5,16 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added a Material for MkDocs documentation site (`mkdocs.yml`, new
+  optional `[docs]` extra): the user-facing docs under `docs/` build
+  into a navigable site with a `docs/index.md` landing page; internal
+  design records under `docs/superpowers/` are excluded from the site
+  (they stay in the repo). `mkdocs build --strict` passes (no broken
+  cross-links or nav gaps); the roadmap's spec links were absolutized to
+  GitHub URLs so they resolve both on the site and on GitHub. Publishing
+  to GitHub Pages is left to a maintainer/infra step. See CONTRIBUTING
+  for the build commands.
+
 - Added the buffer-gas collisions design spec (research deliverable, no
   code): the Monte Carlo collision operator for Surko-type positron
   cooling — null-collision algorithm, the elastic/electronic/vibrational/

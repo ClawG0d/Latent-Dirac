@@ -49,6 +49,9 @@ root = [
 xsuite = [
   "xsuite>=0.54"
 ]
+docs = [
+  "mkdocs-material>=9.5"
+]
 
 [tool.setuptools.packages.find]
 include = ["latent_dirac*"]

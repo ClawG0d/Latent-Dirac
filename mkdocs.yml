@@ -1,0 +1,51 @@
+site_name: Latent Dirac
+site_description: >-
+  Open interactive simulation platform for antimatter factories — positron
+  and antiproton facilities from source through transport to capture.
+repo_url: https://github.com/ClawG0d/Latent-Dirac
+repo_name: ClawG0d/Latent-Dirac
+edit_uri: edit/master/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - toc.integrate
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - tables
+
+# Internal design records live in the repo, not the user-facing site.
+exclude_docs: |
+  superpowers/
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Scene schema: scene_schema.md
+  - Physics scope: physics_scope.md
+  - Source models: source_models.md
+  - Solver backends: solver_backends.md
+  - Rendering: rendering.md
+  - Validation plan: validation_plan.md
+  - Safety scope: safety_scope.md
+  - License strategy: license_strategy.md
+  - Roadmap: roadmap.md

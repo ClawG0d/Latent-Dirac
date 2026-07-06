@@ -7,3 +7,6 @@ build/
 
 # macOS Finder metadata (multiple macOS checkouts)
 .DS_Store
+
+# mkdocs build output
+site/

@@ -18,6 +18,25 @@ python -m venv .venv
 Both the test suite and `ruff check` must pass before a pull request is
 reviewed. CI runs them on Linux and macOS across Python 3.10–3.14.
 
+## Documentation site
+
+The user-facing docs under `docs/` build into a
+[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) site
+(config in `mkdocs.yml`). Internal design records under
+`docs/superpowers/` are excluded from the site — they live in the repo
+for contributors.
+
+```bash
+.venv/bin/python -m pip install -e ".[docs]"
+.venv/bin/python -m mkdocs serve          # live preview at 127.0.0.1:8000
+.venv/bin/python -m mkdocs build --strict # fails on broken links / nav gaps
+```
+
+Run `mkdocs build --strict` after editing docs; it catches broken
+cross-links and pages missing from the nav. Publishing to GitHub Pages
+(`mkdocs gh-deploy` or a deploy workflow) is a maintainer/infra step and
+is not wired up yet.
+
 ## Fidelity declaration duty
 
 Every new physics model (source, field, solver, beamline element,
