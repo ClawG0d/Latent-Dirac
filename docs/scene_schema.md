@@ -45,6 +45,11 @@ elements:
   `residual_gas_loss` (storage lifetime: stochastic annihilation on
   residual gas over a hold time, `mean_lifetime_s` / `hold_time_s`;
   NumPy pipeline only),
+  `buffer_gas_cooling` (Surko-type cooling: `Poisson(collision_rate_hz *
+  hold_time_s)` collisions per particle, each either cooling
+  (`energy_loss_ev`, floored at (3/2) k_B * `gas_temperature_k`) or a
+  positronium-formation loss (`ps_fraction`); parameterized stand-in,
+  NumPy pipeline only),
   `matter_slab` (a NIST-material slab tracked by the vendored Geant4
   engine — `material` / `thickness_mm` / `entry_z_m`, plus optional
   `transverse_half_width_m` / `world_half_length_m` that **must match the

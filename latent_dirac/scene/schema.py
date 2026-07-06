@@ -227,6 +227,26 @@ class ResidualGasLossElement(ElementBase):
     hold_time_s: float = Field(ge=0)
 
 
+class BufferGasCoolingElement(ElementBase):
+    """Surko-type buffer-gas cooling region (parameterized stand-in).
+
+    Over `hold_time_s`, each particle undergoes Poisson(collision_rate_hz *
+    hold_time_s) collisions; each is either a cooling collision (kinetic
+    energy drops by `energy_loss_ev`, floored at (3/2) k_B * gas_temperature_k)
+    or a positronium-formation loss (probability `ps_fraction`; particle
+    killed and ledgered). Single-channel, constant-rate parameterized tier;
+    the energy-dependent cross-section table is a later upgrade — see
+    docs/superpowers/specs/2026-07-06-buffer-gas-collisions-design.md.
+    """
+
+    type: Literal["buffer_gas_cooling"]
+    hold_time_s: float = Field(ge=0)
+    collision_rate_hz: float = Field(gt=0)
+    energy_loss_ev: float = Field(gt=0)
+    ps_fraction: float = Field(ge=0, le=1)
+    gas_temperature_k: float = Field(default=300.0, ge=0)
+
+
 class MonitorElement(ElementBase):
     """Diagnostic snapshot of the cloud at this pipeline position (no physics)."""
 
@@ -246,6 +266,7 @@ ElementSpec = Annotated[
     | ResidualGasLossElement
     | MatterSlabElement
     | XsuiteLatticeElement
+    | BufferGasCoolingElement
     | MonitorElement,
     Field(discriminator="type"),
 ]

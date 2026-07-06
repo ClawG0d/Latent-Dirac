@@ -116,6 +116,10 @@ def _build_stages(
             action = _residual_gas_loss_action(
                 element, np.random.default_rng(scene.seed + 6229 + stage_index)
             )
+        elif element.type == "buffer_gas_cooling":
+            action = _buffer_gas_cooling_action(
+                element, np.random.default_rng(scene.seed + 3313 + stage_index)
+            )
         elif element.type == "matter_slab":
             action = _matter_slab_action(element)
         elif element.type == "xsuite_lattice":
@@ -312,6 +316,53 @@ def _xsuite_lattice_action(element):
         element.label, line, frame, num_turns=element.num_turns
     )
     return stage.action
+
+
+def _buffer_gas_cooling_action(element, rng):
+    """Surko-type buffer-gas cooling over a hold time (parameterized tier).
+
+    Poisson collisions per particle; each is a cooling collision (kinetic
+    energy drops by energy_loss_ev, floored at (3/2) k_B T, momentum
+    rescaled with direction preserved) or a Ps-formation loss (killed,
+    ledgered). Constant rate + single channel; see the buffer-gas spec.
+    Pure and seeded for reproducibility; NumPy pipeline only.
+    """
+    from latent_dirac.core.constants import ELEMENTARY_CHARGE_C, k_B
+    from latent_dirac.core.units import kinetic_energy_to_momentum_magnitude
+
+    delta_e = element.energy_loss_ev * ELEMENTARY_CHARGE_C
+    floor = 1.5 * k_B * element.gas_temperature_k
+    mean_collisions = element.collision_rate_hz * element.hold_time_s
+
+    def cool(cloud: ParticleState) -> ParticleState:
+        result = cloud.copy()
+        mass = result.species.mass_kg
+        alive_in = result.alive.copy()
+        counts = rng.poisson(mean_collisions, size=alive_in.shape[0])
+        ke = result.kinetic_energy_joule()
+        survive = result.alive.copy()
+
+        for i in np.flatnonzero(alive_in):
+            energy = ke[i]
+            for _ in range(int(counts[i])):
+                if rng.random() < element.ps_fraction:
+                    survive[i] = False  # positronium formation: particle lost
+                    break
+                energy = max(energy - delta_e, floor)  # cooling collision
+            if survive[i] and int(counts[i]) > 0:
+                # rescale momentum to the cooled energy, direction preserved
+                p_now = result.momentum_kg_m_s[i]
+                norm = float(np.linalg.norm(p_now))
+                if norm > 0.0:
+                    new_mag = float(kinetic_energy_to_momentum_magnitude(energy, mass))
+                    result.momentum_kg_m_s[i] = p_now * (new_mag / norm)
+
+        aged = alive_in & survive
+        result.time_s = result.time_s + aged * element.hold_time_s
+        result.apply_alive_mask(survive)
+        return result
+
+    return cool
 
 
 def _monitor_action(label, monitors):

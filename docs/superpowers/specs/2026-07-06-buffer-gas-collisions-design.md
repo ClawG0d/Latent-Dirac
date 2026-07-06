@@ -178,3 +178,74 @@ form; the JAX backend rejects it like the other stochastic elements).
 - LXCat project (electron-only; establishes the open,
   provenance-tracked data model this spec adapts for positrons)
   (https://us.lxcat.net/).
+
+## Implementation slice 1 (operator-first, parameterized stand-in)
+
+Owner decisions (2026-07-06): operator-first with a parameterized
+single-channel stand-in; a single `buffer_gas_cooling` element; data
+under `examples/data/` when real tables land. This slice writes the
+operator now and swaps in cited N2 cross-section tables later
+(table-based tier), without touching the interface.
+
+### Element `buffer_gas_cooling` (parameterized tier)
+
+A standalone cooling region (like `residual_gas_loss`, but energy-
+changing), applied over a hold time — not yet interleaved with Boris
+transport (operator-splitting with the trap field is a later slice; a
+standalone region is enough to model a fixed cooling stage and is
+cleanly testable).
+
+Parameters (all direct inputs at this tier):
+
+- `hold_time_s >= 0` — residence in the cooling gas.
+- `collision_rate_hz > 0` — mean collision frequency nu. Constant here;
+  the energy-dependent `nu(E) = n_gas sigma(E) v(E)` form (which is what
+  makes the null-collision method necessary) is the table-based upgrade.
+- `energy_loss_ev > 0` — energy removed per inelastic (cooling)
+  collision: the N2 electronic-excitation stand-in (~8.5 eV in reality),
+  a single channel at this tier.
+- `ps_fraction` in [0, 1] — probability a collision is a
+  positronium-formation loss (particle killed) rather than a cooling
+  collision.
+- `gas_temperature_k >= 0` (default 300) — the cooling floor: kinetic
+  energy is not driven below (3/2) k_B T (a positron cannot cool below
+  the ambient gas).
+
+### Operator (pure, seeded)
+
+Per alive particle, with `default_rng(scene.seed + 3313 + stage_index)`:
+
+1. Draw `n ~ Poisson(collision_rate_hz * hold_time_s)` collisions.
+   Constant rate makes Poisson exact; no null-collision bookkeeping is
+   needed until nu varies with energy.
+2. For each collision: with probability `ps_fraction` it is a Ps-loss —
+   kill the particle and stop (the `Stage` wrapper stamps the ledger,
+   reusing the aperture/`residual_gas_loss` kill pattern). Otherwise it
+   is a cooling collision: reduce kinetic energy by `energy_loss_ev`,
+   floored at `(3/2) k_B T`, and rescale the momentum vector to the new
+   magnitude (direction preserved at this tier; angular scattering is a
+   later refinement — noted, not modeled). Relativistic
+   |p| <-> KE via the existing unit helpers.
+3. Survivors: advance `time_s` by `hold_time_s`.
+
+NumPy pipeline only; the JAX backend rejects it (stochastic, energy-
+changing — no static-program form), and the differentiable objective
+does likewise, matching `residual_gas_loss` / space charge. Fidelity
+tier stated in the docstring and CHANGELOG: parameterized (all inputs
+direct); the table-based upgrade path is recorded above.
+
+### Tests (TDD)
+
+1. Cooling: a hot mono-energetic cloud's mean KE decreases monotonically
+   over the hold and converges toward (3/2) k_B T (never below).
+2. Energy floor: with a large hold, every survivor sits at the floor.
+3. Ps loss: survival fraction tracks the Poisson/branching expectation
+   for the chosen rate and `ps_fraction`; killed particles are ledgered
+   at the element's stage index; survivors keep -1.
+4. `hold_time_s = 0` or `collision_rate_hz -> 0` (few collisions): cloud
+   essentially unchanged.
+5. Momentum-direction preserved per cooling collision; only |p| shrinks
+   (a stated stand-in simplification).
+6. Determinism given seed; dead-on-entry particles untouched (no revive,
+   no restamp).
+7. Schema validation (ranges) and JAX-backend rejection.

@@ -5,6 +5,22 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the `buffer_gas_cooling` scene element (Surko-type cooling,
+  parameterized stand-in — the first coded rung of the buffer-gas
+  design spec): over `hold_time_s`, each particle undergoes
+  `Poisson(collision_rate_hz * hold_time_s)` collisions; each is either
+  a cooling collision (kinetic energy drops by `energy_loss_ev`, floored
+  at (3/2) k_B * `gas_temperature_k`, momentum rescaled with direction
+  preserved) or a positronium-formation loss (probability `ps_fraction`;
+  killed and ledgered). Unlike `residual_gas_loss` (fixed-lifetime pure
+  loss), this *changes energy* — it cools. Constant-rate, single-channel,
+  parameterized tier (all inputs direct); the energy-dependent
+  cross-section table and operator-splitting with the trap are later
+  upgrades. Seeded/reproducible, NumPy pipeline only; the JAX backend
+  rejects it. Added the Boltzmann constant to `core.constants`. Design
+  record:
+  `docs/superpowers/specs/2026-07-06-buffer-gas-collisions-design.md`.
+
 - Added an animated interactive 3D viewer
   (`latent_dirac.viz.scene_3d.render_scene_animation`, Plotly-first
   slice 1 of the roadmap's interactive viewer): a play/pause + scrub
