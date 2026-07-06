@@ -5,9 +5,43 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- **Desktop client (cross-platform Electron app).** A new `desktop/` tree:
+  a chat panel where a user describes a simulation in natural language and a
+  3D panel that shows it run. One prompt runs the full loop — the AI call
+  goes to a hosted gateway, the simulation runs **locally** in a bundled
+  engine sidecar (user scenes/results never leave the machine). The
+  load-bearing logic (engine-sidecar lifecycle reading the `PORT` line; the
+  gateway → validate → run loop with a bounded corrective retry on a
+  schema-invalid scene; the packaged engine-path resolution) is
+  dependency-injected Node, unit-tested with `node --test` (no network, no
+  Electron, no Python). The Electron wiring keeps `contextIsolation`/
+  `sandbox` on, `nodeIntegration` off, a strict CSP, and no secrets in the
+  client. Design records:
+  `docs/superpowers/specs/2026-07-06-desktop-electron-shell-design.md` and
+  `docs/superpowers/specs/2026-07-06-desktop-packaging-design.md`.
+
+- **Hosted AI gateway (natural language → scene).** A standalone deployable
+  under `services/ai_gateway/` (its own FastAPI service, not part of the
+  `latent-dirac` package): turns a prompt plus the engine's Scene JSON
+  Schema into a candidate scene via a forced Claude tool call, accepting a
+  prior validation error for a corrective retry. Engine-version-agnostic
+  (the schema arrives from the caller); injectable LLM client (7 tests, no
+  key/network needed); the Anthropic key stays server-side. Hosting, TLS,
+  auth, and rate limiting are owner infrastructure.
+
+- **Desktop app packaging (PyInstaller + electron-builder).** A per-OS
+  recipe: freeze the sim engine into a lean one-folder binary
+  (`desktop/packaging/engine.spec` — the server import closure plus
+  plotly's inlined JS bundle; the heavy optional stacks and the vendored
+  Geant4 tree excluded) and bundle it with the renderer into a `.dmg`/
+  `.exe`. The packaged app auto-resolves the bundled engine under
+  `resources/engine/`; the frozen-engine path is unit-tested cross-platform.
+  Code signing, notarization, and the Windows build lane are owner-side,
+  documented not automated.
+
 - Added a local sim-engine HTTP API (`latent_dirac.server`, new optional
-  `[server]` extra: FastAPI + uvicorn) — the backend for the planned
-  desktop client. `GET /schema` returns the Scene JSON Schema (the AI's
+  `[server]` extra: FastAPI + uvicorn) — the backend for the desktop
+  client. `GET /schema` returns the Scene JSON Schema (the AI's
   structured-output contract), `POST /validate` runs fail-fast pydantic
   validation and returns structured errors for an AI retry loop, and
   `POST /run` validates + runs + returns the text report, a summary
