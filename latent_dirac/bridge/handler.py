@@ -42,9 +42,15 @@ def _render_html(scene, result, req: dict) -> str:
     animate = req.get("animate", True)
     color = req.get("color", "fate")
     max_particles = int(req.get("max_particles", 64))
+    figure = None
     if animate:
-        figure = render_scene_animation(scene, result, max_particles=max_particles, color=color)
-    else:
+        try:
+            figure = render_scene_animation(scene, result, max_particles=max_particles, color=color)
+        except ValueError:
+            # a transport-less scene (e.g. a beam straight onto a plate) records
+            # no stepped trajectory to animate; fall back to a static 3D
+            figure = None
+    if figure is None:
         figure = render_scene_3d(scene, result, max_particles=max_particles)
     return figure.to_html(include_plotlyjs=True, full_html=True)
 

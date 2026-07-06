@@ -136,6 +136,37 @@ def test_source_params_op_exposes_each_source_type_schema():
     assert "primary_count" in required and "mean_energy_MeV" in required
 
 
+def test_run_falls_back_to_static_3d_when_no_trajectories_to_animate():
+    # a transport-less scene (a beam straight onto a plate) records no stepped
+    # trajectory, so the animation viewer can't build frames; run must still
+    # return a static 3D, never a runtime error
+    scene = {
+        "schema_version": 1,
+        "name": "plate-only",
+        "seed": 1,
+        "solver": {"dt_s": 4.0e-12, "steps": 40},
+        "source": {
+            "type": "beta_plus",
+            "label": "src",
+            "params": {
+                "half_life_s": 8.2e7,
+                "beta_plus_branching_ratio": 0.9,
+                "initial_activity_bq": 3.7e8,
+                "endpoint_energy_MeV": 0.5,
+                "source_radius_m": 0.001,
+                "macro_particles": 40,
+            },
+        },
+        "elements": [
+            {"type": "annihilation_plate", "label": "plate", "z_m": 0.1, "radius_m": 0.05},
+            {"type": "monitor", "label": "end"},
+        ],
+    }
+    resp = handle_request({"op": "run", "scene": scene})
+    assert resp["ok"] is True, resp.get("error")
+    assert "plotly.js v" in resp["result"]["html"]
+
+
 def test_unknown_op_is_a_bad_request():
     resp = handle_request({"op": "explode"})
     assert resp["ok"] is False
