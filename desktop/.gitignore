@@ -1,3 +1,8 @@
 node_modules/
 dist/
 *.log
+
+# PyInstaller output for the frozen engine (built per-OS, never committed)
+packaging/build/
+packaging/dist/
+packaging/__pycache__/

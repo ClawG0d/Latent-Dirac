@@ -18,6 +18,12 @@
     "appId": "io.ora.latentdirac",
     "productName": "Latent Dirac",
     "files": ["main.js", "preload.js", "src/**/*", "renderer/**/*"],
+    "extraResources": [
+      {
+        "from": "packaging/dist/latent-dirac-engine",
+        "to": "engine/latent-dirac-engine"
+      }
+    ],
     "mac": {
       "target": "dmg",
       "category": "public.app-category.education"

@@ -27,3 +27,31 @@ test("engineSpawnSpec uses the frozen binary when LATENT_DIRAC_ENGINE_CMD is set
   assert.equal(spec.command, "/opt/latent-dirac/engine");
   assert.deepEqual(spec.args, ["--host", "127.0.0.1", "--port", "0"]);
 });
+
+test("engineSpawnSpec resolves the bundled engine in a packaged build (macOS)", () => {
+  const spec = engineSpawnSpec(
+    {},
+    { isPackaged: true, resourcesPath: "/App.app/Contents/Resources", platform: "darwin" }
+  );
+  assert.ok(
+    spec.command.endsWith("/engine/latent-dirac-engine/latent-dirac-engine"),
+    `unexpected command: ${spec.command}`
+  );
+  assert.deepEqual(spec.args, ["--host", "127.0.0.1", "--port", "0"]);
+});
+
+test("engineSpawnSpec resolves the bundled .exe in a packaged build (Windows)", () => {
+  const spec = engineSpawnSpec(
+    {},
+    { isPackaged: true, resourcesPath: "C:\\app\\resources", platform: "win32" }
+  );
+  assert.ok(spec.command.endsWith("latent-dirac-engine.exe"), `unexpected command: ${spec.command}`);
+});
+
+test("an explicit LATENT_DIRAC_ENGINE_CMD overrides even a packaged build", () => {
+  const spec = engineSpawnSpec(
+    { LATENT_DIRAC_ENGINE_CMD: "/custom/engine" },
+    { isPackaged: true, resourcesPath: "/App/Resources", platform: "darwin" }
+  );
+  assert.equal(spec.command, "/custom/engine");
+});

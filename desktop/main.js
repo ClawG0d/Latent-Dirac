@@ -28,7 +28,13 @@ function stopEngine() {
 }
 
 async function startEngine() {
-  const spec = engineSpawnSpec();
+  // in a packaged build, launch the frozen engine bundled as an extraResource;
+  // in dev, `python -m latent_dirac.server` (see src/config.js)
+  const spec = engineSpawnSpec(process.env, {
+    isPackaged: app.isPackaged,
+    resourcesPath: process.resourcesPath,
+    platform: process.platform,
+  });
   sidecar = await startSidecar({ spawn, command: spec.command, args: spec.args });
   const resp = await fetch(`${sidecar.baseUrl}/health`);
   if (!resp.ok) {

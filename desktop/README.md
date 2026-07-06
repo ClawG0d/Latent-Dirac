@@ -53,12 +53,11 @@ Configuration (all optional, via environment):
 No Anthropic key lives here — it stays server-side on the gateway
 (`services/ai_gateway/`). The client only knows the gateway URL.
 
-## Packaging (Phase E, owner-side)
+## Packaging (Phase E)
 
-`npm run dist` runs electron-builder for a `.dmg` (macOS) / NSIS `.exe`
-(Windows). Before that ships, the Python engine must be frozen with PyInstaller
-(lean deps: numpy, pydantic, pyyaml, plotly, fastapi, uvicorn — never the
-vendored Geant4 tree) and bundled as an `extraResources` entry, with
-`LATENT_DIRAC_ENGINE_CMD` pointed at it. Code signing and notarization use the
-owner's certificates and are release-time steps, documented in the Phase E
-plan, not automated in this repo.
+Two steps, built per OS: freeze the Python engine with PyInstaller, then bundle
+it + the renderer into a `.dmg`/`.exe` with electron-builder. The packaged app
+auto-resolves the bundled engine under `resources/engine/` (no env var needed).
+Full recipe, the lean-freeze rationale, and the owner-side release steps (code
+signing, notarization, the Windows build lane) are in
+[`packaging/README.md`](packaging/README.md).
