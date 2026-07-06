@@ -76,6 +76,7 @@ def render_frames(
     azim_sweep: float = 80.0,
     box_aspect: tuple[float, float, float] = (2.0, 1.2, 0.8),
     zoom: float = 1.16,
+    axis_labels: tuple[str, str, str] = ("z [m]", "x [m]", "y [m]"),
 ):
     """Render `frame_count` frames; `draw(axes, index, count)` adds content.
 
@@ -98,9 +99,9 @@ def render_frames(
         axes.set_xlim(*limits[2])
         axes.set_ylim(*limits[0])
         axes.set_zlim(*limits[1])
-        axes.set_xlabel("z [m]", labelpad=10)
-        axes.set_ylabel("x [m]", labelpad=10)
-        axes.set_zlabel("y [m]", labelpad=6)
+        axes.set_xlabel(axis_labels[0], labelpad=10)
+        axes.set_ylabel(axis_labels[1], labelpad=10)
+        axes.set_zlabel(axis_labels[2], labelpad=6)
         for axis in (axes.xaxis, axes.yaxis, axes.zaxis):
             axis.set_major_locator(MaxNLocator(4))
         axes.tick_params(labelsize=8, pad=2)

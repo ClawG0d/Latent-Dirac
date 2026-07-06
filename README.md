@@ -86,7 +86,7 @@ report.
 
 ## Demos
 
-Fifteen 3D demos, each rendered from real simulation output. Most are defined
+Sixteen 3D demos, each rendered from real simulation output. Most are defined
 by a declarative YAML scene under [examples/scenes/](examples/scenes/) —
 the scene file *is* the demo. Interactive Plotly versions
 (`assets/demos/*_3d.html`) sit next to each scene-driven animation.
@@ -466,6 +466,52 @@ Magnetic field status:
 - field model: ideal Penning trap (quadrupole well + axial B)
 - well parameter V0: 50 V, d: 0.005 m, axial B: 0.05 T
 - status: ideal global field (no hard edge)
+```
+
+</details>
+
+### Demo 10: ELENA-like Ring — Turn-by-Turn Betatron Portrait
+
+The `xsuite_lattice` element tracking a full ring: an ELENA-inspired
+parameterized lattice (30.4 m circumference, six rectangular-edge
+bends, antiproton reference at 13.7 MeV/c — built programmatically by
+[tools/make_elena_like_line.py](tools/make_elena_like_line.py), which
+is the committed lattice's full provenance; NOT the real ELENA optics).
+Sixty turns of xtrack tracking render as a stroboscopic Poincaré-style
+portrait — once-per-turn samples along a turn axis, color mapping the
+initial transverse amplitude; the bunch column stays confined because
+the working point is stable (tunes qx = 2.68, qy = 1.24). The in-ring
+deceleration — RF ramp, electron cooling — is not modeled and stays on
+the not-implemented list. Regenerating needs the `[xsuite]` extra; the
+generator skips this demo without it.
+
+![Animated 3D ELENA-like ring demo](assets/demos/elena_ring_3d.webp)
+
+```bash
+.venv/bin/latent-dirac run examples/scenes/elena_ring.yaml
+```
+
+<details>
+<summary>Text report</summary>
+
+```text
+Latent Dirac scene report: elena-ring
+
+Stage accounting:
+- ring: input=1e+07, output=1e+07, transmission=1, losses=0
+- end-station: input=1e+07, output=1e+07, transmission=1, losses=0
+
+Loss ledger (weighted, by killing element):
+- ring: 0
+- end-station: 0
+- surviving: 1e+07
+
+Accepted state:
+- weighted count: 1e+07
+- mean kinetic energy: 0.100014 MeV
+
+Scope note:
+- transport and acceptance diagnostic only
 ```
 
 </details>
@@ -903,8 +949,9 @@ Not implemented yet:
 - field maps, batched monitor snapshots, and streaming trajectory
   recording for extreme scales in the JAX backend
 - CST and SIMION field-map formats
-- RF fields / cavity elements (an AD/ELENA-style in-ring deceleration
-  ramp is therefore not yet expressible)
+- RF fields / cavity elements and beam-cooling models (an
+  AD/ELENA-style in-ring deceleration ramp — RF plus electron
+  cooling — is therefore not yet expressible)
 
 ## Documentation
 

@@ -17,12 +17,20 @@ def test_scene_demo_generator_creates_animated_webp_files(tmp_path, monkeypatch)
     assert "magnetic_mirror_3d.webp" in DEMO_WEBP_FILES
 
     # without the engine env var, engine-gated demos are skipped (their
-    # committed assets stay in place) and everything else still renders
+    # committed assets stay in place) and everything else still renders;
+    # xsuite-gated demos render exactly when xtrack is importable
     monkeypatch.delenv("LATENT_DIRAC_G4_TRANSFORMER", raising=False)
+    import importlib.util
+
+    xsuite_available = importlib.util.find_spec("xtrack") is not None
     generated = generate_scene_demo_webps(tmp_path, frame_count=2, write_html=False)
 
     for name in DEMO_WEBP_FILES:
-        if SCENE_DEMOS.get(name, {}).get("requires_engine"):
+        config = SCENE_DEMOS.get(name, {})
+        if config.get("requires_engine"):
+            assert name not in generated
+            continue
+        if config.get("requires_xsuite") and not xsuite_available:
             assert name not in generated
             continue
         path = generated[name]

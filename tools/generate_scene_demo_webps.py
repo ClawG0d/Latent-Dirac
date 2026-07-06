@@ -122,6 +122,15 @@ SCENE_DEMOS = {
         "trail_window": 130,  # ~one axial bounce period at dt = 0.6 ns
         "render": {"box_aspect": (2.6, 1.0, 1.0), "azim_start": -72, "azim_sweep": 40, "elev": 14},
     },
+    "elena_ring_3d.webp": {
+        "scene": "elena_ring.yaml",
+        "title": "ELENA-like ring - turn-by-turn betatron portrait (Xsuite-tracked)\n"
+        "ELENA-inspired parameterized lattice (30.4 m) | fixed 13.7 MeV/c | "
+        "color = initial transverse amplitude",
+        "coloring": "fate",  # unused: this demo renders through frames_fn
+        "requires_xsuite": True,
+        "frames_fn": "_elena_ring_frames",
+    },
     "trap_storage_lifecycle_3d.webp": {
         "scene": "trap_storage_lifecycle.yaml",
         "title": "Trap storage lifecycle - capture, cool, store\n"
@@ -288,6 +297,78 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
     return mpl3d.render_frames(draw, frame_count, title, limits, **render_kwargs)
 
 
+def _xsuite_available() -> bool:
+    import importlib.util
+
+    return importlib.util.find_spec("xtrack") is not None
+
+
+def _elena_ring_frames(frame_count: int):
+    """Turn-by-turn betatron portrait: (turn, x, y) helices, xtrack-tracked."""
+
+    import xtrack as xt
+
+    from latent_dirac.adapters.xsuite.adapter import ReferenceFrame, xsuite_tracking_stage
+
+    scene = load_scene(SCENES_DIR / "elena_ring.yaml")
+    ring = scene.elements[0]
+    line = xt.Line.from_json(str(ring.line_path))  # loader already resolved it
+    frame = ReferenceFrame(p0c_ev=ring.p0c_ev)
+    stage = xsuite_tracking_stage("ring-turn", line, frame, num_turns=1)
+
+    state = build_source(scene).sample(np.random.default_rng(scene.seed))
+    turns = ring.num_turns
+    snapshots = [state.position_m[:, :2].copy()]
+    for _ in range(turns):
+        state, _ = stage.run(state, stage_index=0)
+        snapshots.append(state.position_m[:, :2].copy())
+
+    # helical portrait axes: plot-z = turn number, transverse = real x/y
+    portrait = np.zeros((turns + 1, state.alive.size, 3))
+    portrait[:, :, :2] = np.asarray(snapshots)
+    portrait[:, :, 2] = np.arange(turns + 1)[:, None]
+
+    initial_amplitude = np.hypot(snapshots[0][:, 0], snapshots[0][:, 1])
+    normalized = (initial_amplitude - initial_amplitude.min()) / max(
+        float(np.ptp(initial_amplitude)), 1e-300
+    )
+    plt, _ = mpl3d.load_matplotlib()
+    colormap = plt.get_cmap("plasma")
+    colors = np.array([colormap(float(value))[:3] for value in normalized])
+
+    limits = mpl3d.axis_limits(portrait)
+    total = portrait.shape[0]
+    title = SCENE_DEMOS["elena_ring_3d.webp"]["title"]
+
+    def draw(axes, index, count):
+        # stroboscopic (Poincare-style) portrait: once-per-turn samples are
+        # points, not connected lines — the betatron phase advances ~a
+        # large fraction of a turn between samples, so lines would alias
+        reveal = 2 + int(round((total - 2) * index / max(count - 1, 1)))
+        past = portrait[:reveal].reshape(-1, 3)
+        axes.scatter(
+            past[:, 2],
+            past[:, 0],
+            past[:, 1],
+            c=np.tile(colors, (reveal, 1)),
+            s=2.5,
+            alpha=0.5,
+            depthshade=False,
+        )
+        mpl3d.draw_points(axes, portrait[reveal - 1], [tuple(c) for c in colors])
+
+    return mpl3d.render_frames(
+        draw,
+        frame_count,
+        title,
+        limits,
+        axis_labels=("turn", "x [m]", "y [m]"),
+        box_aspect=(2.4, 1.1, 1.1),
+        azim_start=-68,
+        azim_sweep=42,
+    )
+
+
 def _write_scene_html(scene_name: str, output_path: Path) -> Path | None:
     scene = load_scene(SCENES_DIR / scene_name)
     run_result = run_scene(scene, record_trajectories=True)
@@ -445,6 +526,7 @@ def generate_scene_demo_webps(
     frame_count: int = 44,
     duration_ms: int = 85,
     write_html: bool = True,
+    only: str | None = None,
 ) -> dict[str, Path]:
     """Generate all 3D demo animations; returns output paths by file name."""
 
@@ -455,15 +537,26 @@ def generate_scene_demo_webps(
     outputs: dict[str, Path] = {}
 
     for file_name, config in SCENE_DEMOS.items():
+        if only is not None and file_name != only:
+            continue
         if config.get("requires_engine") and not os.environ.get("LATENT_DIRAC_G4_TRANSFORMER"):
             print(
                 f"skipping {file_name}: set LATENT_DIRAC_G4_TRANSFORMER to regenerate "
                 "engine-backed demos (the committed asset stays in place)"
             )
             continue
-        frames = _scene_demo_frames(
-            config["scene"], config["title"], config["coloring"], frame_count, config=config
-        )
+        if config.get("requires_xsuite") and not _xsuite_available():
+            print(
+                f"skipping {file_name}: xtrack is not importable; install the [xsuite] "
+                "extra to regenerate (the committed asset stays in place)"
+            )
+            continue
+        if "frames_fn" in config:
+            frames = globals()[config["frames_fn"]](frame_count)
+        else:
+            frames = _scene_demo_frames(
+                config["scene"], config["title"], config["coloring"], frame_count, config=config
+            )
         target = output_path / file_name
         mpl3d.save_webp(frames, target, duration_ms)
         outputs[file_name] = target
@@ -473,17 +566,17 @@ def generate_scene_demo_webps(
             if written is not None:
                 outputs[html_name] = written
 
-    mirror_target = output_path / "magnetic_mirror_3d.webp"
-    mpl3d.save_webp(_mirror_frames(frame_count), mirror_target, duration_ms)
-    outputs["magnetic_mirror_3d.webp"] = mirror_target
-
-    sweep_target = output_path / "magnetic_control_sweep_3d.webp"
-    mpl3d.save_webp(_sweep_frames(frame_count), sweep_target, duration_ms)
-    outputs["magnetic_control_sweep_3d.webp"] = sweep_target
-
-    batched_target = output_path / "batched_sweep_3d.webp"
-    mpl3d.save_webp(_batched_sweep_frames(frame_count), batched_target, duration_ms)
-    outputs["batched_sweep_3d.webp"] = batched_target
+    direct = {
+        "magnetic_mirror_3d.webp": _mirror_frames,
+        "magnetic_control_sweep_3d.webp": _sweep_frames,
+        "batched_sweep_3d.webp": _batched_sweep_frames,
+    }
+    for file_name, frames_fn in direct.items():
+        if only is not None and file_name != only:
+            continue
+        target = output_path / file_name
+        mpl3d.save_webp(frames_fn(frame_count), target, duration_ms)
+        outputs[file_name] = target
 
     return outputs
 
@@ -494,10 +587,11 @@ def main() -> int:
     parser.add_argument("--frames", type=int, default=44)
     parser.add_argument("--duration-ms", type=int, default=85)
     parser.add_argument("--no-html", action="store_true")
+    parser.add_argument("--only", default=None, help="generate a single demo by file name")
     args = parser.parse_args()
 
     generated = generate_scene_demo_webps(
-        args.output_dir, args.frames, args.duration_ms, write_html=not args.no_html
+        args.output_dir, args.frames, args.duration_ms, write_html=not args.no_html, only=args.only
     )
     for path in generated.values():
         print(path)

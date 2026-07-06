@@ -1,0 +1,23 @@
+schema_version: 1
+name: elena-ring
+seed: 2026
+source:
+  # parameterized stand-in for an ELENA-momentum antiproton bunch: fixed
+  # 13.7 MeV/c, small emittance, forward-going (the lattice element
+  # requires p_z > 0 for every particle)
+  type: antiproton_surrogate
+  label: ring-bunch
+  params: { primary_proton_count: 1.0e+7, yield_pbar_per_primary_in_acceptance: 1.0,
+            central_momentum_GeV_c: 0.0137, momentum_spread_fraction: 0.0,
+            angular_rms_rad: 0.002, source_sigma_m: 0.003, bunch_length_s: 1.0e-12,
+            macro_particles: 48 }
+solver: { type: relativistic_boris, dt_s: 1.0e-9, steps: 1 }
+elements:
+  # ELENA-inspired parameterized ring (30.4 m, six rectangular-edge
+  # bends; NOT the real optics — see tools/make_elena_like_line.py, the
+  # committed lattice's reproducible provenance), tracked by xtrack at
+  # fixed momentum. The in-ring deceleration (RF ramp, electron cooling)
+  # is not modeled.
+  - { type: xsuite_lattice, label: ring, line_path: ../data/elena_like_ring.json,
+      p0c_ev: 1.37e+7, num_turns: 60, center_z_m: 0.0, length_m: 0.5 }
+  - { type: monitor, label: end-station }

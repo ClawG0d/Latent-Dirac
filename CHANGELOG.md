@@ -5,6 +5,24 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the ELENA-like ring demo (demo #16,
+  `examples/scenes/elena_ring.yaml`): the `xsuite_lattice` element
+  tracking a full ring for 60 turns, rendered as a stroboscopic
+  Poincaré-style turn-by-turn portrait (points, not lines — the
+  betatron phase aliases between once-per-turn samples). The lattice
+  artifact `examples/data/elena_like_ring.json` is license-clean:
+  built programmatically by `tools/make_elena_like_line.py` from
+  public machine-scale parameters (30.4 m, six 60° bends, 13.7 MeV/c
+  antiproton reference) with a deterministic (edge-angle, k1)
+  stability scan — pure sector bends over-focus horizontally and full
+  rectangular bends over-focus vertically at this bending radius, so
+  the stable window sits between (edge 0.14 rad, k1 = 0.2 /m², tunes
+  qx = 2.679, qy = 1.238, pinned by test). Generation is
+  `requires_xsuite`-gated; the generator gains `--only <file>`.
+  Scene reports no longer print an empty field-status header for
+  scenes without first-party field elements. Design record:
+  `docs/superpowers/specs/2026-07-06-elena-ring-demo-design.md`.
+
 - Field-line rendering: every scene demo now draws the field lines of
   its model fields (`latent_dirac.viz.field_lines` — midpoint-rule
   streamlines of the exact `Field` being simulated; B steel blue, E

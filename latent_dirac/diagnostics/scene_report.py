@@ -47,6 +47,8 @@ def _append_gate_line(lines: list[str], element) -> None:
 
 
 def field_status_lines(scene: Scene) -> list[str]:
+    if not any(element.type in FIELD_ELEMENT_TYPES for element in scene.elements):
+        return []  # no first-party field elements: no empty header
     lines = ["Magnetic field status:"]
     for element in _deduplicated_field_elements(scene):
         if getattr(element, "space_charge", None) is not None:
@@ -150,8 +152,10 @@ def scene_report(scene: Scene, result: SceneRunResult, scope_note: str) -> str:
         lines.append(f"- events: {events['positions'].shape[0]}")
         lines.append("- at-rest two-photon kinematics (511 keV label only; no energetics)")
 
-    lines.append("")
-    lines.extend(field_status_lines(scene))
+    field_lines = field_status_lines(scene)
+    if field_lines:
+        lines.append("")
+        lines.extend(field_lines)
     lines.append("")
     lines.append("Scope note:")
     lines.append(f"- {scope_note}")
