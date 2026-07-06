@@ -61,11 +61,14 @@ only Claude-Code-specific operational notes.
    real physics bugs (e.g. a silent antiproton sign error) in 7/7 runs;
    do not skip
 5. Conventional commit (`feat:` / `chore:` / `refactor!:` / `docs:`) with
-   the Co-Authored-By trailer, then push
+   the Co-Authored-By trailer; then `git fetch` + rebase onto
+   `origin/master`, re-run `pytest -q`, and push (see Collaboration —
+   every push this era has started out behind)
 6. After pushing, confirm the run's final CI status
-   (`gh run list --repo ClawG0d/Latent-Dirac --limit 1`) — the local venv
-   is Python 3.14, but the matrix tests 3.10–3.14 (a `tomllib` import
-   once broke only the 3.10 jobs and went unnoticed for five pushes)
+   (`gh run list --repo ClawG0d/Latent-Dirac --limit 1`, or the Actions
+   REST API if `gh` is not installed on the box) — the WSL venv is
+   Python 3.14, but the matrix tests 3.10–3.14 (a `tomllib` import once
+   broke only the 3.10 jobs and went unnoticed for five pushes)
 
 ## Collaboration (multiple agents on one master)
 
@@ -101,6 +104,17 @@ yet). Assume the remote moved since you last looked.
   the human before starting; the load-bearing mirror pairs
   (`differentiable.py` ↔ `jax_scene.py`) and the three-place safety
   pinning are especially painful to resolve blind.
+- **When a component graduates** (placeholder → real, planned → shipped),
+  flip its per-component assertion in `test_adapter_status_matches_roadmap`
+  and update its status in the *same commit* across the README Solvers
+  table, `docs/roadmap.md`, and `CHANGELOG.md`. `ALLOWED_ADAPTERS` stays
+  fixed — only the real-vs-placeholder assertion moves. Out-of-sync
+  status is how a shipped feature reads as "not implemented" 40 lines
+  from where it reads as "done".
+- **Keep `ONBOARDING.md` current when a milestone lands** — it is the
+  relay handoff, and a stale "next up" bullet sends the next session to
+  redo finished work (fold your milestone into §二 and flip its §七
+  bullet from upcoming to done).
 - CI is the shared backstop: after your push settles, confirm the final
   status (step 6 above) — a red master blocks everyone, so fix or
   revert promptly rather than leaving it for the next person.
