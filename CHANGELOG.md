@@ -5,6 +5,19 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Field-line rendering: every scene demo now draws the field lines of
+  its model fields (`latent_dirac.viz.field_lines` — midpoint-rule
+  streamlines of the exact `Field` being simulated; B steel blue, E
+  amber) in both the WebP animations and the Plotly HTML/animated
+  viewer. Idealizations render as-is: thin-sheet solenoid fringes
+  funnel through the bore, hard-edge lines stop at the envelope, the
+  Penning trap shows straight axial B lines against the quadrupole E
+  well's hyperbolic lines (r² |z − zc| conserved, pinned by test), and
+  the Wien filter renders its crossed E and B families. Validated:
+  uniform-field lines straight to 1e-12, tangency to the local field,
+  hard-edge stop behavior. Design record:
+  `docs/superpowers/specs/2026-07-06-field-line-rendering-design.md`.
+
 - Added the ELENA handoff demo (demo #15,
   `examples/scenes/elena_handoff.yaml`, factory-chain 3b): a
   parameterized 100 keV ELENA-extraction bunch through a 2 µm Al

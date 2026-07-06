@@ -297,6 +297,23 @@ def draw_beam_arrow(axes, z_start: float, z_end: float, color=(0.85, 0.3, 0.25),
         )
 
 
+FIELD_LINE_COLORS = {"B": (0.35, 0.5, 0.75), "E": (0.85, 0.6, 0.2)}
+
+
+def draw_field_polylines(axes, bundles, alpha=0.45, linewidth=0.9):
+    """Field-line polylines from `viz.field_lines` (B steel blue, E amber)."""
+
+    for kind, line in bundles:
+        axes.plot(
+            line[:, 2],
+            line[:, 0],
+            line[:, 1],
+            color=FIELD_LINE_COLORS[kind],
+            linewidth=linewidth,
+            alpha=alpha,
+        )
+
+
 def draw_photon_burst(
     axes,
     positions: np.ndarray,

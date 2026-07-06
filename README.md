@@ -90,6 +90,11 @@ Fifteen 3D demos, each rendered from real simulation output. Most are defined
 by a declarative YAML scene under [examples/scenes/](examples/scenes/) —
 the scene file *is* the demo. Interactive Plotly versions
 (`assets/demos/*_3d.html`) sit next to each scene-driven animation.
+Every scene demo also draws the field lines of its model fields
+(B steel blue, E amber) — streamlines integrated from the exact field
+being simulated, so each idealization renders as-is: thin-sheet fringes
+funnel, hard edges cut off abruptly, the ideal trap's well reaches the
+frame edge.
 
 ```text
 source model -> field transport -> beamline acceptance -> loss ledger -> report

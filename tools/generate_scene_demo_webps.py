@@ -233,6 +233,23 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
 
     trail_window = (config or {}).get("trail_window")
 
+    field_line_bundles = []
+    if (config or {}).get("field_lines", True):
+        from latent_dirac.scene.build import _field_for
+        from latent_dirac.viz.field_lines import (
+            element_field_line_bundles,
+            field_elements_for_lines,
+        )
+
+        extent = {
+            "transverse_m": max(beam_extent, 1e-6),
+            "axial_m": max(0.5 * z_span, 1e-6),
+        }
+        for element in field_elements_for_lines(scene):
+            field_line_bundles.extend(
+                element_field_line_bundles(element, _field_for(element), extent)
+            )
+
     def draw(axes, index, count):
         reveal = 2 + int(round((total - 2) * index / max(count - 1, 1)))
         # sliding trail window: long multi-period runs (traps) saturate
@@ -248,6 +265,7 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
             mpl3d.draw_block(axes, -0.0275, 0.0275, 0.014)
             mpl3d.draw_beam_arrow(axes, -0.07, -0.032)
         mpl3d.draw_scene_elements(axes, scene, run_result, plate_display_radius=1.5 * beam_extent)
+        mpl3d.draw_field_polylines(axes, field_line_bundles)
         mpl3d.draw_trajectories(axes, combined[start:], reveal - start, colors)
         mpl3d.draw_points(axes, combined[reveal - 1], colors)
         if photon_bursts is not None:

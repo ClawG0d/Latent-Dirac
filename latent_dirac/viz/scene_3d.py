@@ -101,6 +101,9 @@ def render_scene_3d(scene: Scene, run_result: SceneRunResult, max_particles: int
             )
         )
 
+    for trace in _field_line_traces(go, scene, run_result):
+        figure.add_trace(trace)
+
     combined = _combined_trajectories(scene, run_result)
     if combined is not None:
         figure.add_trace(_trajectory_trace(go, combined, max_particles))
@@ -168,6 +171,7 @@ def render_scene_animation(
                 segments=segments,
             )
         )
+    static_traces.extend(_field_line_traces(go, scene, run_result))
     if trail:
         static_traces.append(_trajectory_trace(go, combined, max_particles))
 
@@ -362,6 +366,59 @@ def _trajectory_trace(go, combined: np.ndarray, max_particles: int):
         opacity=0.6,
         line={"width": 2},
     )
+
+
+_FIELD_LINE_TRACE_COLORS = {"B": "#597fbf", "E": "#d9982e"}
+
+
+def _field_line_traces(go, scene: Scene, run_result: SceneRunResult) -> list:
+    """Field-line traces of each model field (visual diagnostics).
+
+    Extent comes from the recorded trajectories; without them the beam
+    footprint is unknown and no lines are drawn.
+    """
+
+    from latent_dirac.scene.build import _field_for
+    from latent_dirac.viz.field_lines import element_field_line_bundles, field_elements_for_lines
+
+    combined = _combined_trajectories(scene, run_result)
+    if combined is None:
+        return []
+    extent = {
+        "transverse_m": max(float(np.nanmax(np.abs(combined[..., :2]))), 1e-6),
+        "axial_m": max(
+            0.5 * (float(np.nanmax(combined[..., 2])) - float(np.nanmin(combined[..., 2]))), 1e-6
+        ),
+    }
+    traces = []
+    for element in field_elements_for_lines(scene):
+        bundles = element_field_line_bundles(element, _field_for(element), extent)
+        for kind, color in _FIELD_LINE_TRACE_COLORS.items():
+            xs: list[float | None] = []
+            ys: list[float | None] = []
+            zs: list[float | None] = []
+            for bundle_kind, line in bundles:
+                if bundle_kind != kind:
+                    continue
+                xs.extend([*line[:, 0].tolist(), None])
+                ys.extend([*line[:, 1].tolist(), None])
+                zs.extend([*line[:, 2].tolist(), None])
+            if not xs:
+                continue
+            traces.append(
+                go.Scatter3d(
+                    x=xs,
+                    y=ys,
+                    z=zs,
+                    mode="lines",
+                    name=f"{element.label} {kind} field lines",
+                    hovertext=f"field lines of the model field<br>{_fidelity_label(element)}",
+                    hoverinfo="text",
+                    line={"width": 1.5, "color": color},
+                    opacity=0.45,
+                )
+            )
+    return traces
 
 
 def _add_annihilation_traces(go, figure, run_result: SceneRunResult) -> None:
