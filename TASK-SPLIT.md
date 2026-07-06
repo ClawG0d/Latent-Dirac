@@ -92,12 +92,20 @@ python -m venv .venv
 导出格式解析，table-based 层级，测试用小型合成 fixture 文件。
 纯解析工作，完全自包含。spec 里先做格式调研并记录来源。
 
-### T4 残余气体湮灭寿命模型（先写 spec 再动代码）
+### T4 Surko 阱 buffer-gas 碰撞：数据调研 + 设计 spec
 
-正电子/反质子在残余气体上的湮灭损失——参数化压强-寿命模型，作为
-输运中的连续损失或独立元素（设计点）。纯 NumPy，parameterized 层级，
-`assumptions` 与 `physics_note` 按源模型惯例写进 metadata。物理参数
-化需要文献调研（截面/寿命标度），把出处写进 spec。
+（原本排在这里的残余气体寿命模型已被另一会话抢先完成——
+`9c1aa128`，spec 见
+`docs/superpowers/specs/2026-07-06-residual-gas-storage-lifetime-design.md`。
+该提交同时是「新增一个损失类场景元素」的现成参照：schema + build +
+测试 + spec + 文档同步长什么样，做 T1 前值得通读。）
+
+T4 改为 Phase 4 的前置研究任务：Surko 阱 buffer-gas 碰撞的
+截面数据调研与设计 spec（ONBOARDING §七 列明"需截面数据研究"）。
+交付物是 spec 而非代码：正电子-N₂ 等缓冲气体的电子激发/湮灭截面
+数据来源（须开放、可溯源，按 AGENTS.md 数据集策展方向）、MC 碰撞
+算子的设计草案、与现有 Penning 阱场模型的衔接。纯文献工作，
+Mac 完全胜任；代码落点等 spec 评审后再定。
 
 ### 持续任务（穿插做）
 
@@ -125,12 +133,17 @@ python -m venv .venv
 
 | 归属 | 模块 |
 | --- | --- |
-| Mac | `scene/schema.py`、`scene/build.py`、`viz/scene_3d.py`（T1/T2 期间）、`fields/field_map.py`（T3）、T4 新模型落点以其 spec 定（`beamline/` 或 `fields/`，定了在此表补一行）、`docs/` 站点 |
+| Mac | `scene/schema.py`、`scene/build.py`、`viz/scene_3d.py`（T1/T2 期间）、`fields/field_map.py`（T3）、`docs/` 站点（T4 是纯 spec/调研，暂无代码落点） |
 | Windows | `backends/`、`engine/`、`adapters/geant4/`、benchmark/CI 基础设施 |
 | 谁都不动 | `geant4-v11.4.2/`（只读）；README 大结构（owner 在 GitHub 网页端直接改）；安全范围三处钉死（改动先出 positioning spec） |
 
 跨界需求（比如 T1 发现适配器要加参数）：先和 owner 打招呼，
 不要静默跨界提交。
+
+注意：本仓库常态是**三个会话并行推 master**——写本文当天就有第三
+会话把提交落进了 `scene/schema.py`/`scene/build.py`（`9c1aa128`）。
+上表所有权以实时沟通为准；动手前 fetch，认领后再开工。今天同日
+建 spec 的先 glob `docs/superpowers/specs/` 防撞名。
 
 ## 六、协作纪律速查（细则在 CLAUDE.md「Collaboration」）
 
