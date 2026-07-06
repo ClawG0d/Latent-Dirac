@@ -159,6 +159,25 @@ class AnnihilationPlateElement(ElementBase):
     radius_m: float = Field(gt=0)
 
 
+class MatterSlabElement(ElementBase):
+    """A slab of NIST material tracked by the vanilla Geant4 engine (M2b).
+
+    Physics/portable config only; the machine-specific transformer binary
+    is injected at run time via the LATENT_DIRAC_G4_TRANSFORMER environment
+    variable (never stored in a scene). The geometry envelope must match
+    the compiled transformer build. Fidelity tier: engine transformer
+    (vanilla Geant4 v11.4.2, FTFP_BERT). See
+    docs/superpowers/specs/2026-07-06-matter-slab-scene-element-design.md.
+    """
+
+    type: Literal["matter_slab"]
+    material: str
+    thickness_mm: float = Field(gt=0)
+    entry_z_m: float = 0.0
+    transverse_half_width_m: float = Field(default=0.20, gt=0)
+    world_half_length_m: float = Field(default=0.60, gt=0)
+
+
 class ResidualGasLossElement(ElementBase):
     """Storage lifetime: stochastic annihilation on residual gas over a hold.
 
@@ -191,6 +210,7 @@ ElementSpec = Annotated[
     | MomentumWindowElement
     | AnnihilationPlateElement
     | ResidualGasLossElement
+    | MatterSlabElement
     | MonitorElement,
     Field(discriminator="type"),
 ]

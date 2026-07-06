@@ -14,8 +14,9 @@ Component → next milestone:
 - Transport → shipped (NumPy float64 reference + JAX batch)
 - Lattice → adapter shipped (conversion + tracking Stage);
   scene-schema lattice elements later
-- Matter → adapter shipped (M2: slab transform via `engine/transformer`);
-  `matter_slab` scene element next (M2b)
+- Matter → adapter shipped (M2) and the `matter_slab` scene element
+  shipped (M2b: declarative slabs; transformer binary injected via
+  LATENT_DIRAC_G4_TRANSFORMER); GDML translation of full scenes later
 - Collective → mean-field v1 shipped (uniform-sphere, parameterized);
   WarpX adapter later
 - Detector → parameterized model first, Garfield++ later
@@ -113,9 +114,10 @@ controlled patch protocol (frozen until its infrastructure exists).
   `Geant4MatterAdapter` drives `engine/transformer` over the phase-space
   file contract; FTFP_BERT slab transform with annihilation into the
   loss ledger; physically validated thin-foil/stopping-block brackets —
-  see the 2026-07-05 matter-adapter spec). A `matter_slab` scene
-  element (M2b) and GDML translation of full scenes remain later
-  extensions
+  see the 2026-07-05 matter-adapter spec). The `matter_slab` scene
+  element (M2b) is done — declarative slabs in a scene, the transformer
+  binary injected at run time via LATENT_DIRAC_G4_TRANSFORMER (never in
+  the YAML); GDML translation of full scenes remains a later extension
 - **M3 — yield-table pipeline** — first deliverable done
   (`engine/yieldgen`: proton-on-iridium FTFP_BERT production, CSV
   contract with the provenance four-tuple, consumed by the

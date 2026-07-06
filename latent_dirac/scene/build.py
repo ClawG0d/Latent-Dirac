@@ -116,6 +116,8 @@ def _build_stages(
             action = _residual_gas_loss_action(
                 element, np.random.default_rng(scene.seed + 6229 + stage_index)
             )
+        elif element.type == "matter_slab":
+            action = _matter_slab_action(element)
         elif element.type == "monitor":
             action = _monitor_action(element.label, monitors)
         else:  # pragma: no cover - the schema union prevents this
@@ -243,6 +245,46 @@ def _residual_gas_loss_action(element, rng):
         return result
 
     return hold
+
+
+def _matter_slab_action(element):
+    """Track the cloud through a NIST material slab via the Geant4 engine.
+
+    The transformer binary is machine-specific and injected at run time
+    (LATENT_DIRAC_G4_TRANSFORMER, shlex-split; optional
+    LATENT_DIRAC_G4_PATH_STYLE = native | wsl), never stored in the scene.
+    The stage is built unconditionally so scenes construct and render with
+    no engine present; a missing binary only fails when the stage runs.
+    """
+    import os
+    import shlex
+
+    from latent_dirac.adapters.geant4.adapter import Geant4MatterAdapter
+
+    # shlex.split: a transformer path containing spaces must be quoted
+    command_str = os.environ.get("LATENT_DIRAC_G4_TRANSFORMER")
+    if not command_str:
+
+        def missing(cloud: ParticleState) -> ParticleState:
+            raise RuntimeError(
+                f"matter_slab {element.label!r} needs the engine transformer: set "
+                "LATENT_DIRAC_G4_TRANSFORMER to the transformer command (e.g. the "
+                "engine/transformer binary). The scene builds and renders without it, "
+                "but running the slab stage requires it."
+            )
+
+        return missing
+
+    adapter = Geant4MatterAdapter(
+        command=tuple(shlex.split(command_str)),
+        material=element.material,
+        thickness_mm=element.thickness_mm,
+        entry_z_m=element.entry_z_m,
+        path_style=os.environ.get("LATENT_DIRAC_G4_PATH_STYLE", "native"),
+        transverse_half_width_m=element.transverse_half_width_m,
+        world_half_length_m=element.world_half_length_m,
+    )
+    return adapter.apply
 
 
 def _monitor_action(label, monitors):

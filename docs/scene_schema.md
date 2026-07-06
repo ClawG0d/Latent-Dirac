@@ -41,8 +41,20 @@ elements:
   optional per-element `steps` override), `drift` (zero-field transport),
   `aperture`, `momentum_window` (momenta in GeV/c),
   `annihilation_plate` (ledgered loss endpoint recording at-rest
-  two-photon kinematics; NumPy pipeline only), `monitor` (cloud snapshot,
-  no physics).
+  two-photon kinematics; NumPy pipeline only),
+  `residual_gas_loss` (storage lifetime: stochastic annihilation on
+  residual gas over a hold time, `mean_lifetime_s` / `hold_time_s`;
+  NumPy pipeline only),
+  `matter_slab` (a NIST-material slab tracked by the vendored Geant4
+  engine — `material` / `thickness_mm` / `entry_z_m`, plus optional
+  `transverse_half_width_m` / `world_half_length_m` that **must match the
+  compiled transformer build** (defaults suit the reference build; a
+  scene half-width larger than the real build would let particles past
+  the scene check that the engine geometry cannot represent); the
+  transformer binary is injected at run time via
+  `LATENT_DIRAC_G4_TRANSFORMER` — a command string, shlex-split, so a
+  path with spaces must be quoted — never stored in the scene; NumPy
+  pipeline only), `monitor` (cloud snapshot, no physics).
 - Time gating: `uniform_field` and `penning_trap` accept optional
   `t_on_s`/`t_off_s` (set together); the whole element field is active
   only inside the half-open window — idealized instantaneous switching.

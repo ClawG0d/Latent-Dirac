@@ -5,6 +5,20 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the `matter_slab` scene element (engine-track M2b): a declarative
+  slab of NIST material tracked by the vendored Geant4 Matter adapter
+  from within a scene. Physics config (`material`, `thickness_mm`,
+  `entry_z_m`, geometry envelope) lives in the scene; the machine-specific
+  transformer binary is injected at run time via
+  `LATENT_DIRAC_G4_TRANSFORMER` (with optional
+  `LATENT_DIRAC_G4_PATH_STYLE`), never stored in the YAML — so scenes
+  construct and render with no engine present, and only running the slab
+  stage needs the binary. The adapter body is unchanged; `scene_3d` draws
+  the slab (fidelity: engine transformer); the JAX backend rejects it.
+  Fidelity tier: engine transformer (vanilla Geant4 v11.4.2, FTFP_BERT).
+  Design record:
+  `docs/superpowers/specs/2026-07-06-matter-slab-scene-element-design.md`.
+
 - The differentiable capture objective now handles `residual_gas_loss`:
   the stochastic hard kill enters the soft objective as its expected
   survival `exp(-hold_time_s / mean_lifetime_s)` — a smooth, uniform,

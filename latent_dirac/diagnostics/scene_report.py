@@ -94,6 +94,23 @@ def scene_report(scene: Scene, result: SceneRunResult, scope_note: str) -> str:
         lines.append(f"- patches: {provenance.get('patches', 'unknown')}")
         lines.append(f"- table primaries: {provenance.get('n_primaries', 'unknown')}")
 
+    # A Matter transform namespaces its four-tuple under `matter` so it never
+    # clobbers an upstream source's provenance; surface it independently, or a
+    # yield-table-source + matter-slab chain would silently drop the engine's.
+    matter = final.metadata.get("matter") if isinstance(final.metadata, dict) else None
+    if isinstance(matter, dict) and isinstance(matter.get("provenance"), dict):
+        mp = matter["provenance"]
+        lines.append("")
+        lines.append("Matter engine provenance (four-tuple):")
+        lines.append(
+            f"- material: {matter.get('material', 'unknown')}, "
+            f"thickness: {matter.get('thickness_mm', 'unknown')} mm"
+        )
+        lines.append(f"- geant4 version: {mp.get('geant4_version', 'unknown')}")
+        lines.append(f"- physics list: {mp.get('physics_list', 'unknown')}")
+        lines.append(f"- datasets: {mp.get('datasets', 'unknown')}")
+        lines.append(f"- patches: {mp.get('patches', 'unknown')}")
+
     for label, events in result.annihilations.items():
         lines.append("")
         lines.append(f"Annihilation endpoint {label!r}:")
