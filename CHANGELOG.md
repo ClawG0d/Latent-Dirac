@@ -5,6 +5,23 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added a local sim-engine HTTP API (`latent_dirac.server`, new optional
+  `[server]` extra: FastAPI + uvicorn) — the backend for the planned
+  desktop client. `GET /schema` returns the Scene JSON Schema (the AI's
+  structured-output contract), `POST /validate` runs fail-fast pydantic
+  validation and returns structured errors for an AI retry loop, and
+  `POST /run` validates + runs + returns the text report, a summary
+  (accepted count, per-stage losses), and a **self-contained offline**
+  interactive 3D HTML (plotly.js inlined, no CDN — so the desktop 3D
+  panel renders with no network). Run-time engine/adapter failures
+  surface as 400 with a clear message, not a 500. Launch with
+  `python -m latent_dirac.server` (binds 127.0.0.1 on an ephemeral port
+  and prints it for a parent process); localhost only — simulations run
+  on the user's machine, never remotely. 9 tests via FastAPI TestClient.
+  Design record:
+  `docs/superpowers/specs/2026-07-06-interactive-viewer-design.md` and
+  the desktop-client plan.
+
 - Added the `buffer_gas_cooling` scene element (Surko-type cooling,
   parameterized stand-in — the first coded rung of the buffer-gas
   design spec): over `hold_time_s`, each particle undergoes
