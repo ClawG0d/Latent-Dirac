@@ -34,6 +34,86 @@ def _json_errors(exc: ValidationError) -> list:
     return json.loads(exc.json())
 
 
+# plotly's built-in Play/slider drive frames via Plotly.animate, which does NOT
+# repaint gl3d (3D) marker traces — so the button appears dead. Plotly.restyle,
+# by contrast, reliably updates and repaints 3D traces. This post-plot script
+# strips plotly's dead controls and drives the recorded frames itself with
+# restyle, behind a self-contained Play/Pause + scrub bar. {plot_id} is
+# substituted by plotly.to_html; __LD_FRAMES__/__LD_MARKER__ by us.
+_ANIM_JS = """
+(function(){
+  var gd = document.getElementById('{plot_id}');
+  if (!gd || !window.Plotly) return;
+  var ldFrames = __LD_FRAMES__;      // [[x[], y[], z[]], ...] per step
+  var ldMarker = __LD_MARKER__;      // index of the animated cloud trace
+  if (!ldFrames.length) return;
+  var i = 0, timer = null;
+  function draw(k){
+    var f = ldFrames[k];
+    window.Plotly.restyle(gd, {x:[f[0]], y:[f[1]], z:[f[2]]}, [ldMarker]);
+  }
+  var bar = document.createElement('div');
+  bar.style.cssText = [
+    'position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:9999',
+    'display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.9)',
+    'border:1px solid #e4dfd5;padding:6px 10px;color:#1b2431',
+    'font:12px -apple-system,BlinkMacSystemFont,sans-serif'
+  ].join(';');
+  var btn = document.createElement('button');
+  btn.textContent = '\\u25B6 Play';
+  btn.style.cssText = 'border:0;background:#3a5bd9;color:#fff;padding:5px 12px;cursor:pointer;font:inherit';
+  var slider = document.createElement('input');
+  slider.type = 'range';
+  slider.min = '0';
+  slider.max = String(ldFrames.length - 1);
+  slider.value = '0';
+  slider.style.width = '220px';
+  var lab = document.createElement('span');
+  lab.style.color = '#6b7688';
+  function setLab(){ lab.textContent = 'step ' + i + ' / ' + (ldFrames.length - 1); }
+  function stop(){
+    if (timer){ clearInterval(timer); timer = null; btn.textContent = '\\u25B6 Play'; }
+  }
+  btn.addEventListener('click', function(){
+    if (timer){ stop(); return; }
+    btn.textContent = '\\u23F8 Pause';
+    timer = setInterval(function(){
+      i = (i + 1) % ldFrames.length;
+      slider.value = String(i);
+      draw(i);
+      setLab();
+    }, 90);
+  });
+  slider.addEventListener('input', function(){
+    stop();
+    i = parseInt(slider.value, 10);
+    draw(i);
+    setLab();
+  });
+  bar.appendChild(btn); bar.appendChild(slider); bar.appendChild(lab);
+  document.body.appendChild(bar);
+  setLab(); draw(0);
+})();
+"""
+
+
+def _animated_html(figure) -> str:
+    # extract the per-step marker coords, then drop plotly's dead 3D controls +
+    # frames and drive them ourselves via restyle (see _ANIM_JS)
+    marker_index = len(figure.data) - 1
+    frames_xyz = [
+        [list(frame.data[0].x), list(frame.data[0].y), list(frame.data[0].z)]
+        for frame in figure.frames
+    ]
+    figure.frames = []
+    figure.layout.updatemenus = []
+    figure.layout.sliders = []
+    post = _ANIM_JS.replace("__LD_FRAMES__", json.dumps(frames_xyz)).replace(
+        "__LD_MARKER__", str(marker_index)
+    )
+    return figure.to_html(include_plotlyjs=True, full_html=True, post_script=post)
+
+
 def _render_html(scene, result, req: dict) -> str:
     # offline/self-contained: plotly is inlined so the desktop 3D panel renders
     # with no network
@@ -42,17 +122,18 @@ def _render_html(scene, result, req: dict) -> str:
     animate = req.get("animate", True)
     color = req.get("color", "fate")
     max_particles = int(req.get("max_particles", 64))
-    figure = None
     if animate:
         try:
             figure = render_scene_animation(scene, result, max_particles=max_particles, color=color)
         except ValueError:
             # a transport-less scene (e.g. a beam straight onto a plate) records
-            # no stepped trajectory to animate; fall back to a static 3D
+            # no stepped trajectory to animate; fall back to a static 3D below
             figure = None
-    if figure is None:
-        figure = render_scene_3d(scene, result, max_particles=max_particles)
-    return figure.to_html(include_plotlyjs=True, full_html=True)
+        if figure is not None:
+            return _animated_html(figure)
+    return render_scene_3d(scene, result, max_particles=max_particles).to_html(
+        include_plotlyjs=True, full_html=True
+    )
 
 
 def handle_request(req: dict) -> dict:

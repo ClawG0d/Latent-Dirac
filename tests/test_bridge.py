@@ -136,6 +136,18 @@ def test_source_params_op_exposes_each_source_type_schema():
     assert "primary_count" in required and "mean_energy_MeV" in required
 
 
+def test_run_animation_ships_a_custom_restyle_player():
+    # plotly's built-in play does not animate gl3d markers; the bridge drives
+    # frames itself via Plotly.restyle (which does repaint 3D). A scene with a
+    # transport element (solenoid) has frames, so the run HTML must carry the
+    # custom player.
+    resp = handle_request({"op": "run", "scene": valid_scene()})
+    assert resp["ok"] is True
+    html = resp["result"]["html"]
+    assert "Plotly.restyle" in html  # our reliable per-frame driver
+    assert "__LD_FRAMES__" in html or "ldFrames" in html  # embedded frame coords
+
+
 def test_run_falls_back_to_static_3d_when_no_trajectories_to_animate():
     # a transport-less scene (a beam straight onto a plate) records no stepped
     # trajectory, so the animation viewer can't build frames; run must still
