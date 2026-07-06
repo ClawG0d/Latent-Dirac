@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- self-contained: no remote resources. The 3D HTML is generated locally
+         with plotly inlined and shown in a sandboxed srcdoc iframe. The frame
+         carries sandbox="allow-scripts" (no allow-same-origin), so it gets an
+         opaque origin, does NOT inherit this strict parent CSP, and runs the
+         trusted local plotly inline scripts in isolation. connect-src 'none'
+         still blocks any exfiltration from this page. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-src 'self'; connect-src 'none'"
+    />
+    <title>Latent Dirac</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <section class="chat" aria-label="Chat">
+        <header class="chat__head">
+          <span class="chat__title">Latent Dirac</span>
+          <span class="chat__sub">describe a beamline; it runs locally</span>
+        </header>
+        <div id="log" class="log" aria-live="polite"></div>
+        <div id="status" class="status" hidden></div>
+        <form id="form" class="composer">
+          <textarea
+            id="prompt"
+            class="composer__input"
+            rows="2"
+            placeholder="a positron pair through a solenoid into an aperture"
+            autofocus
+          ></textarea>
+          <button id="send" type="submit" class="composer__send">Run</button>
+        </form>
+      </section>
+      <section class="viz" aria-label="3D view">
+        <div id="placeholder" class="viz__placeholder">
+          The 3D view of your simulation will appear here.
+        </div>
+        <iframe
+          id="frame"
+          class="viz__frame"
+          title="3D simulation"
+          sandbox="allow-scripts"
+          hidden
+        ></iframe>
+      </section>
+    </div>
+    <script src="renderer.js"></script>
+  </body>
+</html>

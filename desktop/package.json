@@ -1,0 +1,29 @@
+{
+  "name": "latent-dirac-desktop",
+  "version": "0.1.0",
+  "description": "Desktop client for Latent Dirac: chat -> scene -> local run -> interactive 3D.",
+  "license": "Apache-2.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.js",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "electron-builder": "^25.1.0"
+  },
+  "build": {
+    "appId": "io.ora.latentdirac",
+    "productName": "Latent Dirac",
+    "files": ["main.js", "preload.js", "src/**/*", "renderer/**/*"],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.education"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
