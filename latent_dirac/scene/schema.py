@@ -159,6 +159,30 @@ class AnnihilationPlateElement(ElementBase):
     radius_m: float = Field(gt=0)
 
 
+class XsuiteLatticeElement(ElementBase):
+    """Track the cloud through an xtrack.Line declared in the scene (T2).
+
+    The Line is a data artifact referenced by `line_path` (resolved
+    relative to the scene file); `p0c_ev` is the always-explicit reference
+    momentum x c in eV. Physics/portable config only. `center_z_m` /
+    `length_m` are viz hints so the lattice renders without importing
+    xtrack. Fidelity tier: externally tracked (Xsuite / xtrack).
+
+    Requires forward-going particles (p_z > 0 for every alive particle):
+    the adapter keeps only |p| across the accelerator-coordinate boundary,
+    so a wide-angle or isotropic upstream source (e.g. a bare `beta_plus`
+    emitter) is rejected at run time. See
+    docs/superpowers/specs/2026-07-06-xsuite-lattice-scene-element-design.md.
+    """
+
+    type: Literal["xsuite_lattice"]
+    line_path: str
+    p0c_ev: float = Field(gt=0)
+    num_turns: int = Field(default=1, ge=1)
+    center_z_m: float = 0.0
+    length_m: float | None = Field(default=None, gt=0)
+
+
 class MatterSlabElement(ElementBase):
     """A slab of NIST material tracked by the vanilla Geant4 engine (M2b).
 
@@ -211,6 +235,7 @@ ElementSpec = Annotated[
     | AnnihilationPlateElement
     | ResidualGasLossElement
     | MatterSlabElement
+    | XsuiteLatticeElement
     | MonitorElement,
     Field(discriminator="type"),
 ]

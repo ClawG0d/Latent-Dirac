@@ -54,7 +54,15 @@ elements:
   transformer binary is injected at run time via
   `LATENT_DIRAC_G4_TRANSFORMER` — a command string, shlex-split, so a
   path with spaces must be quoted — never stored in the scene; NumPy
-  pipeline only), `monitor` (cloud snapshot, no physics).
+  pipeline only),
+  `xsuite_lattice` (track through an `xtrack.Line` via the Xsuite
+  adapter — `line_path` (a Line JSON, resolved relative to the scene
+  file), `p0c_ev` (reference momentum x c in eV, always explicit),
+  optional `num_turns` / `center_z_m` / `length_m` viz hints; requires
+  forward-going particles (`p_z > 0` for every alive particle — a
+  wide-angle/isotropic source is rejected at run time); needs the
+  `[xsuite]` extra to run; NumPy pipeline only), `monitor` (cloud
+  snapshot, no physics).
 - Time gating: `uniform_field` and `penning_trap` accept optional
   `t_on_s`/`t_off_s` (set together); the whole element field is active
   only inside the half-open window — idealized instantaneous switching.

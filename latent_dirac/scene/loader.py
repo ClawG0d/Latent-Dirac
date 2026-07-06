@@ -34,6 +34,14 @@ def _resolve_scene_relative_paths(data, base_dir: Path) -> None:
         if isinstance(table_path, str) and not Path(table_path).is_absolute():
             params["table_path"] = str((base_dir / table_path).resolve())
 
+    elements = data.get("elements") if isinstance(data, Mapping) else None
+    for element in elements if isinstance(elements, list) else []:
+        if not isinstance(element, dict) or element.get("type") != "xsuite_lattice":
+            continue
+        line_path = element.get("line_path")
+        if isinstance(line_path, str) and not Path(line_path).is_absolute():
+            element["line_path"] = str((base_dir / line_path).resolve())
+
 
 def load_scene(path: str | Path) -> Scene:
     """Load a scene file; the format is detected from the file suffix."""

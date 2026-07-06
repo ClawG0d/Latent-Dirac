@@ -118,6 +118,8 @@ def _build_stages(
             )
         elif element.type == "matter_slab":
             action = _matter_slab_action(element)
+        elif element.type == "xsuite_lattice":
+            action = _xsuite_lattice_action(element)
         elif element.type == "monitor":
             action = _monitor_action(element.label, monitors)
         else:  # pragma: no cover - the schema union prevents this
@@ -285,6 +287,30 @@ def _matter_slab_action(element):
         world_half_length_m=element.world_half_length_m,
     )
     return adapter.apply
+
+
+def _xsuite_lattice_action(element):
+    """Track the cloud through an xtrack.Line declared in the scene (T2).
+
+    The Line is loaded from `line_path` (already resolved relative to the
+    scene file by the loader); the reference momentum `p0c_ev` is always
+    explicit. Loading needs xtrack, so a missing `[xsuite]` extra raises a
+    clear ImportError when the stage is built (scenes still construct and
+    render without it). Ledger stamping flows through `Stage.run`.
+    """
+    from latent_dirac.adapters.xsuite.adapter import (
+        ReferenceFrame,
+        _require_xtrack,
+        xsuite_tracking_stage,
+    )
+
+    xtrack = _require_xtrack()
+    line = xtrack.Line.from_json(element.line_path)
+    frame = ReferenceFrame(p0c_ev=element.p0c_ev)
+    stage = xsuite_tracking_stage(
+        element.label, line, frame, num_turns=element.num_turns
+    )
+    return stage.action
 
 
 def _monitor_action(label, monitors):

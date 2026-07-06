@@ -12,8 +12,9 @@ Component → next milestone:
 - Source → first engine yield table shipped (`engine/yieldgen`);
   positron/moderation tables per M3
 - Transport → shipped (NumPy float64 reference + JAX batch)
-- Lattice → adapter shipped (conversion + tracking Stage);
-  scene-schema lattice elements later
+- Lattice → adapter shipped (conversion + tracking Stage) and the
+  `xsuite_lattice` scene element shipped (declarative `xtrack.Line` by
+  path; needs the `[xsuite]` extra)
 - Matter → adapter shipped (M2) and the `matter_slab` scene element
   shipped (M2b: declarative slabs; transformer binary injected via
   LATENT_DIRAC_G4_TRANSFORMER); GDML translation of full scenes later

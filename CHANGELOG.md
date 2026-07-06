@@ -5,6 +5,17 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the `xsuite_lattice` scene element: track the cloud through an
+  `xtrack.Line` from within a scene via the Xsuite adapter. The Line is a
+  data artifact referenced by `line_path` (resolved relative to the scene
+  file, like the field map and yield table); `p0c_ev` is the
+  always-explicit reference momentum. Needs the `[xsuite]` extra to run;
+  scenes construct and render without it (the box uses `center_z_m` /
+  `length_m` viz hints). The adapter body is unchanged; the JAX backend
+  rejects it. Fidelity tier: externally tracked (Xsuite / xtrack).
+  Design record:
+  `docs/superpowers/specs/2026-07-06-xsuite-lattice-scene-element-design.md`.
+
 - Added the `matter_slab` scene element (engine-track M2b): a declarative
   slab of NIST material tracked by the vendored Geant4 Matter adapter
   from within a scene. Physics config (`material`, `thickness_mm`,

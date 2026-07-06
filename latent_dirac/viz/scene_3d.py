@@ -25,6 +25,7 @@ FIDELITY_LABELS = {
     "annihilation_plate": "fidelity: parameterized (at-rest two-photon kinematics; no energetics)",
     "residual_gas_loss": "fidelity: parameterized (exponential storage survival; no cross-section)",
     "matter_slab": "fidelity: engine transformer (vanilla Geant4 v11.4.2, FTFP_BERT)",
+    "xsuite_lattice": "fidelity: externally tracked (Xsuite / xtrack)",
     "monitor": "fidelity: diagnostic snapshot",
 }
 
@@ -88,6 +89,10 @@ def _element_segments(element, run_result: SceneRunResult) -> list[np.ndarray]:
         thickness_m = element.thickness_mm / 1000.0
         center_z_m = element.entry_z_m + thickness_m / 2.0
         return _box_segments(center_z_m, thickness_m, _BOX_HALF_WIDTH_M)
+    if element.type == "xsuite_lattice":
+        if element.length_m is not None:
+            return _box_segments(element.center_z_m, element.length_m, _BOX_HALF_WIDTH_M)
+        return _square_segments(element.center_z_m, _BOX_HALF_WIDTH_M)
     if element.type == "monitor":
         snapshot = run_result.monitors.get(element.label)
         if snapshot is None:
