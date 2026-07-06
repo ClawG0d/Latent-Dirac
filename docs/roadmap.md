@@ -136,6 +136,11 @@ controlled patch protocol (frozen until its infrastructure exists).
   geometries stay on the field-map route); Surko buffer-gas Monte Carlo
   collisions with cross-section data curated as an open,
   provenance-tracked dataset — pending
+- storage lifetime — **parameterized model done** (the `residual_gas_loss`
+  element: stochastic annihilation on residual gas over a hold time,
+  `mean_lifetime_s` a direct input, ledgered per particle; the
+  cross-section-derived tau = 1/(n sigma v) form needs the same curated
+  sigma(v) dataset as the buffer-gas work above — pending)
 - guiding-center/secular solver for long-timescale trap storage
 - moderation physics: implantation/moderation yield tables via the
   engine track (M3) plus semi-empirical moderation parameterizations

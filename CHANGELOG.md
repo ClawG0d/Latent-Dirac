@@ -5,6 +5,18 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the `residual_gas_loss` scene element (storage lifetime): while
+  held in a region at finite vacuum, trapped antiparticles annihilate on
+  residual gas with per-particle exponential survival
+  `exp(-hold_time_s / mean_lifetime_s)`. Killed particles enter the loss
+  ledger (seeded, reproducible), survivors age by the hold time. First
+  antimatter-native loss physics beyond geometry; fidelity tier
+  parameterized (`mean_lifetime_s` is a direct input — the
+  cross-section-derived `tau = 1/(n sigma v)` form is a future upgrade
+  needing curated sigma(v) data). NumPy pipeline only; the JAX backend
+  rejects it. Design record:
+  `docs/superpowers/specs/2026-07-06-residual-gas-storage-lifetime-design.md`.
+
 - **The Geant4 Matter adapter is real (engine-track M2).**
   `Geant4MatterAdapter` (`latent_dirac/adapters/geant4/adapter.py`,
   placeholder retired) tracks a `ParticleState` cloud through a

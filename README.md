@@ -704,6 +704,10 @@ Implemented:
   `uniform_field` and `penning_trap` scene elements, both backends)
 - the `annihilation_plate` element: a ledgered loss endpoint recording
   at-rest two-photon kinematics (no energetics; NumPy pipeline only)
+- the `residual_gas_loss` element: storage lifetime as stochastic
+  annihilation on residual gas over a hold time (exponential survival at
+  a directly-supplied `mean_lifetime_s`, parameterized tier; ledgered
+  per particle, NumPy pipeline only)
 - differentiable capture objective (`make_differentiable_objective`:
   sigmoid-relaxed acceptance, gradients of the soft accepted fraction
   through every transport step via JAX autodiff; the relaxation is an

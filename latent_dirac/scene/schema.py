@@ -159,6 +159,21 @@ class AnnihilationPlateElement(ElementBase):
     radius_m: float = Field(gt=0)
 
 
+class ResidualGasLossElement(ElementBase):
+    """Storage lifetime: stochastic annihilation on residual gas over a hold.
+
+    Per-particle exponential survival exp(-hold_time_s / mean_lifetime_s);
+    killed particles enter the loss ledger, survivors age by the hold time.
+    `mean_lifetime_s` is a direct input (fidelity tier: parameterized); the
+    cross-section-derived form tau = 1/(n sigma v) is a future upgrade — see
+    docs/superpowers/specs/2026-07-06-residual-gas-storage-lifetime-design.md.
+    """
+
+    type: Literal["residual_gas_loss"]
+    mean_lifetime_s: float = Field(gt=0)
+    hold_time_s: float = Field(ge=0)
+
+
 class MonitorElement(ElementBase):
     """Diagnostic snapshot of the cloud at this pipeline position (no physics)."""
 
@@ -175,6 +190,7 @@ ElementSpec = Annotated[
     | ApertureElement
     | MomentumWindowElement
     | AnnihilationPlateElement
+    | ResidualGasLossElement
     | MonitorElement,
     Field(discriminator="type"),
 ]

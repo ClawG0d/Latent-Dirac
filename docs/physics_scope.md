@@ -44,7 +44,10 @@ vanilla Geant4 engine track and enter scope only as engine-computed
 diagnostics, reached out-of-process (offline yield tables and the
 material-slab Matter adapter — never in-process). Annihilation is
 modeled only as a ledgered loss endpoint with kinematic two-photon
-emission for visualization. Annihilation energetics as a figure of
+emission for visualization (the `annihilation_plate` element), or as a
+statistical storage loss with no photon emission (the
+`residual_gas_loss` element: exponential survival over a hold time at a
+directly-supplied mean lifetime, parameterized tier). Annihilation energetics as a figure of
 merit, material activation, shielding design, target engineering, real
 facility controls, and operational recipes stay out of scope — see
 [safety_scope.md](safety_scope.md) for the canonical exclusion list.

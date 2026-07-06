@@ -112,6 +112,10 @@ def _build_stages(
             action = _annihilation_action(
                 element, annihilations, np.random.default_rng(scene.seed + 7919 + stage_index)
             )
+        elif element.type == "residual_gas_loss":
+            action = _residual_gas_loss_action(
+                element, np.random.default_rng(scene.seed + 6229 + stage_index)
+            )
         elif element.type == "monitor":
             action = _monitor_action(element.label, monitors)
         else:  # pragma: no cover - the schema union prevents this
@@ -216,6 +220,29 @@ def _annihilation_action(element, annihilations, rng):
         return result
 
     return annihilate
+
+
+def _residual_gas_loss_action(element, rng):
+    """Stochastic annihilation on residual gas over a hold time.
+
+    Per-particle exponential survival exp(-hold/tau); survivors age by the
+    hold time, killed particles are booked by `Stage.run` into the ledger.
+    Fidelity tier: parameterized (tau is a direct input) - see the
+    residual-gas storage-lifetime spec.
+    """
+    p_survive = float(np.exp(-element.hold_time_s / element.mean_lifetime_s))
+
+    def hold(cloud: ParticleState) -> ParticleState:
+        result = cloud.copy()
+        draws = rng.random(result.alive.shape[0])
+        # only alive particles are at risk; dead ones keep their state
+        survive = ~result.alive | (draws < p_survive)
+        aged = result.alive & survive
+        result.time_s = result.time_s + aged * element.hold_time_s
+        result.apply_alive_mask(survive)
+        return result
+
+    return hold
 
 
 def _monitor_action(label, monitors):
