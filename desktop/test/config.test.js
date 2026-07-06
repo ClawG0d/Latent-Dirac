@@ -4,10 +4,10 @@ const assert = require("node:assert");
 
 const { loadConfig, engineSpawnSpec } = require("../src/config");
 
-test("defaults model to null (BYOK client picks its own) and retries to 2", () => {
+test("defaults model to null (BYOK client picks its own) and retries to 3", () => {
   const cfg = loadConfig({});
   assert.equal(cfg.model, null);
-  assert.equal(cfg.maxRetries, 2);
+  assert.equal(cfg.maxRetries, 3);
 });
 
 test("honours model and retry overrides from env", () => {

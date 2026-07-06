@@ -308,7 +308,16 @@ function showResultEverywhere(result, botMeta) {
 }
 
 function showError(response) {
-  addMessage("error", { meta: CATEGORY_HINT[response.category] || "Could not complete that", text: response.error });
+  let text = response.error;
+  // on a validation give-up, show the specific field errors the AI kept hitting
+  if (Array.isArray(response.errors) && response.errors.length) {
+    const lines = response.errors.slice(0, 6).map((e) => {
+      const where = Array.isArray(e.loc) ? e.loc.filter((p) => p !== "elements").join(".") : "";
+      return "• " + (where ? where + ": " : "") + (e.msg || "");
+    });
+    text += "\n\n" + lines.join("\n");
+  }
+  addMessage("error", { meta: CATEGORY_HINT[response.category] || "Could not complete that", text });
 }
 
 async function runPromptFlow(prompt) {

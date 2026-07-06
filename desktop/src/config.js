@@ -10,7 +10,7 @@ function loadConfig(env = process.env) {
   return {
     // null -> the BYOK client (src/ai.js) uses its DEFAULT_MODEL
     model: env.LATENT_DIRAC_MODEL || null,
-    maxRetries: Number.isFinite(retries) ? retries : 2,
+    maxRetries: Number.isFinite(retries) ? retries : 3,
   };
 }
 

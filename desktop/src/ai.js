@@ -27,7 +27,16 @@ const SYSTEM_PROMPT = [
   "only be used when the request clearly calls for them.\n",
   "- Give every element and the source a unique label; labels become the ",
   "loss-ledger stage names.\n",
-  "- If a prior validation error is provided, fix exactly what it reports.",
+  "- Element `type` must be one of exactly these (there is NO generic ",
+  "'decelerator', 'accelerator', 'lens', or 'detector'): uniform_field, ",
+  "solenoid, dipole, quadrupole, penning_trap, drift, aperture, ",
+  "momentum_window, annihilation_plate, residual_gas_loss, buffer_gas_cooling, ",
+  "matter_slab, xsuite_lattice, monitor. Map intents to these: to decelerate ",
+  "or accelerate a beam, use uniform_field with an axial E_vector_v_m opposing ",
+  "or aiding the motion; a Penning trap is penning_trap (required: v0_volt, ",
+  "d_m, b_tesla). Copy each element's field names from the schema exactly.\n",
+  "- If a prior validation error is provided, fix exactly what it reports; do ",
+  "not reintroduce an invalid type or rename schema fields.",
 ].join("");
 
 function buildMessages({ prompt, currentScene, validationError, sourceParams }) {

@@ -47,6 +47,13 @@ test("SYSTEM_PROMPT carries the honesty discipline", () => {
   assert.ok(SYSTEM_PROMPT.toLowerCase().includes("fidelity"));
 });
 
+test("SYSTEM_PROMPT lists the element vocabulary and maps common intents", () => {
+  const p = SYSTEM_PROMPT.toLowerCase();
+  assert.ok(p.includes("penning_trap") && p.includes("uniform_field"));
+  assert.ok(p.includes("decelerate"), "maps 'decelerate' to a real element");
+  assert.ok(p.includes("no generic") || p.includes("decelerator"), "warns off invented types");
+});
+
 test("extractScene returns the tool_use input", () => {
   const scene = { name: "ok" };
   const body = { content: [{ type: "text", text: "hi" }, { type: "tool_use", name: "emit_scene", input: scene }] };

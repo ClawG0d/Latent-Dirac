@@ -100,6 +100,8 @@ function failure(err) {
     ok: false,
     error: err && err.message ? err.message : String(err),
     category: err && err.category ? err.category : "unknown",
+    // structured validation errors (from a give-up), so the UI can show why
+    errors: (err && err.errors) || null,
   };
 }
 
