@@ -13,17 +13,24 @@ The current package is intentionally lightweight:
 - `state`: `ParticleState` (pytree-compatible dataclass: SoA arrays, alive
   mask, per-particle `lost_at_element` ledger channel) and trajectory
   containers
-- `sources`: parameterized, simplified, and surrogate source models
-- `fields`: uniform, solenoid, dipole, quadrupole, composite, and
-  table-based field-map models
+- `sources`: parameterized, simplified, surrogate, table-based (engine
+  yield table), and prepared cold-cloud source models
+- `fields`: uniform, solenoid (hard-edge or thin-sheet), dipole,
+  quadrupole, composite, table-based field-map, time-gated, and
+  uniform-sphere mean-field space-charge models
 - `solvers`: relativistic Boris transport as a pure-function kernel in
   dimensionless momentum u = p/(m c), with SI only at State boundaries
 - `beamline`: aperture and momentum-window acceptance
 - `pipeline`: staged execution, loss accounting, and ledger stamping
   (stages stamp `lost_at_element` with their index)
-- `scene`: declarative YAML/JSON scene schema, loader, and pipeline builder
+- `scene`: declarative YAML/JSON scene schema, loader, and pipeline
+  builder, including the annihilation-plate, residual-gas-loss,
+  matter-slab, and xsuite-lattice elements
 - `backends`: optional JAX batched execution (`run_scene_batched`: one
-  compiled program, `vmap` over configurations)
+  compiled program, `vmap` over configurations) and the differentiable
+  soft-acceptance objective
+- `io`: particle output — openPMD write and ROOT round-trip via uproot,
+  each behind an optional extra
 - `diagnostics`: accepted-yield, loss-ledger, and text-report utilities
 - `adapters`: external-ecosystem adapters — Geant4 (Matter, via the
   out-of-process `engine/transformer`) and Xsuite (Lattice) are real;
@@ -51,8 +58,9 @@ has independently converged in modern simulation engines:
 
 Physics kernels are pure functions (full-array `where`-masking, no
 data-dependent control flow), so the NumPy float64 reference backend and
-the planned Phase 3 JAX backend share one implementation. Kernels use
-dimensionless internal units; SI appears only at State boundaries.
+the JAX batched backend share one array-namespace-generic implementation.
+Kernels use dimensionless internal units; SI appears only at State
+boundaries.
 
 Visualization stays an optional layer: scene descriptions drive both the
 physics and the 3D viewers, and fidelity tier labels are rendered into the

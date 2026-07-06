@@ -22,3 +22,8 @@ iridium stand-in target) and carries the engine provenance four-tuple
 Weights normalize the table's `n_primaries` to a user-declared physical
 proton count. There is no runtime engine coupling; the CSV contract is
 defined in the yieldgen demo spec.
+
+`ColdUniformSphereSource` is a prepared-state source (placeholder tier):
+a uniform-density sphere of a chosen species at rest, the standard
+starting point for trap and space-charge studies. It is not a formation
+model — no temperature, loading dynamics, or correlations.
