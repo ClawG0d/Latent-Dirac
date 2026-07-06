@@ -95,7 +95,10 @@ def slab_scene(thickness_mm=5.0, count=6):
 
 
 def set_transformer(monkeypatch, stub):
-    monkeypatch.setenv("LATENT_DIRAC_G4_TRANSFORMER", f"{sys.executable} {stub}")
+    # quote both parts per the documented contract: the env var is
+    # POSIX-shlex-split, and unquoted Windows backslash paths would be
+    # eaten as escapes (WinError 2 on the native-Windows checkout)
+    monkeypatch.setenv("LATENT_DIRAC_G4_TRANSFORMER", f'"{sys.executable}" "{stub}"')
 
 
 def test_scene_runs_through_the_stub(tmp_path, monkeypatch):
