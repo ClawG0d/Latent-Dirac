@@ -69,8 +69,8 @@ and fidelity note. Design record:
 | ---------- | ------------------------------------- | ----------- | ------------------------------------------- | ------ |
 | Source     | positron / antiproton source terms    | sampler     | first-party (pair, beta-plus, surrogate) + engine yield-table replay | shipped (first engine table committed); more tables per M3 |
 | Transport  | vacuum EM transport                   | stepper     | first-party Boris kernel (NumPy + JAX)      | shipped |
-| Lattice    | decelerator rings, transfer lines     | stepper     | Xsuite adapter                              | adapter shipped (conversion + line tracking) |
-| Matter     | targets, degraders, annihilation      | transformer | vendored vanilla Geant4 v11.4.2             | adapter shipped (slab transform via subprocess + files; yield tables for sources) |
+| Lattice    | decelerator rings, transfer lines     | stepper     | Xsuite adapter                              | shipped (adapter + `xsuite_lattice` scene element) |
+| Matter     | targets, degraders, annihilation      | transformer | vendored vanilla Geant4 v11.4.2             | shipped (adapter + `matter_slab` scene element; subprocess + files; yield tables for sources) |
 | Collective | in-trap space charge                  | stepper     | first-party mean-field v1, later WarpX      | mean-field v1 shipped (parameterized, beta<<1) |
 | Detector   | detector response                     | transformer | parameterized model first, Garfield++ later | planned |
 | Analysis   | persistent output, ecosystem exchange | sink        | openPMD + ROOT via uproot                   | shipped (openPMD write; ROOT round-trip) |
@@ -508,9 +508,8 @@ Scope note:
 
 The original stage kept the target as **drawn annotations only** and
 sampled the antiproton cloud from the surrogate accepted-source model —
-the honest placeholder this engine-backed version replaces. (The Matter
-adapter has since shipped; a `matter_slab` scene element is a later
-extension.)
+the honest placeholder this engine-backed version replaces. (Both the
+Matter adapter and the `matter_slab` scene element have since shipped.)
 
 ![Animated 3D target production demo](assets/demos/target_production_3d.webp)
 
@@ -718,7 +717,12 @@ Implemented:
   convention, `evaluate.batch` runs a candidate generation in one launch;
   xopt itself is not a dependency)
 - the `latent-dirac` CLI: `run` prints the scene report, `render` writes
-  the interactive 3D HTML
+  the interactive 3D HTML (`--animate` for the play/scrub animation)
+- the animated interactive 3D viewer
+  (`latent_dirac.viz.scene_3d.render_scene_animation`): play/pause +
+  scrub of the recorded cloud traversing the scene, lost particles
+  freezing at their loss point, colorable by fate / ledger / energy;
+  self-contained HTML, no server
 - time-gated fields (`TimeGatedField`; `t_on_s`/`t_off_s` on
   `uniform_field` and `penning_trap` scene elements, both backends)
 - the `annihilation_plate` element: a ledgered loss endpoint recording
@@ -727,6 +731,16 @@ Implemented:
   annihilation on residual gas over a hold time (exponential survival at
   a directly-supplied `mean_lifetime_s`, parameterized tier; ledgered
   per particle, NumPy pipeline only)
+- the `buffer_gas_cooling` element: Surko-type cooling as a
+  parameterized stand-in — Poisson collisions over a hold, each cutting
+  kinetic energy (floored at the gas temperature) or forming
+  positronium (killed and ledgered); NumPy pipeline only
+- the `matter_slab` scene element: a declarative NIST-material slab
+  tracked by the vendored Geant4 engine (transformer binary injected at
+  run time via `LATENT_DIRAC_G4_TRANSFORMER`, never stored in scenes)
+- the `xsuite_lattice` scene element: track through an `xtrack.Line`
+  declared in the scene (`line_path` + explicit `p0c_ev`; `[xsuite]`
+  extra to run, scenes construct and render without it)
 - differentiable capture objective (`make_differentiable_objective`:
   sigmoid-relaxed acceptance, gradients of the soft accepted fraction
   through every transport step via JAX autodiff; storage survival enters
@@ -761,20 +775,27 @@ Implemented:
   subprocess — energy loss, scattering, and antiproton annihilation into
   the loss ledger; provenance four-tuple in the report)
 - a placeholder adapter for ROOT (ROOT file I/O itself ships via uproot)
+- a local sim-engine HTTP API (`latent_dirac.server`, `[server]` extra)
+  backing a cross-platform Electron desktop client (`desktop/`:
+  natural-language prompt → scene → local run → 3D; simulations stay on
+  the user's machine) with a hosted AI gateway (`services/ai_gateway/`)
+- a Material for MkDocs documentation site (`[docs]` extra;
+  `mkdocs build --strict`)
 
 Not implemented yet:
 
-- a `matter_slab` scene element for the Geant4 Matter adapter (the
-  adapter itself ships for the Python API; exchange stays subprocess +
-  files with no in-process engine coupling)
-- scene-schema lattice elements for the Xsuite adapter
-- buffer-gas collisions and rotating wall in the trap; self-consistent
-  space charge (PIC via WarpX) beyond the shipped mean-field tier
-- interactive 3D viewer application
+- energy-dependent buffer-gas cross-section tables (the shipped cooling
+  element is a constant-rate parameterized stand-in) and rotating wall
+  in the trap; self-consistent space charge (PIC via WarpX) beyond the
+  shipped mean-field tier
+- interactive-viewer slices beyond the shipped Plotly animation
+  (streaming/large-scale rendering)
 - GPU benchmark suite
 - field maps, batched monitor snapshots, and streaming trajectory
   recording for extreme scales in the JAX backend
 - CST and SIMION field-map formats
+- RF fields / cavity elements (an AD/ELENA-style in-ring deceleration
+  ramp is therefore not yet expressible)
 
 ## Documentation
 
