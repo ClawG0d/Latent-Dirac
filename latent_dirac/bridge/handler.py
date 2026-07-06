@@ -74,15 +74,16 @@ _ANIM_JS = """
   function stop(){
     if (timer){ clearInterval(timer); timer = null; btn.textContent = '\\u25B6 Play'; }
   }
+  var adv = 4;   // frames advanced per tick; 18ms tick x 4 ~= 20x the old 90ms/frame
   btn.addEventListener('click', function(){
     if (timer){ stop(); return; }
     btn.textContent = '\\u23F8 Pause';
     timer = setInterval(function(){
-      i = (i + 1) % ldFrames.length;
+      i = (i + adv) % ldFrames.length;
       slider.value = String(i);
       draw(i);
       setLab();
-    }, 90);
+    }, 18);
   });
   slider.addEventListener('input', function(){
     stop();
