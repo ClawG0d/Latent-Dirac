@@ -2,13 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <!-- self-contained. The 3D HTML is generated locally with plotly inlined
-         and shown in a sandbox="allow-scripts" srcdoc iframe: an opaque origin
-         that does not inherit this strict CSP, so the trusted local plotly
-         scripts run in isolation. connect-src 'none' blocks exfiltration. -->
+    <!-- self-contained. The 3D HTML is generated locally by our own engine
+         (plotly inlined) and shown in a same-origin srcdoc iframe. A srcdoc
+         document inherits this CSP, so script/style-src must allow the inlined
+         plotly ('unsafe-inline'/'unsafe-eval') for the 3D to render. The
+         content is trusted local output, never remote; default-src 'none' +
+         connect-src 'none' still block all network/exfiltration. -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-src 'self'; connect-src 'none'"
+      content="default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; frame-src 'self'; connect-src 'none'"
     />
     <title>Latent Dirac</title>
     <link rel="stylesheet" href="styles.css" />
@@ -35,7 +37,6 @@
                 id="frame"
                 class="viz__frame"
                 title="3D simulation"
-                sandbox="allow-scripts"
                 hidden
               ></iframe>
             </div>
