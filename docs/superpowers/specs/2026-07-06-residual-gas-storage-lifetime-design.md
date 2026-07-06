@@ -42,10 +42,18 @@ event (pillar 3), (b) reuses the existing `lost_at_element` channel so
 the "by killing element" and "weighted stage" loss views stay
 consistent, and (c) keeps the array shape static (killed particles stay
 in place with `alive=False`, exactly like `aperture`), preserving the
-vmap invariant. The cost — non-differentiability — matches how the
-hard `aperture` / `momentum_window` already behave; the differentiable
-objective relaxes those separately and can grow a soft storage term
-later if needed.
+vmap invariant. The cost — non-differentiability of the hard kill —
+matches how the hard `aperture` / `momentum_window` already behave.
+
+Differentiable form (shipped alongside): the soft objective models the
+element's EXPECTED survival, a smooth factor `exp(-hold_time_s /
+mean_lifetime_s)` applied uniformly, differentiable in both parameters.
+This is the general principle for stochastic losses — hard = a random
+draw, soft = its expectation — and it lets a design loop jointly
+optimize capture efficiency against storage survival (the
+antimatter-native objective). The batched simulator still rejects the
+element (stochastic kill has no static-program form); the divergence
+between the mirror pair is intentional and documented at both sites.
 
 ## Behaviour
 

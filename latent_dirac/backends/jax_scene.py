@@ -35,6 +35,11 @@ _SWEEPABLE_PARAMS = {
     "aperture": ("radius_m",),
     "momentum_window": ("p_min_gev_c", "p_max_gev_c"),
     "monitor": (),
+    # numeric params are liftable, but the batched simulator still rejects
+    # this element (stochastic kill has no static-program form); the
+    # differentiable objective consumes them as the smooth expected-survival
+    # factor exp(-hold/tau). See _make_simulator and backends/differentiable.py.
+    "residual_gas_loss": ("mean_lifetime_s", "hold_time_s"),
 }
 
 _TRANSPORT_TYPES = (*FIELD_ELEMENT_TYPES, "drift")
@@ -213,6 +218,17 @@ def _make_simulator(scene: Scene, jax, jnp, mass_kg: float, charge_c: float, rec
                 alive = alive & keep
             elif element.type == "monitor":
                 continue  # holds its ledger index; batched snapshots are a later extension
+            elif element.type == "residual_gas_loss":
+                # Intentional divergence from the differentiable mirror: the
+                # hard model is a stochastic per-particle kill, which has no
+                # static-program form. The differentiable objective models the
+                # EXPECTED survival exp(-hold/tau) instead (a smooth factor).
+                raise ValueError(
+                    f"element {element.label!r} (residual_gas_loss) cannot be batched by the "
+                    "JAX backend: stochastic annihilation kill has no static-program form. "
+                    "Use the NumPy pipeline, or the differentiable objective for its "
+                    "expected-survival relaxation."
+                )
             else:  # pragma: no cover - schema union prevents this
                 raise ValueError(f"unsupported element type for the JAX backend: {element.type!r}")
         if record:

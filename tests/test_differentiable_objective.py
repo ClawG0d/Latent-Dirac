@@ -206,3 +206,101 @@ def test_variable_validation_is_shared_with_evaluator():
         make_differentiable_objective(scene, variables=["hello-solenoid.warp_factor"])
     with pytest.raises(ValueError, match="missing"):
         make_differentiable_objective(scene, variables=VARIABLES).value({"hello-solenoid.b_tesla": 0.8})
+
+
+def _capture_then_store_scene(mean_lifetime_s, hold_time_s):
+    from latent_dirac.scene.loader import scene_from_mapping
+
+    return scene_from_mapping(
+        {
+            "schema_version": 1,
+            "name": "capture-then-store",
+            "seed": 4,
+            "solver": {"dt_s": 4.0e-12, "steps": 40},
+            "source": {
+                "type": "positron_pair",
+                "label": "pairs",
+                "params": {
+                    "primary_count": 10000,
+                    "yield_eplus_per_primary": 0.02,
+                    "mean_energy_MeV": 2.0,
+                    "energy_spread_MeV": 0.3,
+                    "angular_rms_rad": 0.15,
+                    "source_sigma_m": 0.001,
+                    "bunch_length_s": 1.0e-10,
+                    "macro_particles": 200,
+                },
+            },
+            "elements": [
+                {
+                    "type": "solenoid",
+                    "label": "capture",
+                    "b_tesla": 0.8,
+                    "radius_m": 0.03,
+                    "length_m": 0.2,
+                    "center_z_m": 0.1,
+                },
+                {"type": "aperture", "label": "collimator", "radius_m": 0.008, "z_m": 0.1},
+                {
+                    "type": "residual_gas_loss",
+                    "label": "storage",
+                    "mean_lifetime_s": mean_lifetime_s,
+                    "hold_time_s": hold_time_s,
+                },
+            ],
+        }
+    )
+
+
+def test_storage_applies_expected_survival_factor():
+    tau, hold = 100.0, 50.0
+    variables = ["capture.b_tesla", "collimator.radius_m"]
+    inputs = {"capture.b_tesla": 0.8, "collimator.radius_m": 0.008}
+
+    with_storage = make_differentiable_objective(
+        _capture_then_store_scene(tau, hold), variables=variables, sharpness=50.0
+    )
+    without_storage = make_differentiable_objective(
+        _capture_then_store_scene(tau, 0.0), variables=variables, sharpness=50.0
+    )
+
+    ratio = with_storage.value(inputs) / without_storage.value(inputs)
+    assert ratio == pytest.approx(np.exp(-hold / tau), rel=1e-6)
+
+
+def test_storage_survival_gradient_is_analytic():
+    tau, hold = 80.0, 40.0
+    variables = ["storage.hold_time_s"]
+    scene = _capture_then_store_scene(tau, hold)
+    objective = make_differentiable_objective(scene, variables=variables, sharpness=50.0)
+
+    value, grads = objective.value_and_grad({"storage.hold_time_s": hold})
+    # d/dhold [F * exp(-hold/tau)] = -(1/tau) * value  ->  longer hold, worse
+    assert grads["storage.hold_time_s"] == pytest.approx(-value / tau, rel=1e-6)
+    assert grads["storage.hold_time_s"] < 0.0
+
+
+def test_storage_leaves_field_gradient_flowing():
+    # storage is a uniform factor, so it must not zero the capture-field gradient
+    scene = _capture_then_store_scene(100.0, 50.0)
+    variables = ["capture.b_tesla", "collimator.radius_m"]
+    objective = make_differentiable_objective(scene, variables=variables, sharpness=50.0)
+
+    _, grads = objective.value_and_grad({"capture.b_tesla": 0.8, "collimator.radius_m": 0.008})
+    assert grads["collimator.radius_m"] > 0.0
+    assert abs(grads["capture.b_tesla"]) > 0.0
+
+
+def test_storage_lifetime_variable_at_zero_gives_no_nan():
+    # if mean_lifetime_s is an optimization variable, the optimizer can
+    # transit through 0; the floored tau must keep value and grad finite
+    import math
+
+    scene = _capture_then_store_scene(80.0, 40.0)
+    objective = make_differentiable_objective(
+        scene, variables=["storage.mean_lifetime_s"], sharpness=50.0
+    )
+    value, grads = objective.value_and_grad({"storage.mean_lifetime_s": 0.0})
+    assert math.isfinite(value)
+    assert math.isfinite(grads["storage.mean_lifetime_s"])
+    assert value == pytest.approx(0.0, abs=1e-9)  # tau -> 0 kills everything

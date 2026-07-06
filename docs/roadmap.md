@@ -139,6 +139,8 @@ controlled patch protocol (frozen until its infrastructure exists).
 - storage lifetime — **parameterized model done** (the `residual_gas_loss`
   element: stochastic annihilation on residual gas over a hold time,
   `mean_lifetime_s` a direct input, ledgered per particle; the
+  differentiable objective consumes it as the expected-survival factor
+  exp(-hold/tau), so capture and storage survival optimize jointly; the
   cross-section-derived tau = 1/(n sigma v) form needs the same curated
   sigma(v) dataset as the buffer-gas work above — pending)
 - guiding-center/secular solver for long-timescale trap storage

@@ -710,8 +710,10 @@ Implemented:
   per particle, NumPy pipeline only)
 - differentiable capture objective (`make_differentiable_objective`:
   sigmoid-relaxed acceptance, gradients of the soft accepted fraction
-  through every transport step via JAX autodiff; the relaxation is an
-  optimization device — the hard pipeline stays the source of truth)
+  through every transport step via JAX autodiff; storage survival enters
+  as the expected factor exp(-hold/tau), so capture and storage-survival
+  optimize jointly; the relaxation is an optimization device — the hard
+  pipeline stays the source of truth)
 - optional Matplotlib and Plotly visualization backends
 - the engine yield-table route: a WSL/Linux build recipe for the vendored
   Geant4 tree (`engine/README.md`), the `engine/yieldgen` antiproton

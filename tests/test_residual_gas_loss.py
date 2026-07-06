@@ -160,5 +160,5 @@ def test_jax_backend_rejects_the_element():
     from latent_dirac.backends.jax_scene import run_scene_batched
 
     scene = loss_scene(100.0, 50.0, count=64)
-    with pytest.raises(ValueError, match="not supported by the JAX backend"):
+    with pytest.raises(ValueError, match="cannot be batched by the JAX backend"):
         run_scene_batched(scene, overrides={})

@@ -5,6 +5,15 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- The differentiable capture objective now handles `residual_gas_loss`:
+  the stochastic hard kill enters the soft objective as its expected
+  survival `exp(-hold_time_s / mean_lifetime_s)` — a smooth, uniform,
+  differentiable factor (in both parameters). This makes the
+  antimatter-native target optimizable: not most captured, but most
+  still alive after the hold. The batched simulator continues to reject
+  the element (stochastic kill has no static-program form); the
+  divergence is intentional and documented at both mirror sites.
+
 - Added the `residual_gas_loss` scene element (storage lifetime): while
   held in a region at finite vacuum, trapped antiparticles annihilate on
   residual gas with per-particle exponential survival

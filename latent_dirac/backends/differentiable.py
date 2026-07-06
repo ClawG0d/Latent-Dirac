@@ -8,9 +8,20 @@ not a physics claim: the hard NumPy/JAX pipelines remain the source of
 truth, and the soft objective converges to the hard `accepted_fraction`
 as `sharpness` grows.
 
-The element loop mirrors `jax_scene._make_simulator` semantics; in soft
-mode nothing is frozen — survival is bookkeeping, and survivors'
-trajectories are identical to the hard pipeline's.
+The element loop mirrors `jax_scene._make_simulator` semantics (with one
+documented exception, below); in soft mode nothing is frozen — survival
+is bookkeeping, and survivors' trajectories are identical to the hard
+pipeline's.
+
+One intentional divergence from that mirror: `residual_gas_loss`. Its
+hard form is a stochastic per-particle kill (no static-program form, so
+the batched simulator rejects it); here it enters as its EXPECTED
+survival factor exp(-hold_time_s / mean_lifetime_s) — a smooth,
+differentiable multiplier. This is the general principle for stochastic
+losses: hard = a random draw, soft = its expectation. It lets a design
+loop jointly optimize capture efficiency against storage survival (the
+antimatter-native objective: not most captured, but most still alive
+after the hold).
 
 Known gradient artifact: the sigmoid widths scale with the optimized
 parameters themselves (`radius/sharpness`, `span/sharpness`), so in
@@ -138,6 +149,16 @@ class DifferentiableObjective:
                     width = jnp.abs(u_max - u_min) / sharpness
                     survival = survival * sigmoid((u_mag - u_min) / width)
                     survival = survival * sigmoid((u_max - u_mag) / width)
+                elif element.type == "residual_gas_loss":
+                    # expected survival of the stochastic residual-gas kill;
+                    # a uniform, differentiable factor in hold_time and lifetime.
+                    # Floor tau like the aperture branch abs()es its width: the
+                    # schema forbids tau <= 0 at construction, but if tau is an
+                    # optimization variable the optimizer can transit through 0,
+                    # where exp(-hold/tau) would return a NaN gradient.
+                    tau = jnp.maximum(element_params["mean_lifetime_s"], 1e-30)
+                    hold = element_params["hold_time_s"]
+                    survival = survival * jnp.exp(-hold / tau)
                 elif element.type == "monitor":
                     continue
                 else:  # pragma: no cover - _base_params rejects unsupported types
