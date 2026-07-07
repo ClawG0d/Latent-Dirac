@@ -109,6 +109,12 @@ def field_status_lines(scene: Scene) -> list[str]:
                 "is collective (out of scope, needs PIC)"
             )
             _append_gate_line(lines, element)
+        elif element.type == "composite_field":
+            components = ", ".join(
+                _FIELD_DESCRIPTIONS.get(sub.type, sub.type) for sub in element.fields
+            )
+            lines.append(f"- field model: composite (exact superposition): {components}")
+            lines.append("- status: components act simultaneously; fidelity follows each component")
     return lines
 
 

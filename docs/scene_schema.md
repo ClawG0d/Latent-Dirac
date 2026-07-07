@@ -43,7 +43,11 @@ elements:
   = uniform rotating dipole, 2 = quadrupole with `|E| = amplitude_v_m` at
   `radius_m`; `frequency_hz`, optional `phase_rad` and time gate;
   parameterized, dual-backend — single-particle field only, plasma
-  compression is out of scope), `drift` (zero-field transport),
+  compression is out of scope),
+  `composite_field` (exact superposition of two or more field models in one
+  stage via `fields:` — e.g. a rotating wall on a Penning trap; each
+  sub-field keeps its params and optional gate; NumPy pipeline only for now),
+  `drift` (zero-field transport),
   `aperture`, `momentum_window` (momenta in GeV/c),
   `annihilation_plate` (ledgered loss endpoint recording at-rest
   two-photon kinematics, events projected onto the plate plane; positron

@@ -155,6 +155,34 @@ class RotatingWallElement(ElementBase):
     _gate_window = model_validator(mode="after")(_validate_gate_window)
 
 
+FieldSubSpec = Annotated[
+    UniformFieldElement
+    | SolenoidElement
+    | DipoleElement
+    | QuadrupoleElement
+    | PenningTrapElement
+    | RotatingWallElement,
+    Field(discriminator="type"),
+]
+
+
+class CompositeFieldElement(ElementBase):
+    """Superposition of two or more field models acting in a single stage.
+
+    The field is the exact elementwise sum of the components' E and B, so
+    fields that the sequential pipeline could only apply one after another
+    (e.g. a rotating wall and a Penning trap) act simultaneously. Each
+    sub-field keeps its own field-model parameters and optional time gate;
+    a sub-field's own `steps`/`space_charge` are ignored (the composite owns
+    stepping). Nested composites are rejected. NumPy backend only for now
+    (the JAX backend rejects it — a later slice).
+    """
+
+    type: Literal["composite_field"]
+    fields: list[FieldSubSpec] = Field(min_length=2)
+    steps: int | None = Field(default=None, ge=1)
+
+
 class DriftElement(ElementBase):
     """Zero-field transport segment (exact within the solver contract)."""
 
@@ -306,8 +334,7 @@ class BufferGasCoolingElement(ElementBase):
                 )
             if self.gas_pressure_pa is not None:
                 raise ValueError(
-                    "gas_pressure_pa only applies to table-based buffer_gas_cooling "
-                    "(set cross_section_path)"
+                    "gas_pressure_pa only applies to table-based buffer_gas_cooling (set cross_section_path)"
                 )
         return self
 
@@ -333,12 +360,19 @@ ElementSpec = Annotated[
     | XsuiteLatticeElement
     | BufferGasCoolingElement
     | RotatingWallElement
+    | CompositeFieldElement
     | MonitorElement,
     Field(discriminator="type"),
 ]
 
 FIELD_ELEMENT_TYPES = (
-    "uniform_field", "solenoid", "dipole", "quadrupole", "penning_trap", "rotating_wall",
+    "uniform_field",
+    "solenoid",
+    "dipole",
+    "quadrupole",
+    "penning_trap",
+    "rotating_wall",
+    "composite_field",
 )
 
 

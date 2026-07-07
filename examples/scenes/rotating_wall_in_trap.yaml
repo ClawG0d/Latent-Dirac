@@ -1,0 +1,30 @@
+schema_version: 1
+name: rotating-wall-in-trap
+seed: 2026
+# A rotating wall (quadrupole, m=2) superimposed on an ideal Penning trap,
+# acting SIMULTANEOUSLY in one composite_field stage: the axial B and the
+# quadrupole well confine while the rotating transverse E drives the cloud's
+# rotation. This is exactly what the sequential-stage pipeline cannot express
+# without composite_field.
+#
+# FIDELITY: exact superposition of two parameterized components. The rotating
+# wall is a single-particle field only — the radial plasma COMPRESSION a real
+# rotating wall produces is a collective, collisional effect (out of scope,
+# needs a PIC/collective solver); it is not shown here and is not a figure of
+# merit. See the rotating-wall and composite-field specs.
+source:
+  type: positron_pair
+  label: cloud
+  params: { primary_count: 10000, yield_eplus_per_primary: 0.02, mean_energy_MeV: 3.0e-6,
+            energy_spread_MeV: 6.0e-7, angular_rms_rad: 0.03, source_sigma_m: 3.0e-3,
+            bunch_length_s: 1.0e-10, macro_particles: 96 }
+solver: { type: relativistic_boris, dt_s: 5.0e-12, steps: 1 }
+elements:
+  - type: composite_field
+    label: trap-with-wall
+    steps: 600
+    fields:
+      - { type: penning_trap, label: trap, v0_volt: -30.0, d_m: 0.01, b_tesla: 2.0 }
+      - { type: rotating_wall, label: wall, multipole: 2,
+          amplitude_v_m: 2.0e4, radius_m: 0.02, frequency_hz: 5.0e6 }
+  - { type: monitor, label: driven }

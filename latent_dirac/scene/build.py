@@ -184,6 +184,9 @@ def _base_field_for(element) -> Field:
             frequency_hz=element.frequency_hz,
             phase_rad=element.phase_rad,
         )
+    if element.type == "composite_field":
+        # _field_for (not _base_field_for) on each sub honors its time gate
+        return CompositeField(fields=[_field_for(sub) for sub in element.fields])
     if element.type == "drift":
         return UniformField()
     raise ValueError(f"element type {element.type!r} has no field model")

@@ -23,6 +23,7 @@ FIDELITY_LABELS = {
         "fidelity: parameterized (rotating multipole E field; single-particle "
         "only — no self-consistent plasma compression)"
     ),
+    "composite_field": "fidelity: exact superposition of component fields (tiers follow components)",
     "drift": "fidelity: exact zero-field transport",
     "aperture": "fidelity: diagnostic acceptance cut",
     "momentum_window": "fidelity: diagnostic acceptance cut",

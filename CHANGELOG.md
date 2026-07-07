@@ -5,6 +5,20 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added a `composite_field` scene element: two or more field models acting
+  in ONE transport stage as their exact superposition (reusing
+  `CompositeField`), so fields the sequential pipeline could only apply one
+  after another now act simultaneously — e.g. a rotating wall superimposed
+  on a Penning trap (demo `examples/scenes/rotating_wall_in_trap.yaml`).
+  `fields` is a discriminated list (>=2) of leaf field models, each keeping
+  its own parameters and optional time gate; nested composites are rejected.
+  Field lines draw every component's family; the scene report lists the
+  components. NumPy backend only for now — the JAX/differentiable backends
+  reject it with the standard "not supported yet" error (a follow-up slice;
+  composition is deterministic and JAX-expressible, unlike stochastic
+  buffer-gas). Design record:
+  `docs/superpowers/specs/2026-07-07-composite-field-element-design.md`.
+
 - Added a `rotating_wall` trap element (Phase 4 trap physics): a rotating
   multipole transverse E field, dipole (m=1, uniform rotating field) or
   quadrupole (m=2, linear in transverse position, `|E| = amplitude_v_m` at

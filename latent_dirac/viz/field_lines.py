@@ -187,4 +187,10 @@ def element_field_line_bundles(element, field, extent: dict) -> list[tuple[str, 
         for seed in _ring_seeds(0.6 * transverse, axial, 8):
             bundles.append(("E", _two_sided(field, seed, span, span / 200.0, "E", t_s)))
 
+    elif element.type == "composite_field":
+        # draw each component's own lines (in its own field), so a composite
+        # shows the superposed families (trap B lines + rotating-wall E lines)
+        for sub_spec, sub_field in zip(element.fields, field.fields, strict=True):
+            bundles.extend(element_field_line_bundles(sub_spec, sub_field, extent))
+
     return [(kind, line) for kind, line in bundles if line.shape[0] >= 2]
