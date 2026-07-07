@@ -953,17 +953,19 @@ Implemented:
 Not implemented yet:
 
 - a real, DOI-cited positron cross-section dataset for the table-based
-  buffer-gas cooling mode (the table machinery ships; the bundled N₂
-  table is a synthetic placeholder, so the element stays parameterized
-  until a curated dataset lands) and rotating wall in the trap;
-  self-consistent space charge (PIC via WarpX) beyond the shipped
+  buffer-gas cooling mode (the table machinery ships; the bundled N₂ and
+  CF₄ tables are synthetic placeholders, so the element stays
+  parameterized until a curated dataset lands) and rotating wall in the
+  trap; self-consistent space charge (PIC via WarpX) beyond the shipped
   mean-field tier
 - interactive-viewer slices beyond the shipped Plotly animation
   (streaming/large-scale rendering)
 - GPU benchmark suite
 - field maps, batched monitor snapshots, and streaming trajectory
   recording for extreme scales in the JAX backend
-- CST and SIMION field-map formats
+- the SIMION `.patxt` field-map format (the CST ASCII importer has
+  shipped; the SIMION importer is deferred until a sample file is
+  available)
 - RF fields / cavity elements and beam-cooling models (an
   AD/ELENA-style in-ring deceleration ramp — RF plus electron
   cooling — is therefore not yet expressible)

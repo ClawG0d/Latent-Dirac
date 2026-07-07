@@ -158,8 +158,8 @@ controlled patch protocol (frozen until its infrastructure exists).
   cross-section table — elastic/inelastic-threshold/loss channels at gas
   density n = P/(k_B T), with a cross-section provenance block in the
   report). What remains is a **real, DOI-cited positron cross-section
-  dataset** (the shipped N2 table is a clearly-labeled synthetic
-  placeholder, so the element stays `parameterized` until a curated table
+  dataset** (the shipped N2 and CF4 tables are clearly-labeled synthetic
+  placeholders, so the element stays `parameterized` until a curated table
   lands) and operator-splitting with the trap field — see the 2026-07-06
   buffer-gas collisions and table-based landing specs
 - storage lifetime — **parameterized model done** (the `residual_gas_loss`

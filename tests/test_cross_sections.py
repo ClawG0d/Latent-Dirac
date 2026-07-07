@@ -113,3 +113,11 @@ def test_rejects_a_ragged_numeric_row(tmp_path):
     bad = _VALID.replace("9.0,4.0e-20,3.0e-21,1.0e-21", "9.0,4.0e-20,3.0e-21")  # short a column
     with pytest.raises(ValueError, match="columns"):
         load_cross_sections(_write(tmp_path, bad))
+
+
+def test_rejects_nonzero_cross_section_below_threshold(tmp_path):
+    # electronic threshold is 8.5 eV; a nonzero electronic sigma at 0.1 eV is
+    # unphysical (the channel is not accessible below its threshold)
+    bad = _VALID.replace("0.1,5.0e-20,0.0,0.0", "0.1,5.0e-20,7.0e-21,0.0")
+    with pytest.raises(ValueError, match="threshold|below"):
+        load_cross_sections(_write(tmp_path, bad))

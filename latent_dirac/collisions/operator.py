@@ -16,9 +16,11 @@ with probability ν(E)/ν_max, with the channel picked in proportion to
   is removed (killed); the scene pipeline stamps the loss ledger.
 
 Drawing the time to the next candidate (rather than one Bernoulli trial
-per fixed substep) makes the realized collision rate reproduce n·σ·v
-exactly — there is no numerical substep knob to tune. Pure and seeded (a
-caller-supplied ``numpy.random.Generator``). Stochastic and
+per fixed substep) makes the realized collision rate reproduce n·σ·v — ν_max
+is an upper bound of n·σ·v over a fine subdivision of the tabulated domain
+(not just the grid nodes, since the piecewise-linear σ times the concave
+v(E) can peak between nodes), so there is no numerical substep knob to tune.
+Pure and seeded (a caller-supplied ``numpy.random.Generator``). Stochastic and
 energy-changing, so — like the parameterized ``buffer_gas_cooling`` — it
 lives on the NumPy pipeline only; the JAX backend rejects it.
 """
@@ -59,6 +61,20 @@ def _sigmas_at(table: CrossSectionTable, channel_names, energy_ev: float):
     ]
 
 
+def _max_collision_rate(table: CrossSectionTable, channel_names, n_gas_m3: float, mass_kg: float) -> float:
+    """Upper bound on n_gas * sigma_total(E) * v(E) over the whole tabulated domain.
+
+    sigma_total is piecewise linear (np.interp) but v(E) is concave, so the
+    product can peak *between* grid nodes; taking the max only at the nodes
+    would under-bound it and bias the null-collision rate low. Sample a fine
+    subdivision of [E_min, E_max] so nu_max validly bounds nu(E) everywhere.
+    """
+    grid = table.energies_ev
+    fine = np.linspace(grid[0], grid[-1], max(2048, 64 * grid.size))
+    sigma_total = np.sum([np.interp(fine, grid, table.channels[c]) for c in channel_names], axis=0)
+    return float(np.max(n_gas_m3 * sigma_total * _speed_from_energy_ev(fine, mass_kg)))
+
+
 def _isotropic_direction(rng: np.random.Generator) -> np.ndarray:
     """A unit vector drawn uniformly on the sphere."""
     cos_theta = rng.uniform(-1.0, 1.0)
@@ -81,11 +97,8 @@ def buffer_gas_collide(
     mass = result.species.mass_kg
     floor_ev = 1.5 * k_B * gas_temperature_k / ELEMENTARY_CHARGE_C
 
-    # nu_max = max over the tabulated grid of n_gas * sigma_total(E) * v(E).
     channel_names = list(table.channels.keys())
-    total_on_grid = np.sum([table.channels[c] for c in channel_names], axis=0)
-    v_on_grid = _speed_from_energy_ev(table.energies_ev, mass)
-    nu_max = float(np.max(n_gas_m3 * total_on_grid * v_on_grid))
+    nu_max = _max_collision_rate(table, channel_names, n_gas_m3, mass)
     if nu_max <= 0.0 or hold_time_s <= 0.0:
         return result  # no gas / no time: nothing collides
 
@@ -110,7 +123,7 @@ def buffer_gas_collide(
             if sig_total > 0.0:
                 speed = float(_speed_from_energy_ev(energy, mass))
                 nu_real = n_gas_m3 * sig_total * speed
-                if rng.random() < nu_real / nu_max:  # real (vs null) collision
+                if rng.random() < min(nu_real / nu_max, 1.0):  # real (vs null) collision
                     r = rng.random() * sig_total  # pick a channel in proportion to sigma_i(E)
                     acc = 0.0
                     chosen = channel_names[-1]

@@ -170,6 +170,49 @@ def test_no_gas_no_collisions():
     assert np.allclose(out.momentum_kg_m_s, cloud.momentum_kg_m_s)
 
 
+def test_nu_max_upper_bounds_the_interpolated_rate():
+    # sigma declining while v(E) rises makes sigma*v peak BETWEEN grid nodes;
+    # nu_max must bound n*sigma_total(E)*v(E) everywhere (a grid-node-only max
+    # would under-bound it and clip the acceptance ratio, biasing the rate low)
+    from latent_dirac.collisions.operator import _max_collision_rate
+
+    energies = np.array([50.0, 100.0])
+    table = CrossSectionTable(
+        energies_ev=energies,
+        channels={"positronium": np.array([4.05e-20, 3.10e-20])},
+        thresholds_ev={"positronium": 0.0},
+        provenance={}, fidelity_tier="parameterized",
+    )
+    nu_max = _max_collision_rate(table, ["positronium"], N_GAS, positron.mass_kg)
+
+    fine = np.linspace(50.0, 100.0, 5000)
+    sig = np.interp(fine, energies, table.channels["positronium"])
+    nu_fine = N_GAS * sig * _speed_from_energy_ev(fine, positron.mass_kg)
+    # tight upper bound of the interior peak (grid-resolution residual << the
+    # 0.7% bias the grid-node-only max had); the operator clamps the remainder
+    assert nu_max >= nu_fine.max() * (1.0 - 1e-6)
+    node_only = N_GAS * table.channels["positronium"] * _speed_from_energy_ev(energies, positron.mass_kg)
+    assert nu_max >= node_only.max() * 1.005  # captured the ~0.7% off-node peak
+
+
+def test_channel_selection_follows_sigma_weighting():
+    # large elastic + small positronium: a particle dies only when a real
+    # collision PICKS positronium, so killed fraction = 1 - exp(-n*sigma_ps*v*hold)
+    # (uniform 50/50 selection would kill far more). Pins the sigma-weighted pick.
+    n, e0, hold = 8000, 20.0, 4.7e-7
+    sig_el, sig_ps = 9.0e-20, 1.0e-20
+    table = _table({"elastic": sig_el, "positronium": sig_ps}, {"elastic": 0.0, "positronium": 0.0})
+    out = buffer_gas_collide(
+        _cloud(e0, n=n), table, n_gas_m3=N_GAS, hold_time_s=hold,
+        gas_temperature_k=300.0, rng=np.random.default_rng(1),
+    )
+    v0 = float(_speed_from_energy_ev(e0, positron.mass_kg))
+    expected = 1.0 - np.exp(-N_GAS * sig_ps * v0 * hold)
+    killed = 1.0 - out.alive.mean()
+    assert abs(killed - expected) < 0.03  # follows sigma_ps/sigma_total
+    assert killed < 0.5  # rules out uniform (50/50) channel selection
+
+
 def test_thermal_floor_from_gas_temperature():
     # a cloud in a warm gas is not driven below (3/2) k_B T
     cloud = _cloud(9.0, n=300)

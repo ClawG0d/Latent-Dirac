@@ -131,6 +131,20 @@ def load_cross_sections(path: str) -> CrossSectionTable:
         raise ValueError("cross sections must be non-negative (>= 0)")
 
     channels = {name: grid[:, i + 1] for i, name in enumerate(channel_names)}
+
+    # A channel with an energy threshold must have sigma == 0 below it: a
+    # nonzero sub-threshold value would let the collision operator select a
+    # channel a particle cannot physically access.
+    for name, sigma_col in channels.items():
+        threshold = thresholds[name]
+        if threshold > 0.0:
+            below = energies < threshold
+            if np.any(sigma_col[below] != 0.0):
+                raise ValueError(
+                    f"channel {name!r} has nonzero cross section below its "
+                    f"{threshold} eV threshold; sigma must be 0 for E < threshold"
+                )
+
     return CrossSectionTable(
         energies_ev=energies,
         channels=channels,

@@ -84,26 +84,36 @@ x [mm]  y [mm]  z [mm]  ExRe [V/m]  EyRe [V/m]  EzRe [V/m]  ExIm [V/m]  EyIm [V/
 def test_cst_accepts_shuffled_rows_and_commas(tmp_path):
     lines = _CST_E_MM.splitlines()
     header, sep, rows = lines[0], lines[1], lines[2:]
-    shuffled = [header, sep] + list(reversed(rows))
-    doc = "\n".join(shuffled).replace("  ", ",").replace(" ", "")
-    # rebuild with commas but keep the header readable: simpler — comma-join tokens
     doc = "\n".join([header, sep] + [",".join(r.split()) for r in reversed(rows)])
     fm = load_cst_ascii(_write(tmp_path, doc))
     np.testing.assert_allclose(fm.E_v_m[1, 1, 1], [17.0, 27.0, 37.0])
 
 
-def test_cst_b_field_in_tesla_round_trips_uniform(tmp_path):
-    # a uniform Bz = 0.45 T sampled onto a grid imports and interpolates back
-    lines = ["Bx [T]  By [T]  Bz [T]"]
-    header = "x [mm]  y [mm]  z [mm]  " + lines[0]
+def test_cst_b_field_in_tesla_interpolates_between_nodes(tmp_path):
+    # Bz LINEAR in z so the trilinear interpolation is actually exercised
+    # (a uniform field would pass under any interpolation weighting)
+    header = "x [mm]  y [mm]  z [mm]  Bx [T]  By [T]  Bz [T]"
     body = ["-" * 40]
     for xi in (0.0, 5.0):
         for yi in (0.0, 5.0):
-            for zi in (0.0, 10.0):
-                body.append(f"{xi} {yi} {zi} 0.0 0.0 0.45")
+            for zi in (0.0, 10.0):  # z in mm
+                bz = 0.1 + 0.02 * zi  # 0.1 T at z=0, 0.3 T at z=10 mm
+                body.append(f"{xi} {yi} {zi} 0.0 0.0 {bz}")
     fm = load_cst_ascii(_write(tmp_path, "\n".join([header, *body])))
-    got = fm.B(np.array([1e-3, 1e-3, 1e-3]), 0.0)  # inside the grid, meters
-    np.testing.assert_allclose(got, [0.0, 0.0, 0.45], atol=1e-12)
+    got = fm.B(np.array([1e-3, 1e-3, 5e-3]), 0.0)  # z = 5 mm, midway -> 0.2 T
+    np.testing.assert_allclose(got, [0.0, 0.0, 0.2], atol=1e-12)
+
+
+def test_cst_rejects_duplicate_coordinate_rows(tmp_path):
+    # row count matches the axis product, but a duplicate leaves a cell unset
+    header = "x [mm]  y [mm]  z [mm]  Bx [T]  By [T]  Bz [T]"
+    coords = [
+        (0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1),
+        (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 0),  # (1,1,0) twice; (1,1,1) missing
+    ]
+    body = [f"{x} {y} {z} 0 0 0.1" for (x, y, z) in coords]
+    with pytest.raises(ValueError, match="grid cells unset|incomplete"):
+        load_cst_ascii(_write(tmp_path, "\n".join([header, "-" * 30, *body])))
 
 
 def test_cst_rejects_missing_field_component(tmp_path):
