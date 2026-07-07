@@ -45,7 +45,9 @@ implemented here, as its own phase.
 
 ## Non-Goals
 
-- CST ASCII and SIMION .PA importers (later)
+- CST ASCII importer: landed 2026-07-06 as T3 slice 1 (`load_cst_ascii`);
+  SIMION `.PA`/`.patxt` importer is T3 slice 2. See
+  `2026-07-06-fieldmap-cst-simion-importers-design.md`.
 - RF/time-dependent field maps
 - cylindrical `(r, z)` maps (later; the 3D regular grid comes first)
 - scene-element integration of field maps (follow-up alongside 2c)

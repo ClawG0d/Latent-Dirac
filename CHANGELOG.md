@@ -5,6 +5,19 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added a CST field-map importer (T3, slice 1): `load_cst_ascii` in
+  `latent_dirac/fields/field_map.py` parses the CST "Export Plot Data
+  (ASCII)" 3D regular-grid field export (a `NAME [UNIT]` label line, a
+  dashed separator, then whitespace/comma rows). Columns are classified
+  by label (order-independent), coordinate units convert to meters, field
+  units to SI, an `H` (A/m) export folds into `B = mu_0*H`, and the real
+  part of a complex export is kept. The rows→regular-grid step is factored
+  into a shared `_field_map_from_rows` helper that `load_comsol_grid_csv`
+  now also uses (behavior and error messages preserved). Field maps stay
+  programmatic (not scene elements yet), NumPy-only, table-based tier.
+  The SIMION potential-array importer is slice 2. Design record:
+  `docs/superpowers/specs/2026-07-06-fieldmap-cst-simion-importers-design.md`.
+
 - **The GPU lane is live (G1–G3 of the execution plan).** The WSL2
   RTX 5070 Ti box runs the four-tier fp32-GPU validation suite green
   (strict x64 GPU-vs-CPU equality, trajectory, observable,

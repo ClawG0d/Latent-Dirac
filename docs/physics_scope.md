@@ -33,10 +33,12 @@ in tesla. Field models are composable through `CompositeField`, which sums
 component contributions. Current models are idealized hard-edge beam optics
 models (uniform, solenoid, dipole, quadrupole), plus a table-based
 `FieldMapField` that trilinearly interpolates externally computed fields on
-a regular grid (COMSOL regular-grid CSV import). The field layer is
+a regular grid (importers for COMSOL regular-grid CSV and CST
+"Export Plot Data (ASCII)" exports; the CST importer unit-converts to SI
+and folds an H export into B via mu_0). The field layer is
 intentionally separate from quantum wavefunction evolution and from full
-Maxwell field solvers. RF fields and further field-map formats (CST,
-SIMION) are later field-library extensions (see the roadmap).
+Maxwell field solvers. RF fields and the SIMION potential-array importer
+are later field-library extensions (see the roadmap).
 
 The Python core does not implement shower physics in-house:
 electromagnetic and hadronic showers are delegated to the vendored

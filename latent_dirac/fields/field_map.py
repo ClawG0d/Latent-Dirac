@@ -154,22 +154,196 @@ def load_comsol_grid_csv(path: str | Path) -> FieldMapField:
         raise ValueError("no data rows found")
 
     data = np.asarray(rows)
-    axes = [np.unique(data[:, column]) for column in range(3)]
+    return _field_map_from_rows(data[:, :3], {"B": data[:, 3:6]})
+
+
+def _field_map_from_rows(coords_m, values_by_quantity: dict) -> FieldMapField:
+    """Assemble a FieldMapField from scattered rows on a regular grid.
+
+    `coords_m` is `(N, 3)` in meters; `values_by_quantity` maps `"B"` (tesla)
+    and/or `"E"` (V/m) to `(N, 3)` component arrays. Axes are detected by
+    exact coordinate match (no tolerance snapping). Shared by every importer.
+    """
+    coords = np.asarray(coords_m, dtype=float)
+    axes = [np.unique(coords[:, column]) for column in range(3)]
     grid_shape = tuple(axis.size for axis in axes)
-    if int(np.prod(grid_shape)) != data.shape[0]:
+    if int(np.prod(grid_shape)) != coords.shape[0]:
         raise ValueError(
             f"incomplete regular grid: {grid_shape} needs {int(np.prod(grid_shape))} rows, "
-            f"got {data.shape[0]}. Axes are detected by exact coordinate match; "
+            f"got {coords.shape[0]}. Axes are detected by exact coordinate match; "
             "coordinate jitter in the export can inflate the axis count"
         )
 
-    indices = [np.searchsorted(axes[column], data[:, column]) for column in range(3)]
-    b_values = np.zeros((*grid_shape, 3))
-    b_values[indices[0], indices[1], indices[2]] = data[:, 3:6]
-
+    indices = [np.searchsorted(axes[column], coords[:, column]) for column in range(3)]
     filled = np.zeros(grid_shape, dtype=bool)
     filled[indices[0], indices[1], indices[2]] = True
     if not filled.all():
         raise ValueError("incomplete regular grid: duplicate rows leave grid cells unset")
 
-    return FieldMapField(x_m=axes[0], y_m=axes[1], z_m=axes[2], B_t=b_values)
+    grids: dict[str, np.ndarray] = {}
+    for quantity, values in values_by_quantity.items():
+        grid = np.zeros((*grid_shape, 3))
+        grid[indices[0], indices[1], indices[2]] = np.asarray(values, dtype=float)
+        grids[quantity] = grid
+
+    b_values = grids.get("B")
+    if b_values is None:
+        b_values = np.zeros((*grid_shape, 3))  # E-only export: explicit zero B grid
+    return FieldMapField(
+        x_m=axes[0], y_m=axes[1], z_m=axes[2], B_t=b_values, E_v_m=grids.get("E")
+    )
+
+
+# --- CST "Export Plot Data (ASCII)" 3D regular-grid field export ---
+# Format: a `NAME [UNIT]` label line, a dashed separator, then numeric rows.
+# Columns are classified by label (order-independent). See
+# docs/superpowers/specs/2026-07-06-fieldmap-cst-simion-importers-design.md.
+_CST_LABEL = re.compile(r"(\S+)\s*\[\s*([^\]]+?)\s*\]")
+_CST_COMPONENT = re.compile(r"^([EHB])([xyz])(re|im)?$", re.IGNORECASE)
+# Coordinate (length) units have no case collisions, so they are matched
+# case-insensitively. Field units are matched CASE-SENSITIVELY: SI prefix case
+# is load-bearing (mV/m milli vs MV/m mega, mT milli vs T), and folding case
+# would silently apply a 10^9x-wrong factor.
+_LENGTH_UNIT_FACTORS = {"m": 1.0, "mm": 1e-3, "cm": 1e-2, "um": 1e-6, "µm": 1e-6, "nm": 1e-9}
+_FIELD_UNIT_FACTORS = {
+    "V/m": 1.0, "kV/m": 1e3, "MV/m": 1e6, "mV/m": 1e-3,
+    "T": 1.0, "mT": 1e-3, "kT": 1e3, "Gauss": 1e-4, "gauss": 1e-4, "G": 1e-4,
+    "A/m": 1.0, "kA/m": 1e3,
+}
+
+
+def _mu_0() -> float:
+    from latent_dirac.core.constants import (
+        SPEED_OF_LIGHT_M_PER_S,
+        VACUUM_PERMITTIVITY_F_PER_M,
+    )
+
+    return 1.0 / (VACUUM_PERMITTIVITY_F_PER_M * SPEED_OF_LIGHT_M_PER_S**2)
+
+
+def load_cst_ascii(path: str | Path) -> FieldMapField:
+    """Load a CST "Export Plot Data (ASCII)" 3D regular-grid field export.
+
+    The document is a `NAME [UNIT]` label line, a dashed separator, then
+    whitespace- or comma-separated numeric rows. Columns are classified by
+    label (order-independent): coordinates `x|y|z`, field components matching
+    `[EHB][xyz](Re|Im)?`. Coordinate units are converted to meters and field
+    units to SI; an `H` (A/m) family becomes `B = mu_0 * H` (tesla). Complex
+    exports keep the real (`*Re`) part; the imaginary part is dropped. An `E`
+    export fills `E_v_m` with a zero `B_t`; a `B`/`H` export fills `B_t`.
+
+    Reference: CST ASCII field import/export format. Fidelity tier:
+    table-based (values are the imported field, only reshaped and
+    unit-converted).
+    """
+    lines = Path(path).read_text(encoding="utf-8").splitlines()
+
+    # The header is the first line that labels all three x/y/z coordinates
+    # (a bare ">= 3 bracket tokens" test is hijacked by CST metadata preambles
+    # like "Field: E [V/m] at f=1 [GHz], port [1]").
+    columns = None
+    header_index = 0
+    for index, line in enumerate(lines):
+        matches = _CST_LABEL.findall(line)
+        names = {name.strip().lower() for name, _ in matches}
+        if {"x", "y", "z"} <= names:
+            columns, header_index = matches, index
+            break
+    if columns is None:
+        raise ValueError(
+            "no CST header line with x/y/z coordinate columns found (expected a "
+            "'x [unit]  y [unit]  z [unit]  ...' label line)"
+        )
+
+    coord_column: dict[str, int] = {}
+    coord_factor: dict[str, float] = {}
+    field_specs: list[tuple[str, str, str, float, int]] = []
+    for column, (name, unit) in enumerate(columns):
+        key = name.strip().lower()
+        if key in ("x", "y", "z"):
+            length_key = unit.strip().lower()
+            if length_key not in _LENGTH_UNIT_FACTORS:
+                raise ValueError(f"unknown length unit {unit!r} for coordinate {name!r}")
+            coord_column[key] = column
+            coord_factor[key] = _LENGTH_UNIT_FACTORS[length_key]
+            continue
+        match = _CST_COMPONENT.match(name.strip())
+        if match:
+            field_key = unit.strip()  # case-sensitive: mV/m (milli) != MV/m (mega)
+            if field_key not in _FIELD_UNIT_FACTORS:
+                raise ValueError(
+                    f"unknown or case-ambiguous field unit {unit!r} for column {name!r}"
+                )
+            quantity, component, part = match.group(1).upper(), match.group(2).lower(), match.group(3)
+            field_specs.append(
+                (quantity, component, (part or "re").lower(), _FIELD_UNIT_FACTORS[field_key], column)
+            )
+        # any other labelled column (magnitude, abs, ...) is ignored
+
+    for axis in ("x", "y", "z"):
+        if axis not in coord_column:
+            raise ValueError(f"CST header missing the {axis!r} coordinate column")
+
+    n_columns = len(columns)
+    row_values: list[list[float]] = []
+    for line_number, line in enumerate(lines[header_index + 1 :], start=header_index + 2):
+        stripped = line.strip()
+        if not stripped or set(stripped) <= set("-—= \t"):
+            continue  # blank or a dashed/decorative separator line
+        parts = stripped.split(",") if "," in stripped else stripped.split()
+        if len(parts) != n_columns:
+            raise ValueError(
+                f"line {line_number}: expected {n_columns} columns to match the header, "
+                f"got {len(parts)}"
+            )
+        try:
+            row_values.append([float(part) for part in parts])
+        except ValueError as exc:
+            raise ValueError(f"line {line_number}: non-numeric value in {stripped!r}") from exc
+
+    if not row_values:
+        raise ValueError("no data rows found")
+    table = np.asarray(row_values)
+
+    coords_m = np.column_stack(
+        [table[:, coord_column[axis]] * coord_factor[axis] for axis in ("x", "y", "z")]
+    )
+
+    collected: dict[tuple[str, str], tuple[np.ndarray, str]] = {}
+    saw_real = False
+    for quantity, component, part, factor, column in field_specs:
+        if part != "re":
+            continue  # drop the imaginary part; static tracking uses the in-phase field
+        saw_real = True
+        target = "E" if quantity == "E" else "B"
+        key = (target, component)
+        if key in collected:
+            previous = collected[key][1]
+            if previous == quantity:
+                raise ValueError(f"CST header has duplicate {quantity}{component} columns")
+            raise ValueError(
+                f"CST header declares both {previous} and {quantity} for the "
+                f"{target}-field {component}-component; keep only one (B != mu_0*H in material)"
+            )
+        values = table[:, column] * factor
+        if quantity == "H":
+            values = values * _mu_0()
+        collected[key] = (values, quantity)
+
+    if field_specs and not saw_real:
+        raise ValueError("CST field has only imaginary (*Im) components; no real part to import")
+
+    families: dict[str, np.ndarray] = {}
+    for target in ("E", "B"):
+        present = [c for c in ("x", "y", "z") if (target, c) in collected]
+        if not present:
+            continue
+        if len(present) != 3:
+            missing = [c for c in ("x", "y", "z") if (target, c) not in collected]
+            raise ValueError(f"CST {target}-field is missing component(s): {missing}")
+        families[target] = np.column_stack([collected[(target, c)][0] for c in ("x", "y", "z")])
+
+    if not families:
+        raise ValueError("no recognized E/B/H field columns in the CST header")
+
+    return _field_map_from_rows(coords_m, families)
