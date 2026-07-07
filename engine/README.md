@@ -54,3 +54,19 @@ cmake -S engine/yieldgen -B ~/latent-dirac-engine/yieldgen-build -G Ninja \
 cmake --build ~/latent-dirac-engine/yieldgen-build
 ~/latent-dirac-engine/yieldgen-build/yieldgen 200000 pbar_yield.csv 26
 ```
+
+## positrongen
+
+Positron production yield-table generator (10 MeV electrons on a
+tungsten converter disc, FTFP_BERT). Same CSV/provenance contract and
+guards as yieldgen; output is consumed by
+`latent_dirac.sources.positron_table`. Build and run exactly like
+yieldgen:
+
+```bash
+cmake -S engine/positrongen -B ~/latent-dirac-engine/positrongen-build -G Ninja \
+  -DCMAKE_PREFIX_PATH=~/latent-dirac-engine/install -DCMAKE_BUILD_TYPE=Release
+cmake --build ~/latent-dirac-engine/positrongen-build
+YIELDGEN_DATASETS=... LD_LIBRARY_PATH=~/latent-dirac-engine/install/lib \
+  ~/latent-dirac-engine/positrongen-build/positrongen 10000000 out.csv 10
+```

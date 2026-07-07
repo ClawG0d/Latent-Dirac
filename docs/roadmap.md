@@ -9,8 +9,9 @@ The platform composes solver components behind one scene/state spine;
 see [the solver-zoo spec](https://github.com/ClawG0d/Latent-Dirac/blob/master/docs/superpowers/specs/2026-07-05-solver-zoo-composition-design.md).
 Component → next milestone:
 
-- Source → first engine yield table shipped (`engine/yieldgen`);
-  positron/moderation tables per M3
+- Source → antiproton (`engine/yieldgen`) and positron
+  (`engine/positrongen`, 10 MeV e- on W) engine tables shipped;
+  moderation tables per M3
 - Transport → shipped (NumPy float64 reference + JAX batch)
 - Lattice → adapter shipped (conversion + tracking Stage) and the
   `xsuite_lattice` scene element shipped (declarative `xtrack.Line` by
@@ -128,12 +129,13 @@ controlled patch protocol (frozen until its infrastructure exists).
   element (M2b) is done — declarative slabs in a scene, the transformer
   binary injected at run time via LATENT_DIRAC_G4_TRANSFORMER (never in
   the YAML); GDML translation of full scenes remains a later extension
-- **M3 — yield-table pipeline** — first deliverable done
-  (`engine/yieldgen`: proton-on-iridium FTFP_BERT production, CSV
-  contract with the provenance four-tuple, consumed by the
-  `antiproton_yield_table` table-based source and the engine-backed
-  target demo); positron/moderation tables and the surrogate source's
-  graduation toward `externally calibrated` still pending
+- **M3 — yield-table pipeline** — antiproton and positron tables done
+  (`engine/yieldgen`: proton-on-iridium, consumed by
+  `antiproton_yield_table` and the engine-backed target demo;
+  `engine/positrongen`: 10 MeV electron-on-tungsten converter,
+  consumed by `positron_yield_table`; both FTFP_BERT with the CSV
+  provenance-four-tuple contract); moderation tables and the surrogate
+  source's graduation toward `externally calibrated` still pending
 - **M4 — companion acceleration library**: first-party C++ in `engine/`
   attached through `G4VFastSimulationModel`; EM domain first;
   performance claims only against open vanilla-Geant4 benchmarks

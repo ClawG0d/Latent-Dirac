@@ -68,7 +68,7 @@ and fidelity note. Design record:
 
 | Component  | Authority domain                      | Form        | Backing                                     | Status |
 | ---------- | ------------------------------------- | ----------- | ------------------------------------------- | ------ |
-| Source     | positron / antiproton source terms    | sampler     | first-party (pair, beta-plus, surrogate) + engine yield-table replay | shipped (first engine table committed); more tables per M3 |
+| Source     | positron / antiproton source terms    | sampler     | first-party (pair, beta-plus, surrogate) + engine yield-table replay | shipped (antiproton + positron engine tables committed); moderation tables per M3 |
 | Transport  | vacuum EM transport                   | stepper     | first-party Boris kernel (NumPy + JAX)      | shipped |
 | Lattice    | decelerator rings, transfer lines     | stepper     | Xsuite adapter                              | shipped (adapter + `xsuite_lattice` scene element) |
 | Matter     | targets, degraders, annihilation      | transformer | vendored vanilla Geant4 v11.4.2             | shipped (adapter + `matter_slab` scene element; subprocess + files; yield tables for sources) |
@@ -910,6 +910,10 @@ Implemented:
   Geant4 tree (`engine/README.md`), the `engine/yieldgen` antiproton
   production app (FTFP_BERT, provenance header), and the table-based
   `antiproton_yield_table` scene source that replays its output
+- the positron yield table (`engine/positrongen`: 10 MeV electrons on a
+  tungsten converter, FTFP_BERT; committed table from 1e7 primaries,
+  22,361 recorded positrons) replayed by the table-based
+  `positron_yield_table` scene source
 - openPMD particle output (`latent_dirac.io.openpmd_io`, optional
   `[openpmd]` extra): monitor snapshots and the final cloud as openPMD
   iterations with SI unit metadata, the loss-ledger channel, and the

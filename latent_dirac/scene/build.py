@@ -28,6 +28,7 @@ from latent_dirac.sources.base import SourceTerm
 from latent_dirac.sources.cold_sphere import ColdUniformSphereSource
 from latent_dirac.sources.positron_beta import BetaPlusPositronSource
 from latent_dirac.sources.positron_pair import PositronPairSource
+from latent_dirac.sources.positron_table import PositronYieldTableSource
 from latent_dirac.state.particle_state import ParticleState
 
 _SOURCE_CLASSES = {
@@ -35,6 +36,7 @@ _SOURCE_CLASSES = {
     "beta_plus": BetaPlusPositronSource,
     "antiproton_surrogate": AntiprotonSurrogateSource,
     "antiproton_yield_table": AntiprotonYieldTableSource,
+    "positron_yield_table": PositronYieldTableSource,
     "cold_uniform_sphere": ColdUniformSphereSource,
 }
 

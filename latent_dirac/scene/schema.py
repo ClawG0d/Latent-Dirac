@@ -28,6 +28,7 @@ class SourceSpec(SceneModel):
         "beta_plus",
         "antiproton_surrogate",
         "antiproton_yield_table",
+        "positron_yield_table",
         "cold_uniform_sphere",
     ]
     label: str

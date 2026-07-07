@@ -5,6 +5,19 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added the positron yield table (engine-track M3-a):
+  `engine/positrongen` fires 10 MeV electrons at a tungsten converter
+  disc (r = 5 mm, 2 mm thick, ~0.57 X0; FTFP_BERT) and records every
+  exiting positron under the same CSV/provenance contract as
+  yieldgen. The committed table
+  (`examples/data/positron_yield_ftfp_bert_10mev_w.csv`, 1e7
+  primaries, 22,361 records — 2.2e-3 e+/e-, literature ballpark for
+  this converter) is replayed by the new table-based
+  `positron_yield_table` scene source (bootstrap resampling preserves
+  the represented total; provenance four-tuple in metadata; committed
+  artifact pinned by physics sanity tests). Design record:
+  `docs/superpowers/specs/2026-07-07-positron-yield-table-design.md`.
+
 - Added a CF4 buffer-gas cooling example (`examples/scenes/buffer_gas_cf4_cooling.yaml`
   + `examples/data/cross_sections/cf4_positron_toy.csv`): CF4 is the fast
   Surko coolant (low-threshold vibrational modes). Like the N2 toy, the
