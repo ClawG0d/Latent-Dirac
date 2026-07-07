@@ -132,6 +132,29 @@ class PenningTrapElement(ElementBase):
     _gate_window = model_validator(mode="after")(_validate_gate_window)
 
 
+class RotatingWallElement(ElementBase):
+    """Rotating multipole transverse E field (parameterized).
+
+    Single-particle rotating field only: the plasma *compression* a rotating
+    wall drives is a collective, collisional effect out of scope for the
+    NumPy + mean-field core (see the 2026-07-07 rotating-wall spec). `multipole`
+    1 is a uniform rotating field; 2 is a quadrupole pattern linear in
+    transverse position (|E| = amplitude_v_m at radius_m).
+    """
+
+    type: Literal["rotating_wall"]
+    multipole: Literal[1, 2]
+    amplitude_v_m: float = Field(gt=0)
+    radius_m: float = Field(default=0.02, gt=0)
+    frequency_hz: float = Field(gt=0)
+    phase_rad: float = 0.0
+    t_on_s: float | None = None
+    t_off_s: float | None = None
+    steps: int | None = Field(default=None, ge=1)
+
+    _gate_window = model_validator(mode="after")(_validate_gate_window)
+
+
 class DriftElement(ElementBase):
     """Zero-field transport segment (exact within the solver contract)."""
 
@@ -309,11 +332,14 @@ ElementSpec = Annotated[
     | MatterSlabElement
     | XsuiteLatticeElement
     | BufferGasCoolingElement
+    | RotatingWallElement
     | MonitorElement,
     Field(discriminator="type"),
 ]
 
-FIELD_ELEMENT_TYPES = ("uniform_field", "solenoid", "dipole", "quadrupole", "penning_trap")
+FIELD_ELEMENT_TYPES = (
+    "uniform_field", "solenoid", "dipole", "quadrupole", "penning_trap", "rotating_wall",
+)
 
 
 class Scene(SceneModel):

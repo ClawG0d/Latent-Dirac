@@ -5,6 +5,24 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added a `rotating_wall` trap element (Phase 4 trap physics): a rotating
+  multipole transverse E field, dipole (m=1, uniform rotating field) or
+  quadrupole (m=2, linear in transverse position, `|E| = amplitude_v_m` at
+  `radius_m`), rotating at `frequency_hz`. Pure field function on both
+  backends (NumPy `RotatingWallField` + JAX, mirror-paired via
+  `_field_fn_for` with static multipole dispatch, NumPy↔JAX parity pinned);
+  the m=2 form is the gradient of the rotating quadrupole potential, so it
+  is curl- and divergence-free (a true quadrupole, not a radial field —
+  pinned by a divergence test). Fidelity `parameterized`: this is the
+  single-particle rotating field only — the radial plasma *compression* a
+  rotating wall drives is a collective, collisional effect needing a
+  PIC/collective solver the NumPy core does not have (stated in the field
+  docstring, the scene report, and the demo), and is not a figure of merit.
+  Superimposing it on the Penning well simultaneously needs a
+  composite-field scene element (a later extension). Ships with a demo
+  (`examples/scenes/rotating_wall_drive.yaml`). Design record:
+  `docs/superpowers/specs/2026-07-07-rotating-wall-design.md`.
+
 - The antiproton surrogate graduated to `externally calibrated`
   (M3-b): `AntiprotonSurrogateSource` gains
   `calibration="ad_ftfp_bert_26gevc_ir"`, loading effective parameters

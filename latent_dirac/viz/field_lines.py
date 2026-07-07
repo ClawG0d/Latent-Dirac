@@ -179,4 +179,12 @@ def element_field_line_bundles(element, field, extent: dict) -> list[tuple[str, 
         for seed in _ring_seeds(0.6 * transverse, center, 8):
             bundles.append(("B", _two_sided(field, seed, span, span / 200.0, "B", 0.0)))
 
+    elif element.type == "rotating_wall":
+        # snapshot the transverse E pattern at the switch-on time: m=1 is a
+        # uniform rotating field (parallel lines), m=2 a rotating quadrupole
+        # (hyperbolic lines). It is time-dependent — this is one instant.
+        span = 1.8 * transverse
+        for seed in _ring_seeds(0.6 * transverse, axial, 8):
+            bundles.append(("E", _two_sided(field, seed, span, span / 200.0, "E", t_s)))
+
     return [(kind, line) for kind, line in bundles if line.shape[0] >= 2]

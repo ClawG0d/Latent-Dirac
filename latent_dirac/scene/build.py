@@ -14,6 +14,7 @@ from latent_dirac.fields.composite import CompositeField
 from latent_dirac.fields.dipole import DipoleField
 from latent_dirac.fields.penning_trap import PenningTrapField
 from latent_dirac.fields.quadrupole import QuadrupoleField
+from latent_dirac.fields.rotating_wall import RotatingWallField
 from latent_dirac.fields.solenoid import SolenoidField, ThinSheetSolenoidField
 from latent_dirac.fields.space_charge import fit_uniform_sphere
 from latent_dirac.fields.time_gated import TimeGatedField
@@ -174,6 +175,14 @@ def _base_field_for(element) -> Field:
             d_m=element.d_m,
             b_tesla=element.b_tesla,
             center_z_m=element.center_z_m,
+        )
+    if element.type == "rotating_wall":
+        return RotatingWallField(
+            multipole=element.multipole,
+            amplitude_v_m=element.amplitude_v_m,
+            radius_m=element.radius_m,
+            frequency_hz=element.frequency_hz,
+            phase_rad=element.phase_rad,
         )
     if element.type == "drift":
         return UniformField()

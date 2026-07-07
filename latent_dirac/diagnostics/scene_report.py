@@ -15,7 +15,10 @@ _FIELD_DESCRIPTIONS = {
     "dipole": "idealized dipole (hard-edge)",
     "quadrupole": "idealized quadrupole (hard-edge)",
     "penning_trap": "ideal Penning trap (quadrupole well + axial B)",
+    "rotating_wall": "rotating multipole E field (single-particle)",
 }
+
+_MULTIPOLE_NAMES = {1: "dipole", 2: "quadrupole"}
 
 
 def _deduplicated_field_elements(scene: Scene):
@@ -92,6 +95,20 @@ def field_status_lines(scene: Scene) -> list[str]:
         elif element.type in ("dipole", "quadrupole"):
             lines.append(f"- field model: {_FIELD_DESCRIPTIONS[element.type]}")
             lines.append(f"- status: active over length {element.length_m:g} m")
+        elif element.type == "rotating_wall":
+            pole = _MULTIPOLE_NAMES[element.multipole]
+            lines.append(
+                f"- field model: {_FIELD_DESCRIPTIONS[element.type]} ({pole}, m={element.multipole})"
+            )
+            lines.append(
+                f"- drive: amplitude {element.amplitude_v_m:g} V/m at r={element.radius_m:g} m, "
+                f"frequency {element.frequency_hz:g} Hz"
+            )
+            lines.append(
+                "- status: single-particle rotating field; plasma compression "
+                "is collective (out of scope, needs PIC)"
+            )
+            _append_gate_line(lines, element)
     return lines
 
 

@@ -169,6 +169,12 @@ controlled patch protocol (frozen until its infrastructure exists).
   exp(-hold/tau), so capture and storage survival optimize jointly; the
   cross-section-derived tau = 1/(n sigma v) form needs the same curated
   sigma(v) dataset as the buffer-gas work above — pending)
+- rotating wall — **field model done** (the `rotating_wall` element: a
+  rotating multipole transverse E field, dipole m=1 or quadrupole m=2,
+  dual-backend, parameterized; single-particle field only — the collective
+  radial compression needs a PIC/collective solver, out of scope, see the
+  2026-07-07 rotating-wall spec). Superimposing it on the trap well
+  simultaneously needs a composite-field scene element (a later extension)
 - guiding-center/secular solver for long-timescale trap storage
 - moderation physics: implantation/moderation yield tables via the
   engine track (M3) plus semi-empirical moderation parameterizations

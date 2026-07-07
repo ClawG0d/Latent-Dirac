@@ -31,6 +31,7 @@ _SWEEPABLE_PARAMS = {
     "dipole": ("B_vector_t", "length_m", "center_z_m"),
     "quadrupole": ("gradient_t_m", "length_m", "center_z_m"),
     "penning_trap": ("v0_volt", "d_m", "b_tesla", "center_z_m"),
+    "rotating_wall": ("amplitude_v_m", "radius_m", "frequency_hz", "phase_rad"),
     "drift": (),
     "aperture": ("radius_m",),
     "momentum_window": ("p_min_gev_c", "p_max_gev_c"),
@@ -170,6 +171,25 @@ def _drift_field(jnp, positions, time_s, params):
     return zeros, zeros
 
 
+def _rotating_dipole_field(jnp, positions, time_s, params):
+    theta = 2.0 * jnp.pi * params["frequency_hz"] * time_s + params["phase_rad"]
+    e_field = params["amplitude_v_m"] * jnp.stack(
+        [jnp.cos(theta), jnp.sin(theta), jnp.zeros_like(theta)], axis=1
+    )
+    return _apply_gate(jnp, time_s, params, e_field, jnp.zeros_like(positions))
+
+
+def _rotating_quadrupole_field(jnp, positions, time_s, params):
+    theta = 2.0 * jnp.pi * params["frequency_hz"] * time_s + params["phase_rad"]
+    g = params["amplitude_v_m"] / params["radius_m"]
+    x, y = positions[:, 0], positions[:, 1]
+    cos_t, sin_t = jnp.cos(theta), jnp.sin(theta)
+    e_field = jnp.stack(
+        [-g * (x * cos_t + y * sin_t), g * (y * cos_t - x * sin_t), jnp.zeros_like(x)], axis=1
+    )
+    return _apply_gate(jnp, time_s, params, e_field, jnp.zeros_like(positions))
+
+
 _FIELD_FNS = {
     "uniform_field": _uniform_field,
     "solenoid": _solenoid_field,
@@ -189,6 +209,8 @@ def _field_fn_for(element):
 
     if element.type == "solenoid" and element.profile == "thin_sheet":
         return _thin_sheet_solenoid_field
+    if element.type == "rotating_wall":
+        return _rotating_dipole_field if element.multipole == 1 else _rotating_quadrupole_field
     return _FIELD_FNS[element.type]
 
 

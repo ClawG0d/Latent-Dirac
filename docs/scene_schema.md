@@ -38,7 +38,12 @@ elements:
   duplicate labels, and version mismatches are rejected at load time.
 - Element vocabulary: `uniform_field`, `solenoid`, `dipole`, `quadrupole`,
   `penning_trap` (transport through the corresponding field model,
-  optional per-element `steps` override), `drift` (zero-field transport),
+  optional per-element `steps` override),
+  `rotating_wall` (a rotating multipole transverse E field — `multipole` 1
+  = uniform rotating dipole, 2 = quadrupole with `|E| = amplitude_v_m` at
+  `radius_m`; `frequency_hz`, optional `phase_rad` and time gate;
+  parameterized, dual-backend — single-particle field only, plasma
+  compression is out of scope), `drift` (zero-field transport),
   `aperture`, `momentum_window` (momenta in GeV/c),
   `annihilation_plate` (ledgered loss endpoint recording at-rest
   two-photon kinematics, events projected onto the plate plane; positron

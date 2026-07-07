@@ -19,6 +19,10 @@ FIDELITY_LABELS = {
     "dipole": "fidelity: parameterized (hard-edge optics model)",
     "quadrupole": "fidelity: parameterized (hard-edge optics model)",
     "penning_trap": "fidelity: parameterized (ideal quadrupole well, no electrode geometry)",
+    "rotating_wall": (
+        "fidelity: parameterized (rotating multipole E field; single-particle "
+        "only — no self-consistent plasma compression)"
+    ),
     "drift": "fidelity: exact zero-field transport",
     "aperture": "fidelity: diagnostic acceptance cut",
     "momentum_window": "fidelity: diagnostic acceptance cut",

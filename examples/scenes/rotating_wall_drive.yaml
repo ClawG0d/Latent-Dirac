@@ -1,0 +1,26 @@
+schema_version: 1
+name: rotating-wall-drive
+seed: 2026
+# A rotating quadrupole (m=2) "rotating wall" drive acting on a transverse
+# positron cloud: the field rotates at frequency_hz and its transverse E grows
+# linearly with radius (|E| = amplitude_v_m at radius_m), imparting the
+# rotating torque that, in a real trap, drives radial compression.
+#
+# FIDELITY (parameterized): this is the single-particle rotating FIELD only.
+# The radial plasma COMPRESSION a rotating wall produces is a collective,
+# collisional effect (rotating field + dissipation) needing a PIC/collective
+# solver the NumPy core does not have — it is NOT shown here and is not a
+# figure of merit. Superimposing this on the Penning well simultaneously would
+# need a composite-field scene element (a later extension); the pipeline runs
+# field elements as sequential stages.
+source:
+  type: positron_pair
+  label: cloud
+  params: { primary_count: 10000, yield_eplus_per_primary: 0.02, mean_energy_MeV: 5.0e-6,
+            energy_spread_MeV: 1.0e-6, angular_rms_rad: 0.05, source_sigma_m: 5.0e-3,
+            bunch_length_s: 1.0e-10, macro_particles: 96 }
+solver: { type: relativistic_boris, dt_s: 1.0e-11, steps: 400 }
+elements:
+  - { type: rotating_wall, label: rw, multipole: 2,
+      amplitude_v_m: 3.0e4, radius_m: 0.02, frequency_hz: 5.0e6 }
+  - { type: monitor, label: driven }
