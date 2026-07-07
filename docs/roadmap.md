@@ -69,8 +69,11 @@ Split into independently deliverable specs:
   as a pure function on the NumPy backend; unified SolverBase with a Coupler
   slot; dimensionless unit boundaries.
 - **2d FieldMap import**: regular-grid field container with trilinear
-  interpolation, COMSOL regular-grid CSV first. RF fields are a further
-  field-library extension after field maps.
+  interpolation. COMSOL regular-grid CSV and CST "Export Plot Data
+  (ASCII)" importers have landed (`load_comsol_grid_csv`,
+  `load_cst_ascii`; T3 slice 1). The SIMION potential-array importer
+  (`.patxt`, potential -> field via gradient) is T3 slice 2. RF fields
+  are a further field-library extension after field maps.
 - **2e openPMD output**: done (write-only particle output behind the
   `[openpmd]` extra; see the solver-zoo view above).
 

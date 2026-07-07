@@ -204,6 +204,11 @@ Load-bearing 的设计决策（改代码前必须懂）：
   GPU-CPU 偏差 1.3e-2、NaN、x64 MLIR 崩溃）——GPU 盒钉
   `jax[cuda12]==0.9.1`，配方与证据见 `docs/solver_backends.md` 和
   同日 GPU 校验 spec。后续升级 jax 前必须重跑四层校验。
+- **T3 场图导入器**：CST "Export Plot Data (ASCII)" 导入器已落地
+  （`load_cst_ascii`，T3 slice 1，与 COMSOL 共用网格重建 helper，
+  单位转 SI、H→B、复数取实部）。**SIMION `.patxt` 导入器（slice 2）
+  待 owner 提供样例 `.patxt` 或应用内帮助的格式说明**——精确格式公开
+  文档查不到，按诚实性纪律不照臆测格式写解析器。
 - 其余 Python 侧方向（排在 GPU 车道之后）：JAX 后端场图支持；
   物理填充方向：降能片物理（走 M3 产额表路线）。**buffer-gas 截面表
   基础设施已在 T5 落地**（见 §二），剩下的只是补一张**真实 DOI 引用的
