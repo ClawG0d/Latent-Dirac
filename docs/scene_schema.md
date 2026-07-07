@@ -47,11 +47,20 @@ elements:
   `residual_gas_loss` (storage lifetime: stochastic annihilation on
   residual gas over a hold time, `mean_lifetime_s` / `hold_time_s`;
   NumPy pipeline only),
-  `buffer_gas_cooling` (Surko-type cooling: `Poisson(collision_rate_hz *
+  `buffer_gas_cooling` (Surko-type cooling, two modes; NumPy pipeline
+  only). Constant-rate parameterized mode: `Poisson(collision_rate_hz *
   hold_time_s)` collisions per particle, each either cooling
   (`energy_loss_ev`, floored at (3/2) k_B * `gas_temperature_k`) or a
-  positronium-formation loss (`ps_fraction`); parameterized stand-in,
-  NumPy pipeline only),
+  positronium-formation loss (`ps_fraction`). Table-based mode: set
+  `cross_section_path` (a curated cross-section CSV, resolved relative to
+  the scene file) and `gas_pressure_pa`; the null-collision operator
+  draws energy-dependent channels from the table at gas number density
+  n = `gas_pressure_pa` / (k_B * `gas_temperature_k`). Exactly one mode
+  per element (validated). The reported fidelity tier follows the table's
+  own header (`parameterized` for a synthetic table, `table-based` for a
+  DOI-cited dataset), surfaced in the scene report's cross-section
+  provenance block. See `latent_dirac/collisions/` and the buffer-gas
+  table-based landing spec (2026-07-06),
   `matter_slab` (a NIST-material slab tracked by the vendored Geant4
   engine — `material` / `thickness_mm` / `entry_z_m`, plus optional
   `transverse_half_width_m` / `world_half_length_m` that **must match the

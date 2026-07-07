@@ -36,11 +36,16 @@ def _resolve_scene_relative_paths(data, base_dir: Path) -> None:
 
     elements = data.get("elements") if isinstance(data, Mapping) else None
     for element in elements if isinstance(elements, list) else []:
-        if not isinstance(element, dict) or element.get("type") != "xsuite_lattice":
+        if not isinstance(element, dict):
             continue
-        line_path = element.get("line_path")
-        if isinstance(line_path, str) and not Path(line_path).is_absolute():
-            element["line_path"] = str((base_dir / line_path).resolve())
+        if element.get("type") == "xsuite_lattice":
+            line_path = element.get("line_path")
+            if isinstance(line_path, str) and not Path(line_path).is_absolute():
+                element["line_path"] = str((base_dir / line_path).resolve())
+        elif element.get("type") == "buffer_gas_cooling":
+            cross_section_path = element.get("cross_section_path")
+            if isinstance(cross_section_path, str) and not Path(cross_section_path).is_absolute():
+                element["cross_section_path"] = str((base_dir / cross_section_path).resolve())
 
 
 def load_scene(path: str | Path) -> Scene:

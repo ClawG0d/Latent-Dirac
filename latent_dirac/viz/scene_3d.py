@@ -24,6 +24,10 @@ FIDELITY_LABELS = {
     "momentum_window": "fidelity: diagnostic acceptance cut",
     "annihilation_plate": "fidelity: parameterized (at-rest two-photon kinematics; no energetics)",
     "residual_gas_loss": "fidelity: parameterized (exponential storage survival; no cross-section)",
+    "buffer_gas_cooling": (
+        "fidelity: parameterized (constant-rate) or table-based "
+        "(curated cross sections; see report provenance)"
+    ),
     "matter_slab": "fidelity: engine transformer (vanilla Geant4 v11.4.2, FTFP_BERT)",
     "xsuite_lattice": "fidelity: externally tracked (Xsuite / xtrack)",
     "monitor": "fidelity: diagnostic snapshot",

@@ -228,23 +228,64 @@ class ResidualGasLossElement(ElementBase):
 
 
 class BufferGasCoolingElement(ElementBase):
-    """Surko-type buffer-gas cooling region (parameterized stand-in).
+    """Surko-type buffer-gas cooling region, in one of two modes.
 
-    Over `hold_time_s`, each particle undergoes Poisson(collision_rate_hz *
-    hold_time_s) collisions; each is either a cooling collision (kinetic
-    energy drops by `energy_loss_ev`, floored at (3/2) k_B * gas_temperature_k)
-    or a positronium-formation loss (probability `ps_fraction`; particle
-    killed and ledgered). Single-channel, constant-rate parameterized tier;
-    the energy-dependent cross-section table is a later upgrade — see
-    docs/superpowers/specs/2026-07-06-buffer-gas-collisions-design.md.
+    Constant-rate (parameterized tier): over `hold_time_s`, each particle
+    undergoes Poisson(collision_rate_hz * hold_time_s) collisions; each is
+    either a cooling collision (kinetic energy drops by `energy_loss_ev`,
+    floored at (3/2) k_B * gas_temperature_k) or a positronium-formation
+    loss (probability `ps_fraction`; particle killed and ledgered).
+
+    Table-based: a curated cross-section table (`cross_section_path`) and
+    the gas number density n = `gas_pressure_pa` / (k_B * gas_temperature_k)
+    drive the null-collision operator (energy-dependent channels; see
+    latent_dirac/collisions/). The reported fidelity tier follows the
+    table's own (`parameterized` for a synthetic table, `table-based` for a
+    cited dataset). See
+    docs/superpowers/specs/2026-07-06-buffer-gas-table-based-landing-design.md.
+
+    Exactly one mode is configured: set `cross_section_path` (+
+    `gas_pressure_pa`) for the table mode, or the three constant-rate
+    fields for the parameterized mode.
     """
 
     type: Literal["buffer_gas_cooling"]
     hold_time_s: float = Field(ge=0)
-    collision_rate_hz: float = Field(gt=0)
-    energy_loss_ev: float = Field(gt=0)
-    ps_fraction: float = Field(ge=0, le=1)
     gas_temperature_k: float = Field(default=300.0, ge=0)
+    # constant-rate mode
+    collision_rate_hz: float | None = Field(default=None, gt=0)
+    energy_loss_ev: float | None = Field(default=None, gt=0)
+    ps_fraction: float | None = Field(default=None, ge=0, le=1)
+    # table-based mode
+    cross_section_path: str | None = None
+    gas_pressure_pa: float | None = Field(default=None, gt=0)
+
+    @model_validator(mode="after")
+    def _exactly_one_mode(self):
+        constant_fields = (self.collision_rate_hz, self.energy_loss_ev, self.ps_fraction)
+        if self.cross_section_path is not None:  # table mode
+            if self.gas_pressure_pa is None:
+                raise ValueError("table-based buffer_gas_cooling requires gas_pressure_pa")
+            if self.gas_temperature_k <= 0:
+                raise ValueError("table-based buffer_gas_cooling requires gas_temperature_k > 0")
+            if any(f is not None for f in constant_fields):
+                raise ValueError(
+                    "table-based buffer_gas_cooling must not set the constant-rate fields "
+                    "(collision_rate_hz / energy_loss_ev / ps_fraction)"
+                )
+        else:  # constant-rate mode
+            if any(f is None for f in constant_fields):
+                raise ValueError(
+                    "constant-rate buffer_gas_cooling requires collision_rate_hz, "
+                    "energy_loss_ev, and ps_fraction (or set cross_section_path for the "
+                    "table-based mode)"
+                )
+            if self.gas_pressure_pa is not None:
+                raise ValueError(
+                    "gas_pressure_pa only applies to table-based buffer_gas_cooling "
+                    "(set cross_section_path)"
+                )
+        return self
 
 
 class MonitorElement(ElementBase):

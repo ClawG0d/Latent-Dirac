@@ -154,6 +154,26 @@ def scene_report(scene: Scene, result: SceneRunResult, scope_note: str) -> str:
         lines.append(f"- datasets: {mp.get('datasets', 'unknown')}")
         lines.append(f"- patches: {mp.get('patches', 'unknown')}")
 
+    # Table-based buffer-gas cooling carries a cross-section provenance block
+    # (the cross-section analogue of the engine four-tuple).
+    buffer_gas = final.metadata.get("buffer_gas") if isinstance(final.metadata, dict) else None
+    if isinstance(buffer_gas, dict) and buffer_gas:
+        lines.append("")
+        lines.append("Buffer-gas cross-section provenance:")
+        for label, prov in buffer_gas.items():
+            energy_range = prov.get("energy_range_ev", ["?", "?"])
+            lines.append(
+                f"- {label}: gas {prov.get('gas', 'unknown')}, "
+                f"tier {prov.get('fidelity_tier', 'unknown')}, "
+                f"source {prov.get('source', 'unknown')}, "
+                f"doi {prov.get('doi') or 'none'}"
+            )
+            lines.append(
+                f"  channels {prov.get('channels', [])}, "
+                f"E range [{energy_range[0]:g}, {energy_range[1]:g}] eV, "
+                f"n_gas {prov.get('n_gas_m3', float('nan')):.3g} m^-3"
+            )
+
     for label, events in result.annihilations.items():
         lines.append("")
         lines.append(f"Annihilation endpoint {label!r}:")

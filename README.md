@@ -886,10 +886,13 @@ Implemented:
   annihilation on residual gas over a hold time (exponential survival at
   a directly-supplied `mean_lifetime_s`, parameterized tier; ledgered
   per particle, NumPy pipeline only)
-- the `buffer_gas_cooling` element: Surko-type cooling as a
-  parameterized stand-in — Poisson collisions over a hold, each cutting
-  kinetic energy (floored at the gas temperature) or forming
-  positronium (killed and ledgered); NumPy pipeline only
+- the `buffer_gas_cooling` element: Surko-type cooling in two modes — a
+  constant-rate parameterized stand-in (Poisson collisions over a hold,
+  each cutting kinetic energy, floored at the gas temperature, or forming
+  positronium, killed and ledgered) and a table-based mode driven by the
+  null-collision operator over a provenance-checked, energy-dependent
+  cross-section table (`latent_dirac/collisions/`); the reported fidelity
+  tier follows the table's header; NumPy pipeline only
 - the `matter_slab` scene element: a declarative NIST-material slab
   tracked by the vendored Geant4 engine (transformer binary injected at
   run time via `LATENT_DIRAC_G4_TRANSFORMER`, never stored in scenes)
@@ -940,10 +943,12 @@ Implemented:
 
 Not implemented yet:
 
-- energy-dependent buffer-gas cross-section tables (the shipped cooling
-  element is a constant-rate parameterized stand-in) and rotating wall
-  in the trap; self-consistent space charge (PIC via WarpX) beyond the
-  shipped mean-field tier
+- a real, DOI-cited positron cross-section dataset for the table-based
+  buffer-gas cooling mode (the table machinery ships; the bundled N₂
+  table is a synthetic placeholder, so the element stays parameterized
+  until a curated dataset lands) and rotating wall in the trap;
+  self-consistent space charge (PIC via WarpX) beyond the shipped
+  mean-field tier
 - interactive-viewer slices beyond the shipped Plotly animation
   (streaming/large-scale rendering)
 - GPU benchmark suite

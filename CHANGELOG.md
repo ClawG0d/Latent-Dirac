@@ -22,6 +22,30 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
   `docs/superpowers/specs/2026-07-06-gpu-float32-validation-design.md`
   and the execution-plan spec.
 
+- Added a table-based mode to `buffer_gas_cooling` (T5). A new
+  `latent_dirac/collisions/` package holds a provenance-checked
+  cross-section table loader (`load_cross_sections`) and the
+  null-collision (Skullerud) Monte Carlo operator (`buffer_gas_collide`):
+  candidate collisions arrive as a Poisson process at rate
+  nu_max = max_E[n*sigma_total(E)*v(E)], each real with probability
+  nu(E)/nu_max, with elastic redirection, inelastic threshold energy loss
+  floored at (3/2)kT, and positronium/annihilation/ionization loss
+  channels. The element gains `cross_section_path` + `gas_pressure_pa`
+  (n = P/(k_B T)); set them for the table mode or the three constant-rate
+  fields for the parameterized mode (exactly one, validated). The loader
+  enforces provenance discipline — required header
+  (gas/tier/units/channels/thresholds), a citable DOI for the
+  `table-based` tier, a strictly increasing energy grid, non-negative
+  sigma, thresholds matching channels — and never extrapolates (sigma = 0
+  outside the tabulated range). The scene report carries a cross-section
+  provenance block (the cross-section analogue of the engine four-tuple).
+  Ships with a SYNTHETIC, clearly-labeled N2 placeholder table
+  (`examples/data/cross_sections/n2_positron_toy.csv`, fidelity
+  `parameterized` — not physical data) and a demo scene
+  (`examples/scenes/buffer_gas_table_cooling.yaml`, ~4 eV -> ~0.2 eV, no
+  losses below the Ps threshold). Real DOI-cited tables drop in later and
+  promote the tier. Design record:
+  `docs/superpowers/specs/2026-07-06-buffer-gas-table-based-landing-design.md`.
 - Added the ELENA-like ring demo (demo #16,
   `examples/scenes/elena_ring.yaml`): the `xsuite_lattice` element
   tracking a full ring for 60 turns, rendered as a stroboscopic

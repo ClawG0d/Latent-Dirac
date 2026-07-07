@@ -343,14 +343,19 @@ def _xsuite_lattice_action(element):
 
 
 def _buffer_gas_cooling_action(element, rng):
-    """Surko-type buffer-gas cooling over a hold time (parameterized tier).
+    """Surko-type buffer-gas cooling over a hold time.
 
-    Poisson collisions per particle; each is a cooling collision (kinetic
-    energy drops by energy_loss_ev, floored at (3/2) k_B T, momentum
-    rescaled with direction preserved) or a Ps-formation loss (killed,
-    ledgered). Constant rate + single channel; see the buffer-gas spec.
-    Pure and seeded for reproducibility; NumPy pipeline only.
+    Table-based mode (cross_section_path set): the null-collision operator
+    driven by a curated cross-section table and the gas number density
+    n = gas_pressure_pa / (k_B * gas_temperature_k). Otherwise the
+    constant-rate parameterized tier (Poisson collisions; each is a
+    cooling collision — energy drops by energy_loss_ev, floored at
+    (3/2)kT, direction preserved — or a Ps-formation loss). Pure and
+    seeded; NumPy pipeline only.
     """
+    if element.cross_section_path is not None:
+        return _buffer_gas_table_action(element, rng)
+
     from latent_dirac.core.constants import ELEMENTARY_CHARGE_C, k_B
     from latent_dirac.core.units import kinetic_energy_to_momentum_magnitude
 
@@ -387,6 +392,43 @@ def _buffer_gas_cooling_action(element, rng):
         return result
 
     return cool
+
+
+def _buffer_gas_table_action(element, rng):
+    """Table-based buffer-gas cooling: the null-collision operator on a
+    curated cross-section table. The table's provenance and fidelity tier
+    are stamped into the cloud metadata (the cross-section analogue of the
+    engine four-tuple) so the scene report can surface them.
+    """
+    from latent_dirac.collisions import buffer_gas_collide, load_cross_sections
+    from latent_dirac.core.constants import k_B
+
+    table = load_cross_sections(element.cross_section_path)
+    n_gas_m3 = element.gas_pressure_pa / (k_B * element.gas_temperature_k)
+    provenance = {
+        "gas": table.provenance.get("gas"),
+        "fidelity_tier": table.fidelity_tier,
+        "source": table.provenance.get("source"),
+        "doi": table.provenance.get("doi", ""),
+        "channels": list(table.channels.keys()),
+        "energy_range_ev": [float(table.energies_ev[0]), float(table.energies_ev[-1])],
+        "gas_pressure_pa": element.gas_pressure_pa,
+        "n_gas_m3": n_gas_m3,
+    }
+
+    def cool_table(cloud: ParticleState) -> ParticleState:
+        result = buffer_gas_collide(
+            cloud,
+            table,
+            n_gas_m3=n_gas_m3,
+            hold_time_s=element.hold_time_s,
+            gas_temperature_k=element.gas_temperature_k,
+            rng=rng,
+        )
+        result.metadata.setdefault("buffer_gas", {})[element.label] = provenance
+        return result
+
+    return cool_table
 
 
 def _monitor_action(label, monitors):
