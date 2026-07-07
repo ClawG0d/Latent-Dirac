@@ -181,17 +181,17 @@ Load-bearing 的设计决策（改代码前必须懂）：
 - **M4 伴生加速库**：根目录 `engine/`（一等公民 C++），经
   fast-sim 挂点接入，EM 域先行；性能数字必须带 vs 香草 Geant4 的
   开放基准。
-- **GPU 车道**（本机 5070 Ti 正是为它准备的；**会话级执行计划已
-  owner 拍板**，见
-  `docs/superpowers/specs/2026-07-06-execution-plan-gpu-to-phase4-design.md`：
-  G1 环境冒烟 → G2 float32 分层校验 + ParticleState pytree 注册
-  包装 → G3 诚实 benchmark 发布到 docs/benchmarks.md，M3 产额表
-  穿插、M4 排在 benchmark 之后）：WSL2 装 `jax[cuda12]`（Blackwell
-  需较新 CUDA 12.8+/jaxlib，以官方支持矩阵为准；GPU 直通已探测
-  可用——nvidia-smi 见 5070 Ti，驱动 591.86），先做 float32 GPU
-  后端对 float64 CPU 参考的容差分层校验，再做诚实 benchmark 套件。
-  性能数字标签必须打全：GPU 型号 + WSL2 + CUDA/驱动版本 +
-  积分器/步长/粒子数/batch/保真层级。
+- **GPU 车道：G1–G3 已全部完成（2026-07-06，勿重做）**。四层
+  fp32-GPU 校验套件全绿（strict x64 等同 / 轨迹 / 观测量 / |u| 守恒，
+  `tests/test_gpu_float32_validation.py`，无 GPU 自动跳过）；
+  `ParticleState` 的 opt-in pytree 注册落地（tracer 安全，metadata
+  不跨 jit 边界）；首批官方性能数字在 `docs/benchmarks.md`
+  （fp32 GPU 7.7e9 particle·steps/s @ 1e6 粒子；批量扫描摊销到
+  0.04 ms/配置 @ batch 256），全标签。**重要陷阱**：jax/jaxlib
+  0.10.2 在 Blackwell 上错误编译本项目的 lax.scan 程序（同精度
+  GPU-CPU 偏差 1.3e-2、NaN、x64 MLIR 崩溃）——GPU 盒钉
+  `jax[cuda12]==0.9.1`，配方与证据见 `docs/solver_backends.md` 和
+  同日 GPU 校验 spec。后续升级 jax 前必须重跑四层校验。
 - 其余 Python 侧方向（排在 GPU 车道之后）：JAX 后端场图支持；
   物理填充方向：降能片物理（走 M3 产额表路线）、Surko 阱 buffer-gas
   碰撞的截面表升级（能量相关 sigma(v) + 与阱的算子分裂）。
