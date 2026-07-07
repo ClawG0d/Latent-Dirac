@@ -20,6 +20,7 @@ from latent_dirac.scene.loader import load_scene, scene_from_mapping
 
 TOY = Path(__file__).resolve().parents[1] / "examples/data/cross_sections/n2_positron_toy.csv"
 DEMO = Path(__file__).resolve().parents[1] / "examples/scenes/buffer_gas_table_cooling.yaml"
+DEMO_CF4 = Path(__file__).resolve().parents[1] / "examples/scenes/buffer_gas_cf4_cooling.yaml"
 
 
 def table_scene(
@@ -226,6 +227,19 @@ def test_committed_demo_scene_runs():
     scene = load_scene(DEMO)
     result = run_scene(scene)
     assert result.pipeline_result.final_cloud.alive.any()
+
+
+def test_committed_cf4_demo_scene_cools_without_losses():
+    # CF4 is the fast Surko coolant; injected below the toy thresholds the
+    # cloud cools via elastic+vibrational with no annihilation losses
+    scene = load_scene(DEMO_CF4)
+    initial = build_source(scene).sample(np.random.default_rng(scene.seed))
+    final = run_scene(scene).pipeline_result.final_cloud
+    assert final.alive.all()  # injected below electronic/Ps thresholds
+    cooled = final.kinetic_energy_joule()[final.alive].mean()
+    assert cooled < 0.25 * initial.kinetic_energy_joule().mean()
+    # the reported tier stays parameterized (the CF4 toy table is synthetic)
+    assert "parameterized" in scene_report(scene, run_scene(scene), scope_note="test")
 
 
 def test_every_element_type_has_a_fidelity_label():

@@ -5,6 +5,21 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- Added a CF4 buffer-gas cooling example (`examples/scenes/buffer_gas_cf4_cooling.yaml`
+  + `examples/data/cross_sections/cf4_positron_toy.csv`): CF4 is the fast
+  Surko coolant (low-threshold vibrational modes). Like the N2 toy, the
+  CF4 table is a SYNTHETIC, clearly-labeled placeholder (fidelity
+  `parameterized`, not physical data) — it exercises the table machinery
+  for the second Surko gas until a curated dataset lands. Also added
+  `docs/positron_cross_section_sources.md`: a catalogue of published,
+  DOI-cited positron-N2/CF4 cross-section sources and their data
+  availability (from an adversarially verified literature sweep), to
+  guide curating a real `table-based` dataset. It records the key
+  modelling fact that CF4 cools via vibrational and N2 via rotational
+  excitation, and that direct annihilation (Z_eff) is negligible for
+  cooling. No cross-section values are invented; the catalogue lists
+  sources only.
+
 - Added a CST field-map importer (T3, slice 1): `load_cst_ascii` in
   `latent_dirac/fields/field_map.py` parses the CST "Export Plot Data
   (ASCII)" 3D regular-grid field export (a `NAME [UNIT]` label line, a
