@@ -38,3 +38,37 @@ be validated against them.
 
 New backends can be added behind the same solver interface; the pure
 `xp`-generic kernel keeps the physics shared across all of them.
+
+## GPU lane (WSL2, float32)
+
+The float32 GPU lane runs the same `boris_step` kernel on
+`jax[cuda12]`; float64 truth stays on the CPU NumPy reference (consumer
+Blackwell cuts fp64 throughput, and the dimensionless u = p/(mc)
+internals are float32-safe by design). Correctness is enforced by the
+tiered suite in `tests/test_gpu_float32_validation.py` (strict x64
+GPU-vs-CPU equality, trajectory, observable, and |u|-conservation
+tiers) — it runs wherever `jax.devices("gpu")` is non-empty and skips
+elsewhere, so CI stays CPU-only. Design record:
+`docs/superpowers/specs/2026-07-06-gpu-float32-validation-design.md`.
+
+Reference environment (the project's WSL2 box, RTX 5070 Ti):
+
+```bash
+# repo must live on ext4 (~), never /mnt/c — the vendored tree crawls over 9P
+git clone https://github.com/ClawG0d/Latent-Dirac ~/Latent-Dirac
+cd ~/Latent-Dirac && python3 -m venv .venv
+.venv/bin/pip install -e ".[dev,jax]"
+.venv/bin/pip install "jax[cuda12]==0.9.1"   # see the pin note below
+XLA_PYTHON_CLIENT_PREALLOCATE=false .venv/bin/python -m pytest tests/test_gpu_float32_validation.py -v
+```
+
+Pin note: jax/jaxlib 0.10.2 miscompiles this project's `lax.scan`
+programs on Blackwell (sm_120) — same-precision GPU-vs-CPU divergence,
+NaNs, and an MLIR verifier crash for x64 — while 0.9.1 passes every
+tier (fp32 GPU agrees with fp32 CPU to ~2e-7). Details in the design
+record. `XLA_PYTHON_CLIENT_PREALLOCATE=false` avoids benign
+preallocation errors when Windows holds part of the VRAM.
+
+Performance numbers live only in `docs/benchmarks.md` (full labels:
+GPU model, WSL2, CUDA/driver, jax/jaxlib versions, integrator,
+timestep, particle count, batch size, fidelity tier).

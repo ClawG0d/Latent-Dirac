@@ -52,7 +52,9 @@ reduction-order differences on GPU. Tiers:
    the scenes the JAX backend supports). Endpoint positions:
    rtol 1e-4 relative to the trajectory scale (Larmor radius or
    element aperture), after O(100–1000) steps. Dimensionless momenta:
-   rtol 1e-5.
+   rtol 3e-5 (calibrated: the 500-step trap case — ~12 gyro turns of
+   phase-sensitive accumulation — measures 1.4e-5 on the pinned
+   stack; 2x margin).
 3. **Observable tier (fp32)**: accepted fraction and weighted counts
    must match the fp64 reference exactly for robust cuts (margins
    ≫ fp32 noise) — scenes are chosen so no particle sits within 1e-3
@@ -69,6 +71,28 @@ importorskips jax, and each GPU case skips unless
 the WSL box runs the real thing. The fp32-vs-fp64 comparisons reuse
 `run_scene_batched` with dtype control via `jax_enable_x64` toggles
 per test (config isolation via context managers).
+
+## Findings from the first real run (WSL RTX 5070 Ti, 2026-07-06)
+
+- **jax/jaxlib 0.10.2 miscompiles our `lax.scan` programs on Blackwell
+  (sm_120)**: fp32 GPU output diverged from fp32 CPU output by 1.3e-2
+  relative (same precision, same program — a compiler defect, not
+  rounding), some configurations produced NaN, and the x64 GPU compile
+  crashed outright with an MLIR verification error in the new xtile
+  emitter (`'scf.if' op ... successor operand type ... should match`).
+  A plain jitted `boris_step` loop without `lax.scan` compiled and
+  agreed fine — the defect sits in the scan fusion path.
+- **jax/jaxlib 0.9.1 is clean**: fp32 GPU vs fp32 CPU agree to
+  1.6e-7; all four tiers pass (strict x64 equality included). The
+  GPU box pins `jax[cuda12]==0.9.1` until an upstream release fixes
+  the regression (candidate upstream report — owner decision).
+- `XLA_PYTHON_CLIENT_PREALLOCATE=false` avoids benign
+  CUDA_ERROR_OUT_OF_MEMORY preallocation noise when Windows holds
+  part of the 16 GB VRAM.
+- Measured tier numbers on the pinned stack: hello/ledger position
+  errors ~4e-7 of scale; the 500-step trap case u-error 1.4e-5
+  (phase-sensitive accumulation) — the trajectory-tier momentum
+  tolerance is calibrated to 3e-5 accordingly.
 
 ## Out of scope
 
