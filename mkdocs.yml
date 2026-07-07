@@ -44,6 +44,7 @@ nav:
   - Physics scope: physics_scope.md
   - Source models: source_models.md
   - Solver backends: solver_backends.md
+  - Benchmarks: benchmarks.md
   - Rendering: rendering.md
   - Validation plan: validation_plan.md
   - Safety scope: safety_scope.md

@@ -961,6 +961,7 @@ Not implemented yet:
 - [Physics scope](docs/physics_scope.md)
 - [Source models](docs/source_models.md)
 - [Solver backends](docs/solver_backends.md)
+- [Benchmarks](docs/benchmarks.md)
 - [Rendering](docs/rendering.md)
 - [Validation plan](docs/validation_plan.md)
 - [Safety scope](docs/safety_scope.md)
