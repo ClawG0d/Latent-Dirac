@@ -23,6 +23,19 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
   (`examples/scenes/rotating_wall_drive.yaml`). Design record:
   `docs/superpowers/specs/2026-07-07-rotating-wall-design.md`.
 
+- Apparatus glyphs for the demo renderers: every non-particle,
+  non-field element now draws as the object it stands for — solenoids
+  as wound copper coils with a faint bore, dipoles as north/south pole
+  faces with yoke edges, quadrupoles as four hyperbolic pole tips,
+  apertures as collimator washers, monitors as framed screens, matter
+  slabs as double-edged foils, annihilation plates as target discs.
+  Display-scaled accents size and crop to the framed per-axis
+  intervals (bent beams make the frame asymmetric about the element
+  axis; mplot3d does not clip), while model geometry is never
+  rescaled. Shared chart furniture (near-white panes, lighter grid,
+  split title) applies across all WebP demos. Design record:
+  `docs/superpowers/specs/2026-07-07-apparatus-visuals-design.md`.
+
 - The antiproton surrogate graduated to `externally calibrated`
   (M3-b): `AntiprotonSurrogateSource` gains
   `calibration="ad_ftfp_bert_26gevc_ir"`, loading effective parameters

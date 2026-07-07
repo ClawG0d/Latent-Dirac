@@ -203,6 +203,13 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
         column_particle_ids = final_state.particle_id[picked]
 
     limits = (config or {}).get("limits") or mpl3d.axis_limits(combined)
+    # framed per-axis intervals: apparatus glyph accents size and crop to
+    # the frame each axis actually shows (bent beams make it asymmetric)
+    frame_intervals = {
+        "x": tuple(limits[0]),
+        "y": tuple(limits[1]),
+        "z": tuple(limits[2]),
+    }
     total = combined.shape[0]
 
     annotate = config.get("annotate") if config else None
@@ -265,15 +272,25 @@ def _scene_demo_frames(scene_name: str, title: str, coloring: str, frame_count: 
         # into a hairball if every past snapshot stays drawn
         start = max(0, reveal - trail_window) if trail_window else 0
         if annotate == "target":
-            mpl3d.draw_block(axes, -0.12 * z_span, 0.0, 1.1 * beam_extent)
-            mpl3d.draw_beam_arrow(axes, -0.45 * z_span, -0.13 * z_span)
+            # crop the drawn-only target block and beam arrow to the framed
+            # intervals (mplot3d does not clip; the frame holds little
+            # upstream space, so the arrow is skipped when it cannot fit)
+            fx, fy, fz = frame_intervals["x"], frame_intervals["y"], frame_intervals["z"]
+            block_half = 0.75 * min(-fx[0], fx[1], -fy[0], fy[1])
+            block_z0 = max(-0.12 * z_span, fz[0])
+            if block_z0 < 0.0:
+                mpl3d.draw_block(axes, block_z0, 0.0, block_half)
+            arrow_z0 = max(-0.45 * z_span, fz[0])
+            arrow_z1 = -0.13 * z_span
+            if arrow_z1 > arrow_z0:
+                mpl3d.draw_beam_arrow(axes, arrow_z0, arrow_z1)
         if annotate == "target_engine":
             # the real yieldgen target (r=1.5 mm, half-length 27.5 mm) is
             # invisible at beamline scale; draw a modest, clearly labeled
             # stand-in at its true z extent instead of a scaled block
             mpl3d.draw_block(axes, -0.0275, 0.0275, 0.014)
             mpl3d.draw_beam_arrow(axes, -0.07, -0.032)
-        mpl3d.draw_scene_elements(axes, scene, run_result, plate_display_radius=1.5 * beam_extent)
+        mpl3d.draw_scene_elements(axes, scene, run_result, display_scale=frame_intervals)
         mpl3d.draw_field_polylines(axes, field_line_bundles)
         mpl3d.draw_trajectories(axes, combined[start:], reveal - start, colors)
         mpl3d.draw_points(axes, combined[reveal - 1], colors)

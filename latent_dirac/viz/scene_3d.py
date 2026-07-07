@@ -234,13 +234,19 @@ def render_scene_animation(
 
 def _element_segments(element, run_result: SceneRunResult) -> list[np.ndarray]:
     if element.type == "solenoid":
-        return _cylinder_segments(element.radius_m, element.center_z_m, element.length_m)
-    if element.type in {"dipole", "quadrupole"}:
+        return _coil_segments(element.radius_m, element.center_z_m, element.length_m)
+    if element.type == "dipole":
         return _box_segments(element.center_z_m, element.length_m, _BOX_HALF_WIDTH_M)
+    if element.type == "quadrupole":
+        return _quadrupole_tip_segments(element.center_z_m, element.length_m, _BOX_HALF_WIDTH_M)
     if element.type == "aperture":
+        # washer glyph: annular faces on both sides of a display thickness
+        thickness = 0.2 * element.radius_m
         return [
-            _circle(element.radius_m, element.z_m),
-            _circle(1.5 * element.radius_m, element.z_m),
+            _circle(element.radius_m, element.z_m - 0.5 * thickness),
+            _circle(1.5 * element.radius_m, element.z_m - 0.5 * thickness),
+            _circle(element.radius_m, element.z_m + 0.5 * thickness),
+            _circle(1.5 * element.radius_m, element.z_m + 0.5 * thickness),
         ]
     if element.type == "momentum_window":
         return []
@@ -272,14 +278,40 @@ def _circle(radius_m: float, z_m: float) -> np.ndarray:
     return np.column_stack([radius_m * np.cos(theta), radius_m * np.sin(theta), np.full_like(theta, z_m)])
 
 
-def _cylinder_segments(radius_m: float, center_z_m: float, length_m: float) -> list[np.ndarray]:
+def _coil_segments(radius_m: float, center_z_m: float, length_m: float) -> list[np.ndarray]:
+    """A wound-coil glyph: helix winding plus end circles (see the
+    2026-07-07 apparatus-visuals spec)."""
+
     z_low = center_z_m - 0.5 * length_m
     z_high = center_z_m + 0.5 * length_m
-    segments = [_circle(radius_m, z_low), _circle(radius_m, z_high)]
-    for theta in np.linspace(0.0, 2.0 * np.pi, 4, endpoint=False):
-        x = radius_m * np.cos(theta)
-        y = radius_m * np.sin(theta)
-        segments.append(np.array([[x, y, z_low], [x, y, z_high]]))
+    turns = int(np.clip(length_m / (0.25 * radius_m), 10, 44))
+    theta = np.linspace(0.0, 2.0 * np.pi * turns, turns * 18)
+    z = np.linspace(z_low, z_high, theta.size)
+    helix = np.column_stack([radius_m * np.cos(theta), radius_m * np.sin(theta), z])
+    return [helix, _circle(radius_m, z_low), _circle(radius_m, z_high)]
+
+
+def _quadrupole_tip_segments(center_z_m: float, length_m: float, r0: float) -> list[np.ndarray]:
+    """Four hyperbolic pole-tip profiles (2xy = ±r0²) at both element ends."""
+
+    z_low = center_z_m - 0.5 * length_m
+    z_high = center_z_m + 0.5 * length_m
+    t = np.linspace(-0.75, 0.75, 21)
+    base_x = (r0 / np.sqrt(2.0)) * np.exp(t)
+    base_y = (r0 / np.sqrt(2.0)) * np.exp(-t)
+    segments: list[np.ndarray] = []
+    for x_curve, y_curve in (
+        (base_x, base_y),
+        (-base_y, base_x),
+        (-base_x, -base_y),
+        (base_y, -base_x),
+    ):
+        for z_edge in (z_low, z_high):
+            segments.append(np.column_stack([x_curve, y_curve, np.full_like(x_curve, z_edge)]))
+        apex = x_curve.size // 2
+        segments.append(
+            np.array([[x_curve[apex], y_curve[apex], z_low], [x_curve[apex], y_curve[apex], z_high]])
+        )
     return segments
 
 

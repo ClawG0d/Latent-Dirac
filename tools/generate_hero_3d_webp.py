@@ -153,18 +153,20 @@ def _render_frames(
         axes.set_zlabel("y [m]", labelpad=6)
         for axis in (axes.xaxis, axes.yaxis, axes.zaxis):
             axis.set_major_locator(MaxNLocator(4))
-        axes.tick_params(labelsize=8, pad=2)
+        from tools import mpl3d
+
+        mpl3d.style_axes(axes)
+        axes.tick_params(labelsize=8, pad=2, labelcolor=(0.30, 0.33, 0.38))
         axes.view_init(elev=18.0, azim=azimuth)
         axes.set_box_aspect((2.0, 1.2, 0.8), zoom=1.16)
         axes.set_position((0.02, 0.05, 0.96, 0.87))
         axes.legend(loc="upper left", frameon=False, bbox_to_anchor=(0.06, 0.94))
-        fig.suptitle(
-            "Charge-sign splitter, 3D transport\n"
-            f"uniform transverse By = {FIELD_BY_TESLA:.2f} T | relativistic Boris solver | "
-            "transport diagnostic only",
-            fontsize=10,
-            y=0.97,
-        )
+        fig.text(0.5, 0.965, "Charge-sign splitter, 3D transport", ha="center",
+                 fontsize=10.5, fontweight="semibold", color=(0.15, 0.17, 0.20))
+        fig.text(0.5, 0.935,
+                 f"uniform transverse By = {FIELD_BY_TESLA:.2f} T | relativistic Boris solver | "
+                 "transport diagnostic only",
+                 ha="center", fontsize=8.2, color=(0.40, 0.43, 0.48))
 
         fig.canvas.draw()
         buffer = np.asarray(fig.canvas.buffer_rgba())
