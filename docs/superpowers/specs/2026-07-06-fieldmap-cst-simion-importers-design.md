@@ -63,7 +63,14 @@ Parsing (robust, header-driven — do not assume column order):
 - **Errors** carry line numbers and say what was expected (missing
   coordinate/field columns, unknown unit, incomplete grid, non-numeric).
 
-### Slice 2 — `load_simion_patxt(path) -> FieldMapField`
+### Slice 2 — `load_simion_patxt(path) -> FieldMapField` (DEFERRED)
+
+Status (2026-07-07): **deferred by owner decision.** The exact `.patxt`
+format is documented only inside the SIMION application help (not public),
+and the honesty gate below forbids shipping a guessed parser. The CST
+importer (slice 1) covers the immediate field-map need; SIMION resumes if
+a sample `.patxt` or the in-app format spec becomes available.
+
 
 SIMION potential arrays store a **scalar potential** φ per grid point
 (electrostatic in volts, magnetic in "mags") plus an electrode flag, not
