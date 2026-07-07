@@ -14,5 +14,17 @@ from latent_dirac.collisions.cross_sections import (
     load_cross_sections,
     sigma,
 )
+from latent_dirac.collisions.operator import (
+    LOSS_CHANNELS,
+    buffer_gas_collide,
+    inelastic_energy_after,
+)
 
-__all__ = ["CrossSectionTable", "load_cross_sections", "sigma"]
+__all__ = [
+    "CrossSectionTable",
+    "load_cross_sections",
+    "sigma",
+    "buffer_gas_collide",
+    "inelastic_energy_after",
+    "LOSS_CHANNELS",
+]

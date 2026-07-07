@@ -87,3 +87,29 @@ def test_table_based_tier_requires_a_doi(tmp_path):
     bad = _VALID.replace("# fidelity_tier: parameterized", "# fidelity_tier: table-based")
     with pytest.raises(ValueError, match="doi|citable|table-based"):
         load_cross_sections(_write(tmp_path, bad))
+
+
+def test_rejects_thresholds_that_do_not_match_channels(tmp_path):
+    # every declared channel must carry a threshold (else a cooling channel
+    # silently removes zero energy in the operator)
+    bad = _VALID.replace(
+        "# thresholds_ev: elastic=0.0,electronic=8.5,positronium=8.8",
+        "# thresholds_ev: elastic=0.0,electronic=8.5",  # positronium missing
+    )
+    with pytest.raises(ValueError, match="threshold"):
+        load_cross_sections(_write(tmp_path, bad))
+
+
+def test_rejects_duplicate_channel_names(tmp_path):
+    bad = _VALID.replace(
+        "# channels: elastic,electronic,positronium",
+        "# channels: elastic,elastic,positronium",
+    )
+    with pytest.raises(ValueError, match="duplicate"):
+        load_cross_sections(_write(tmp_path, bad))
+
+
+def test_rejects_a_ragged_numeric_row(tmp_path):
+    bad = _VALID.replace("9.0,4.0e-20,3.0e-21,1.0e-21", "9.0,4.0e-20,3.0e-21")  # short a column
+    with pytest.raises(ValueError, match="columns"):
+        load_cross_sections(_write(tmp_path, bad))

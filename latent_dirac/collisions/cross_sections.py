@@ -98,7 +98,14 @@ def load_cross_sections(path: str) -> CrossSectionTable:
         raise ValueError("a table-based (real) dataset must be citable: doi and method are required")
 
     channel_names = [c.strip() for c in header["channels"].split(",") if c.strip()]
+    if len(set(channel_names)) != len(channel_names):
+        raise ValueError(f"duplicate channel name(s) in header: {channel_names}")
     thresholds = _parse_thresholds(header["thresholds_ev"])
+    if set(thresholds) != set(channel_names):
+        raise ValueError(
+            "thresholds_ev must declare exactly the channels: "
+            f"channels={sorted(channel_names)}, thresholds={sorted(thresholds)}"
+        )
 
     if not data_lines:
         raise ValueError("cross-section table has no numeric rows")
@@ -109,7 +116,14 @@ def load_cross_sections(path: str) -> CrossSectionTable:
             f"['energy_eV', {channel_names}]"
         )
 
-    grid = np.array([[float(x) for x in row.split(",")] for row in data_lines[1:]], dtype=float)
+    n_columns = len(columns)
+    rows = [row.split(",") for row in data_lines[1:]]
+    for line_no, row in enumerate(rows, start=1):
+        if len(row) != n_columns:
+            raise ValueError(
+                f"cross-section row {line_no} has {len(row)} columns, expected {n_columns}"
+            )
+    grid = np.array([[float(x) for x in row] for row in rows], dtype=float)
     energies = grid[:, 0]
     if not np.all(np.diff(energies) > 0):
         raise ValueError("energy grid must be strictly increasing")
