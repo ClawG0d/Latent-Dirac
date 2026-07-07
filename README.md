@@ -914,6 +914,11 @@ Implemented:
   tungsten converter, FTFP_BERT; committed table from 1e7 primaries,
   22,361 recorded positrons) replayed by the table-based
   `positron_yield_table` scene source
+- the antiproton surrogate's externally calibrated tier
+  (`calibration: ad_ftfp_bert_26gevc_ir`): effective parameters fitted
+  so the sampled in-band moments and yield reproduce the committed
+  engine table within 5% (moment-level calibration, stated as such;
+  explicit-parameter use stays surrogate tier)
 - openPMD particle output (`latent_dirac.io.openpmd_io`, optional
   `[openpmd]` extra): monitor snapshots and the final cloud as openPMD
   iterations with SI unit metadata, the loss-ledger channel, and the

@@ -5,6 +5,20 @@ deprecation shims. Notable changes are recorded here starting from 0.2.0.
 
 ## Unreleased (0.2.0)
 
+- The antiproton surrogate graduated to `externally calibrated`
+  (M3-b): `AntiprotonSurrogateSource` gains
+  `calibration="ad_ftfp_bert_26gevc_ir"`, loading effective parameters
+  fitted against the committed engine yield table so that the sampled
+  in-band (3.0–4.2 GeV/c) first two momentum moments and the in-band
+  weighted yield match the table within 5% (owner-approved
+  moment-matching standard; angular rms pinned directly). The table's
+  in-band spectrum is nearly flat, so the fitted Gaussian width is an
+  effective one through the band truncation — recorded honestly in the
+  docstring, metadata, and spec; out-of-band tails stay uncalibrated
+  surrogate form, and explicit-parameter use keeps the `surrogate`
+  tier. Design record:
+  `docs/superpowers/specs/2026-07-07-surrogate-calibration-design.md`.
+
 - Added the positron yield table (engine-track M3-a):
   `engine/positrongen` fires 10 MeV electrons at a tungsten converter
   disc (r = 5 mm, 2 mm thick, ~0.57 X0; FTFP_BERT) and records every

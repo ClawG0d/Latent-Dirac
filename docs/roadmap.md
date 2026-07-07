@@ -134,8 +134,11 @@ controlled patch protocol (frozen until its infrastructure exists).
   `antiproton_yield_table` and the engine-backed target demo;
   `engine/positrongen`: 10 MeV electron-on-tungsten converter,
   consumed by `positron_yield_table`; both FTFP_BERT with the CSV
-  provenance-four-tuple contract); moderation tables and the surrogate
-  source's graduation toward `externally calibrated` still pending
+  provenance-four-tuple contract); the surrogate source graduated to
+  `externally calibrated` via table-moment calibration
+  (`calibration="ad_ftfp_bert_26gevc_ir"`, moment matching — see the
+  2026-07-07 surrogate-calibration spec); moderation tables still
+  pending
 - **M4 — companion acceleration library**: first-party C++ in `engine/`
   attached through `G4VFastSimulationModel`; EM domain first;
   performance claims only against open vanilla-Geant4 benchmarks
