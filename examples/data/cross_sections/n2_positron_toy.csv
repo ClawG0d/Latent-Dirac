@@ -1,0 +1,20 @@
+# gas: N2
+# fidelity_tier: parameterized
+# source: SYNTHETIC placeholder — NOT physical data. Hand-authored, N2-shaped
+# doi:
+# method: synthetic toy grid for buffer-gas infrastructure tests only
+# energy_unit: eV
+# sigma_unit: m^2
+# channels: elastic,electronic,positronium
+# thresholds_ev: elastic=0.0,electronic=8.5,positronium=8.8
+energy_eV,elastic,electronic,positronium
+0.1,5.0e-20,0.0,0.0
+1.0,5.0e-20,0.0,0.0
+5.0,4.5e-20,0.0,0.0
+8.5,4.0e-20,0.0,0.0
+8.8,4.0e-20,1.0e-21,0.0
+9.0,4.0e-20,3.0e-21,1.0e-21
+12.0,3.5e-20,5.0e-21,2.0e-21
+20.0,3.0e-20,5.0e-21,2.5e-21
+50.0,2.5e-20,4.0e-21,2.0e-21
+100.0,2.0e-20,3.0e-21,1.5e-21
