@@ -1,6 +1,11 @@
 # 双机分工计划（Task Split）
 
-写于 2026-07-06，由 Windows 台式机（WSL2 + RTX 5070 Ti）侧会话规划。
+写于 2026-07-06，由 Windows 台式机（WSL2 + RTX 5070 Ti）侧会话规划；
+**同日晚更新**：T1（matter_slab）、T2（xsuite_lattice）、T4（buffer-gas
+spec 及 buffer_gas_cooling 参数化第一档）均已落地——速度惊人。新的
+任务分配见 §三；整体执行计划（GPU 车道 → M3/M4 → Phase 4）见
+`docs/superpowers/specs/2026-07-06-execution-plan-gpu-to-phase4-design.md`。
+
 本文写给 **Mac Air 上的协作者及其 Claude Code 会话**：哪些任务划给
 Mac、哪些留在 Windows 机、为什么，以及接手前读什么。
 
@@ -45,67 +50,36 @@ python -m venv .venv
 
 ## 三、划给 Mac 的任务（按此顺序做）
 
-### T1 `matter_slab` 场景元素（M2b，roadmap 下一项）
+**2026-07-06 晚状态**：T1/T2/T4 已完成（见 CHANGELOG），当前分配：
 
-把已真实化的 Geant4 Matter 适配器接入声明式场景层：新增
-`matter_slab` 元素类型，场景 YAML 里一块 NIST 材料板即可参与管线。
+### T5 阻性气体截面表第一档（owner 已拍板，最高优先）
 
-- 现有基础：`latent_dirac/adapters/geant4/adapter.py` 的
-  `Geant4MatterAdapter`（pydantic 配置模型，子进程 + 相空间 CSV 契约，
-  `# complete = true` 完成标记守卫）。**适配器本体不要改**——只做
-  schema 接线。
-- 改动面：`latent_dirac/scene/schema.py`（新元素模型，
-  `extra="forbid"`）、`latent_dirac/scene/build.py`（编译成 Stage
-  action 闭包）、**`latent_dirac/viz/scene_3d.py`**（roadmap 2b 规则：
-  每个元素类型必须有 3D 表示——`FIDELITY_LABELS` 加条目、
-  `_element_segments` 加几何，否则新元素在渲染里**静默隐形**，
-  不会报错提醒你）、`docs/scene_schema.md`、README/roadmap/CHANGELOG
-  状态同步（同一 commit，见 §六）。
-- 测试完全无需引擎：照抄 `tests/test_geant4_matter_adapter.py` 的
-  Python stub transformer 模式，Mac 上全套可跑。
-- JAX 侧**零工作量**：`jax_scene._base_params` 的 `_SWEEPABLE_PARAMS`
-  白名单会自动拒绝未知元素类型（"not supported by the JAX backend
-  yet"）。加一个断言该 ValueError 的测试即可，**不要碰镜像对的元素
-  循环**。
-- spec 里要定的设计点：transformer 可执行文件路径如何进场景
-  （二进制路径是机器相关的——建议 run 时注入/环境变量，**不要**硬编码
-  进可提交的 YAML）；板的材料/厚度/位置参数命名；引擎四元组溯源如何
-  进场景报告。先读
-  `docs/superpowers/specs/2026-07-05-geant4-matter-adapter-design.md`。
+按你自己写的 buffer-gas spec
+（`docs/superpowers/specs/2026-07-06-buffer-gas-collisions-design.md`）
+的下一梯级：为正电子–N₂/CF₄ 策展能量依赖截面表（逐文献溯源，
+per-source provenance 纪律——正电子数据没有 LXCat 式统一开放库），
+把 `buffer_gas_cooling` 从常数速率参数化档升级到 table-based 档。
+纯 CPU、研究向。注意：trap_storage_lifecycle demo（demo 14）用的
+是常数速率档，升级后按需刷新其场景参数与 README 报告块。
 
-### T2 Xsuite lattice 场景元素
+### 已完成（勿重做）：T1 / T2 / T4
 
-把已真实化的 Xsuite 适配器接入场景层：场景里声明一段 `xtrack.Line`
-追踪。
+- **T1 `matter_slab`**：已落地（`10ad5fb2`，spec
+  `2026-07-06-matter-slab-scene-element-design.md`），并已被
+  ELENA 交接 demo（真引擎降能片）实战使用。
+- **T2 `xsuite_lattice`**：已落地（`d06a515b`，spec
+  `2026-07-06-xsuite-lattice-scene-element-design.md`），并已被
+  ELENA 环 demo（60 圈 xtrack 追踪）实战使用。
+- **T4 buffer-gas**：spec 已交付并超额完成第一档代码
+  （`buffer_gas_cooling` 常数速率参数化元素 + 可微期望存活项），
+  已被阱存储生命周期 demo 使用。
 
-- 现有基础：`latent_dirac/adapters/xsuite/adapter.py`
-  （`ParticleState` ↔ `xtrack.Particles`，`ReferenceFrame(p0c_ev)`
-  永远显式，`xsuite_tracking_stage` 已带账本盖章）。适配器本体不改。
-- 设计点：场景如何引用 Line（xtrack 的 line JSON 文件路径是惯例）、
-  参考动量 p0c 放哪里声明。JAX 侧同 T1 自动拒绝。
-- 先读 `docs/superpowers/specs/2026-07-05-xsuite-adapter-design.md`。
-
-### T3 CST / SIMION 场图导入格式
+### T3 CST / SIMION 场图导入格式（次优先）
 
 扩展 `latent_dirac/fields/field_map.py`：现有 COMSOL 规则网格 CSV
 导入是模板（trilinear 插值、界外返回零）。新增 CST 和 SIMION 的
 导出格式解析，table-based 层级，测试用小型合成 fixture 文件。
 纯解析工作，完全自包含。spec 里先做格式调研并记录来源。
-
-### T4 Surko 阱 buffer-gas 碰撞：数据调研 + 设计 spec
-
-（原本排在这里的残余气体寿命模型已被另一会话抢先完成——
-`9c1aa128`，spec 见
-`docs/superpowers/specs/2026-07-06-residual-gas-storage-lifetime-design.md`。
-该提交同时是「新增一个损失类场景元素」的现成参照：schema + build +
-测试 + spec + 文档同步长什么样，做 T1 前值得通读。）
-
-T4 改为 Phase 4 的前置研究任务：Surko 阱 buffer-gas 碰撞的
-截面数据调研与设计 spec（ONBOARDING §七 列明"需截面数据研究"）。
-交付物是 spec 而非代码：正电子-N₂ 等缓冲气体的电子激发/湮灭截面
-数据来源（须开放、可溯源，按 AGENTS.md 数据集策展方向）、MC 碰撞
-算子的设计草案、与现有 Penning 阱场模型的衔接。纯文献工作，
-Mac 完全胜任；代码落点等 spec 评审后再定。
 
 ### 持续任务（穿插做）
 

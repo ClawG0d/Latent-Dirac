@@ -38,7 +38,11 @@ adapter-status test) → native mean-field space charge — **done**
 elements; parameterized tier, beta << 1, per-step refit, NumPy pipeline
 only). Closed-loop v1 is complete. Engine-track M1' proceeds in
 parallel; the GPU lane (float32 backend validation, then the honest
-benchmark suite) is next, then the interactive viewer.
+benchmark suite published to docs/benchmarks.md) is next — the
+session-level execution plan through M3/M4 into Phase 4 is recorded in
+[the 2026-07-06 execution-plan spec](https://github.com/ClawG0d/Latent-Dirac/blob/master/docs/superpowers/specs/2026-07-06-execution-plan-gpu-to-phase4-design.md).
+The interactive viewer's first slice (the Plotly animated viewer)
+shipped.
 
 ## Phase 1 (done)
 
