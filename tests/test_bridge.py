@@ -92,9 +92,11 @@ def test_run_rejects_invalid_scene():
     assert resp["error"]["type"] == "validation"
 
 
-def test_run_reports_engine_absence_gracefully():
+def test_run_reports_engine_absence_gracefully(monkeypatch):
     # a matter_slab with no LATENT_DIRAC_G4_TRANSFORMER fails at run time; the
-    # bridge must return a runtime error object, never crash the process
+    # bridge must return a runtime error object, never crash the process.
+    # delenv: on the engine box the variable may be exported in the shell
+    monkeypatch.delenv("LATENT_DIRAC_G4_TRANSFORMER", raising=False)
     scene = valid_scene()
     scene["elements"] = [
         {"type": "matter_slab", "label": "slab", "material": "G4_Al", "thickness_mm": 1.0},

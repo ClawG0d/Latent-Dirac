@@ -129,6 +129,11 @@ def test_provenance_reaches_the_report(tmp_path, monkeypatch):
     assert "FTFP_BERT" in report
     assert "stub-11.4.2" in report
     assert "G4_Al" in report
+    # the source here (cold_uniform_sphere) carries no provenance of its own:
+    # the tuple the Matter stage setdefault-ed onto the cloud must NOT print
+    # under a "Source provenance" heading — that would attribute engine
+    # provenance to a non-engine source (the matter block covers it)
+    assert "Source provenance" not in report
 
 
 def test_missing_transformer_env_fails_at_run_not_construction(monkeypatch):

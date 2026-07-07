@@ -79,15 +79,18 @@ regeneration on engine-less machines degrades gracefully.
   ledgered, gate parameters validated) and one test asserts the
   generator skips engine demos without the env var.
 
-## Known wart (pre-existing, surfaced by this composition)
+## Known wart (pre-existing, surfaced by this composition — FIXED)
 
 This is the first shipped scene composing a non-engine source with
 `matter_slab`. The M2 adapter `setdefault()`s top-level provenance, so
-the report's "Source provenance (engine four-tuple)" block shows the
+the report's "Source provenance (engine four-tuple)" block showed the
 surrogate source with the engine's version tuple filled in — truthful
-content under a misleading heading. Revisiting the setdefault
-semantics (or the report heading) is follow-up work on the adapter
-contract, out of scope for a demo commit.
+content under a misleading heading. Fixed 2026-07-06 at the report
+layer (the adapter contract is unchanged): when the top-level tuple is
+the one the Matter stage setdefault-ed (equal to the matter-namespaced
+tuple), the report skips the "Source provenance" heading — the matter
+block reports it honestly. A yield-table source's own provenance still
+prints both blocks. Regression-pinned in the matter-slab scene tests.
 
 ## Fidelity notes (title and report)
 

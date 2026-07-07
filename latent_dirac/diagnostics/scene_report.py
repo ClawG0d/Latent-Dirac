@@ -119,6 +119,14 @@ def scene_report(scene: Scene, result: SceneRunResult, scope_note: str) -> str:
     # Engine-derived results must carry the provenance four-tuple
     # (docs/safety_scope.md); sources put it in the cloud metadata.
     provenance = final.metadata.get("provenance") if isinstance(final.metadata, dict) else None
+    matter_block = final.metadata.get("matter") if isinstance(final.metadata, dict) else None
+    matter_provenance = matter_block.get("provenance") if isinstance(matter_block, dict) else None
+    if provenance and provenance == matter_provenance:
+        # the top-level tuple was setdefault-ed by the Matter stage onto a
+        # source that carried none: printing it under a "Source provenance"
+        # heading would attribute engine provenance to a non-engine source.
+        # The matter block below reports it under its honest heading.
+        provenance = None
     if provenance:
         lines.append("")
         lines.append("Source provenance (engine four-tuple):")
